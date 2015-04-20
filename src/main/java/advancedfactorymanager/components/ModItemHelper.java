@@ -13,7 +13,7 @@ public final class ModItemHelper
 {
 
 
-    private static Map<Integer, String> items;
+    public static Map<Integer, String> items;
 
     public static void init()
     {
@@ -48,7 +48,7 @@ public final class ModItemHelper
     }
 
 
-    private ModItemHelper()
+    public ModItemHelper()
     {
     }
 }

@@ -109,7 +109,7 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
 
     }
 
-    private void sendCheckBoxPacket()
+    public void sendCheckBoxPacket()
     {
         DataWriter dw = getWriterForServerComponentPacket();
         dw.writeData(0, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
@@ -142,10 +142,10 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
         return textBoxes.getTextBox(id).getNumber();
     }
 
-    private class TextBoxRange extends TextBoxNumber
+    public class TextBoxRange extends TextBoxNumber
     {
-        private int id;
-        private int defaultNumber;
+        public int id;
+        public int defaultNumber;
 
         public TextBoxRange(int id, int x, int y, int defaultNumber)
         {
@@ -175,24 +175,24 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
         }
     }
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_Y = 3;
-    private static final int CHECK_BOX_SPACING_X = 50;
-    private static final int CHECK_BOX_SPACING_Y = 10;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 3;
+    public static final int CHECK_BOX_SPACING_X = 50;
+    public static final int CHECK_BOX_SPACING_Y = 10;
 
-    private static final int TEXT_X = 6;
-    private static final int TEXT_X_TO = 55;
-    private static final int TEXT_Y = 28;
-    private static final int TEXT_BOX_X = 30;
-    private static final int TEXT_BOX_Y = 25;
-    private static final int TEXT_BOX_SPACING_X = 40;
-    private static final int TEXT_BOX_SPACING_Y = 15;
+    public static final int TEXT_X = 6;
+    public static final int TEXT_X_TO = 55;
+    public static final int TEXT_Y = 28;
+    public static final int TEXT_BOX_X = 30;
+    public static final int TEXT_BOX_Y = 25;
+    public static final int TEXT_BOX_SPACING_X = 40;
+    public static final int TEXT_BOX_SPACING_Y = 15;
 
-    private CheckBoxList checkBoxes;
-    private boolean inUse;
-    private boolean useCollision;
-    private boolean fullCollision;
-    private TextBoxNumberList textBoxes;
+    public CheckBoxList checkBoxes;
+    public boolean inUse;
+    public boolean useCollision;
+    public boolean fullCollision;
+    public TextBoxNumberList textBoxes;
 
     @Override
     protected String getWarningText()
@@ -206,7 +206,7 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
         return Localization.BOUNDS_MENU.toString();
     }
 
-    private Localization[] coordinates = {Localization.X, Localization.Y, Localization.Z};
+    public Localization[] coordinates = {Localization.X, Localization.Y, Localization.Z};
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -294,7 +294,7 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
         }
     }
 
-    private void loadDefault()
+    public void loadDefault()
     {
         inUse = false;
         useCollision = true;
@@ -362,15 +362,15 @@ public class ComponentMenuCamouflageShape extends ComponentMenuCamouflageAdvance
         }
     }
 
-    private static final String NBT_USE = "Use";
-    private static final String NBT_COLLISION = "UseCollision";
-    private static final String NBT_FULL = "FullCollision";
-    private static final String NBT_MIN_X = "MinX";
-    private static final String NBT_MAX_X = "MaxX";
-    private static final String NBT_MIN_Y = "MinY";
-    private static final String NBT_MAX_Y = "MaxY";
-    private static final String NBT_MIN_Z = "MinZ";
-    private static final String NBT_MAX_Z = "MaxZ";
+    public static final String NBT_USE = "Use";
+    public static final String NBT_COLLISION = "UseCollision";
+    public static final String NBT_FULL = "FullCollision";
+    public static final String NBT_MIN_X = "MinX";
+    public static final String NBT_MAX_X = "MaxX";
+    public static final String NBT_MIN_Y = "MinY";
+    public static final String NBT_MAX_Y = "MaxY";
+    public static final String NBT_MIN_Z = "MinZ";
+    public static final String NBT_MAX_Z = "MaxZ";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

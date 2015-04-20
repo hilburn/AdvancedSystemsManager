@@ -19,8 +19,8 @@ public abstract class ComponentMenuTriggered extends ComponentMenu
 
     protected TextBoxNumberList textBoxes = new TextBoxNumberList();
 
-    private static final String NBT_DELAY = "Delay";
-    private static final String NBT_COUNTDOWN = "Counter";
+    public static final String NBT_DELAY = "Delay";
+    public static final String NBT_COUNTDOWN = "Counter";
     protected int counter;
 
     public ComponentMenuTriggered(FlowComponent parent)

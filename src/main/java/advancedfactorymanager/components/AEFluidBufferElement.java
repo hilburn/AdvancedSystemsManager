@@ -9,9 +9,9 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class AEFluidBufferElement extends StackTankHolder
 {
-    private IAEFluidStack fluid;
-    private TileEntityAENode node;
-    private int sizeLeft;
+    public IAEFluidStack fluid;
+    public TileEntityAENode node;
+    public int sizeLeft;
 
     public AEFluidBufferElement(IAEFluidStack fluid, TileEntityAENode node)
     {

@@ -14,8 +14,8 @@ import java.util.List;
 
 public class LiquidSetting extends Setting
 {
-    private Fluid fluid;
-    private int amount;
+    public Fluid fluid;
+    public int amount;
 
     public LiquidSetting(int id)
     {
@@ -97,8 +97,8 @@ public class LiquidSetting extends Setting
         return 1000;
     }
 
-    private static final String NBT_FLUID_ID = "FluidId";
-    private static final String NBT_FLUID_AMOUNT = "Amount";
+    public static final String NBT_FLUID_ID = "FluidId";
+    public static final String NBT_FLUID_AMOUNT = "Amount";
 
     @Override
     public void load(NBTTagCompound settingTag)

@@ -72,15 +72,15 @@ public class ComponentMenuVariableLoop extends ComponentMenu
         return Localization.LOOP_VARIABLE_MENU.toString();
     }
 
-    private static final int DISPLAY_X = 45;
-    private static final int DISPLAY_Y_TOP = 5;
-    private static final int DISPLAY_Y_BOT = 25;
+    public static final int DISPLAY_X = 45;
+    public static final int DISPLAY_Y_TOP = 5;
+    public static final int DISPLAY_Y_BOT = 25;
 
 
-    private VariableDisplay listDisplay;
-    private VariableDisplay elementDisplay;
-    private int selectedList;
-    private int selectedElement;
+    public VariableDisplay listDisplay;
+    public VariableDisplay elementDisplay;
+    public int selectedList;
+    public int selectedElement;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -105,7 +105,7 @@ public class ComponentMenuVariableLoop extends ComponentMenu
         elementDisplay.onClick(mX, mY);
     }
 
-    private void sendServerData(boolean useList)
+    public void sendServerData(boolean useList)
     {
         int val = useList ? selectedList : selectedElement;
         DataWriter dw = getWriterForServerComponentPacket();
@@ -114,7 +114,7 @@ public class ComponentMenuVariableLoop extends ComponentMenu
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendClientData(ContainerManager container, boolean useList)
+    public void sendClientData(ContainerManager container, boolean useList)
     {
         int val = useList ? selectedList : selectedElement;
         DataWriter dw = getWriterForClientComponentPacket(container);
@@ -174,8 +174,8 @@ public class ComponentMenuVariableLoop extends ComponentMenu
         }
     }
 
-    private static final String NBT_LIST = "List";
-    private static final String NBT_ELEMENT = "Element";
+    public static final String NBT_LIST = "List";
+    public static final String NBT_ELEMENT = "Element";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

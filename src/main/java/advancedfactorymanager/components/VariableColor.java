@@ -26,13 +26,13 @@ public enum VariableColor
     RED(Localization.VARIABLE_RED, Color.RED, 0.6F, 0.2F, 0.2F),
     BLACK(Localization.VARIABLE_BLACK, Color.BLACK, 0.1F, 0.1F, 0.1F);
 
-    private Localization name;
-    private Color textColor;
-    private float red;
-    private float green;
-    private float blue;
+    public Localization name;
+    public Color textColor;
+    public float red;
+    public float green;
+    public float blue;
 
-    private VariableColor(Localization name, Color textColor, float red, float green, float blue)
+    VariableColor(Localization name, Color textColor, float red, float green, float blue)
     {
         this.name = name;
         this.textColor = textColor;

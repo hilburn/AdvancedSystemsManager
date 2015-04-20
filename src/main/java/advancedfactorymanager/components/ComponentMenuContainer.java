@@ -33,46 +33,46 @@ public abstract class ComponentMenuContainer extends ComponentMenu
 {
 
 
-    private static final int BACK_SRC_X = 46;
-    private static final int BACK_SRC_Y = 52;
-    private static final int BACK_SIZE_W = 9;
-    private static final int BACK_SIZE_H = 9;
-    private static final int BACK_X = 108;
-    private static final int BACK_Y = 57;
+    public static final int BACK_SRC_X = 46;
+    public static final int BACK_SRC_Y = 52;
+    public static final int BACK_SIZE_W = 9;
+    public static final int BACK_SIZE_H = 9;
+    public static final int BACK_X = 108;
+    public static final int BACK_Y = 57;
 
-    private static final int INVENTORY_SIZE = 16;
-    private static final int INVENTORY_SRC_X = 30;
-    private static final int INVENTORY_SRC_Y = 20;
+    public static final int INVENTORY_SIZE = 16;
+    public static final int INVENTORY_SRC_X = 30;
+    public static final int INVENTORY_SRC_Y = 20;
 
-    private static final int RADIO_BUTTON_MULTI_X = 2;
-    private static final int RADIO_BUTTON_MULTI_Y = 27;
-    private static final int RADIO_BUTTON_SPACING = 15;
+    public static final int RADIO_BUTTON_MULTI_X = 2;
+    public static final int RADIO_BUTTON_MULTI_Y = 27;
+    public static final int RADIO_BUTTON_SPACING = 15;
 
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MULTI_MARGIN_X = 5;
-    private static final int TEXT_MULTI_Y = 10;
-    private static final int TEXT_MULTI_ERROR_Y = 30;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MULTI_MARGIN_X = 5;
+    public static final int TEXT_MULTI_Y = 10;
+    public static final int TEXT_MULTI_ERROR_Y = 30;
 
-    private static final int FILTER_BUTTON_X = 90;
-    private static final int FILTER_BUTTON_Y = 0;
-    private static final int CHECK_BOX_FILTER_INVERT_Y = 55;
-    private static final int FILTER_RESET_BUTTON_X = 70;
+    public static final int FILTER_BUTTON_X = 90;
+    public static final int FILTER_BUTTON_Y = 0;
+    public static final int CHECK_BOX_FILTER_INVERT_Y = 55;
+    public static final int FILTER_RESET_BUTTON_X = 70;
 
-    private static final int CHECK_BOX_FILTER_Y = 5;
-    private static final int CHECK_BOX_FILTER_SPACING = 12;
+    public static final int CHECK_BOX_FILTER_Y = 5;
+    public static final int CHECK_BOX_FILTER_SPACING = 12;
 
-    private Page currentPage;
+    public Page currentPage;
     protected List<Integer> selectedInventories;
-    private List<IContainerSelection> inventories;
+    public List<IContainerSelection> inventories;
     protected RadioButtonList radioButtonsMulti;
     protected ScrollController<IContainerSelection> scrollController;
-    private ConnectionBlockType validType;
+    public ConnectionBlockType validType;
     @SideOnly(Side.CLIENT)
-    private GuiManager cachedInterface;
-    private List<Button> buttons;
-    private static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
-    private List<Variable> filterVariables;
-    private boolean clientUpdate; //ugly quick way to fix client/server issue
+    public GuiManager cachedInterface;
+    public List<Button> buttons;
+    public static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
+    public List<Variable> filterVariables;
+    public boolean clientUpdate; //ugly quick way to fix client/server issue
 
 
     protected EnumSet<ConnectionBlockType> getValidTypes()
@@ -184,20 +184,20 @@ public abstract class ComponentMenuContainer extends ComponentMenu
                 drawContainer(gui, iContainerSelection, selectedInventories, x, y, hover);
             }
 
-            private boolean locked;
-            private int lockedX;
-            private int lockedY;
+            public boolean locked;
+            public int lockedX;
+            public int lockedY;
             @SideOnly(Side.CLIENT)
-            private ToolTip cachedTooltip;
-            private int cachedId;
-            private IContainerSelection cachedContainer;
-            private boolean keepCache;
+            public ToolTip cachedTooltip;
+            public int cachedId;
+            public IContainerSelection cachedContainer;
+            public boolean keepCache;
 
             @SideOnly(Side.CLIENT)
             class ToolTip implements IAdvancedTooltip
             {
-                private ItemStack[] items;
-                private List<String>[] itemTexts;
+                public ItemStack[] items;
+                public List<String>[] itemTexts;
                 List<String> prefix;
                 List<String> suffix;
                 List<String> lockedSuffix;
@@ -275,11 +275,11 @@ public abstract class ComponentMenuContainer extends ComponentMenu
                     return 70;
                 }
 
-                private static final int SRC_X = 30;
-                private static final int SRC_Y = 20;
+                public static final int SRC_X = 30;
+                public static final int SRC_Y = 20;
 
                 @SideOnly(Side.CLIENT)
-                private void drawBlock(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
+                public void drawBlock(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
                 {
                     GL11.glColor4f(1, 1, 1, 1);
                     GuiBase.bindTexture(gui.getComponentResource());
@@ -294,7 +294,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
                 }
 
                 @SideOnly(Side.CLIENT)
-                private boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
+                public boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
                 {
                     if (CollisionHelper.inBounds(x, y, 16, 16, mX, mY))
                     {
@@ -325,7 +325,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
                 }
 
                 @SideOnly(Side.CLIENT)
-                private void drawMouseOverMouseOver(GuiBase gui, int x, int y, int mX, int mY)
+                public void drawMouseOverMouseOver(GuiBase gui, int x, int y, int mX, int mY)
                 {
                     boolean ignored =
                             drawBlockMouseOver(gui, x + 25, y + 5, mX, mY, ForgeDirection.NORTH) ||
@@ -382,7 +382,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
             }
 
             @SideOnly(Side.CLIENT)
-            private void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
             {
                 boolean isBlock = !iContainerSelection.isVariable();
 
@@ -621,13 +621,13 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         hasUpdated = false;
     }
 
-    private boolean inBackBounds(int mX, int mY)
+    public boolean inBackBounds(int mX, int mY)
     {
         return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
     //ugly way to make sure the filter controller isn't updating multiple times
-    private static boolean hasUpdated;
+    public static boolean hasUpdated;
 
     @Override
     public void update(float partial)
@@ -731,7 +731,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         }
     }
 
-    private boolean hasMultipleInventories()
+    public boolean hasMultipleInventories()
     {
         return selectedInventories.size() > 1 || (selectedInventories.size() > 0 && selectedInventories.get(0) < VariableColor.values().length);
     }
@@ -824,7 +824,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         }
     }
 
-    private void sendClientData(ContainerManager container, int id, boolean select)
+    public void sendClientData(ContainerManager container, int id, boolean select)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id, select);
@@ -850,20 +850,20 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         }
     }
 
-    private void writeRadioButtonData(DataWriter dw, int option)
+    public void writeRadioButtonData(DataWriter dw, int option)
     {
         dw.writeBoolean(true);
         dw.writeData(option, DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
     }
 
-    private void setSelectedInventoryAndSync(int val, boolean select)
+    public void setSelectedInventoryAndSync(int val, boolean select)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, val, select);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, int id, boolean select)
+    public void writeData(DataWriter dw, int id, boolean select)
     {
         dw.writeBoolean(false);
         dw.writeInventoryId(getParent().getManager(), id);
@@ -884,9 +884,9 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         return currentPage == Page.MAIN ? scrollController.onKeyStroke(gui, c, k) : filter.textBoxes.onKeyStroke(gui, c, k);
     }
 
-    private static final String NBT_SELECTION = "InventorySelection";
-    private static final String NBT_SELECTION_ID = "InventoryID";
-    private static final String NBT_SHARED = "SharedCommand";
+    public static final String NBT_SELECTION = "InventorySelection";
+    public static final String NBT_SELECTION_ID = "InventoryID";
+    public static final String NBT_SHARED = "SharedCommand";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -957,7 +957,7 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         radioButtonsMulti.setSelectedOption(val);
     }
 
-    private List<IContainerSelection> getInventories(TileEntityManager manager)
+    public List<IContainerSelection> getInventories(TileEntityManager manager)
     {
         EnumSet<ConnectionBlockType> validTypes = getValidTypes();
         List<ConnectionBlock> tempInventories = manager.getConnectedInventories();
@@ -1020,16 +1020,16 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         SELECTION(FILTER),
         VARIABLE(FILTER);
 
-        private Page parent;
+        public Page parent;
 
-        private Page(Page parent)
+        Page(Page parent)
         {
             this.parent = parent;
         }
     }
 
 
-    private abstract class Button
+    public abstract class Button
     {
         int x, y;
         Localization label;
@@ -1037,10 +1037,10 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         Page page;
 
 
-        private final int width;
-        private final int height;
-        private final int srcX;
-        private final int srcY;
+        public final int width;
+        public final int height;
+        public final int srcX;
+        public final int srcY;
 
 
         protected Button(Localization label, Page page, Localization description, boolean wide, int x, int y)
@@ -1096,11 +1096,11 @@ public abstract class ComponentMenuContainer extends ComponentMenu
         }
     }
 
-    private class PageButton extends Button
+    public class PageButton extends Button
     {
-        private Page targetPage;
+        public Page targetPage;
 
-        private PageButton(Localization label, Page page, Localization description, Page targetPage, boolean wide, int x, int y)
+        public PageButton(Localization label, Page page, Localization description, Page targetPage, boolean wide, int x, int y)
         {
             super(label, page, description, wide, x, y);
             this.targetPage = targetPage;

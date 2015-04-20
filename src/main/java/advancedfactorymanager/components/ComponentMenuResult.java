@@ -69,12 +69,12 @@ public class ComponentMenuResult extends ComponentMenu
         }
     }
 
-    private static final int RADIO_X = 5;
-    private static final int RADIO_Y = 5;
-    private static final int RADIO_MARGIN = 13;
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int RADIO_MARGIN = 13;
 
-    private ConnectionSet[] sets;
-    private RadioButtonList radioButtons;
+    public ConnectionSet[] sets;
+    public RadioButtonList radioButtons;
 
     @Override
     public String getName()
@@ -153,18 +153,18 @@ public class ComponentMenuResult extends ComponentMenu
         readTheData(dr);
     }
 
-    private void readTheData(DataReader dr)
+    public void readTheData(DataReader dr)
     {
         radioButtons.setSelectedOption(dr.readData(DataBitHelper.MENU_CONNECTION_TYPE_ID));
     }
 
-    private void writeData(DataWriter dw, int val)
+    public void writeData(DataWriter dw, int val)
     {
         dw.writeData(val, DataBitHelper.MENU_CONNECTION_TYPE_ID);
     }
 
 
-    private static final String NBT_SELECTED = "SelectedOption";
+    public static final String NBT_SELECTED = "SelectedOption";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

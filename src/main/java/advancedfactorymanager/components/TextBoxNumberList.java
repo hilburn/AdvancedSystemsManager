@@ -11,12 +11,12 @@ import java.util.List;
 
 public class TextBoxNumberList
 {
-    private static final int TEXT_BOX_SIZE_H = 12;
-    private static final int TEXT_BOX_SRC_X = 0;
-    private static final int TEXT_BOX_SRC_Y = 221;
+    public static final int TEXT_BOX_SIZE_H = 12;
+    public static final int TEXT_BOX_SRC_X = 0;
+    public static final int TEXT_BOX_SRC_Y = 221;
 
-    private List<TextBoxNumber> textBoxes;
-    private TextBoxNumber selectedTextBox;
+    public List<TextBoxNumber> textBoxes;
+    public TextBoxNumber selectedTextBox;
 
     public TextBoxNumberList()
     {

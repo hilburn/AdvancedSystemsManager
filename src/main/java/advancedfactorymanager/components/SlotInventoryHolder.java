@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class SlotInventoryHolder
 {
-    private TileEntity inventory;
-    private Map<Integer, SlotSideTarget> validSlots;
-    private int sharedOption;
-    private int id;
+    public TileEntity inventory;
+    public Map<Integer, SlotSideTarget> validSlots;
+    public int sharedOption;
+    public int id;
 
     public SlotInventoryHolder(int id, TileEntity inventory, int sharedOption)
     {

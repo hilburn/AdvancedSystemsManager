@@ -11,9 +11,9 @@ import java.util.Map;
 public class CraftingDummy extends InventoryCrafting
 {
 
-    private int inventoryWidth;
+    public int inventoryWidth;
 
-    private ComponentMenuCrafting crafting;
+    public ComponentMenuCrafting crafting;
 
     public CraftingDummy(ComponentMenuCrafting crafting)
     {
@@ -108,7 +108,7 @@ public class CraftingDummy extends InventoryCrafting
         return null;
     }
 
-    private Map<Integer, ItemStack> overrideMap;
+    public Map<Integer, ItemStack> overrideMap;
 
     public boolean isItemValidForRecipe(IRecipe recipe, ItemSetting result, Map<Integer, ItemStack> overrideMap, boolean advanced)
     {

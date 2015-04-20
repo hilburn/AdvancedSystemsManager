@@ -30,26 +30,26 @@ public abstract class ComponentMenuTarget extends ComponentMenu
 
     }
 
-    private static final int DIRECTION_SIZE_W = 31;
-    private static final int DIRECTION_SIZE_H = 12;
-    private static final int DIRECTION_SRC_X = 0;
-    private static final int DIRECTION_SRC_Y = 70;
-    private static final int DIRECTION_X_LEFT = 2;
-    private static final int DIRECTION_X_RIGHT = 88;
-    private static final int DIRECTION_Y = 5;
-    private static final int DIRECTION_MARGIN = 10;
-    private static final int DIRECTION_TEXT_X = 2;
-    private static final int DIRECTION_TEXT_Y = 3;
+    public static final int DIRECTION_SIZE_W = 31;
+    public static final int DIRECTION_SIZE_H = 12;
+    public static final int DIRECTION_SRC_X = 0;
+    public static final int DIRECTION_SRC_Y = 70;
+    public static final int DIRECTION_X_LEFT = 2;
+    public static final int DIRECTION_X_RIGHT = 88;
+    public static final int DIRECTION_Y = 5;
+    public static final int DIRECTION_MARGIN = 10;
+    public static final int DIRECTION_TEXT_X = 2;
+    public static final int DIRECTION_TEXT_Y = 3;
 
-    private static final int BUTTON_SIZE_W = 42;
-    private static final int BUTTON_SIZE_H = 12;
-    private static final int BUTTON_SRC_X = 0;
-    private static final int BUTTON_SRC_Y = 106;
-    private static final int BUTTON_X = 39;
-    private static final int BUTTON_TEXT_Y = 5;
+    public static final int BUTTON_SIZE_W = 42;
+    public static final int BUTTON_SIZE_H = 12;
+    public static final int BUTTON_SRC_X = 0;
+    public static final int BUTTON_SRC_Y = 106;
+    public static final int BUTTON_X = 39;
+    public static final int BUTTON_TEXT_Y = 5;
 
 
-    private Button[] buttons = {new Button(5)
+    public Button[] buttons = {new Button(5)
     {
         @Override
         protected String getLabel()
@@ -84,8 +84,8 @@ public abstract class ComponentMenuTarget extends ComponentMenu
     public static ForgeDirection[] directions = ForgeDirection.VALID_DIRECTIONS;
 
     protected int selectedDirectionId;
-    private boolean[] activatedDirections = new boolean[directions.length];
-    private boolean[] useRangeForDirections = new boolean[directions.length];
+    public boolean[] activatedDirections = new boolean[directions.length];
+    public boolean[] useRangeForDirections = new boolean[directions.length];
 
 
     @SideOnly(Side.CLIENT)
@@ -135,7 +135,7 @@ public abstract class ComponentMenuTarget extends ComponentMenu
         return activatedDirections[i];
     }
 
-    private int getDirectionX(int i)
+    public int getDirectionX(int i)
     {
         return i % 2 == 0 ? DIRECTION_X_LEFT : DIRECTION_X_RIGHT;
     }
@@ -147,7 +147,7 @@ public abstract class ComponentMenuTarget extends ComponentMenu
     }
 
 
-    private int getDirectionY(int i)
+    public int getDirectionY(int i)
     {
         return DIRECTION_Y + (DIRECTION_SIZE_H + DIRECTION_MARGIN) * (i / 2);
     }
@@ -220,7 +220,7 @@ public abstract class ComponentMenuTarget extends ComponentMenu
 
     protected abstract class Button
     {
-        private int y;
+        public int y;
 
         protected Button(int y)
         {
@@ -371,7 +371,7 @@ public abstract class ComponentMenuTarget extends ComponentMenu
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, int id, DataTypeHeader header, int data)
+    public void writeData(DataWriter dw, int id, DataTypeHeader header, int data)
     {
         dw.writeData(id, DataBitHelper.MENU_TARGET_DIRECTION_ID);
         dw.writeData(header.id, DataBitHelper.MENU_TARGET_TYPE_HEADER);
@@ -385,10 +385,10 @@ public abstract class ComponentMenuTarget extends ComponentMenu
         START_OR_TANK_DATA(2, DataBitHelper.MENU_TARGET_RANGE),
         END(3, DataBitHelper.MENU_TARGET_RANGE);
 
-        private int id;
-        private DataBitHelper bits;
+        public int id;
+        public DataBitHelper bits;
 
-        private DataTypeHeader(int header, DataBitHelper bits)
+        DataTypeHeader(int header, DataBitHelper bits)
         {
             this.id = header;
             this.bits = bits;
@@ -405,7 +405,7 @@ public abstract class ComponentMenuTarget extends ComponentMenu
         }
     }
 
-    private DataTypeHeader getHeaderFromId(int id)
+    public DataTypeHeader getHeaderFromId(int id)
     {
         for (DataTypeHeader header : DataTypeHeader.values())
         {
@@ -417,9 +417,9 @@ public abstract class ComponentMenuTarget extends ComponentMenu
         return null;
     }
 
-    private static final String NBT_DIRECTIONS = "Directions";
-    private static final String NBT_ACTIVE = "Active";
-    private static final String NBT_RANGE = "UseRange";
+    public static final String NBT_DIRECTIONS = "Directions";
+    public static final String NBT_ACTIVE = "Active";
+    public static final String NBT_RANGE = "UseRange";
 
 
     @Override

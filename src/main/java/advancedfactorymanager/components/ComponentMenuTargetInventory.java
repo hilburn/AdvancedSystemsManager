@@ -44,12 +44,12 @@ public class ComponentMenuTargetInventory extends ComponentMenuTarget
         });
     }
 
-    private TextBoxNumberList textBoxes;
-    private TextBoxNumber startTextBox;
-    private TextBoxNumber endTextBox;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber startTextBox;
+    public TextBoxNumber endTextBox;
 
-    private int[] startRange = new int[directions.length];
-    private int[] endRange = new int[directions.length];
+    public int[] startRange = new int[directions.length];
+    public int[] endRange = new int[directions.length];
 
     @Override
     protected Button getSecondButton()
@@ -121,8 +121,8 @@ public class ComponentMenuTargetInventory extends ComponentMenuTarget
         textBoxes.onClick(mX, mY, button);
     }
 
-    private static final String NBT_START = "StartRange";
-    private static final String NBT_END = "EndRange";
+    public static final String NBT_START = "StartRange";
+    public static final String NBT_END = "EndRange";
 
     @Override
     protected void loadAdvancedComponent(NBTTagCompound directionTag, int i)

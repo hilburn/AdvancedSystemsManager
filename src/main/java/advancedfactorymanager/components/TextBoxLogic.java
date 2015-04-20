@@ -8,13 +8,13 @@ import net.minecraft.util.ChatAllowedCharacters;
 
 public class TextBoxLogic
 {
-    private String text;
-    private int cursor;
-    private int cursorPosition;
-    private int charLimit;
-    private int width;
-    private boolean updatedCursor;
-    private float mult;
+    public String text;
+    public int cursor;
+    public int cursorPosition;
+    public int charLimit;
+    public int width;
+    public boolean updatedCursor;
+    public float mult;
 
     public TextBoxLogic(int charLimit, int width)
     {
@@ -24,7 +24,7 @@ public class TextBoxLogic
     }
 
     @SideOnly(Side.CLIENT)
-    private void addText(GuiManager gui, String str)
+    public void addText(GuiManager gui, String str)
     {
         String newText = text.substring(0, cursor) + str + text.substring(cursor);
 
@@ -37,7 +37,7 @@ public class TextBoxLogic
     }
 
     @SideOnly(Side.CLIENT)
-    private void deleteText(GuiManager gui, int direction)
+    public void deleteText(GuiManager gui, int direction)
     {
         if (cursor + direction >= 0 && cursor + direction <= text.length())
         {
@@ -54,7 +54,7 @@ public class TextBoxLogic
     }
 
     @SideOnly(Side.CLIENT)
-    private void moveCursor(GuiManager gui, int steps)
+    public void moveCursor(GuiManager gui, int steps)
     {
         cursor += steps;
 

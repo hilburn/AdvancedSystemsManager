@@ -10,22 +10,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class VariableDisplay
 {
 
-    private Localization name;
-    private int x;
-    private int y;
+    public Localization name;
+    public int x;
+    public int y;
 
-    private static final int VARIABLE_X = 15;
-    private static final int VARIABLE_SIZE = 14;
+    public static final int VARIABLE_X = 15;
+    public static final int VARIABLE_SIZE = 14;
 
-    private static final int ARROW_SRC_X = 18;
-    private static final int ARROW_SRC_Y = 20;
-    private static final int ARROW_WIDTH = 6;
-    private static final int ARROW_HEIGHT = 10;
-    private static final int ARROW_X_RIGHT = 38;
-    private static final int ARROW_Y = 3;
+    public static final int ARROW_SRC_X = 18;
+    public static final int ARROW_SRC_Y = 20;
+    public static final int ARROW_WIDTH = 6;
+    public static final int ARROW_HEIGHT = 10;
+    public static final int ARROW_X_RIGHT = 38;
+    public static final int ARROW_Y = 3;
 
-    private static final int TEXT_X = -40;
-    private static final int TEXT_Y = 5;
+    public static final int TEXT_X = -40;
+    public static final int TEXT_Y = 5;
 
     protected VariableDisplay(Localization name, int x, int y)
     {

@@ -12,10 +12,10 @@ public enum FuzzyMode
     MOD_GROUPING(Localization.MOD_GROUPING, false),
     ALL(Localization.ALL_ITEMS, false);
 
-    private Localization text;
-    private boolean useMeta;
+    public Localization text;
+    public boolean useMeta;
 
-    private FuzzyMode(Localization text, boolean useMeta)
+    FuzzyMode(Localization text, boolean useMeta)
     {
         this.text = text;
         this.useMeta = useMeta;

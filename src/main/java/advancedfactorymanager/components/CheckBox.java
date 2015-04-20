@@ -5,9 +5,9 @@ import advancedfactorymanager.helpers.Localization;
 
 public abstract class CheckBox
 {
-    private int x, y;
-    private Localization name;
-    private int textWidth;
+    public int x, y;
+    public Localization name;
+    public int textWidth;
 
     public CheckBox(Localization name, int x, int y)
     {

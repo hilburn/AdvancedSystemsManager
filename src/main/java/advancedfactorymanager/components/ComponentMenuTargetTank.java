@@ -35,12 +35,12 @@ public class ComponentMenuTargetTank extends ComponentMenuTarget
         radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING, Localization.FILLED_TANK));
     }
 
-    private static final int RADIO_BUTTON_X = 36;
-    private static final int RADIO_BUTTON_Y = 45;
-    private static final int RADIO_BUTTON_SPACING = 12;
+    public static final int RADIO_BUTTON_X = 36;
+    public static final int RADIO_BUTTON_Y = 45;
+    public static final int RADIO_BUTTON_SPACING = 12;
 
-    private boolean[] onlyFull = new boolean[directions.length];
-    private RadioButtonList radioButtons;
+    public boolean[] onlyFull = new boolean[directions.length];
+    public RadioButtonList radioButtons;
 
     @Override
     protected Button getSecondButton()
@@ -108,7 +108,7 @@ public class ComponentMenuTargetTank extends ComponentMenuTarget
         radioButtons.onClick(mX, mY, button);
     }
 
-    private static final String NBT_FULL = "ONLY_FULL";
+    public static final String NBT_FULL = "ONLY_FULL";
 
     @Override
     protected void loadAdvancedComponent(NBTTagCompound directionTag, int i)

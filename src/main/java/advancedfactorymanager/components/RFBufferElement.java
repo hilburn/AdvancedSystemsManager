@@ -7,10 +7,10 @@ import java.util.List;
 public class RFBufferElement
 {
 
-    private FlowComponent component;
-    private SlotInventoryHolder inventoryHolder;
-    private List<EnergyFacingHolder> holders;
-    private Iterator<EnergyFacingHolder> iterator;
+    public FlowComponent component;
+    public SlotInventoryHolder inventoryHolder;
+    public List<EnergyFacingHolder> holders;
+    public Iterator<EnergyFacingHolder> iterator;
 
     public RFBufferElement(FlowComponent owner, SlotInventoryHolder inventoryHolder, EnergyFacingHolder target)
     {
@@ -18,14 +18,14 @@ public class RFBufferElement
         this.addTarget(target);
     }
 
-    private RFBufferElement(FlowComponent owner, SlotInventoryHolder inventoryHolder)
+    public RFBufferElement(FlowComponent owner, SlotInventoryHolder inventoryHolder)
     {
         this.component = owner;
         this.inventoryHolder = inventoryHolder;
         this.holders = new ArrayList();
     }
 
-    private void addTarget(EnergyFacingHolder energyHolder)
+    public void addTarget(EnergyFacingHolder energyHolder)
     {
         this.holders.add(energyHolder);
     }

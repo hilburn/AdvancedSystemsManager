@@ -40,9 +40,9 @@ public class ComponentMenuCamouflageItems extends ComponentMenuItem
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Localization.SET_CAMOUFLAGE));
     }
 
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 40;
-    private static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 40;
+    public static final int MENU_WIDTH = 120;
 
     @SideOnly(Side.CLIENT)
     @Override

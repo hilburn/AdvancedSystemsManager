@@ -58,13 +58,13 @@ public enum ComponentType
             ComponentMenuSigns.class, ComponentMenuSignText.class, ComponentMenuResult.class);
 
 
-    private Class<? extends ComponentMenu>[] classes;
-    private int id;
-    private ConnectionSet[] sets;
-    private Localization name;
-    private Localization longName;
+    public Class<? extends ComponentMenu>[] classes;
+    public int id;
+    public ConnectionSet[] sets;
+    public Localization name;
+    public Localization longName;
 
-    private ComponentType(int id, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends ComponentMenu>... classes)
+    ComponentType(int id, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends ComponentMenu>... classes)
     {
         this.classes = classes;
         this.id = id;

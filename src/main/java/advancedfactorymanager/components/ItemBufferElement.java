@@ -11,18 +11,18 @@ import java.util.List;
 
 public class ItemBufferElement implements IItemBufferElement
 {
-    private ItemSetting setting;
-    private FlowComponent component;
-    private boolean useWhiteList;
-    private int currentStackSize;
-    private int totalStackSize;
-    private SlotInventoryHolder inventoryHolder;
+    public ItemSetting setting;
+    public FlowComponent component;
+    public boolean useWhiteList;
+    public int currentStackSize;
+    public int totalStackSize;
+    public SlotInventoryHolder inventoryHolder;
 
-    private List<SlotStackInventoryHolder> holders;
+    public List<SlotStackInventoryHolder> holders;
 
-    private int sharedBy;
-    private boolean fairShare;
-    private int shareId;
+    public int sharedBy;
+    public boolean fairShare;
+    public int shareId;
 
     public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList, SlotStackInventoryHolder target)
     {
@@ -32,7 +32,7 @@ public class ItemBufferElement implements IItemBufferElement
     }
 
 
-    private ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList)
+    public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList)
     {
         this.component = owner;
         this.setting = (ItemSetting)setting;
@@ -54,7 +54,7 @@ public class ItemBufferElement implements IItemBufferElement
         }
     }
 
-    private void addTarget(SlotStackInventoryHolder target)
+    public void addTarget(SlotStackInventoryHolder target)
     {
         holders.add(target);
 
@@ -72,7 +72,7 @@ public class ItemBufferElement implements IItemBufferElement
         return holders;
     }
 
-    private Iterator<SlotStackInventoryHolder> iterator;
+    public Iterator<SlotStackInventoryHolder> iterator;
 
     @Override
     public void prepareSubElements()

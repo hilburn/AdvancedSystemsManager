@@ -11,8 +11,8 @@ import java.util.List;
 
 public class WideNumberBoxList
 {
-    private List<WideNumberBox> textBoxes = new ArrayList();
-    private WideNumberBox selectedTextBox;
+    public List<WideNumberBox> textBoxes = new ArrayList();
+    public WideNumberBox selectedTextBox;
 
     @SideOnly(Side.CLIENT)
     public void draw(GuiManager gui, int mX, int mY)

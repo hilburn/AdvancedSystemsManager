@@ -76,15 +76,15 @@ public class ComponentMenuContainerTypes extends ComponentMenu
         return Localization.CONTAINER_TYPE_MENU.toString();
     }
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_Y = 5;
-    private static final int CHECK_BOX_SPACING_X = 55;
-    private static final int CHECK_BOX_SPACING_Y = 12;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 5;
+    public static final int CHECK_BOX_SPACING_X = 55;
+    public static final int CHECK_BOX_SPACING_Y = 12;
 
 
-    private List<ConnectionBlockType> types;
-    private boolean[] checked;
-    private CheckBoxList checkBoxes;
+    public List<ConnectionBlockType> types;
+    public boolean[] checked;
+    public CheckBoxList checkBoxes;
 
 
     @SideOnly(Side.CLIENT)
@@ -166,7 +166,7 @@ public class ComponentMenuContainerTypes extends ComponentMenu
         }
     }
 
-    private static final String NBT_CHECKED = "Checked";
+    public static final String NBT_CHECKED = "Checked";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

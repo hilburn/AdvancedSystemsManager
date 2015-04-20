@@ -32,11 +32,11 @@ public class ComponentMenuCraftingPriority extends ComponentMenu
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + RADIO_MARGIN, Localization.PRIORITY_CRAFT_FIRST));
     }
 
-    private static final int RADIO_X = 5;
-    private static final int RADIO_Y = 5;
-    private static final int RADIO_MARGIN = 13;
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int RADIO_MARGIN = 13;
 
-    private RadioButtonList radioButtons;
+    public RadioButtonList radioButtons;
 
     @Override
     public String getName()
@@ -109,7 +109,7 @@ public class ComponentMenuCraftingPriority extends ComponentMenu
         }
     }
 
-    private static final String NBT_SELECTED = "SelectedOption";
+    public static final String NBT_SELECTED = "SelectedOption";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

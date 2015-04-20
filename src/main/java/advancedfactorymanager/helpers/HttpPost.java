@@ -7,8 +7,9 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-public class HttpPost
+public class HttpPost implements Callable<String>
 {
     private static final String ENCODING = "UTF-8";
     private HashMap<String, String> postData;
@@ -73,5 +74,11 @@ public class HttpPost
         {
             throw new RuntimeException("Failed to fetch contents from link: " + e);
         }
+    }
+
+    @Override
+    public String call() throws Exception
+    {
+        return getContents();
     }
 }

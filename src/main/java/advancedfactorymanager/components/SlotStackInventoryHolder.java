@@ -7,10 +7,10 @@ import net.minecraft.item.ItemStack;
 
 public class SlotStackInventoryHolder implements IItemBufferSubElement
 {
-    private ItemStack itemStack;
-    private IInventory inventory;
-    private int slot;
-    private int sizeLeft;
+    public ItemStack itemStack;
+    public IInventory inventory;
+    public int slot;
+    public int sizeLeft;
 
     public SlotStackInventoryHolder(ItemStack itemStack, IInventory inventory, int slot)
     {

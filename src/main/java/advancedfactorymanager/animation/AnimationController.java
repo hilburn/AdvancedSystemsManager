@@ -9,21 +9,21 @@ import java.util.*;
 public class AnimationController
 {
 
-    private final TileEntityManager manager;
-    private List<FlowComponent> blueprints;
-    private List<FlowComponent> items;
-    private FlowComponent target;
-    private FlowComponent blueprint;
-    private Progress progress = Progress.GROUP;
-    private float delay;
+    public final TileEntityManager manager;
+    public List<FlowComponent> blueprints;
+    public List<FlowComponent> items;
+    public FlowComponent target;
+    public FlowComponent blueprint;
+    public Progress progress = Progress.GROUP;
+    public float delay;
 
-    private int targetConnectionX, targetConnectionY;
-    private boolean setMenuInfo;
-    private int menuId;
-    private List<FlowComponent> groupTracking;
-    private boolean openNext;
-    private int virtualId;
-    private int mult;
+    public int targetConnectionX, targetConnectionY;
+    public boolean setMenuInfo;
+    public int menuId;
+    public List<FlowComponent> groupTracking;
+    public boolean openNext;
+    public int virtualId;
+    public int mult;
 
     Map<Integer, Integer> groupNodes = new HashMap<Integer, Integer>();
 
@@ -95,7 +95,7 @@ public class AnimationController
         manager.setSelectedComponent(null);
     }
 
-    private void addComponent(FlowComponent component, Map<Integer, Integer> ids, Map<Integer, List<FlowComponent>> groups)
+    public void addComponent(FlowComponent component, Map<Integer, Integer> ids, Map<Integer, List<FlowComponent>> groups)
     {
         int oldId = component.getId();
         int newId = blueprints.size();
@@ -112,7 +112,7 @@ public class AnimationController
         }
     }
 
-    private float time;
+    public float time;
 
     public void update(float elapsedSeconds)
     {
@@ -121,11 +121,11 @@ public class AnimationController
         while (execute()) ;
     }
 
-    private static final int MOVE_SPEED = 300; //pixels per second
-    private static final int MOVE_SPEED_CONNECTION = 300; //pixels per second
-    private static final int MOVE_SPEED_NODE = 250;
+    public static final int MOVE_SPEED = 300; //pixels per second
+    public static final int MOVE_SPEED_CONNECTION = 300; //pixels per second
+    public static final int MOVE_SPEED_NODE = 250;
 
-    private boolean execute()
+    public boolean execute()
     {
 
         if (delay != 0)
@@ -519,13 +519,13 @@ public class AnimationController
         return false;
     }
 
-    private int connectionX;
-    private int connectionY;
-    private Point blueprintNode;
-    private List<Point> nodesBlueprint;
-    private Connection nodesConnection;
+    public int connectionX;
+    public int connectionY;
+    public Point blueprintNode;
+    public List<Point> nodesBlueprint;
+    public Connection nodesConnection;
 
-    private enum Progress
+    public enum Progress
     {
         GROUP,
         PLACE,
@@ -539,7 +539,7 @@ public class AnimationController
     }
 
 
-    private void moveToFront(FlowComponent c)
+    public void moveToFront(FlowComponent c)
     {
         FlowComponent component = manager.getFlowItems().get(c.getId());
         manager.getZLevelRenderingList().remove(c);

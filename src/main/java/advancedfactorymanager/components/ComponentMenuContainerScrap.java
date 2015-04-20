@@ -22,9 +22,9 @@ public class ComponentMenuContainerScrap extends ComponentMenuContainer
         return Localization.OVERFLOW_MENU.toString();
     }
 
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 25;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 25;
 
     @SideOnly(Side.CLIENT)
     @Override

@@ -236,34 +236,34 @@ public abstract class ComponentMenuStuff extends ComponentMenu
     protected static final int ITEM_X = 5;
 
 
-    private static final int SETTING_SRC_X = 0;
-    private static final int SETTING_SRC_Y = 189;
+    public static final int SETTING_SRC_X = 0;
+    public static final int SETTING_SRC_Y = 189;
 
     protected static final int EDIT_ITEM_X = 5;
     protected static final int EDIT_ITEM_Y = 5;
 
 
-    private static final int BACK_SRC_X = 46;
-    private static final int BACK_SRC_Y = 52;
-    private static final int BACK_SIZE_W = 9;
-    private static final int BACK_SIZE_H = 9;
-    private static final int BACK_X = 108;
-    private static final int BACK_Y = 57;
+    public static final int BACK_SRC_X = 46;
+    public static final int BACK_SRC_Y = 52;
+    public static final int BACK_SIZE_W = 9;
+    public static final int BACK_SIZE_H = 9;
+    public static final int BACK_X = 108;
+    public static final int BACK_Y = 57;
 
-    private static final int DELETE_SRC_X = 0;
-    private static final int DELETE_SRC_Y = 130;
-    private static final int DELETE_SIZE_W = 32;
-    private static final int DELETE_SIZE_H = 11;
-    private static final int DELETE_X = 85;
-    private static final int DELETE_Y = 3;
-    private static final int DELETE_TEXT_Y = 3;
+    public static final int DELETE_SRC_X = 0;
+    public static final int DELETE_SRC_Y = 130;
+    public static final int DELETE_SIZE_W = 32;
+    public static final int DELETE_SIZE_H = 11;
+    public static final int DELETE_X = 85;
+    public static final int DELETE_Y = 3;
+    public static final int DELETE_TEXT_Y = 3;
 
     protected ScrollController scrollControllerSearch;
     protected ScrollController<Setting> scrollControllerSelected;
     protected List<Setting> settings;
-    private List<Setting> externalSettings;
+    public List<Setting> externalSettings;
     protected Setting selectedSetting;
-    private boolean editSetting;
+    public boolean editSetting;
     protected TextBoxNumberList numberTextBoxes;
 
     protected RadioButtonList radioButtons;
@@ -321,17 +321,17 @@ public abstract class ComponentMenuStuff extends ComponentMenu
         }
     }
 
-    private boolean inBackBounds(int mX, int mY)
+    public boolean inBackBounds(int mX, int mY)
     {
         return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
-    private boolean inDeleteBounds(int mX, int mY)
+    public boolean inDeleteBounds(int mX, int mY)
     {
         return CollisionHelper.inBounds(DELETE_X, DELETE_Y, DELETE_SIZE_W, DELETE_SIZE_H, mX, mY);
     }
 
-    private ScrollController getScrollingList()
+    public ScrollController getScrollingList()
     {
         return isSearching() ? scrollControllerSearch : scrollControllerSelected;
     }
@@ -637,7 +637,7 @@ public abstract class ComponentMenuStuff extends ComponentMenu
 
     protected abstract DataBitHelper getAmountBitLength();
 
-    private void writeData(DataWriter dw, DataTypeHeader header, Setting setting)
+    public void writeData(DataWriter dw, DataTypeHeader header, Setting setting)
     {
         dw.writeBoolean(true); //specific setting is being used
         dw.writeData(setting.getId(), DataBitHelper.MENU_ITEM_SETTING_ID);
@@ -694,15 +694,15 @@ public abstract class ComponentMenuStuff extends ComponentMenu
         AMOUNT(4),
         META(5);
 
-        private int id;
+        public int id;
 
-        private DataTypeHeader(int header)
+        DataTypeHeader(int header)
         {
             this.id = header;
         }
     }
 
-    private DataTypeHeader getHeaderFromId(int id)
+    public DataTypeHeader getHeaderFromId(int id)
     {
         for (DataTypeHeader header : DataTypeHeader.values())
         {
@@ -734,10 +734,10 @@ public abstract class ComponentMenuStuff extends ComponentMenu
         return isFirstRadioButtonSelected();
     }
 
-    private static final String NBT_RADIO_SELECTION = "FirstSelected";
-    private static final String NBT_SETTINGS = "Settings";
-    private static final String NBT_SETTING_ID = "Id";
-    private static final String NBT_SETTING_USE_SIZE = "SizeLimit";
+    public static final String NBT_RADIO_SELECTION = "FirstSelected";
+    public static final String NBT_SETTINGS = "Settings";
+    public static final String NBT_SETTING_ID = "Id";
+    public static final String NBT_SETTING_USE_SIZE = "SizeLimit";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

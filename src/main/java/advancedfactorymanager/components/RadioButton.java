@@ -5,9 +5,9 @@ import advancedfactorymanager.helpers.Localization;
 
 public class RadioButton
 {
-    private int x;
-    private int y;
-    private Localization text;
+    public int x;
+    public int y;
+    public Localization text;
 
     public RadioButton(int x, int y, Localization text)
     {

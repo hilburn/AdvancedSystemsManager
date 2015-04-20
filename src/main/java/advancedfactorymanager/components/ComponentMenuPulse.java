@@ -96,9 +96,9 @@ public class ComponentMenuPulse extends ComponentMenu
         KEEP_OLD(Localization.KEEP_OLD),
         KEEP_NEW(Localization.KEEP_NEW);
 
-        private Localization name;
+        public Localization name;
 
-        private PULSE_OPTIONS(Localization name)
+        PULSE_OPTIONS(Localization name)
         {
             this.name = name;
         }
@@ -115,24 +115,24 @@ public class ComponentMenuPulse extends ComponentMenu
         }
     }
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_Y = 5;
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 44;
-    private static final int RADIO_BUTTON_SPACING_X = 67;
-    private static final int RADIO_BUTTON_SPACING_Y = 12;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 5;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 44;
+    public static final int RADIO_BUTTON_SPACING_X = 67;
+    public static final int RADIO_BUTTON_SPACING_Y = 12;
 
-    private static final int TEXT_BOX_X_LEFT = 10;
-    private static final int TEXT_BOX_X_RIGHT = 70;
-    private static final int TEXT_BOX_Y = 25;
+    public static final int TEXT_BOX_X_LEFT = 10;
+    public static final int TEXT_BOX_X_RIGHT = 70;
+    public static final int TEXT_BOX_Y = 25;
 
 
-    private CheckBoxList checkBoxes;
-    private boolean usePulse;
-    private RadioButtonList radioButtons;
-    private TextBoxNumberList textBoxes;
-    private TextBoxNumber ticksTextBox;
-    private TextBoxNumber secondsTextBox;
+    public CheckBoxList checkBoxes;
+    public boolean usePulse;
+    public RadioButtonList radioButtons;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber ticksTextBox;
+    public TextBoxNumber secondsTextBox;
 
     @Override
     public String getName()
@@ -273,21 +273,21 @@ public class ComponentMenuPulse extends ComponentMenu
         }
     }
 
-    private void sendClientPacket(ContainerManager container, ComponentSyncType type)
+    public void sendClientPacket(ContainerManager container, ComponentSyncType type)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, type);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerPacket(ComponentSyncType type)
+    public void sendServerPacket(ComponentSyncType type)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, type);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, ComponentSyncType type)
+    public void writeData(DataWriter dw, ComponentSyncType type)
     {
         dw.writeData(type.ordinal(), DataBitHelper.PULSE_COMPONENT_TYPES);
         switch (type)
@@ -307,10 +307,10 @@ public class ComponentMenuPulse extends ComponentMenu
         }
     }
 
-    private static final String NBT_USE_PULSE = "UsePulse";
-    private static final String NBT_TYPE = "Type";
-    private static final String NBT_SECOND = "Seconds";
-    private static final String NBT_TICK = "Ticks";
+    public static final String NBT_USE_PULSE = "UsePulse";
+    public static final String NBT_TYPE = "Type";
+    public static final String NBT_SECOND = "Seconds";
+    public static final String NBT_TICK = "Ticks";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -365,14 +365,14 @@ public class ComponentMenuPulse extends ComponentMenu
         }
     }
 
-    private void setDefault()
+    public void setDefault()
     {
         radioButtons.setSelectedOption(0);
         secondsTextBox.setNumber(0);
         ticksTextBox.setNumber(10);
     }
 
-    private enum ComponentSyncType
+    public enum ComponentSyncType
     {
         CHECK_BOX,
         RADIO_BUTTON,

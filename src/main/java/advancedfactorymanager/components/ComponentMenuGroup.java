@@ -21,9 +21,9 @@ public class ComponentMenuGroup extends ComponentMenu
         super(parent);
     }
 
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 5;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
 
     @Override
     public String getName()
@@ -43,7 +43,7 @@ public class ComponentMenuGroup extends ComponentMenu
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private boolean inBounds(int mX, int mY)
+    public boolean inBounds(int mX, int mY)
     {
         return (CollisionHelper.inBounds(0, 0, MENU_WIDTH, FlowComponent.getMenuOpenSize(), mX, mY));
     }
@@ -161,7 +161,7 @@ public class ComponentMenuGroup extends ComponentMenu
         }
     }
 
-    private static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
+    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
     {
         if (!components.contains(component) && !component.equals(parent))
         {

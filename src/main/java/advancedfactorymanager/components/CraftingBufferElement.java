@@ -15,17 +15,17 @@ import java.util.*;
 public class CraftingBufferElement implements IItemBufferElement, IItemBufferSubElement
 {
 
-    private static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
+    public static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
 
-    private CommandExecutor executor;
-    private ComponentMenuCrafting craftingMenu;
-    private ComponentMenuContainerScrap scrapMenu;
-    private IRecipe recipe;
-    private ItemStack result;
-    private boolean isCrafting;
-    private boolean justRemoved;
-    private int overflowBuffer;
-    private List<ItemStack> containerItems;
+    public CommandExecutor executor;
+    public ComponentMenuCrafting craftingMenu;
+    public ComponentMenuContainerScrap scrapMenu;
+    public IRecipe recipe;
+    public ItemStack result;
+    public boolean isCrafting;
+    public boolean justRemoved;
+    public int overflowBuffer;
+    public List<ItemStack> containerItems;
 
     public CraftingBufferElement(CommandExecutor executor, ComponentMenuCrafting craftingMenu, ComponentMenuContainerScrap scrapMenu)
     {
@@ -84,10 +84,10 @@ public class CraftingBufferElement implements IItemBufferElement, IItemBufferSub
         }
     }
 
-    private static final double SPEED_MULTIPLIER = 0.05F;
-    private static final Random rand = new Random();
+    public static final double SPEED_MULTIPLIER = 0.05F;
+    public static final Random rand = new Random();
 
-    private void disposeOfExtraItem(ItemStack itemStack)
+    public void disposeOfExtraItem(ItemStack itemStack)
     {
         TileEntityManager manager = craftingMenu.getParent().getManager();
         List<SlotInventoryHolder> inventories = CommandExecutor.getContainers(manager, scrapMenu, ConnectionBlockType.INVENTORY);
@@ -212,14 +212,14 @@ public class CraftingBufferElement implements IItemBufferElement, IItemBufferSub
         return result;
     }
 
-    private List<IInventory> inventories = new ArrayList<IInventory>();
+    public List<IInventory> inventories = new ArrayList<IInventory>();
 
-    private boolean useAdvancedDetection()
+    public boolean useAdvancedDetection()
     {
         return craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
     }
 
-    private boolean findItems(boolean remove)
+    public boolean findItems(boolean remove)
     {
         Map<Integer, ItemStack> foundItems = new HashMap<Integer, ItemStack>();
         for (ItemBufferElement itemBufferElement : executor.itemBuffer)

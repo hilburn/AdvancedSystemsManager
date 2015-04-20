@@ -7,10 +7,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class StackTankHolder
 {
-    private FluidStack fluidStack;
-    private IFluidHandler tank;
-    private ForgeDirection side;
-    private int sizeLeft;
+    public FluidStack fluidStack;
+    public IFluidHandler tank;
+    public ForgeDirection side;
+    public int sizeLeft;
 
     public StackTankHolder(FluidStack fluidStack, IFluidHandler tank, ForgeDirection side)
     {

@@ -227,7 +227,7 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
             return selectedBits() > 0;
         }
 
-        private int selectedBits()
+        public int selectedBits()
         {
             int count = 0;
             for (boolean bit : bits)
@@ -247,26 +247,26 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
         }
     }
 
-    private TextBoxNumberList textBoxes;
-    private CheckBoxList checkBoxes;
+    public TextBoxNumberList textBoxes;
+    public CheckBoxList checkBoxes;
 
 
-    private static final int ID_START_X = 1;
-    private static final int ID_START_Y = 1;
-    private static final int ID_TEXT_BOX = 42;
+    public static final int ID_START_X = 1;
+    public static final int ID_START_Y = 1;
+    public static final int ID_TEXT_BOX = 42;
 
-    private static final int META_START_X = 1;
-    private static final int META_START_Y = 21;
-    private static final int META_SPACING = 17;
-    private static final int META_SETTINGS = 3;
-    private static final int META_BITS = 4;
-    private static final int META_TEXT_BOX_OFFSET_1 = 37;
-    private static final int META_TEXT_BOX_OFFSET_2 = 58;
-    private static final int META_INVERTED_OFFSET = 83;
-    private static final int META_TEXT_X = 3;
-    private static final int META_TEXT_Y = 17;
+    public static final int META_START_X = 1;
+    public static final int META_START_Y = 21;
+    public static final int META_SPACING = 17;
+    public static final int META_SETTINGS = 3;
+    public static final int META_BITS = 4;
+    public static final int META_TEXT_BOX_OFFSET_1 = 37;
+    public static final int META_TEXT_BOX_OFFSET_2 = 58;
+    public static final int META_INVERTED_OFFSET = 83;
+    public static final int META_TEXT_X = 3;
+    public static final int META_TEXT_Y = 17;
 
-    private static final int CHECKBOX_OFFSET = 2;
+    public static final int CHECKBOX_OFFSET = 2;
 
     public boolean useId()
     {
@@ -289,9 +289,9 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
         return settings;
     }
 
-    private boolean useId;
-    private boolean idInverted;
-    private MetaSetting[] settings;
+    public boolean useId;
+    public boolean idInverted;
+    public MetaSetting[] settings;
 
 
     @Override
@@ -488,14 +488,14 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
         }
     }
 
-    private static final String NBT_USE_ID = "UseId";
-    private static final String NBT_ID = "BlockId";
-    private static final String NBT_INVERTED = "Inverted";
+    public static final String NBT_USE_ID = "UseId";
+    public static final String NBT_ID = "BlockId";
+    public static final String NBT_INVERTED = "Inverted";
 
-    private static final String NBT_SETTINGS = "Meta";
-    private static final String NBT_BITS = "Bits";
-    private static final String NBT_LOW = "Low";
-    private static final String NBT_HIGH = "High";
+    public static final String NBT_SETTINGS = "Meta";
+    public static final String NBT_BITS = "Bits";
+    public static final String NBT_LOW = "Low";
+    public static final String NBT_HIGH = "High";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -560,14 +560,14 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
     }
 
 
-    private void sendClientData(ContainerManager container, int id, int subId)
+    public void sendClientData(ContainerManager container, int id, int subId)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id, subId);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerData(int id, int subId)
+    public void sendServerData(int id, int subId)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, id, subId);
@@ -627,7 +627,7 @@ public class ComponentMenuUpdateBlock extends ComponentMenuItem
         }
     }
 
-    private void writeData(DataWriter dw, int id, int subId)
+    public void writeData(DataWriter dw, int id, int subId)
     {
         dw.writeBoolean(false); //no setting specific
         dw.writeBoolean(true); //other data

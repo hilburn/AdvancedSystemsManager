@@ -2,6 +2,7 @@ package advancedfactorymanager.commands;
 
 import advancedfactorymanager.helpers.HttpPost;
 import advancedfactorymanager.helpers.LocalizationHelper;
+import advancedfactorymanager.helpers.Threaded;
 import advancedfactorymanager.items.ItemDuplicator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
@@ -55,26 +56,7 @@ public class CommandPastebin extends CommandDuplicator
             {
                 if (ItemDuplicator.validateNBT(duplicator) && duplicator.hasTagCompound())
                 {
-                    HttpPost httpPost = new HttpPost("http://pastebin.com/api/api_post.php");
-                    httpPost.put("api_option", "paste");
-                    httpPost.put("api_paste_private", "1");
-                    httpPost.put("api_dev_key", apiKey);
-                    if (arguments.length > 2) httpPost.put("api_paste_name", arguments[2]);
-                    NBTTagCompound tagCompound = (NBTTagCompound)duplicator.getTagCompound().copy();
-                    tagCompound.removeTag("x");
-                    tagCompound.removeTag("y");
-                    tagCompound.removeTag("z");
-                    stripBaseNBT(tagCompound);
-                    tagCompound.setString("Author", sender.getCommandSenderName());
-                    httpPost.put("api_paste_code", tagCompound.toString());
-                    String inputLine = httpPost.getContents();
-                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("afm.command.savedTo", inputLine)));
-                    if (!sender.mcServer.isDedicatedServer())
-                    {
-                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                        clipboard.setContents(new StringSelection(inputLine), clippy);
-                        sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translate("afm.command.copiedToClip")));
-                    }
+                    new Thread(new Threaded.Put(duplicator, sender, arguments)).start();
                 } else
                 {
                     throw new CommandException("afm.command.nothingToSave");
@@ -83,20 +65,9 @@ public class CommandPastebin extends CommandDuplicator
             {
                 if (arguments.length < 3)
                 {
-                    throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");
+                    throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
                 }
-                String name = arguments[2];
-                name = name.replaceAll("http:\\/\\/pastebin.com\\/(.*)", "$1");
-                name = name.replaceAll("pastebin.com\\/(.*)", "$1");
-                HttpPost httpPost = new HttpPost("http://pastebin.com/raw.php?i=" + URLEncoder.encode(name, "UTF-8"));
-                NBTBase nbtBase = JsonToNBT.func_150315_a(httpPost.getContents());
-                if (nbtBase instanceof NBTTagCompound)
-                {
-                    NBTTagCompound tagCompound = (NBTTagCompound)nbtBase;
-                    tagCompound = unstripBaseNBT(tagCompound);
-                    duplicator.setTagCompound(tagCompound);
-                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("afm.command.loadSuccess", "http://pastebin.com/" + name)));
-                }
+                new Thread(new Threaded.Set(duplicator, sender, arguments)).start();
             } else
             {
                 throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");

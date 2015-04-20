@@ -33,15 +33,15 @@ public class ComponentMenuInterval extends ComponentMenu
         interval.setNumber(1);
     }
 
-    private static final int TEXT_BOX_X = 15;
-    private static final int TEXT_BOX_Y = 35;
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 10;
-    private static final int TEXT_Y2 = 15;
+    public static final int TEXT_BOX_X = 15;
+    public static final int TEXT_BOX_Y = 35;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 10;
+    public static final int TEXT_Y2 = 15;
 
-    private static final int TEXT_SECONDS_X = 60;
-    private static final int TEXT_SECOND_Y = 38;
+    public static final int TEXT_SECONDS_X = 60;
+    public static final int TEXT_SECOND_Y = 38;
 
     @Override
     public String getName()
@@ -49,8 +49,8 @@ public class ComponentMenuInterval extends ComponentMenu
         return Localization.INTERVAL_MENU.toString();
     }
 
-    private TextBoxNumberList textBoxes;
-    private TextBoxNumber interval;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber interval;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -148,7 +148,7 @@ public class ComponentMenuInterval extends ComponentMenu
         interval.setNumber(val);
     }
 
-    private static final String NBT_INTERVAL = "Interval";
+    public static final String NBT_INTERVAL = "Interval";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

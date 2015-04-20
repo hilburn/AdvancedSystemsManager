@@ -5,8 +5,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class EnergyFacingHolder
 {
-    private IEnergyProvider energyHandler;
-    private ForgeDirection accessibleFace;
+    public IEnergyProvider energyHandler;
+    public ForgeDirection accessibleFace;
 
     public EnergyFacingHolder(IEnergyProvider energyHandler, ForgeDirection direction)
     {

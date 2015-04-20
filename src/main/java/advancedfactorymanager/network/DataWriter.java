@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static advancedfactorymanager.AdvancedFactoryManager.CHANNEL;
+import static advancedfactorymanager.reference.Reference.ID;
 import static advancedfactorymanager.AdvancedFactoryManager.packetHandler;
 
 public class DataWriter
@@ -93,7 +93,7 @@ public class DataWriter
     {
         writeFinalBits();
         ByteBuf buf = Unpooled.copiedBuffer(((ByteArrayOutputStream)stream).toByteArray());
-        return new FMLProxyPacket(buf, CHANNEL);
+        return new FMLProxyPacket(buf, ID);
     }
 
     void sendPlayerPackets(double x, double y, double z, double r, int dimension)

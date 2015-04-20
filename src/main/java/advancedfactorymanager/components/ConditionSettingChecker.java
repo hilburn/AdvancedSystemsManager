@@ -3,8 +3,8 @@ package advancedfactorymanager.components;
 
 public class ConditionSettingChecker
 {
-    private Setting setting;
-    private int amount;
+    public Setting setting;
+    public int amount;
 
     public ConditionSettingChecker(Setting setting)
     {

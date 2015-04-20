@@ -7,7 +7,9 @@ import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.blocks.WorldCoordinate;
 import advancedfactorymanager.components.*;
+import advancedfactorymanager.helpers.CopyHelper;
 import advancedfactorymanager.helpers.Localization;
+import advancedfactorymanager.helpers.StevesEnum;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.interfaces.IInterfaceRenderer;
@@ -97,7 +99,52 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 return true;
             }
         });
+        buttons.add(new Button(StevesEnum.COPY_COMMAND)
+        {
+            @Override
+            protected void onClick(DataReader dataReader)
+            {
+                if (Settings.isLimitless(self) || getFlowItems().size() < 511)
+                {
+                    int id = dataReader.readComponentId();
+                    Iterator<FlowComponent> itr = getFlowItems().iterator();
+                    FlowComponent item;
+                    do
+                    {
+                        if (!itr.hasNext()) return;
+                        item = itr.next();
+                    } while (item.getId() != id);
+                    Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(getFlowItems(), item, Settings.isLimitless(self));
+                    getFlowItems().addAll(added);
+                }
+            }
 
+            @Override
+            public boolean activateOnRelease()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean onClick(DataWriter dataWriter)
+            {
+                Iterator<FlowComponent> itr = getFlowItems().iterator();
+                FlowComponent item;
+                do
+                {
+                    if (!itr.hasNext()) return false;
+                    item = itr.next();
+                } while (!item.isBeingMoved());
+                dataWriter.writeComponentId(self, item.getId());
+                return true;
+            }
+
+            @Override
+            public String getMouseOver()
+            {
+                return !Settings.isLimitless(self) && getFlowItems().size() >= 511 ? Localization.MAXIMUM_COMPONENT_ERROR.toString() : super.getMouseOver();
+            }
+        });
         buttons.add(new Button(Localization.PREFERENCES)
         {
             @Override

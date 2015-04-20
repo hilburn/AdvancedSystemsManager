@@ -14,10 +14,10 @@ import java.util.List;
 
 public class ComponentMenuRFCondition extends ComponentMenu
 {
-    private CheckBoxList checkBoxes = new CheckBoxList();
-    private WideNumberBoxList textBoxes;
-    private WideNumberBox textBox;
-    private boolean triggerBelow;
+    public CheckBoxList checkBoxes = new CheckBoxList();
+    public WideNumberBoxList textBoxes;
+    public WideNumberBox textBox;
+    public boolean triggerBelow;
 
     public ComponentMenuRFCondition(FlowComponent parent)
     {
@@ -125,21 +125,21 @@ public class ComponentMenuRFCondition extends ComponentMenu
 
     }
 
-    private void sendServerData(int id)
+    public void sendServerData(int id)
     {
         DataWriter dw = this.getWriterForServerComponentPacket();
         this.writeData(dw, id);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendClientData(ContainerManager container, int id)
+    public void sendClientData(ContainerManager container, int id)
     {
         DataWriter dw = this.getWriterForClientComponentPacket(container);
         this.writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void writeData(DataWriter dw, int id)
+    public void writeData(DataWriter dw, int id)
     {
         boolean isTextBox = id == 0;
         dw.writeBoolean(isTextBox);

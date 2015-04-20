@@ -16,27 +16,27 @@ import net.minecraft.nbt.NBTTagList;
 
 public class ComponentMenuSignText extends ComponentMenu
 {
-    private static final int TEXT_BOX_SIZE_W = 64;
-    private static final int TEXT_BOX_SIZE_H = 12;
-    private static final int TEXT_BOX_SRC_X = 0;
-    private static final int TEXT_BOX_SRC_Y = 165;
-    private static final int TEXT_BOX_X = 5;
-    private static final int TEXT_BOX_Y = 5;
-    private static final int TEXT_BOX_Y_SPACING = 15;
-    private static final int TEXT_BOX_TEXT_X = 3;
-    private static final int TEXT_BOX_TEXT_Y = 5;
-    private static final int CURSOR_X = 2;
-    private static final int CURSOR_Y = 0;
-    private static final int CURSOR_Z = 5;
-    private static final int CHECK_BOX_X = 75;
-    private static final int CHECK_BOX_Y = 2;
-    private static final float IDLE_TIME = 1F;
+    public static final int TEXT_BOX_SIZE_W = 64;
+    public static final int TEXT_BOX_SIZE_H = 12;
+    public static final int TEXT_BOX_SRC_X = 0;
+    public static final int TEXT_BOX_SRC_Y = 165;
+    public static final int TEXT_BOX_X = 5;
+    public static final int TEXT_BOX_Y = 5;
+    public static final int TEXT_BOX_Y_SPACING = 15;
+    public static final int TEXT_BOX_TEXT_X = 3;
+    public static final int TEXT_BOX_TEXT_Y = 5;
+    public static final int CURSOR_X = 2;
+    public static final int CURSOR_Y = 0;
+    public static final int CURSOR_Z = 5;
+    public static final int CHECK_BOX_X = 75;
+    public static final int CHECK_BOX_Y = 2;
+    public static final float IDLE_TIME = 1F;
 
-    private TextBoxLogic[] textBoxes;
-    private CheckBoxList checkBoxes;
-    private boolean[] update;
-    private float[] hasChanged;
-    private int selected = -1;
+    public TextBoxLogic[] textBoxes;
+    public CheckBoxList checkBoxes;
+    public boolean[] update;
+    public float[] hasChanged;
+    public int selected = -1;
 
     public ComponentMenuSignText(FlowComponent parent)
     {
@@ -169,7 +169,7 @@ public class ComponentMenuSignText extends ComponentMenu
         }
     }
 
-    private void onSelectedChange()
+    public void onSelectedChange()
     {
         update(IDLE_TIME);
     }
@@ -228,7 +228,7 @@ public class ComponentMenuSignText extends ComponentMenu
         }
     }
 
-    private void setTextPostSync(int id, String str)
+    public void setTextPostSync(int id, String str)
     {
         if (str == null)
         {
@@ -278,9 +278,9 @@ public class ComponentMenuSignText extends ComponentMenu
     }
 
 
-    private static final String NBT_LINES = "Lines";
-    private static final String NBT_UPDATE = "Update";
-    private static final String NBT_TEXT = "Text";
+    public static final String NBT_LINES = "Lines";
+    public static final String NBT_UPDATE = "Update";
+    public static final String NBT_TEXT = "Text";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

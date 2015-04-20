@@ -7,7 +7,6 @@ import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.helpers.Config;
 import advancedfactorymanager.reference.Names;
 import advancedfactorymanager.tileentities.TileEntityAENode;
-import advancedfactorymanager.tileentities.TileEntityRFCluster;
 import advancedfactorymanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -33,8 +32,6 @@ public class BlockRegistry
             GameRegistry.registerBlock(cableAENode = new BlockCableAE(), Names.CABLE_AE);
             ClusterRegistry.register(TileEntityAENode.class, cableAENode);
         }
-
-        GameRegistry.registerTileEntity(TileEntityRFCluster.class, Names.CABLE_RF + "Cluster");
     }
 
     public static void registerRecipes()

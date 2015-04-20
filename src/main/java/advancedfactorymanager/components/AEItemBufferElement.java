@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class AEItemBufferElement extends SlotStackInventoryHolder
 {
-    private IAEItemStack item;
-    private TileEntityAENode inventory;
-    private int sizeLeft;
+    public IAEItemStack item;
+    public TileEntityAENode inventory;
+    public int sizeLeft;
 
     public AEItemBufferElement(IAEItemStack item, TileEntityAENode node)
     {

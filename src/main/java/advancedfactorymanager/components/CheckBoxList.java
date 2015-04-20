@@ -12,12 +12,12 @@ import java.util.List;
 public class CheckBoxList
 {
     public static final int CHECK_BOX_SIZE = 8;
-    private static final int CHECK_BOX_SRC_X = 42;
-    private static final int CHECK_BOX_SRC_Y = 106;
-    private static final int CHECK_BOX_TEXT_X = 12;
-    private static final int CHECK_BOX_TEXT_Y = 2;
+    public static final int CHECK_BOX_SRC_X = 42;
+    public static final int CHECK_BOX_SRC_Y = 106;
+    public static final int CHECK_BOX_TEXT_X = 12;
+    public static final int CHECK_BOX_TEXT_Y = 2;
 
-    private List<CheckBox> checkBoxes;
+    public List<CheckBox> checkBoxes;
 
     public CheckBoxList()
     {

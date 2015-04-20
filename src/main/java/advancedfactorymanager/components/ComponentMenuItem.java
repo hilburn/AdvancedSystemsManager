@@ -7,6 +7,7 @@ import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
+import advancedfactorymanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -84,21 +85,21 @@ public class ComponentMenuItem extends ComponentMenuStuff
         this(parent, ItemSetting.class);
     }
 
-    private static final int DMG_VAL_TEXT_X = 15;
-    private static final int DMG_VAL_TEXT_Y = 55;
+    public static final int DMG_VAL_TEXT_X = 15;
+    public static final int DMG_VAL_TEXT_Y = 55;
 
-    private static final int ARROW_SRC_X = 18;
-    private static final int ARROW_SRC_Y = 20;
-    private static final int ARROW_WIDTH = 6;
-    private static final int ARROW_HEIGHT = 10;
-    private static final int ARROW_X_LEFT = 5;
-    private static final int ARROW_X_RIGHT = 109;
-    private static final int ARROW_Y = 37;
-    private static final int ARROW_TEXT_Y = 40;
+    public static final int ARROW_SRC_X = 18;
+    public static final int ARROW_SRC_Y = 20;
+    public static final int ARROW_WIDTH = 6;
+    public static final int ARROW_HEIGHT = 10;
+    public static final int ARROW_X_LEFT = 5;
+    public static final int ARROW_X_RIGHT = 109;
+    public static final int ARROW_Y = 37;
+    public static final int ARROW_TEXT_Y = 40;
 
 
-    private TextBoxNumber damageValueTextBox;
-    private TextBoxNumber amountTextBox;
+    public TextBoxNumber damageValueTextBox;
+    public TextBoxNumber amountTextBox;
 
     protected ItemSetting getSelectedSetting()
     {
@@ -263,91 +264,9 @@ public class ComponentMenuItem extends ComponentMenuStuff
     @Override
     protected List updateSearch(String search, boolean showAll)
     {
-        List ret = new ArrayList();
-
-        if (search.equals(".inv"))
-        {
-            IInventory inventory = Minecraft.getMinecraft().thePlayer.inventory;
-            int itemLength = inventory.getSizeInventory();
-            for (int i = 0; i < itemLength; i++)
-            {
-                ItemStack item = inventory.getStackInSlot(i);
-                if (item != null)
-                {
-                    item = item.copy();
-                    item.stackSize = 1;
-                    boolean exists = false;
-                    for (Object other : ret)
-                    {
-                        if (ItemStack.areItemStacksEqual(item, (ItemStack)other))
-                        {
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if (!exists)
-                    {
-                        ret.add(item);
-                    }
-                }
-            }
-        } else
-        {
-            Iterator itemTypeIterator = Item.itemRegistry.iterator();
-            while (itemTypeIterator.hasNext())
-            {
-                Item item = (Item)itemTypeIterator.next();
-
-                if (item != null && item.getCreativeTab() != null)
-                {
-                    item.getSubItems(item, null, ret);
-                }
-            }
-
-            if (!showAll)
-            {
-                Iterator<ItemStack> itemIterator = ret.iterator();
-
-                while (itemIterator.hasNext())
-                {
-
-                    ItemStack itemStack = itemIterator.next();
-                    List<String> description;
-
-                    //if it encounters some weird items
-                    try
-                    {
-                        description = itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
-                    } catch (Throwable ex)
-                    {
-                        itemIterator.remove();
-                        continue;
-                    }
-
-                    Iterator<String> descriptionIterator = description.iterator();
-
-                    boolean foundSequence = false;
-
-                    while (descriptionIterator.hasNext())
-                    {
-                        String line = descriptionIterator.next().toLowerCase();
-                        if (line.contains(search))
-                        {
-                            foundSequence = true;
-                            break;
-                        }
-                    }
-
-                    if (!foundSequence)
-                    {
-                        itemIterator.remove();
-                    }
-                }
-            }
-        }
-
-        return ret;
+        Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll));
+        thread.start();
+        return scrollControllerSearch.getResult();
     }
 
     @SideOnly(Side.CLIENT)

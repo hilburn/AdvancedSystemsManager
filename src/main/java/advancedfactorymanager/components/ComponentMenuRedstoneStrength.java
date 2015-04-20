@@ -78,25 +78,25 @@ public class ComponentMenuRedstoneStrength extends ComponentMenu
         highTextBox.setNumber(15);
     }
 
-    private CheckBoxList checkBoxes;
-    private TextBoxNumberList textBoxes;
-    private boolean inverted;
-    private TextBoxNumber lowTextBox;
-    private TextBoxNumber highTextBox;
+    public CheckBoxList checkBoxes;
+    public TextBoxNumberList textBoxes;
+    public boolean inverted;
+    public TextBoxNumber lowTextBox;
+    public TextBoxNumber highTextBox;
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_Y = 50;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 50;
 
-    private static final int TEXT_BOX_X_LEFT = 10;
-    private static final int TEXT_BOX_X_RIGHT = 77;
-    private static final int TEXT_BOX_Y = 30;
+    public static final int TEXT_BOX_X_LEFT = 10;
+    public static final int TEXT_BOX_X_RIGHT = 77;
+    public static final int TEXT_BOX_Y = 30;
 
-    private static final int TEXT_BOX_TEXT_X = 46;
-    private static final int TEXT_BOX_TEXT_Y = 33;
+    public static final int TEXT_BOX_TEXT_X = 46;
+    public static final int TEXT_BOX_TEXT_Y = 33;
 
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 5;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
 
     @Override
     public String getName()
@@ -201,21 +201,21 @@ public class ComponentMenuRedstoneStrength extends ComponentMenu
         }
     }
 
-    private void sendServerData(int id)
+    public void sendServerData(int id)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, id);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendClientData(ContainerManager container, int id)
+    public void sendClientData(ContainerManager container, int id)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void writeData(DataWriter dw, int id)
+    public void writeData(DataWriter dw, int id)
     {
         boolean isTextBox = id != 2;
         dw.writeBoolean(isTextBox);
@@ -231,9 +231,9 @@ public class ComponentMenuRedstoneStrength extends ComponentMenu
         }
     }
 
-    private static final String NBT_LOW = "LowRange";
-    private static final String NBT_HIGH = "HighRange";
-    private static final String NBT_INVERTED = "Inverted";
+    public static final String NBT_LOW = "LowRange";
+    public static final String NBT_HIGH = "HighRange";
+    public static final String NBT_INVERTED = "Inverted";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

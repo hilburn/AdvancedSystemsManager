@@ -38,9 +38,8 @@ public class AdvancedFactoryManager
 {
 
 
-    public static final String RESOURCE_LOCATION = "stevesfactory";
-    public static final String CHANNEL = "FactoryManager";
-    public static final String UNLOCALIZED_START = "sfm.";
+    public static final String RESOURCE_LOCATION = "advancedfactorymanager";
+    public static final String UNLOCALIZED_START = "afm.";
 
     public static FMLEventChannel packetHandler;
 
@@ -67,7 +66,7 @@ public class AdvancedFactoryManager
         MessageHandler.init();
 
 
-        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(CHANNEL);
+        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
 
         FileHelper.setConfigDir(event.getModConfigurationDirectory());
 
@@ -102,6 +101,7 @@ public class AdvancedFactoryManager
     }
 
     @Mod.EventHandler
+    @SuppressWarnings(value = "unchecked")
     public void postInit(FMLPostInitializationEvent event)
     {
         if (Loader.isModLoaded("JABBA"))

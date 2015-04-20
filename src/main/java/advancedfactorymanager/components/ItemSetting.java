@@ -16,8 +16,8 @@ import java.util.List;
 
 public class ItemSetting extends Setting
 {
-    private FuzzyMode fuzzyMode;
-    private ItemStack item;
+    public FuzzyMode fuzzyMode;
+    public ItemStack item;
 
     public ItemSetting(int id)
     {
@@ -130,47 +130,20 @@ public class ItemSetting extends Setting
         return 1;
     }
 
-    private static final String NBT_SETTING_ITEM_ID = "ItemId";
-    private static final String NBT_SETTING_ITEM_DMG = "ItemDamage";
-    private static final String NBT_SETTING_FUZZY_OLD = "Fuzzy";
-    private static final String NBT_SETTING_FUZZY = "FuzzyMode";
-    private static final String NBT_SETTING_ITEM_COUNT = "ItemCount";
-    private static final String NBT_TAG = "tag"; //must be "tag" to match the vanilla value, see ItemStack.readFromNBT
+    public static final String NBT_SETTING_FUZZY = "FuzzyMode";
 
     @Override
     public void load(NBTTagCompound settingTag)
     {
-        item = new ItemStack(Item.getItemById(settingTag.getShort(NBT_SETTING_ITEM_ID)), settingTag.getShort(NBT_SETTING_ITEM_COUNT), settingTag.getShort(NBT_SETTING_ITEM_DMG));
-
-        //used to be a boolean
-        if (settingTag.hasKey(NBT_SETTING_FUZZY_OLD))
-        {
-            fuzzyMode = settingTag.getBoolean(NBT_SETTING_FUZZY_OLD) ? FuzzyMode.FUZZY : FuzzyMode.PRECISE;
-        } else
-        {
-            fuzzyMode = FuzzyMode.values()[settingTag.getByte(NBT_SETTING_FUZZY)];
-        }
-
-        if (settingTag.hasKey(NBT_TAG))
-        {
-            item.setTagCompound(settingTag.getCompoundTag(NBT_TAG));
-        } else
-        {
-            item.setTagCompound(null);
-        }
+        item = ItemStack.loadItemStackFromNBT(settingTag);
+        fuzzyMode = FuzzyMode.values()[settingTag.getByte(NBT_SETTING_FUZZY)];
     }
 
     @Override
     public void save(NBTTagCompound settingTag)
     {
-        settingTag.setShort(NBT_SETTING_ITEM_ID, (short)Item.getIdFromItem(item.getItem()));
-        settingTag.setShort(NBT_SETTING_ITEM_COUNT, (short)item.stackSize);
-        settingTag.setShort(NBT_SETTING_ITEM_DMG, (short)item.getItemDamage());
+        if (item != null) item.writeToNBT(settingTag);
         settingTag.setByte(NBT_SETTING_FUZZY, (byte)fuzzyMode.ordinal());
-        if (item.getTagCompound() != null)
-        {
-            settingTag.setTag(NBT_TAG, item.getTagCompound());
-        }
     }
 
     @Override

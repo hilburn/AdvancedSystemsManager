@@ -8,18 +8,18 @@ import java.util.List;
 
 public class LiquidBufferElement
 {
-    private Setting setting;
-    private FlowComponent component;
-    private boolean useWhiteList;
-    private int currentTransferSize;
-    private int totalTransferSize;
-    private SlotInventoryHolder inventoryHolder;
+    public Setting setting;
+    public FlowComponent component;
+    public boolean useWhiteList;
+    public int currentTransferSize;
+    public int totalTransferSize;
+    public SlotInventoryHolder inventoryHolder;
 
-    private List<StackTankHolder> holders;
+    public List<StackTankHolder> holders;
 
-    private int sharedBy;
-    private boolean fairShare;
-    private int shareId;
+    public int sharedBy;
+    public boolean fairShare;
+    public int shareId;
 
     public LiquidBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList, StackTankHolder target)
     {
@@ -50,7 +50,7 @@ public class LiquidBufferElement
         }
     }
 
-    private void addTarget(StackTankHolder target)
+    public void addTarget(StackTankHolder target)
     {
         holders.add(target);
 

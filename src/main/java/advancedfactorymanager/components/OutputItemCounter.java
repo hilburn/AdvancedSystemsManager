@@ -8,10 +8,10 @@ import java.util.List;
 
 public class OutputItemCounter
 {
-    private Setting setting;
-    private boolean useWhiteList;
-    private int currentInventoryStackSize;
-    private int currentBufferStackSize;
+    public Setting setting;
+    public boolean useWhiteList;
+    public int currentInventoryStackSize;
+    public int currentBufferStackSize;
 
     public OutputItemCounter(List<ItemBufferElement> itemBuffer, List<SlotInventoryHolder> inventories, IInventory inventory, Setting setting, boolean useWhiteList)
     {
@@ -42,7 +42,7 @@ public class OutputItemCounter
         }
     }
 
-    private void addInventory(IInventory inventory)
+    public void addInventory(IInventory inventory)
     {
         for (int i = 0; i < inventory.getSizeInventory(); i++)
         {

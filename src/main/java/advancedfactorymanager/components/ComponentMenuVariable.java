@@ -142,7 +142,7 @@ public class ComponentMenuVariable extends ComponentMenu
     }
 
 
-    private void setSelectedVariable(int val)
+    public void setSelectedVariable(int val)
     {
         selectedVariable = val;
 
@@ -152,24 +152,24 @@ public class ComponentMenuVariable extends ComponentMenu
         }
     }
 
-    private Variable getVariable()
+    public Variable getVariable()
     {
         return getParent().getManager().getVariables()[getSelectedVariable()];
     }
 
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 28;
-    private static final int RADIO_BUTTON_SPACING = 12;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 28;
+    public static final int RADIO_BUTTON_SPACING = 12;
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_Y = 52;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 52;
 
 
-    private RadioButtonList radioButtons;
-    private VariableDisplay varDisplay;
-    private int selectedVariable = 0;
-    private CheckBoxList checkBoxes;
-    private boolean executed;
+    public RadioButtonList radioButtons;
+    public VariableDisplay varDisplay;
+    public int selectedVariable = 0;
+    public CheckBoxList checkBoxes;
+    public boolean executed;
 
 
     @SideOnly(Side.CLIENT)
@@ -272,9 +272,9 @@ public class ComponentMenuVariable extends ComponentMenu
         }
     }
 
-    private static final String NBT_VARIABLE = "Variable";
-    private static final String NBT_MODE = "Mode";
-    private static final String NBT_EXECUTED = "Executed";
+    public static final String NBT_VARIABLE = "Variable";
+    public static final String NBT_MODE = "Mode";
+    public static final String NBT_EXECUTED = "Executed";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -327,10 +327,10 @@ public class ComponentMenuVariable extends ComponentMenu
         REMOVE(Localization.REMOVE, false),
         SET(Localization.SET, false);
 
-        private boolean declaration;
-        private Localization name;
+        public boolean declaration;
+        public Localization name;
 
-        private VariableMode(Localization name, boolean declaration)
+        VariableMode(Localization name, boolean declaration)
         {
             this.name = name;
             this.declaration = declaration;
@@ -353,7 +353,7 @@ public class ComponentMenuVariable extends ComponentMenu
         return getParent().getConnectionSet() == ConnectionSet.EMPTY;
     }
 
-    private int getDefaultId()
+    public int getDefaultId()
     {
         return isDeclaration() ? 1 : 2;
     }

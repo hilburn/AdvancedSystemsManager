@@ -52,18 +52,18 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu
     protected static final int RADIO_BUTTON_X_RIGHT = 65;
     protected static final int RADIO_BUTTON_Y = 23;
 
-    private static final int CHECKBOX_X = 5;
-    private static final int CHECKBOX_Y = 35;
-    private static final int CHECKBOX_SPACING_X = 70;
-    private static final int CHECKBOX_SPACING_Y = 12;
+    public static final int CHECKBOX_X = 5;
+    public static final int CHECKBOX_Y = 35;
+    public static final int CHECKBOX_SPACING_X = 70;
+    public static final int CHECKBOX_SPACING_Y = 12;
 
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 5;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
 
-    private class CheckBoxSide extends CheckBox
+    public class CheckBoxSide extends CheckBox
     {
-        private int id;
+        public int id;
 
         public CheckBoxSide(int id)
         {
@@ -97,7 +97,7 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu
         }
     }
 
-    private CheckBoxList checkBoxList;
+    public CheckBoxList checkBoxList;
     protected RadioButtonList radioButtonList;
     protected int selection;
 
@@ -183,21 +183,21 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu
         }
     }
 
-    private void sendClientData(ContainerManager container, boolean syncRequire)
+    public void sendClientData(ContainerManager container, boolean syncRequire)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, syncRequire);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerData(boolean syncRequire)
+    public void sendServerData(boolean syncRequire)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, syncRequire);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, boolean syncRequire)
+    public void writeData(DataWriter dw, boolean syncRequire)
     {
         dw.writeBoolean(syncRequire);
         if (syncRequire)
@@ -209,8 +209,8 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu
         }
     }
 
-    private static final String NBT_ACTIVE = "Selection";
-    private static final String NBT_ALL = "RequrieAll";
+    public static final String NBT_ACTIVE = "Selection";
+    public static final String NBT_ALL = "RequrieAll";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

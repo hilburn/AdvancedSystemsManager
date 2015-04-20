@@ -13,46 +13,46 @@ import java.util.List;
 public abstract class ScrollController<T>
 {
 
-    private int offset;
-    private boolean canScroll;
-    private int dir;
-    private boolean clicked;
-    private boolean selected;
-    private TextBoxLogic textBox;
-    private List<T> result;
-    private boolean hasSearchBox;
+    public int offset;
+    public boolean canScroll;
+    public int dir;
+    public boolean clicked;
+    public boolean selected;
+    public TextBoxLogic textBox;
+    public List<T> result;
+    public boolean hasSearchBox;
 
-    private static final int ITEM_SIZE = 16;
-    private static final int ITEM_SIZE_WITH_MARGIN = 20;
+    public static final int ITEM_SIZE = 16;
+    public static final int ITEM_SIZE_WITH_MARGIN = 20;
 
-    private static final int ARROW_SIZE_W = 10;
-    private static final int ARROW_SIZE_H = 6;
-    private static final int ARROW_SRC_X = 64;
-    private static final int ARROW_SRC_Y = 165;
-    private static final int ARROW_X = 105;
-    private static final int ARROW_Y_UP = 32;
-    private static final int ARROW_Y_DOWN = 42;
+    public static final int ARROW_SIZE_W = 10;
+    public static final int ARROW_SIZE_H = 6;
+    public static final int ARROW_SRC_X = 64;
+    public static final int ARROW_SRC_Y = 165;
+    public static final int ARROW_X = 105;
+    public static final int ARROW_Y_UP = 32;
+    public static final int ARROW_Y_DOWN = 42;
 
-    private static final int TEXT_BOX_SIZE_W = 64;
-    private static final int TEXT_BOX_SIZE_H = 12;
-    private static final int TEXT_BOX_SRC_X = 0;
-    private static final int TEXT_BOX_SRC_Y = 165;
-    private static final int TEXT_BOX_X = 5;
-    private static final int TEXT_BOX_Y = 5;
-    private static final int TEXT_BOX_TEXT_X = 3;
-    private static final int TEXT_BOX_TEXT_Y = 3;
-    private static final int CURSOR_X = 2;
-    private static final int CURSOR_Y = 0;
-    private static final int CURSOR_Z = 5;
-    private static final int AMOUNT_TEXT_X = 75;
-    private static final int AMOUNT_TEXT_Y = 9;
+    public static final int TEXT_BOX_SIZE_W = 64;
+    public static final int TEXT_BOX_SIZE_H = 12;
+    public static final int TEXT_BOX_SRC_X = 0;
+    public static final int TEXT_BOX_SRC_Y = 165;
+    public static final int TEXT_BOX_X = 5;
+    public static final int TEXT_BOX_Y = 5;
+    public static final int TEXT_BOX_TEXT_X = 3;
+    public static final int TEXT_BOX_TEXT_Y = 3;
+    public static final int CURSOR_X = 2;
+    public static final int CURSOR_Y = 0;
+    public static final int CURSOR_Z = 5;
+    public static final int AMOUNT_TEXT_X = 75;
+    public static final int AMOUNT_TEXT_Y = 9;
 
 
-    private int itemsPerRow = 5;
-    private int visibleRows = 2;
-    private int startX = 5;
-    private int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
-    private boolean disabledScroll;
+    public int itemsPerRow = 5;
+    public int visibleRows = 2;
+    public int startX = 5;
+    public int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
+    public boolean disabledScroll;
 
     public ScrollController(boolean hasSearchBox)
     {
@@ -115,12 +115,12 @@ public abstract class ScrollController<T>
     }
 
 
-    private int getFirstRow()
+    public int getFirstRow()
     {
         return (scrollingUpperLimit + offset - getScrollingStartY()) / ITEM_SIZE_WITH_MARGIN;
     }
 
-    private List<Point> getItemCoordinates()
+    public List<Point> getItemCoordinates()
     {
         List<Point> points = new ArrayList<Point>();
 
@@ -233,9 +233,9 @@ public abstract class ScrollController<T>
         }
     }
 
-    private static final int SCROLL_SPEED = 100;
+    public static final int SCROLL_SPEED = 100;
 
-    private float left;
+    public float left;
 
     public void update(float partial)
     {
@@ -250,7 +250,7 @@ public abstract class ScrollController<T>
         }
     }
 
-    private void moveOffset(int change)
+    public void moveOffset(int change)
     {
         offset += change;
         int min = 0;
@@ -265,7 +265,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    private void drawArrow(GuiManager gui, boolean down, int mX, int mY)
+    public void drawArrow(GuiManager gui, boolean down, int mX, int mY)
     {
         if (canScroll)
         {
@@ -276,7 +276,7 @@ public abstract class ScrollController<T>
         }
     }
 
-    private boolean inArrowBounds(boolean down, int mX, int mY)
+    public boolean inArrowBounds(boolean down, int mX, int mY)
     {
         return CollisionHelper.inBounds(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
     }
@@ -366,11 +366,11 @@ public abstract class ScrollController<T>
     }
 
 
-    private class Point
+    public class Point
     {
         int id, x, y;
 
-        private Point(int id, int x, int y)
+        public Point(int id, int x, int y)
         {
             this.id = id;
             this.x = x;

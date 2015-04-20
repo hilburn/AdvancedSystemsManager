@@ -12,10 +12,10 @@ import java.util.List;
 
 public class Variable implements IContainerSelection
 {
-    private int id;
-    private FlowComponent declaration;
-    private List<Integer> containers;
-    private boolean executed;
+    public int id;
+    public FlowComponent declaration;
+    public List<Integer> containers;
+    public boolean executed;
 
     public Variable(int id)
     {
@@ -34,9 +34,9 @@ public class Variable implements IContainerSelection
         return id;
     }
 
-    private static final int VARIABLE_SRC_X = 32;
-    private static final int VARIABLE_SRC_Y = 130;
-    private static final int VARIABLE_SIZE = 14;
+    public static final int VARIABLE_SRC_X = 32;
+    public static final int VARIABLE_SRC_Y = 130;
+    public static final int VARIABLE_SIZE = 14;
 
     @Override
     public void draw(GuiManager gui, int x, int y)
@@ -66,7 +66,7 @@ public class Variable implements IContainerSelection
         return true;
     }
 
-    private String getNameFromColor(VariableColor color)
+    public String getNameFromColor(VariableColor color)
     {
         if (getDeclaration() == null || getDeclaration().getComponentName() == null)
         {
@@ -129,9 +129,9 @@ public class Variable implements IContainerSelection
         containers.remove((Integer)id);
     }
 
-    private static final String NBT_EXECUTED = "Executed";
-    private static final String NBT_SELECTION = "Selection";
-    private static final String NBT_SELECTION_ID = "Id";
+    public static final String NBT_EXECUTED = "Executed";
+    public static final String NBT_SELECTION = "Selection";
+    public static final String NBT_SELECTION_ID = "Id";
 
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {

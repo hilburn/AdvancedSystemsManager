@@ -145,7 +145,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     protected EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        return EnumSet.of(StevesEnum.CONNECT_ENERGY, StevesEnum.EXTRACT_ENERGY, StevesEnum.RECEIVE_ENERGY);
+        return EnumSet.of(StevesEnum.CONNECT_ENERGY, StevesEnum.EXTRACT_ENERGY, StevesEnum.ENERGY);
     }
 
     public boolean isInput(int side)

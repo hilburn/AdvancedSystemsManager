@@ -17,8 +17,8 @@ public abstract class ComponentMenu implements IComponentNetworkReader
 {
 
 
-    private FlowComponent parent;
-    private int id;
+    public FlowComponent parent;
+    public int id;
 
     public ComponentMenu(FlowComponent parent)
     {

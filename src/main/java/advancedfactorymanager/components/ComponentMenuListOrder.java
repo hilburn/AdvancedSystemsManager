@@ -114,23 +114,23 @@ public class ComponentMenuListOrder extends ComponentMenu
         return Localization.LOOP_ORDER_MENU.toString();
     }
 
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 20;
-    private static final int RADIO_SPACING_Y = 12;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 20;
+    public static final int RADIO_SPACING_Y = 12;
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_AMOUNT_Y = 5;
-    private static final int CHECK_BOX_REVERSE_Y = 58;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_AMOUNT_Y = 5;
+    public static final int CHECK_BOX_REVERSE_Y = 58;
 
-    private static final int TEXT_BOX_X = 60;
-    private static final int TEXT_BOX_Y = 3;
+    public static final int TEXT_BOX_X = 60;
+    public static final int TEXT_BOX_Y = 3;
 
-    private TextBoxNumberList textBoxes;
-    private TextBoxNumber textBox;
-    private RadioButtonList radioButtons;
-    private CheckBoxList checkBoxes;
-    private boolean reversed;
-    private boolean all;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber textBox;
+    public RadioButtonList radioButtons;
+    public CheckBoxList checkBoxes;
+    public boolean reversed;
+    public boolean all;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -168,21 +168,21 @@ public class ComponentMenuListOrder extends ComponentMenu
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private void sendServerData(UpdateType type)
+    public void sendServerData(UpdateType type)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, type);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendClientData(ContainerManager container, UpdateType type)
+    public void sendClientData(ContainerManager container, UpdateType type)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, type);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void writeData(DataWriter dw, UpdateType type)
+    public void writeData(DataWriter dw, UpdateType type)
     {
         dw.writeData(type.ordinal(), DataBitHelper.ORDER_TYPES);
         switch (type)
@@ -267,10 +267,10 @@ public class ComponentMenuListOrder extends ComponentMenu
         }
     }
 
-    private static final String NBT_ALL = "All";
-    private static final String NBT_AMOUNT = "Amount";
-    private static final String NBT_REVERSED = "Reversed";
-    private static final String NBT_ORDER = "Order";
+    public static final String NBT_ALL = "All";
+    public static final String NBT_AMOUNT = "Amount";
+    public static final String NBT_REVERSED = "Reversed";
+    public static final String NBT_ORDER = "Order";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -345,11 +345,11 @@ public class ComponentMenuListOrder extends ComponentMenu
         }),
         RANDOM(Localization.ORDER_RANDOM, null);
 
-        private Localization name;
-        private Comparator<Integer> comparator;
-        private Comparator<Integer> reversedComparator;
+        public Localization name;
+        public Comparator<Integer> comparator;
+        public Comparator<Integer> reversedComparator;
 
-        private LoopOrder(Localization name, final Comparator<Integer> comparator)
+        LoopOrder(Localization name, final Comparator<Integer> comparator)
         {
             this.name = name;
             this.comparator = comparator;
@@ -380,7 +380,7 @@ public class ComponentMenuListOrder extends ComponentMenu
         }
     }
 
-    private boolean canReverse()
+    public boolean canReverse()
     {
         return getOrder() != LoopOrder.RANDOM;
     }
@@ -390,7 +390,7 @@ public class ComponentMenuListOrder extends ComponentMenu
         return LoopOrder.values()[radioButtons.getSelectedOption()];
     }
 
-    private enum UpdateType
+    public enum UpdateType
     {
         USE_ALL,
         AMOUNT,

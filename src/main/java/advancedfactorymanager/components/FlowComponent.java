@@ -19,78 +19,78 @@ import java.util.*;
 
 public class FlowComponent implements IComponentNetworkReader, Comparable<FlowComponent>
 {
-    private static final int COMPONENT_SRC_X = 0;
-    private static final int COMPONENT_SRC_Y = 0;
-    private static final int COMPONENT_SIZE_W = 64;
-    private static final int COMPONENT_SIZE_H = 20;
-    private static final int COMPONENT_SIZE_LARGE_W = 124;
-    private static final int COMPONENT_SIZE_LARGE_H = 152;
-    private static final int COMPONENT_SRC_LARGE_X = 64;
-    private static final int DRAGGABLE_SIZE = 6;
+    public static final int COMPONENT_SRC_X = 0;
+    public static final int COMPONENT_SRC_Y = 0;
+    public static final int COMPONENT_SIZE_W = 64;
+    public static final int COMPONENT_SIZE_H = 20;
+    public static final int COMPONENT_SIZE_LARGE_W = 124;
+    public static final int COMPONENT_SIZE_LARGE_H = 152;
+    public static final int COMPONENT_SRC_LARGE_X = 64;
+    public static final int DRAGGABLE_SIZE = 6;
 
-    private static final int ARROW_X = -10;
-    private static final int ARROW_Y = 5;
-    private static final int ARROW_SIZE_W = 9;
-    private static final int ARROW_SIZE_H = 10;
-    private static final int ARROW_SRC_X = 0;
-    private static final int ARROW_SRC_Y = 20;
+    public static final int ARROW_X = -10;
+    public static final int ARROW_Y = 5;
+    public static final int ARROW_SIZE_W = 9;
+    public static final int ARROW_SIZE_H = 10;
+    public static final int ARROW_SRC_X = 0;
+    public static final int ARROW_SRC_Y = 20;
 
-    private static final int MENU_ITEM_SIZE_W = 120;
-    private static final int MENU_ITEM_SIZE_H = 13;
-    private static final int MENU_ITEM_SRC_X = 0;
-    private static final int MENU_ITEM_SRC_Y = 152;
-    private static final int MENU_X = 2;
-    private static final int MENU_Y = 20;
-    private static final int MENU_SIZE_H = 130;
-    private static final int MENU_ITEM_CAPACITY = 5;
+    public static final int MENU_ITEM_SIZE_W = 120;
+    public static final int MENU_ITEM_SIZE_H = 13;
+    public static final int MENU_ITEM_SRC_X = 0;
+    public static final int MENU_ITEM_SRC_Y = 152;
+    public static final int MENU_X = 2;
+    public static final int MENU_Y = 20;
+    public static final int MENU_SIZE_H = 130;
+    public static final int MENU_ITEM_CAPACITY = 5;
 
-    private static final int MENU_ARROW_X = 109;
-    private static final int MENU_ARROW_Y = 2;
-    private static final int MENU_ARROW_SIZE_W = 9;
-    private static final int MENU_ARROW_SIZE_H = 9;
-    private static final int MENU_ARROW_SRC_X = 0;
-    private static final int MENU_ARROW_SRC_Y = 40;
+    public static final int MENU_ARROW_X = 109;
+    public static final int MENU_ARROW_Y = 2;
+    public static final int MENU_ARROW_SIZE_W = 9;
+    public static final int MENU_ARROW_SIZE_H = 9;
+    public static final int MENU_ARROW_SRC_X = 0;
+    public static final int MENU_ARROW_SRC_Y = 40;
 
-    private static final int MENU_ITEM_TEXT_X = 5;
-    private static final int MENU_ITEM_TEXT_Y = 3;
+    public static final int MENU_ITEM_TEXT_X = 5;
+    public static final int MENU_ITEM_TEXT_Y = 3;
 
-    private static final int CONNECTION_SIZE_W = 7;
-    private static final int CONNECTION_SIZE_H = 6;
-    private static final int CONNECTION_SRC_X = 0;
-    private static final int CONNECTION_SRC_Y = 58;
-    private static final int CONNECTION_SRC_Y_SIDE = 245;
+    public static final int CONNECTION_SIZE_W = 7;
+    public static final int CONNECTION_SIZE_H = 6;
+    public static final int CONNECTION_SRC_X = 0;
+    public static final int CONNECTION_SRC_Y = 58;
+    public static final int CONNECTION_SRC_Y_SIDE = 245;
 
-    private static final int ERROR_X = 2;
-    private static final int ERROR_Y = 8;
-    private static final int ERROR_SIZE_W = 2;
-    private static final int ERROR_SIZE_H = 10;
-    private static final int ERROR_SRC_X = 42;
-    private static final int ERROR_SRC_Y = 212;
+    public static final int ERROR_X = 2;
+    public static final int ERROR_Y = 8;
+    public static final int ERROR_SIZE_W = 2;
+    public static final int ERROR_SIZE_H = 10;
+    public static final int ERROR_SRC_X = 42;
+    public static final int ERROR_SRC_Y = 212;
 
-    private static final int NODE_SRC_X = 120;
-    private static final int NODE_SRC_Y = 152;
-    private static final int NODE_SIZE = 4;
-    private static final int MAX_NODES = 15;
+    public static final int NODE_SRC_X = 120;
+    public static final int NODE_SRC_Y = 152;
+    public static final int NODE_SIZE = 4;
+    public static final int MAX_NODES = 15;
 
-    private static final int CURSOR_X = -1;
-    private static final int CURSOR_Y = -4;
-    private static final int CURSOR_Z = 5;
-    private static final int TEXT_X = 7;
-    private static final int TEXT_Y = 10;
-    private static final int TEXT_HEIGHT = 10;
-    private static final int EDIT_SRC_X = 32;
-    private static final int EDIT_SRC_Y = 189;
-    private static final int EDIT_X = 103;
-    private static final int EDIT_Y = 6;
-    private static final int EDIT_X_SMALL = 105;
-    private static final int EDIT_Y_TOP = 2;
-    private static final int EDIT_Y_BOT = 11;
-    private static final int EDIT_SIZE = 9;
-    private static final int EDIT_SIZE_SMALL = 7;
+    public static final int CURSOR_X = -1;
+    public static final int CURSOR_Y = -4;
+    public static final int CURSOR_Z = 5;
+    public static final int TEXT_X = 7;
+    public static final int TEXT_Y = 10;
+    public static final int TEXT_HEIGHT = 10;
+    public static final int EDIT_SRC_X = 32;
+    public static final int EDIT_SRC_Y = 189;
+    public static final int EDIT_X = 103;
+    public static final int EDIT_Y = 6;
+    public static final int EDIT_X_SMALL = 105;
+    public static final int EDIT_Y_TOP = 2;
+    public static final int EDIT_Y_BOT = 11;
+    public static final int EDIT_SIZE = 9;
+    public static final int EDIT_SIZE_SMALL = 7;
 
-    private static final int TEXT_SPACE = 135;
-    private static final int TEXT_SPACE_SHORT = 65;
-    private static final int TEXT_MAX_LENGTH = 31;
+    public static final int TEXT_SPACE = 135;
+    public static final int TEXT_SPACE_SHORT = 65;
+    public static final int TEXT_MAX_LENGTH = 31;
 
     public FlowComponent(TileEntityManager manager, int x, int y, ComponentType type)
     {
@@ -125,30 +125,30 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         childrenOutputNodes = new ArrayList<FlowComponent>();
     }
 
-    private int x;
-    private int y;
-    private int mouseDragX;
-    private int mouseDragY;
-    private int mouseStartX;
-    private int mouseStartY;
-    private int resetTimer;
-    private boolean isDragging;
-    private boolean isLarge;
-    private List<ComponentMenu> menus;
-    private int openMenuId;
-    private ConnectionSet connectionSet;
-    private ComponentType type;
-    private TileEntityManager manager;
-    private int id;
-    private Map<Integer, Connection> connections;
-    private int currentInterval;
-    private boolean isEditing;
-    private TextBoxLogic textBox;
-    private String name;
-    private FlowComponent parent;
-    private List<FlowComponent> childrenInputNodes;
-    private List<FlowComponent> childrenOutputNodes;
-    private boolean isInventoryListDirty = true;
+    public int x;
+    public int y;
+    public int mouseDragX;
+    public int mouseDragY;
+    public int mouseStartX;
+    public int mouseStartY;
+    public int resetTimer;
+    public boolean isDragging;
+    public boolean isLarge;
+    public List<ComponentMenu> menus;
+    public int openMenuId;
+    public ConnectionSet connectionSet;
+    public ComponentType type;
+    public TileEntityManager manager;
+    public int id;
+    public Map<Integer, Connection> connections;
+    public int currentInterval;
+    public boolean isEditing;
+    public TextBoxLogic textBox;
+    public String name;
+    public FlowComponent parent;
+    public List<FlowComponent> childrenInputNodes;
+    public List<FlowComponent> childrenOutputNodes;
+    public boolean isInventoryListDirty = true;
 
 
     public int getCurrentInterval()
@@ -186,7 +186,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         return connectionSet;
     }
 
-    private boolean isLoading;
+    public boolean isLoading;
 
     public void setConnectionSet(ConnectionSet connectionSet)
     {
@@ -453,10 +453,10 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         GL11.glPopMatrix();
     }
 
-    private String cachedName;
-    private String cachedShortName;
+    public String cachedName;
+    public String cachedShortName;
 
-    private String getShortName(GuiManager gui, String name)
+    public String getShortName(GuiManager gui, String name)
     {
         if (!name.equals(cachedName))
         {
@@ -787,12 +787,12 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         }
     }
 
-    private boolean checkForLoops(int connectionId, Connection connection)
+    public boolean checkForLoops(int connectionId, Connection connection)
     {
         return checkForLoops(new ArrayList<Integer>(), this, connectionId, connection);
     }
 
-    private boolean checkForLoops(List<Integer> usedComponents, FlowComponent currentComponent, int connectionId, Connection connection)
+    public boolean checkForLoops(List<Integer> usedComponents, FlowComponent currentComponent, int connectionId, Connection connection)
     {
         if (usedComponents.contains(currentComponent.getId()))
         {
@@ -842,7 +842,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         return false;
     }
 
-    private void addConnection(int id, Connection connection)
+    public void addConnection(int id, Connection connection)
     {
         if (getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
         {
@@ -947,7 +947,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     }
 
     @SideOnly(Side.CLIENT)
-    private void followMouse(int mX, int mY)
+    public void followMouse(int mX, int mY)
     {
         if (isDragging)
         {
@@ -968,7 +968,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         }
     }
 
-    private void adjustToGrid()
+    public void adjustToGrid()
     {
         x = (x / 10) * 10;
         y = (y / 10) * 10;
@@ -1088,18 +1088,18 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     }
 
 
-    private boolean inArrowBounds(int internalX, int internalY)
+    public boolean inArrowBounds(int internalX, int internalY)
     {
         return CollisionHelper.inBounds(getComponentWidth() + ARROW_X, ARROW_Y, ARROW_SIZE_W, ARROW_SIZE_H, internalX, internalY);
     }
 
 
-    private boolean inMenuArrowBounds(int i, int internalX, int internalY)
+    public boolean inMenuArrowBounds(int i, int internalX, int internalY)
     {
         return CollisionHelper.inBounds(MENU_X + MENU_ARROW_X, getMenuItemY(i) + MENU_ARROW_Y, MENU_ARROW_SIZE_W, MENU_ARROW_SIZE_H, internalX, internalY);
     }
 
-    private int getMenuItemY(int id)
+    public int getMenuItemY(int id)
     {
 
 
@@ -1137,7 +1137,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         return isLarge ? COMPONENT_SIZE_LARGE_H : COMPONENT_SIZE_H;
     }
 
-    private int[] getConnectionLocation(ConnectionOption connection, int inputCount, int outputCount, int sideCount)
+    public int[] getConnectionLocation(ConnectionOption connection, int inputCount, int outputCount, int sideCount)
     {
         int id = inputCount + outputCount + sideCount;
         if (!connection.isInput())
@@ -1198,12 +1198,12 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     }
 
 
-    private int getMenuAreaX()
+    public int getMenuAreaX()
     {
         return x + MENU_X;
     }
 
-    private int getMenuAreaY(int i)
+    public int getMenuAreaY(int i)
     {
         return y + getMenuItemY(i) + MENU_ITEM_SIZE_H;
     }
@@ -1331,14 +1331,14 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     }
 
 
-    private void writeLocationData()
+    public void writeLocationData()
     {
         DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
         writeLocationData(dw);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeLocationData(DataWriter dw)
+    public void writeLocationData(DataWriter dw)
     {
         dw.writeBoolean(true); //component specific
         dw.writeBoolean(true); //location
@@ -1348,7 +1348,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     }
 
 
-    private void writeParentData(DataWriter dw)
+    public void writeParentData(DataWriter dw)
     {
         dw.writeBoolean(true); //component specific
         dw.writeBoolean(true); //location
@@ -1389,7 +1389,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         return copy;
     }
 
-    private void writeConnectionData(DataWriter dw, int i, boolean target, int targetComponent, int targetConnection)
+    public void writeConnectionData(DataWriter dw, int i, boolean target, int targetComponent, int targetConnection)
     {
         dw.writeBoolean(false);
         dw.writeData(i, DataBitHelper.CONNECTION_ID);
@@ -1402,7 +1402,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         }
     }
 
-    private void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    public void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
     {
         dw.writeBoolean(false);
         dw.writeData(connectionId, DataBitHelper.CONNECTION_ID);
@@ -1422,14 +1422,14 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
 
     }
 
-    private void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
     {
         DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
         writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendClientConnectionNode(ContainerManager container, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    public void sendClientConnectionNode(ContainerManager container, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
     {
         DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
         writeConnectionNode(dw, length, connectionId, nodeId, deleted, created, x, y);
@@ -1599,39 +1599,39 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         }
     }
 
-    private void sendNameToServer()
+    public void sendNameToServer()
     {
         DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
         writeName(dw);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void sendNameToClient(ContainerManager container)
+    public void sendNameToClient(ContainerManager container)
     {
         DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
         writeName(dw);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void writeName(DataWriter dw)
+    public void writeName(DataWriter dw)
     {
         dw.writeBoolean(true); //component specific
         dw.writeBoolean(false); //name
         dw.writeString(name, DataBitHelper.NAME_LENGTH);
     }
 
-    private static final String NBT_POS_X = "PosX";
-    private static final String NBT_POS_Y = "PosY";
-    private static final String NBT_TYPE = "Type";
-    private static final String NBT_CONNECTION = "Connection";
-    private static final String NBT_CONNECTION_POS = "ConnectionPos";
-    private static final String NBT_CONNECTION_TARGET_COMPONENT = "ConnectionComponent";
-    private static final String NBT_CONNECTION_TARGET_CONNECTION = "ConnectionConnection";
-    private static final String NBT_INTERVAL = "Interval";
-    private static final String NBT_MENUS = "Menus";
-    private static final String NBT_NODES = "Nodes";
-    private static final String NBT_NAME = "Name";
-    private static final String NBT_PARENT = "Parent";
+    public static final String NBT_POS_X = "PosX";
+    public static final String NBT_POS_Y = "PosY";
+    public static final String NBT_TYPE = "Type";
+    public static final String NBT_CONNECTION = "Connection";
+    public static final String NBT_CONNECTION_POS = "ConnectionPos";
+    public static final String NBT_CONNECTION_TARGET_COMPONENT = "ConnectionComponent";
+    public static final String NBT_CONNECTION_TARGET_CONNECTION = "ConnectionConnection";
+    public static final String NBT_INTERVAL = "Interval";
+    public static final String NBT_MENUS = "Menus";
+    public static final String NBT_NODES = "Nodes";
+    public static final String NBT_NAME = "Name";
+    public static final String NBT_PARENT = "Parent";
 
     public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -1761,7 +1761,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         }
     }
 
-    private int parentLoadId = -1;
+    public int parentLoadId = -1;
 
     public void linkParentAfterLoad()
     {
@@ -1778,7 +1778,7 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
     {
         nbtTagCompound.setShort(NBT_POS_X, (short)x);
         nbtTagCompound.setShort(NBT_POS_Y, (short)y);
-        nbtTagCompound.setByte(NBT_TYPE, (byte)type.getId());
+        nbtTagCompound.setByte(NBT_TYPE, (byte)type.ordinal());
         if (name != null)
         {
             nbtTagCompound.setString(NBT_NAME, name);
@@ -2014,8 +2014,8 @@ public class FlowComponent implements IComponentNetworkReader, Comparable<FlowCo
         return isEditing;
     }
 
-    private int overrideX = -1;
-    private int overrideY = -1;
+    public int overrideX = -1;
+    public int overrideY = -1;
 
     public int getOverrideY()
     {

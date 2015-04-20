@@ -22,11 +22,10 @@ public enum ConnectionOption
     BUD_LOW(Localization.CONNECTION_WHILE_LOW_BLOCK, ConnectionType.OUTPUT),
     DYNAMIC_INPUT(null, ConnectionType.INPUT),
     DYNAMIC_OUTPUT(null, ConnectionType.OUTPUT);
-    private Localization name;
-    private ConnectionType type;
+    public Localization name;
+    public ConnectionType type;
 
-
-    private ConnectionOption(Localization name, ConnectionType type)
+    ConnectionOption(Localization name, ConnectionType type)
     {
         this.name = name;
         this.type = type;

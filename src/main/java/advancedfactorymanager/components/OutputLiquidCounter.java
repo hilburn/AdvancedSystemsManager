@@ -8,10 +8,10 @@ import java.util.List;
 
 public class OutputLiquidCounter
 {
-    private Setting setting;
-    private boolean useWhiteList;
-    private int currentTankTransferSize;
-    private int currentBufferTransferSize;
+    public Setting setting;
+    public boolean useWhiteList;
+    public int currentTankTransferSize;
+    public int currentBufferTransferSize;
 
     public OutputLiquidCounter(List<LiquidBufferElement> liquidBuffer, List<SlotInventoryHolder> tanks, SlotInventoryHolder tank, Setting setting, boolean useWhiteList)
     {
@@ -42,7 +42,7 @@ public class OutputLiquidCounter
         }
     }
 
-    private void addTank(Setting setting, SlotInventoryHolder tankHolder)
+    public void addTank(Setting setting, SlotInventoryHolder tankHolder)
     {
         int max = 0;
 

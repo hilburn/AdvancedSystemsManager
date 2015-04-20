@@ -22,14 +22,14 @@ public enum ConnectionSet
     CHAT(Localization.CONNECTION_SET_CHAT, ConnectionOption.STANDARD_OUTPUT);
 
 
-    private ConnectionOption[] connections;
-    private int outputCount;
-    private int inputCount;
-    private int sideCount;
-    private Localization name;
+    public ConnectionOption[] connections;
+    public int outputCount;
+    public int inputCount;
+    public int sideCount;
+    public Localization name;
 
 
-    private ConnectionSet(Localization name, ConnectionOption... connections)
+    ConnectionSet(Localization name, ConnectionOption... connections)
     {
         this.connections = connections;
 

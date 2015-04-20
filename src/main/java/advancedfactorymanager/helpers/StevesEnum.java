@@ -48,7 +48,7 @@ public class StevesEnum
     public static final ComponentType RF_CONDITION = addComponentType("RF_CONDITION", 19, RF_CONDITION_SHORT, RF_CONDITION_LONG, new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION}, ComponentMenuRFStorage.class, ComponentMenuTargetRF.class, ComponentMenuRFCondition.class, ComponentMenuResult.class);
     public static final ClusterMethodRegistration CONNECT_ENERGY = addClusterMethod("CONNECT_ENERGY");
     public static final ClusterMethodRegistration EXTRACT_ENERGY = addClusterMethod("EXTRACT_ENERGY");
-    public static final ClusterMethodRegistration RECEIVE_ENERGY = addClusterMethod("RECEIVE_ENERGY");
+    public static final ClusterMethodRegistration ENERGY = addClusterMethod("ENERGY");
     public static final ConnectionOption DELAYED_OUTPUT = addConnectionMethod("DELAYED_OUTPUT", DELAY_OUTPUT, ConnectionOption.ConnectionType.OUTPUT);
     public static final ConnectionSet DELAYED = addConnectionSet("DELAY_TRIGGER", DELAY_TRIGGER, new ConnectionOption[]{ConnectionOption.STANDARD_INPUT, DELAYED_OUTPUT});
 

@@ -65,9 +65,9 @@ public class ComponentMenuRedstoneOutput extends ComponentMenu
         }
     }
 
-    private TextBoxNumberList textBoxes;
-    private TextBoxNumber textBox;
-    private RadioButtonList radioButtons;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber textBox;
+    public RadioButtonList radioButtons;
 
     public int getSelectedStrength()
     {
@@ -85,9 +85,9 @@ public class ComponentMenuRedstoneOutput extends ComponentMenu
         FORWARD(Localization.FORWARD),
         BACKWARD(Localization.BACKWARD);
 
-        private Localization name;
+        public Localization name;
 
-        private Settings(Localization name)
+        Settings(Localization name)
         {
             this.name = name;
         }
@@ -106,16 +106,16 @@ public class ComponentMenuRedstoneOutput extends ComponentMenu
 
     }
 
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 22;
-    private static final int RADIO_SPACING_X = 68;
-    private static final int RADIO_SPACING_Y = 12;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 22;
+    public static final int RADIO_SPACING_X = 68;
+    public static final int RADIO_SPACING_Y = 12;
 
-    private static final int TEXT_BOX_X = 80;
-    private static final int TEXT_BOX_Y = 5;
+    public static final int TEXT_BOX_X = 80;
+    public static final int TEXT_BOX_Y = 5;
 
-    private static final int TEXT_X = 5;
-    private static final int TEXT_Y = 9;
+    public static final int TEXT_X = 5;
+    public static final int TEXT_Y = 9;
 
     @Override
     public String getName()
@@ -229,8 +229,8 @@ public class ComponentMenuRedstoneOutput extends ComponentMenu
         }
     }
 
-    private static final String NBT_NUMBER = "Strength";
-    private static final String NBT_TYPE = "OutputType";
+    public static final String NBT_NUMBER = "Strength";
+    public static final String NBT_TYPE = "OutputType";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -260,7 +260,7 @@ public class ComponentMenuRedstoneOutput extends ComponentMenu
         }
     }
 
-    private boolean useStrengthSetting()
+    public boolean useStrengthSetting()
     {
         return getSelectedSetting() != Settings.TOGGLE;
     }

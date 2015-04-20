@@ -53,14 +53,14 @@ public class ComponentMenuLiquid extends ComponentMenuStuff
     }
 
 
-    private void sendAmountData()
+    public void sendAmountData()
     {
         selectedSetting.setAmount(amountTextBoxBuckets.getNumber() * 1000 + amountTextBoxMilli.getNumber());
         writeServerData(DataTypeHeader.AMOUNT);
     }
 
-    private TextBoxNumber amountTextBoxBuckets;
-    private TextBoxNumber amountTextBoxMilli;
+    public TextBoxNumber amountTextBoxBuckets;
+    public TextBoxNumber amountTextBoxMilli;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -129,8 +129,6 @@ public class ComponentMenuLiquid extends ComponentMenuStuff
                 {
                     updateTextBoxes();
                 }
-
-
         }
     }
 
@@ -185,8 +183,8 @@ public class ComponentMenuLiquid extends ComponentMenuStuff
     public static String getDisplayName(Fluid fluid)
     {
         //different mods store the name in different ways apparently
-        String name = fluid.getLocalizedName();
-        if (name.indexOf(".") != -1)
+        String name = fluid.getLocalizedName(null);
+        if (name.contains("."))
         {
             name = FluidRegistry.getFluidName(fluid.getID());
         }

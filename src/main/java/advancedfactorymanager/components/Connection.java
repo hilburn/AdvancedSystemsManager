@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Connection
 {
-    private int componentId;
-    private int connectionId;
-    private List<Point> nodes;
-    private Point selectedNode;
+    public int componentId;
+    public int connectionId;
+    public List<Point> nodes;
+    public Point selectedNode;
 
     public Connection(int componentId, int connectionId)
     {

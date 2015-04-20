@@ -5,7 +5,10 @@ import advancedfactorymanager.api.ITileEntityInterface;
 import advancedfactorymanager.blocks.ClusterMethodRegistration;
 import advancedfactorymanager.blocks.ClusterRegistry;
 import advancedfactorymanager.blocks.ItemCluster;
+import advancedfactorymanager.helpers.StevesEnum;
 import advancedfactorymanager.network.*;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -20,13 +23,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TileEntityCluster extends TileEntity implements ITileEntityInterface, IPacketBlock
+public class TileEntityCluster extends TileEntity implements ITileEntityInterface, IPacketBlock, IEnergyProvider, IEnergyReceiver
 {
 
     private boolean requestedInfo;
@@ -235,6 +239,60 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
             }
         }
 
+        return false;
+    }
+
+    @Override
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+    {
+        int toReceive = 0;
+        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        {
+            toReceive += ((TileEntityRFNode)blockContainer.te).receiveEnergy(from, maxReceive - toReceive, simulate);
+        }
+        return toReceive;
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
+        int toExtract = maxExtract;
+        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        {
+            toExtract += ((TileEntityRFNode)blockContainer.te).extractEnergy(from, maxExtract - toExtract, simulate);
+        }
+        return maxExtract - toExtract;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from)
+    {
+        int stored = -1;
+        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        {
+            stored += ((TileEntityRFNode)blockContainer.te).getEnergyStored(from);
+        }
+        return stored;
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
+        int max = -1;
+        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        {
+            max += ((TileEntityRFNode)blockContainer.te).getMaxEnergyStored(from);
+        }
+        return max;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from)
+    {
+        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        {
+            if (((TileEntityRFNode)blockContainer.te).canConnectEnergy(from)) return true;
+        }
         return false;
     }
 

@@ -13,12 +13,12 @@ public abstract class ComponentMenuCamouflageAdvanced extends ComponentMenu
         super(parent);
     }
 
-    private static final int ERROR_X = 115;
-    private static final int ERROR_Y = 2;
-    private static final int ERROR_SIZE_W = 2;
-    private static final int ERROR_SIZE_H = 10;
-    private static final int ERROR_SRC_X = 44;
-    private static final int ERROR_SRC_Y = 212;
+    public static final int ERROR_X = 115;
+    public static final int ERROR_Y = 2;
+    public static final int ERROR_SIZE_W = 2;
+    public static final int ERROR_SIZE_H = 10;
+    public static final int ERROR_SRC_X = 44;
+    public static final int ERROR_SRC_Y = 212;
 
     @SideOnly(Side.CLIENT)
     @Override

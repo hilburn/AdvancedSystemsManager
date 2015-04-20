@@ -16,19 +16,19 @@ import java.util.*;
 
 public class CraftingBufferFluidElement implements IItemBufferElement, IItemBufferSubElement
 {
-    private static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
-    private CommandExecutor executor;
-    private ComponentMenuCrafting craftingMenu;
-    private ComponentMenuContainerScrap scrapMenu;
-    private IRecipe recipe;
-    private ItemStack result;
-    private boolean isCrafting;
-    private boolean justRemoved;
-    private int overflowBuffer;
-    private List<ItemStack> containerItems;
-    private static final double SPEED_MULTIPLIER = 0.05000000074505806D;
-    private static final Random rand = new Random();
-    private List<IInventory> inventories = new ArrayList<IInventory>();
+    public static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
+    public CommandExecutor executor;
+    public ComponentMenuCrafting craftingMenu;
+    public ComponentMenuContainerScrap scrapMenu;
+    public IRecipe recipe;
+    public ItemStack result;
+    public boolean isCrafting;
+    public boolean justRemoved;
+    public int overflowBuffer;
+    public List<ItemStack> containerItems;
+    public static final double SPEED_MULTIPLIER = 0.05000000074505806D;
+    public static final Random rand = new Random();
+    public List<IInventory> inventories = new ArrayList<IInventory>();
 
     public CraftingBufferFluidElement(CommandExecutor executor, ComponentMenuCrafting craftingMenu, ComponentMenuContainerScrap scrapMenu)
     {
@@ -88,7 +88,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
 
     }
 
-    private void disposeOfExtraItem(ItemStack itemStack)
+    public void disposeOfExtraItem(ItemStack itemStack)
     {
         TileEntityManager manager = this.craftingMenu.getParent().getManager();
         List<SlotInventoryHolder> inventories = CommandExecutor.getContainers(manager, this.scrapMenu, ConnectionBlockType.INVENTORY);
@@ -204,12 +204,12 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         return this.result;
     }
 
-    private boolean useAdvancedDetection()
+    public boolean useAdvancedDetection()
     {
         return this.craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
     }
 
-    private boolean findItems(boolean remove)
+    public boolean findItems(boolean remove)
     {
         List<CraftingSetting> settings = new ArrayList<CraftingSetting>();
         for (Setting setting : this.craftingMenu.getSettings()) settings.add((CraftingSetting)setting);
@@ -343,19 +343,19 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         }
     }
 
-    private static boolean isBucket(CraftingSetting setting)
+    public static boolean isBucket(CraftingSetting setting)
     {
         return FluidContainerRegistry.isBucket(setting.getItem());
     }
 
-    private static class FluidElement
+    public static class FluidElement
     {
         public FluidStack fluid;
         public ItemStack bucket;
         public int amountToFind;
         List<Integer> slots = new ArrayList<Integer>();
 
-        private FluidElement(ItemStack bucket, int i)
+        public FluidElement(ItemStack bucket, int i)
         {
             this.bucket = bucket;
             this.fluid = FluidContainerRegistry.getFluidForFilledItem(bucket);

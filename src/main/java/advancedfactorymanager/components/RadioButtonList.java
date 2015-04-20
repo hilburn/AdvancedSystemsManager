@@ -12,14 +12,14 @@ import java.util.List;
 public abstract class RadioButtonList
 {
 
-    private static final int RADIO_SIZE = 8;
-    private static final int RADIO_SRC_X = 30;
-    private static final int RADIO_SRC_Y = 52;
-    private static final int RADIO_TEXT_X = 12;
-    private static final int RADIO_TEXT_Y = 2;
+    public static final int RADIO_SIZE = 8;
+    public static final int RADIO_SRC_X = 30;
+    public static final int RADIO_SRC_Y = 52;
+    public static final int RADIO_TEXT_X = 12;
+    public static final int RADIO_TEXT_Y = 2;
 
-    private List<RadioButton> radioButtonList;
-    private int selectedOption;
+    public List<RadioButton> radioButtonList;
+    public int selectedOption;
 
     public RadioButtonList()
     {

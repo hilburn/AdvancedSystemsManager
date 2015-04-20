@@ -37,11 +37,11 @@ public class ComponentMenuCamouflageInside extends ComponentMenuCamouflageAdvanc
         }
     }
 
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 5;
-    private static final int RADIO_BUTTON_SPACING = 12;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 5;
+    public static final int RADIO_BUTTON_SPACING = 12;
 
-    private RadioButtonList radioButtons;
+    public RadioButtonList radioButtons;
 
     @Override
     protected String getWarningText()
@@ -116,7 +116,7 @@ public class ComponentMenuCamouflageInside extends ComponentMenuCamouflageAdvanc
         }
     }
 
-    private static final String NBT_SETTING = "Setting";
+    public static final String NBT_SETTING = "Setting";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -150,9 +150,9 @@ public class ComponentMenuCamouflageInside extends ComponentMenuCamouflageAdvanc
         NOTHING(Localization.CAMOUFLAGE_NO_UPDATE);
 
 
-        private Localization name;
+        public Localization name;
 
-        private InsideSetType(Localization name)
+        InsideSetType(Localization name)
         {
             this.name = name;
         }

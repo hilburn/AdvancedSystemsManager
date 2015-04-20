@@ -7,8 +7,8 @@ import java.util.List;
 public class SlotSideTarget
 {
 
-    private int slot;
-    private List<Integer> sides;
+    public int slot;
+    public List<Integer> sides;
 
     public SlotSideTarget(int slot, int side)
     {

@@ -9,8 +9,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ComponentMenuCrafting extends ComponentMenuItem
 {
-    private CraftingSetting resultItem;
-    private CraftingDummy dummy;
+    public CraftingSetting resultItem;
+    public CraftingDummy dummy;
 
     public ComponentMenuCrafting(FlowComponent parent)
     {
@@ -92,12 +92,12 @@ public class ComponentMenuCrafting extends ComponentMenuItem
     }
 
 
-    private int getResultX()
+    public int getResultX()
     {
         return ITEM_X + ITEM_SIZE_WITH_MARGIN * 3;
     }
 
-    private int getResultY()
+    public int getResultY()
     {
         return scrollControllerSelected.getScrollingStartY() + ITEM_SIZE_WITH_MARGIN;
     }

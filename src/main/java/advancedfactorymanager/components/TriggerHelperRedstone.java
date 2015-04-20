@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TriggerHelperRedstone extends TriggerHelper
 {
-    private int strengthId;
+    public int strengthId;
 
     public TriggerHelperRedstone(int sidesId, int strengthId)
     {

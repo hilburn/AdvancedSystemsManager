@@ -14,19 +14,19 @@ import java.util.List;
 
 public class ComponentMenuDelayed extends ComponentMenuTriggered
 {
-    private static final int TEXT_BOX_X = 15;
-    private static final int TEXT_BOX_Y = 35;
-    private static final int MENU_WIDTH = 120;
-    private static final int TEXT_MARGIN_X = 5;
-    private static final int TEXT_Y = 10;
-    //    private static final int TEXT_Y2 = 15;
-//    private static final int TEXT_SECOND_X = 60;
-//    private static final int TEXT_SECOND_Y = 38;
-    private TextBoxNumber intervalTicks;
-    private TextBoxNumber intervalSeconds;
-    private RadioButtonList buttonList;
-    private static final EnumSet<ConnectionOption> delayed = EnumSet.of(StevesEnum.DELAYED_OUTPUT);
-    private static final String NBT_RESTART = "Restart";
+    public static final int TEXT_BOX_X = 15;
+    public static final int TEXT_BOX_Y = 35;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 10;
+    //    public static final int TEXT_Y2 = 15;
+//    public static final int TEXT_SECOND_X = 60;
+//    public static final int TEXT_SECOND_Y = 38;
+    public TextBoxNumber intervalTicks;
+    public TextBoxNumber intervalSeconds;
+    public RadioButtonList buttonList;
+    public static final EnumSet<ConnectionOption> delayed = EnumSet.of(StevesEnum.DELAYED_OUTPUT);
+    public static final String NBT_RESTART = "Restart";
 
     public ComponentMenuDelayed(FlowComponent parent)
     {

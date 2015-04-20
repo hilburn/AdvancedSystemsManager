@@ -48,7 +48,7 @@ public class ComponentMenuRedstoneSidesTrigger extends ComponentMenuRedstoneSide
         return isBUD() ? Localization.UPDATE_SIDES_MENU.toString() : Localization.REDSTONE_SIDES_MENU_TRIGGER.toString();
     }
 
-    private boolean isBUD()
+    public boolean isBUD()
     {
         return getParent().getConnectionSet() == ConnectionSet.BUD;
     }

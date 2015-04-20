@@ -77,15 +77,15 @@ public class ComponentMenuSplit extends ComponentMenu
         });
     }
 
-    private RadioButtonList radioButtons;
-    private CheckBoxList checkBoxes;
-    private boolean useFair;
-    private boolean useEmpty;
+    public RadioButtonList radioButtons;
+    public CheckBoxList checkBoxes;
+    public boolean useFair;
+    public boolean useEmpty;
 
-    private static final int RADIO_X = 5;
-    private static final int RADIO_Y = 5;
-    private static final int CHECK_BOX_X = 15;
-    private static final int SPACING_Y = 15;
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int CHECK_BOX_X = 15;
+    public static final int SPACING_Y = 15;
 
     @Override
     public String getName()
@@ -195,21 +195,21 @@ public class ComponentMenuSplit extends ComponentMenu
         }
     }
 
-    private void sendClientData(ContainerManager container, int id)
+    public void sendClientData(ContainerManager container, int id)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerData(int id)
+    public void sendServerData(int id)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, id);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, int id)
+    public void writeData(DataWriter dw, int id)
     {
         dw.writeData(id, DataBitHelper.MENU_SPLIT_DATA_ID);
         switch (id)
@@ -226,9 +226,9 @@ public class ComponentMenuSplit extends ComponentMenu
         }
     }
 
-    private static final String NBT_SPLIT = "Split";
-    private static final String NBT_FAIR = "Fair";
-    private static final String NBT_EMPTY = "Empty";
+    public static final String NBT_SPLIT = "Split";
+    public static final String NBT_FAIR = "Fair";
+    public static final String NBT_EMPTY = "Empty";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -286,7 +286,7 @@ public class ComponentMenuSplit extends ComponentMenu
         return radioButtons.getSelectedOption() == 1;
     }
 
-    private void setSplit(boolean val)
+    public void setSplit(boolean val)
     {
         radioButtons.setSelectedOption(val ? 1 : 0);
     }
@@ -296,7 +296,7 @@ public class ComponentMenuSplit extends ComponentMenu
         return useFair;
     }
 
-    private void setFair(boolean val)
+    public void setFair(boolean val)
     {
         useFair = val;
     }
@@ -306,7 +306,7 @@ public class ComponentMenuSplit extends ComponentMenu
         return useEmpty;
     }
 
-    private void setEmpty(boolean val)
+    public void setEmpty(boolean val)
     {
         useEmpty = val;
     }

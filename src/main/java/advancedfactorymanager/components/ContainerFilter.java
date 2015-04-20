@@ -12,34 +12,34 @@ import java.util.List;
 public class ContainerFilter
 {
 
-    private static final int CHECK_BOX_X = 5;
-    private static final int CHECK_BOX_FILTER_Y = 5;
-    private static final int CHECK_BOX_FILTER_SPACING = 12;
-    private static final int CHECK_BOX_FILTER_INVERT_Y = 55;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_FILTER_Y = 5;
+    public static final int CHECK_BOX_FILTER_SPACING = 12;
+    public static final int CHECK_BOX_FILTER_INVERT_Y = 55;
 
-    private static final int TEXT_BOX_Y_OFFSET = -2;
-    private static final int RADIO_BUTTON_SPACING = 15;
+    public static final int TEXT_BOX_Y_OFFSET = -2;
+    public static final int RADIO_BUTTON_SPACING = 15;
 
-    private static final int CHECK_BOX_POSITION_Y = 5;
-    private static final int CHECK_BOX_POSITION_SPACING = 20;
-    private static final int TEXT_BOX_POSITION_X_1 = 25;
-    private static final int TEXT_BOX_POSITION_X_2 = 50;
-    private static final int CHECK_BOX_POSITION_INVERT_X = 80;
+    public static final int CHECK_BOX_POSITION_Y = 5;
+    public static final int CHECK_BOX_POSITION_SPACING = 20;
+    public static final int TEXT_BOX_POSITION_X_1 = 25;
+    public static final int TEXT_BOX_POSITION_X_2 = 50;
+    public static final int CHECK_BOX_POSITION_INVERT_X = 80;
 
-    private static final int CHECK_BOX_DISTANCE_Y = 5;
-    private static final int CHECK_BOX_DISTANCE_SPACING = 30;
-    private static final int DISTANCE_SECOND_LINE = 14;
-    private static final int TEXT_BOX_DISTANCE_X_1 = 15;
-    private static final int TEXT_BOX_DISTANCE_X_2 = 40;
-    private static final int CHECK_BOX_DISTANCE_INVERT_X = 65;
+    public static final int CHECK_BOX_DISTANCE_Y = 5;
+    public static final int CHECK_BOX_DISTANCE_SPACING = 30;
+    public static final int DISTANCE_SECOND_LINE = 14;
+    public static final int TEXT_BOX_DISTANCE_X_1 = 15;
+    public static final int TEXT_BOX_DISTANCE_X_2 = 40;
+    public static final int CHECK_BOX_DISTANCE_INVERT_X = 65;
 
-    private static final int RADIO_BUTTON_X = 5;
-    private static final int RADIO_BUTTON_Y = 5;
-    private static final int CHECK_BOX_SELECTION_Y = 40;
-    private static final int RADIO_BUTTON_SPACING_X = 60;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 5;
+    public static final int CHECK_BOX_SELECTION_Y = 40;
+    public static final int RADIO_BUTTON_SPACING_X = 60;
 
-    private static final int RADIO_BUTTON_Y_VARIABLE = 2;
-    private static final int CHECK_BOX_INVERT_VARIABLE_Y = 12;
+    public static final int RADIO_BUTTON_Y_VARIABLE = 2;
+    public static final int CHECK_BOX_INVERT_VARIABLE_Y = 12;
 
     public CheckBoxList checkBoxes;
     public TextBoxNumberList textBoxes;
@@ -48,13 +48,13 @@ public class ContainerFilter
     public List<Integer> filterVariableSelection;
     public RadioButtonList radioButtonVariable;
 
-    private CheckBox invertFilterMatch;
-    private CheckBox[] useSubFilter;
-    private CheckBox[] useRange;
+    public CheckBox invertFilterMatch;
+    public CheckBox[] useSubFilter;
+    public CheckBox[] useRange;
     TextBoxPage[] lowerRange;
     TextBoxPage[] higherRange;
-    private CheckBox[] invertRange;
-    private CheckBox variableInvert;
+    public CheckBox[] invertRange;
+    public CheckBox variableInvert;
 
     public ComponentMenuContainer currentMenu;
 
@@ -329,12 +329,12 @@ public class ContainerFilter
         variableInvert.setValue(false);
     }
 
-    private class CheckBoxPage extends CheckBox
+    public class CheckBoxPage extends CheckBox
     {
 
 
-        private boolean checked; //this checkbox is only used on the client side so we don't have to anything special with the values
-        private ComponentMenuContainer.Page page;
+        public boolean checked; //this checkbox is only used on the client side so we don't have to anything special with the values
+        public ComponentMenuContainer.Page page;
 
         public CheckBoxPage(Localization name, ComponentMenuContainer.Page page, int x, int y)
         {
@@ -370,9 +370,9 @@ public class ContainerFilter
 
     class TextBoxPage extends TextBoxNumber
     {
-        private ComponentMenuContainer.Page page;
-        private boolean negative;
-        private int defaultNumber;
+        public ComponentMenuContainer.Page page;
+        public boolean negative;
+        public int defaultNumber;
 
         public TextBoxPage(ComponentMenuContainer.Page page, int x, int y, boolean negative, int defaultNumber)
         {
@@ -413,7 +413,7 @@ public class ContainerFilter
             return negative ? -128 : super.getMinNumber();
         }
 
-        private void resetDefault()
+        public void resetDefault()
         {
             setNumber(defaultNumber);
         }

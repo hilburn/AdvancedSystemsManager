@@ -3,14 +3,14 @@ package advancedfactorymanager.components;
 
 public class TextBoxNumber
 {
-    private static final int TEXT_BOX_SIZE_W = 21;
-    private static final int TEXT_BOX_SIZE_W_WIDE = 33;
+    public static final int TEXT_BOX_SIZE_W = 21;
+    public static final int TEXT_BOX_SIZE_W_WIDE = 33;
 
-    private int x;
-    private int y;
-    private int number;
-    private int length;
-    private boolean wide;
+    public int x;
+    public int y;
+    public int number;
+    public int length;
+    public boolean wide;
 
     public TextBoxNumber(int x, int y, int length, boolean wide)
     {

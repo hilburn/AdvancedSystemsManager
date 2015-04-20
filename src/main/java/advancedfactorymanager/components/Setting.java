@@ -11,9 +11,9 @@ import java.util.List;
 
 public abstract class Setting
 {
-    private int id;
+    public int id;
 
-    private boolean isLimitedByAmount;
+    public boolean isLimitedByAmount;
 
     public Setting(int id)
     {
