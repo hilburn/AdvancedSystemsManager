@@ -37,7 +37,7 @@ public abstract class CommandDuplicator implements ISubCommand
     {
         if (!isVisible(sender))
         {
-            throw new CommandException("stevesaddons.command.noPermission");
+            throw new CommandException("afm.command.noPermission");
         }
         ItemStack duplicator = getDuplicator(sender);
         if (duplicator != null)
@@ -45,7 +45,7 @@ public abstract class CommandDuplicator implements ISubCommand
             doCommand(duplicator, CommandBase.getCommandSenderAsPlayer(sender), arguments);
         } else
         {
-            throw new CommandException("stevesaddons.command.noDuplicator");
+            throw new CommandException("afm.command.noDuplicator");
         }
     }
 

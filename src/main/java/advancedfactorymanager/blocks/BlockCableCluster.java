@@ -89,7 +89,7 @@ public class BlockCableCluster extends BlockCamouflageBase
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
         ItemStack itemStack = getItemStack(world, x, y, z, world.getBlockMetadata(x, y, z));
         if (itemStack != null)
@@ -97,7 +97,7 @@ public class BlockCableCluster extends BlockCamouflageBase
             return itemStack;
         }
 
-        return super.getPickBlock(target, world, x, y, z);
+        return super.getPickBlock(target, world, x, y, z, player);
     }
 
     private ItemStack getItemStack(World world, int x, int y, int z, int meta)
@@ -185,12 +185,8 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        if (cluster != null)
-        {
-            return cluster.canConnectRedstone(side);
-        }
+        return cluster != null && cluster.canConnectRedstone(side);
 
-        return false;
     }
 
     @Override
@@ -214,12 +210,8 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        if (cluster != null)
-        {
-            return cluster.shouldCheckWeakPower(side);
-        }
+        return cluster != null && cluster.shouldCheckWeakPower(side);
 
-        return false;
     }
 
     @Override
@@ -227,12 +219,7 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        if (cluster != null)
-        {
-            return cluster.isProvidingWeakPower(side);
-        }
-
-        return 0;
+        return cluster != null ? cluster.isProvidingWeakPower(side): 0;
     }
 
     @Override
@@ -240,12 +227,7 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        if (cluster != null)
-        {
-            return cluster.isProvidingStrongPower(side);
-        }
-
-        return 0;
+        return cluster != null ? cluster.isProvidingStrongPower(side): 0;
     }
 
     @Override
@@ -253,16 +235,13 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        if (cluster != null)
-        {
-            return cluster.onBlockActivated(player, side, hitX, hitY, hitZ);
-        }
+        return cluster != null && cluster.onBlockActivated(player, side, hitX, hitY, hitZ);
 
-        return false;
     }
 
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public void getSubBlocks(Item item, CreativeTabs tabs, List list)
     {
         list.add(new ItemStack(item, 1, 0));

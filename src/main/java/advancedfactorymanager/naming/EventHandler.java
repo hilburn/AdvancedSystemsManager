@@ -82,12 +82,12 @@ public class EventHandler
                     {
                         if (NameRegistry.removeName(world, x, y, z))
                         {
-                            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("stevesaddons.chat.cleared")));
+                            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("afm.chat.cleared")));
                         }
                     } else
                     {
                         NameRegistry.saveName(world, x, y, z, label);
-                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("stevesaddons.chat.saved", label)));
+                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("afm.chat.saved", label)));
                     }
                     event.setCanceled(true);
                 }

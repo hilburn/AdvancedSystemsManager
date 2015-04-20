@@ -1,4 +1,4 @@
-package stevesaddons.asm;
+package afm.asm;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.classloading.FMLForgePlugin;

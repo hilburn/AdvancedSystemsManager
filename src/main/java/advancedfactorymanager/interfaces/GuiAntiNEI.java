@@ -40,7 +40,7 @@ public abstract class GuiAntiNEI extends GuiScreen
     private ItemStack returningStack;
     private Slot field_146985_D;
     private long field_146986_E;
-    protected final Set field_147008_s = new HashSet();
+    protected final Set<Slot> field_147008_s = new HashSet<Slot>();
     protected boolean field_147007_t;
     private int field_146987_F;
     private int field_146988_G;
@@ -274,24 +274,24 @@ public abstract class GuiAntiNEI extends GuiScreen
         if (itemstack != null && this.field_147007_t)
         {
             this.field_146996_I = itemstack.stackSize;
-            ItemStack itemstack1;
+            ItemStack itemStack;
             int i;
 
-            for (Iterator iterator = this.field_147008_s.iterator(); iterator.hasNext(); this.field_146996_I -= itemstack1.stackSize - i)
+            for (Iterator iterator = this.field_147008_s.iterator(); iterator.hasNext(); this.field_146996_I -= itemStack.stackSize - i)
             {
                 Slot slot = (Slot)iterator.next();
-                itemstack1 = itemstack.copy();
+                itemStack = itemstack.copy();
                 i = slot.getStack() == null ? 0 : slot.getStack().stackSize;
-                Container.func_94525_a(this.field_147008_s, this.field_146987_F, itemstack1, i);
+                Container.func_94525_a(this.field_147008_s, this.field_146987_F, itemStack, i);
 
-                if (itemstack1.stackSize > itemstack1.getMaxStackSize())
+                if (itemStack.stackSize > itemStack.getMaxStackSize())
                 {
-                    itemstack1.stackSize = itemstack1.getMaxStackSize();
+                    itemStack.stackSize = itemStack.getMaxStackSize();
                 }
 
-                if (itemstack1.stackSize > slot.getSlotStackLimit())
+                if (itemStack.stackSize > slot.getSlotStackLimit())
                 {
-                    itemstack1.stackSize = slot.getSlotStackLimit();
+                    itemStack.stackSize = slot.getSlotStackLimit();
                 }
             }
         }

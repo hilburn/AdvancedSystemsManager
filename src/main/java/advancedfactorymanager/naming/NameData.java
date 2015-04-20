@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class NameData extends WorldSavedData
 {
-    public static final String KEY = "stevesaddons.namedata";
+    public static final String KEY = "afm.namedata";
 
     public Map<BlockCoord, String> names;
 

@@ -92,6 +92,7 @@ public abstract class BlockCableDirectionAdvanced extends BlockContainer
     protected abstract Class<? extends TileEntityClusterElement> getTeClass();
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public void getSubBlocks(Item item, CreativeTabs tabs, List list)
     {
         list.add(new ItemStack(item, 1, 0));

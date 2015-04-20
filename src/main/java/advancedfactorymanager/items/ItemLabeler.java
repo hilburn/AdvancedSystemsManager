@@ -60,12 +60,12 @@ public class ItemLabeler extends Item
                 {
                     if (NameRegistry.removeName(player.getEntityWorld(), x, y, z))
                     {
-                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("stevesaddons.chat.cleared")));
+                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("afm.chat.cleared")));
                     }
                 } else
                 {
                     NameRegistry.saveName(player.getEntityWorld(), x, y, z, label);
-                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("stevesaddons.chat.saved", label)));
+                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("afm.chat.saved", label)));
                 }
             }
             return true;

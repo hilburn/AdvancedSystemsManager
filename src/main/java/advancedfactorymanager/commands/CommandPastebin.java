@@ -46,7 +46,7 @@ public class CommandPastebin extends CommandDuplicator
     {
         if (arguments.length < 2)
         {
-            throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
+            throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");
         }
         try
         {
@@ -68,22 +68,22 @@ public class CommandPastebin extends CommandDuplicator
                     tagCompound.setString("Author", sender.getCommandSenderName());
                     httpPost.put("api_paste_code", tagCompound.toString());
                     String inputLine = httpPost.getContents();
-                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("stevesaddons.command.savedTo", inputLine)));
+                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("afm.command.savedTo", inputLine)));
                     if (!sender.mcServer.isDedicatedServer())
                     {
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         clipboard.setContents(new StringSelection(inputLine), clippy);
-                        sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translate("stevesaddons.command.copiedToClip")));
+                        sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translate("afm.command.copiedToClip")));
                     }
                 } else
                 {
-                    throw new CommandException("stevesaddons.command.nothingToSave");
+                    throw new CommandException("afm.command.nothingToSave");
                 }
             } else if (arguments[1].equals("get"))
             {
                 if (arguments.length < 3)
                 {
-                    throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
+                    throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");
                 }
                 String name = arguments[2];
                 name = name.replaceAll("http:\\/\\/pastebin.com\\/(.*)", "$1");
@@ -95,11 +95,11 @@ public class CommandPastebin extends CommandDuplicator
                     NBTTagCompound tagCompound = (NBTTagCompound)nbtBase;
                     tagCompound = unstripBaseNBT(tagCompound);
                     duplicator.setTagCompound(tagCompound);
-                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("stevesaddons.command.loadSuccess", "http://pastebin.com/" + name)));
+                    sender.addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("afm.command.loadSuccess", "http://pastebin.com/" + name)));
                 }
             } else
             {
-                throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
+                throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");
             }
         } catch (Exception e)
         {

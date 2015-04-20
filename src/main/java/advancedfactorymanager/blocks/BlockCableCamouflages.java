@@ -20,8 +20,6 @@ import java.util.List;
 
 public class BlockCableCamouflages extends BlockCamouflageBase
 {
-
-
     protected BlockCableCamouflages()
     {
         super(Material.iron);
@@ -65,6 +63,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public void getSubBlocks(Item block, CreativeTabs tabs, List list)
     {
         for (int i = 0; i < TileEntityCamouflage.CamouflageType.values().length; i++)

@@ -200,18 +200,25 @@ public class ItemSetting extends Setting
             switch (fuzzyMode)
             {
                 case ORE_DICTIONARY:
-                    int id = OreDictionary.getOreID(this.getItem());
-                    if (id != -1)
+                    int[] ids = OreDictionary.getOreIDs(this.getItem());
+                    if (ids.length > 0)
                     {
-                        return id == OreDictionary.getOreID(other);
+                        int[] otherIds = OreDictionary.getOreIDs(other);
+                        for (int id : ids)
+                        {
+                            for (int oId : otherIds)
+                            {
+                                if (id == oId) return true;
+                            }
+                        }
                     }
                     //note that this falls through into the precise one, this is on purpose
                 case PRECISE:
-                    return Item.getIdFromItem(this.getItem().getItem()) == Item.getIdFromItem(other.getItem()) && this.getItem().getItemDamage() == other.getItemDamage() && ItemStack.areItemStackTagsEqual(getItem(), other);
+                    return this.getItem().getItem() == other.getItem() && this.getItem().getItemDamage() == other.getItemDamage() && ItemStack.areItemStackTagsEqual(getItem(), other);
                 case NBT_FUZZY:
-                    return Item.getIdFromItem(this.getItem().getItem()) == Item.getIdFromItem(other.getItem()) && this.getItem().getItemDamage() == other.getItemDamage();
+                    return this.getItem().getItem() == other.getItem() && this.getItem().getItemDamage() == other.getItemDamage();
                 case FUZZY:
-                    return Item.getIdFromItem(this.getItem().getItem()) == Item.getIdFromItem(other.getItem());
+                    return this.getItem().getItem() == other.getItem();
                 case MOD_GROUPING:
                     return ModItemHelper.areItemsFromSameMod(this.getItem().getItem(), other.getItem());
                 case ALL:

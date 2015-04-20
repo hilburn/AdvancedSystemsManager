@@ -9,7 +9,7 @@ import advancedfactorymanager.network.PacketHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
-import stevesaddons.asm.StevesHooks;
+import afm.asm.StevesHooks;
 
 import java.util.EnumSet;
 

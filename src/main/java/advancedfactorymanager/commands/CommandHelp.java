@@ -40,7 +40,7 @@ public class CommandHelp implements ISubCommand
         switch (arguments.length)
         {
             case 1:
-                StringBuilder output = new StringBuilder(LocalizationHelper.translate("stevesaddons.command.info.help.start") + " ");
+                StringBuilder output = new StringBuilder(LocalizationHelper.translate("afm.command.info.help.start") + " ");
                 List<String> commands = new ArrayList<String>();
                 for (ISubCommand command : CommandRegistry.commands.values())
                 {
@@ -49,27 +49,28 @@ public class CommandHelp implements ISubCommand
 
                 for (int i = 0; i < commands.size() - 1; i++)
                 {
-                    output.append("/stevesaddons " + YELLOW + commands.get(i) + WHITE + ", ");
+                    output.append("/afm " + YELLOW + commands.get(i) + WHITE + ", ");
                 }
                 output.delete(output.length() - 2, output.length());
-                output.append(" and /stevesaddons " + YELLOW + commands.get(commands.size() - 1) + WHITE + ".");
+                output.append(" and /afm " + YELLOW + commands.get(commands.size() - 1) + WHITE + ".");
                 sender.addChatMessage(new ChatComponentText(output.toString()));
                 break;
             case 2:
                 String commandName = arguments[1];
                 if (!CommandRegistry.commandExists(commandName))
                 {
-                    throw new CommandNotFoundException("stevesaddons.command.notFound");
+                    throw new CommandNotFoundException("afm.command.notFound");
                 }
-                sender.addChatMessage(new ChatComponentText(LocalizationHelper.translate("stevesaddons.command.info." + commandName)));
-                sender.addChatMessage(new ChatComponentText(LocalizationHelper.translate("stevesaddons.command." + commandName + ".syntax")));
+                sender.addChatMessage(new ChatComponentText(LocalizationHelper.translate("afm.command.info." + commandName)));
+                sender.addChatMessage(new ChatComponentText(LocalizationHelper.translate("afm.command." + commandName + ".syntax")));
                 break;
             default:
-                throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
+                throw new WrongUsageException("afm.command." + getCommandName() + ".syntax");
         }
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
 

@@ -1,4 +1,4 @@
-package stevesaddons.asm;
+package afm.asm;
 
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;

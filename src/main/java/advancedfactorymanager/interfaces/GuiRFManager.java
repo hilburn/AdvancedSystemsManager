@@ -28,7 +28,7 @@ public class GuiRFManager extends GuiManager
 {
     private static final ResourceLocation BACKGROUND_1 = registerTexture("Background1");
     private static final ResourceLocation BACKGROUND_2 = registerTexture("Background2");
-    private static final ResourceLocation COMPONENTS = new ResourceLocation("stevesaddons", "textures/gui/FlowComponents.png");
+    private static final ResourceLocation COMPONENTS = new ResourceLocation("afm", "textures/gui/FlowComponents.png");
     public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 100;
     public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
     public static int Z_LEVEL_COMPONENT_START = 750;

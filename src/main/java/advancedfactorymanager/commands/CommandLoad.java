@@ -32,10 +32,10 @@ public class CommandLoad extends CommandDuplicator
             }
             NBTTagCompound tagCompound = CompressedStreamTools.read(file);
             duplicator.setTagCompound(unstripBaseNBT(tagCompound));
-            CommandBase.getCommandSenderAsPlayer(sender).addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("stevesaddons.command.loadSuccess", name + ".nbt")));
+            CommandBase.getCommandSenderAsPlayer(sender).addChatComponentMessage(new ChatComponentText(LocalizationHelper.translateFormatted("afm.command.loadSuccess", name + ".nbt")));
         } catch (IOException e)
         {
-            throw new CommandException("stevesaddons.command.loadFailed");
+            throw new CommandException("afm.command.loadFailed");
         }
     }
 

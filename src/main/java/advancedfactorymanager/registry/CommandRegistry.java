@@ -34,7 +34,7 @@ public class CommandRegistry extends CommandBase
     @Override
     public String getCommandName()
     {
-        return "stevesaddons";
+        return "afm";
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CommandRegistry extends CommandBase
         ISubCommand command = commands.get(args[0]);
         if (command != null)
         {
-            if (sender.canCommandSenderUseCommand(command.getPermissionLevel(), "stevesaddons " + command.getCommandName()) ||
+            if (sender.canCommandSenderUseCommand(command.getPermissionLevel(), "afm " + command.getCommandName()) ||
                     (sender instanceof EntityPlayerMP && command.getPermissionLevel() <= 0))
             {
                 command.handleCommand(sender, args);
@@ -67,7 +67,7 @@ public class CommandRegistry extends CommandBase
             }
             throw new CommandException("commands.generic.permission");
         }
-        throw new CommandNotFoundException("stevesaddons.command.notFound");
+        throw new CommandNotFoundException("afm.command.notFound");
     }
 
     public static boolean commandExists(String name)
@@ -76,6 +76,7 @@ public class CommandRegistry extends CommandBase
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public List addTabCompletionOptions(ICommandSender sender, String[] args)
     {
 

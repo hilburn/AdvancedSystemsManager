@@ -43,6 +43,7 @@ public class ItemCluster extends ItemBlock
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean extraInfo)
     {
         NBTTagCompound compound = item.getTagCompound();
