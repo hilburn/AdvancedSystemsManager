@@ -1,6 +1,6 @@
-Steve's Addons
+Advanced Factory Manager
 =========
-Adds additional functionality to Steve's Factory Manager, a manager duplicator which allows copying of instruction sets and transport of RF
+A large rewrite and update of Vswe's Steve's Factory Manager Mod.
 
 ## Contributors
 hilburn
