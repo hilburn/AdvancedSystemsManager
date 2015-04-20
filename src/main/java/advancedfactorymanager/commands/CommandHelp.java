@@ -1,11 +1,11 @@
 package advancedfactorymanager.commands;
 
+import advancedfactorymanager.helpers.LocalizationHelper;
+import advancedfactorymanager.registry.CommandRegistry;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.ChatComponentText;
-import advancedfactorymanager.helpers.LocalizationHelper;
-import advancedfactorymanager.registry.CommandRegistry;
 
 import java.util.ArrayList;
 import java.util.List;

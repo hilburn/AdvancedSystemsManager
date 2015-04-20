@@ -1,8 +1,5 @@
 package advancedfactorymanager.components;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
@@ -10,16 +7,23 @@ import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.nbt.NBTTagCompound;
 
 
-public class ComponentMenuSplit extends ComponentMenu {
-    public ComponentMenuSplit(FlowComponent parent) {
+public class ComponentMenuSplit extends ComponentMenu
+{
+    public ComponentMenuSplit(FlowComponent parent)
+    {
         super(parent);
 
 
-        radioButtons = new RadioButtonList() {
+        radioButtons = new RadioButtonList()
+        {
             @Override
-            public void updateSelectedOption(int selectedOption) {
+            public void updateSelectedOption(int selectedOption)
+            {
                 setSelectedOption(selectedOption);
                 sendServerData(0);
             }
@@ -30,36 +34,44 @@ public class ComponentMenuSplit extends ComponentMenu {
 
         checkBoxes = new CheckBoxList();
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y) {
+        checkBoxes.addCheckBox(new CheckBox(Localization.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y)
+        {
             @Override
-            public void setValue(boolean val) {
+            public void setValue(boolean val)
+            {
                 setFair(val);
             }
 
             @Override
-            public boolean getValue() {
+            public boolean getValue()
+            {
                 return useFair();
             }
 
             @Override
-            public void onUpdate() {
+            public void onUpdate()
+            {
                 sendServerData(1);
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y) {
+        checkBoxes.addCheckBox(new CheckBox(Localization.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y)
+        {
             @Override
-            public void setValue(boolean val) {
+            public void setValue(boolean val)
+            {
                 setEmpty(val);
             }
 
             @Override
-            public boolean getValue() {
+            public boolean getValue()
+            {
                 return useEmpty();
             }
 
             @Override
-            public void onUpdate() {
+            public void onUpdate()
+            {
                 sendServerData(2);
             }
         });
@@ -73,16 +85,20 @@ public class ComponentMenuSplit extends ComponentMenu {
     private static final int RADIO_X = 5;
     private static final int RADIO_Y = 5;
     private static final int CHECK_BOX_X = 15;
-    private static final int SPACING_Y = 15 ;
+    private static final int SPACING_Y = 15;
+
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.SPLIT_MENU.toString();
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY) {
-        if (useSplit()) {
+    public void draw(GuiManager gui, int mX, int mY)
+    {
+        if (useSplit())
+        {
             checkBoxes.draw(gui, mX, mY);
         }
         radioButtons.draw(gui, mX, mY);
@@ -90,95 +106,114 @@ public class ComponentMenuSplit extends ComponentMenu {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY) {
+    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void onClick(int mX, int mY, int button) {
-        if (useSplit()) {
+    public void onClick(int mX, int mY, int button)
+    {
+        if (useSplit())
+        {
             checkBoxes.onClick(mX, mY);
         }
         radioButtons.onClick(mX, mY, button);
     }
 
     @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen) {
+    public void onDrag(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen) {
+    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void writeData(DataWriter dw) {
+    public void writeData(DataWriter dw)
+    {
         dw.writeBoolean(useSplit());
-        if (useSplit()) {
+        if (useSplit())
+        {
             dw.writeBoolean(useFair());
             dw.writeBoolean(useEmpty());
         }
     }
 
     @Override
-    public void readData(DataReader dr) {
+    public void readData(DataReader dr)
+    {
         setSplit(dr.readBoolean());
-        if (useSplit()) {
+        if (useSplit())
+        {
             setFair(dr.readBoolean());
             setEmpty(dr.readBoolean());
-        }else{
+        } else
+        {
             setFair(false);
             setEmpty(false);
         }
     }
 
     @Override
-    public void copyFrom(ComponentMenu menu) {
-       ComponentMenuSplit menuSplit = (ComponentMenuSplit)menu;
-       setSplit(menuSplit.useSplit());
-       setFair(menuSplit.useFair());
-       setEmpty(menuSplit.useEmpty());
+    public void copyFrom(ComponentMenu menu)
+    {
+        ComponentMenuSplit menuSplit = (ComponentMenuSplit)menu;
+        setSplit(menuSplit.useSplit());
+        setFair(menuSplit.useFair());
+        setEmpty(menuSplit.useEmpty());
     }
 
     @Override
-    public void refreshData(ContainerManager container, ComponentMenu newData) {
+    public void refreshData(ContainerManager container, ComponentMenu newData)
+    {
         ComponentMenuSplit newDataSplit = (ComponentMenuSplit)newData;
 
-        if (useSplit() != newDataSplit.useSplit()) {
+        if (useSplit() != newDataSplit.useSplit())
+        {
             setSplit(newDataSplit.useSplit());
 
             sendClientData(container, 0);
         }
 
-        if (useFair() != newDataSplit.useFair()) {
+        if (useFair() != newDataSplit.useFair())
+        {
             setFair(newDataSplit.useFair());
 
             sendClientData(container, 1);
         }
 
-        if (useEmpty() != newDataSplit.useEmpty()) {
+        if (useEmpty() != newDataSplit.useEmpty())
+        {
             setEmpty(newDataSplit.useEmpty());
 
             sendClientData(container, 2);
         }
     }
 
-    private void sendClientData(ContainerManager container, int id) {
+    private void sendClientData(ContainerManager container, int id)
+    {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerData(int id) {
+    private void sendServerData(int id)
+    {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, id);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, int id) {
+    private void writeData(DataWriter dw, int id)
+    {
         dw.writeData(id, DataBitHelper.MENU_SPLIT_DATA_ID);
-        switch (id) {
+        switch (id)
+        {
             case 0:
                 dw.writeBoolean(useSplit());
                 break;
@@ -196,27 +231,33 @@ public class ComponentMenuSplit extends ComponentMenu {
     private static final String NBT_EMPTY = "Empty";
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup) {
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
         setSplit(nbtTagCompound.getBoolean(NBT_SPLIT));
-        if (useSplit()) {
+        if (useSplit())
+        {
             setFair(nbtTagCompound.getBoolean(NBT_FAIR));
             setEmpty(nbtTagCompound.getBoolean(NBT_EMPTY));
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup) {
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
         nbtTagCompound.setBoolean(NBT_SPLIT, useSplit());
-        if (useSplit()) {
+        if (useSplit())
+        {
             nbtTagCompound.setBoolean(NBT_FAIR, useFair());
             nbtTagCompound.setBoolean(NBT_EMPTY, useEmpty());
         }
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr) {
+    public void readNetworkComponent(DataReader dr)
+    {
         int id = dr.readData(DataBitHelper.MENU_SPLIT_DATA_ID);
-        switch (id) {
+        switch (id)
+        {
             case 0:
                 setSplit(dr.readBoolean());
                 break;
@@ -230,35 +271,43 @@ public class ComponentMenuSplit extends ComponentMenu {
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return isSplitConnection(getParent());
     }
 
-    public static boolean isSplitConnection(FlowComponent component) {
+    public static boolean isSplitConnection(FlowComponent component)
+    {
         return component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_2 || component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_5;
     }
 
-    public boolean useSplit() {
+    public boolean useSplit()
+    {
         return radioButtons.getSelectedOption() == 1;
     }
 
-    private void setSplit(boolean val) {
+    private void setSplit(boolean val)
+    {
         radioButtons.setSelectedOption(val ? 1 : 0);
     }
 
-    public boolean useFair() {
+    public boolean useFair()
+    {
         return useFair;
     }
 
-    private void setFair(boolean val) {
+    private void setFair(boolean val)
+    {
         useFair = val;
     }
 
-    public boolean useEmpty() {
+    public boolean useEmpty()
+    {
         return useEmpty;
     }
 
-    private void setEmpty(boolean val) {
+    private void setEmpty(boolean val)
+    {
         useEmpty = val;
     }
 

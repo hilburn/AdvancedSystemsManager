@@ -1,11 +1,11 @@
 package advancedfactorymanager.components;
 
+import advancedfactorymanager.helpers.AEHelper;
+import advancedfactorymanager.tileentities.TileEntityAENode;
 import appeng.api.storage.data.IAEFluidStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
-import advancedfactorymanager.helpers.AEHelper;
-import advancedfactorymanager.tileentities.TileEntityAENode;
 
 public class AEFluidBufferElement extends StackTankHolder
 {
@@ -22,38 +22,46 @@ public class AEFluidBufferElement extends StackTankHolder
     }
 
     @Override
-    public FluidStack getFluidStack() {
+    public FluidStack getFluidStack()
+    {
         return fluid.getFluidStack();
     }
 
     @Override
-    public IFluidHandler getTank() {
+    public IFluidHandler getTank()
+    {
         return node.getTank();
     }
 
     @Override
-    public ForgeDirection getSide() {
+    public ForgeDirection getSide()
+    {
         return ForgeDirection.UNKNOWN;
     }
 
     @Override
-    public void reduceAmount(int val) {
+    public void reduceAmount(int val)
+    {
         AEHelper.extract(node.getNode(), fluid.copy().setStackSize(val), node);
     }
 
     @Override
-    public int getSizeLeft() {
+    public int getSizeLeft()
+    {
         return (int)Math.min(this.fluid.getStackSize(), this.sizeLeft);
     }
 
     @Override
-    public StackTankHolder getSplitElement(int elementAmount, int id, boolean fair) {
+    public StackTankHolder getSplitElement(int elementAmount, int id, boolean fair)
+    {
         AEFluidBufferElement element = new AEFluidBufferElement(this.fluid, this.node);
         int oldAmount = this.getSizeLeft();
         int amount = oldAmount / elementAmount;
-        if(!fair) {
+        if (!fair)
+        {
             int amountLeft = oldAmount % elementAmount;
-            if(id < amountLeft) {
+            if (id < amountLeft)
+            {
                 ++amount;
             }
         }

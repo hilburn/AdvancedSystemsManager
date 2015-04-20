@@ -1,5 +1,9 @@
 package advancedfactorymanager.items;
 
+import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.reference.Names;
+import advancedfactorymanager.reference.Reference;
+import advancedfactorymanager.tileentities.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -7,10 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.reference.Reference;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.tileentities.TileEntityManager;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
 package advancedfactorymanager.components;
 
-import net.minecraft.nbt.NBTTagCompound;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class ComponentMenuTargetRF extends ComponentMenuTarget
 {

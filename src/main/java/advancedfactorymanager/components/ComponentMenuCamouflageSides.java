@@ -5,35 +5,43 @@ import advancedfactorymanager.helpers.Localization;
 import java.util.List;
 
 
-public class ComponentMenuCamouflageSides extends ComponentMenuRedstoneSides {
-    public ComponentMenuCamouflageSides(FlowComponent parent) {
+public class ComponentMenuCamouflageSides extends ComponentMenuRedstoneSides
+{
+    public ComponentMenuCamouflageSides(FlowComponent parent)
+    {
         super(parent);
     }
 
     @Override
-    protected void initRadioButtons() {
+    protected void initRadioButtons()
+    {
         //no options
     }
 
     @Override
-    protected String getMessage() {
+    protected String getMessage()
+    {
         return Localization.CAMOUFLAGE_SIDES_INFO.toString();
     }
 
     @Override
-    public boolean isVisible() {
+    public boolean isVisible()
+    {
         return true;
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.CAMOUFLAGE_SIDES_NAME.toString();
     }
 
 
     @Override
-    public void addErrors(List<String> errors) {
-        if (isVisible() && selection == 0) {
+    public void addErrors(List<String> errors)
+    {
+        if (isVisible() && selection == 0)
+        {
             errors.add(Localization.NO_SIDES_ERROR.toString());
         }
     }

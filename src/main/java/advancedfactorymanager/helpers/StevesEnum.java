@@ -1,12 +1,12 @@
 package advancedfactorymanager.helpers;
 
+import advancedfactorymanager.blocks.ClusterMethodRegistration;
+import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.components.*;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraftforge.common.util.EnumHelper;
-import advancedfactorymanager.components.*;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ConnectionBlockType;
 
 import java.lang.reflect.Field;
 

@@ -24,14 +24,16 @@ public class ItemBufferElement implements IItemBufferElement
     private boolean fairShare;
     private int shareId;
 
-    public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList, SlotStackInventoryHolder target) {
+    public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList, SlotStackInventoryHolder target)
+    {
         this(owner, setting, inventoryHolder, useWhiteList);
         addTarget(target);
         sharedBy = 1;
     }
 
 
-    private ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList) {
+    private ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList)
+    {
         this.component = owner;
         this.setting = (ItemSetting)setting;
         this.inventoryHolder = inventoryHolder;
@@ -40,73 +42,93 @@ public class ItemBufferElement implements IItemBufferElement
 
     }
 
-    public boolean addTarget(FlowComponent owner, Setting setting,  SlotInventoryHolder inventoryHolder, SlotStackInventoryHolder target) {
-        if (component.getId() == owner.getId() && (this.setting == null || (setting != null && this.setting.getId() == setting.getId())) && (this.inventoryHolder.isShared() || this.inventoryHolder.equals(inventoryHolder))) {
+    public boolean addTarget(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, SlotStackInventoryHolder target)
+    {
+        if (component.getId() == owner.getId() && (this.setting == null || (setting != null && this.setting.getId() == setting.getId())) && (this.inventoryHolder.isShared() || this.inventoryHolder.equals(inventoryHolder)))
+        {
             addTarget(target);
             return true;
-        }else{
+        } else
+        {
             return false;
         }
     }
 
-    private void addTarget(SlotStackInventoryHolder target) {
+    private void addTarget(SlotStackInventoryHolder target)
+    {
         holders.add(target);
 
         totalStackSize += target.getSizeLeft();
         currentStackSize = totalStackSize;
     }
 
-    public Setting getSetting() {
+    public Setting getSetting()
+    {
         return setting;
     }
 
-    public List<SlotStackInventoryHolder> getSubElements() {
+    public List<SlotStackInventoryHolder> getSubElements()
+    {
         return holders;
     }
 
     private Iterator<SlotStackInventoryHolder> iterator;
+
     @Override
-    public void prepareSubElements() {
+    public void prepareSubElements()
+    {
         iterator = holders.iterator();
     }
 
     @Override
-    public IItemBufferSubElement getSubElement() {
-        if (iterator.hasNext()) {
+    public IItemBufferSubElement getSubElement()
+    {
+        if (iterator.hasNext())
+        {
             return iterator.next();
-        }else{
+        } else
+        {
             return null;
         }
     }
 
     @Override
-    public void removeSubElement() {
+    public void removeSubElement()
+    {
         iterator.remove();
     }
 
     @Override
-    public void releaseSubElements() {
+    public void releaseSubElements()
+    {
         iterator = null;
     }
 
-    public int retrieveItemCount(int desiredItemCount) {
-        if (setting == null || !setting.isLimitedByAmount()) {
+    public int retrieveItemCount(int desiredItemCount)
+    {
+        if (setting == null || !setting.isLimitedByAmount())
+        {
             return desiredItemCount;
-        }else{
+        } else
+        {
             int itemsAllowedToBeMoved;
-            if (useWhiteList) {
+            if (useWhiteList)
+            {
                 int movedItems = totalStackSize - currentStackSize;
                 itemsAllowedToBeMoved = setting.getItem().stackSize - movedItems;
 
                 int amountLeft = itemsAllowedToBeMoved % sharedBy;
                 itemsAllowedToBeMoved /= sharedBy;
 
-                if (!fairShare) {
-                    if (shareId < amountLeft) {
+                if (!fairShare)
+                {
+                    if (shareId < amountLeft)
+                    {
                         itemsAllowedToBeMoved++;
                     }
                 }
-            }else{
+            } else
+            {
                 itemsAllowedToBeMoved = currentStackSize - setting.getItem().stackSize;
             }
 
@@ -115,33 +137,44 @@ public class ItemBufferElement implements IItemBufferElement
         }
     }
 
-    public void decreaseStackSize(int itemsToMove) {
+    public void decreaseStackSize(int itemsToMove)
+    {
         currentStackSize -= itemsToMove * (useWhiteList ? sharedBy : 1);
     }
 
-    public ItemStack getItemStack() {
-       if (setting != null && setting.getItem() != null) {
-           return setting.getItem();
-       }else{
-           return holders.get(0).getItemStack();
-       }
+    public ItemStack getItemStack()
+    {
+        if (setting != null && setting.getItem() != null)
+        {
+            return setting.getItem();
+        } else
+        {
+            return holders.get(0).getItemStack();
+        }
     }
 
-    public int getBufferSize(Setting outputSetting) {
+    public int getBufferSize(Setting outputSetting)
+    {
         int bufferSize = 0;
-        if (setting != null){
-            for (SlotStackInventoryHolder holder : holders) {
+        if (setting != null)
+        {
+            for (SlotStackInventoryHolder holder : holders)
+            {
                 ItemStack item = holder.getItemStack();
-                if (((ItemSetting)setting).isEqualForCommandExecutor(item)) {
+                if (((ItemSetting)setting).isEqualForCommandExecutor(item))
+                {
                     bufferSize += item.stackSize;
                 }
             }
 
-            if (setting.isLimitedByAmount()) {
-            int maxSize;
-                if (useWhiteList) {
+            if (setting.isLimitedByAmount())
+            {
+                int maxSize;
+                if (useWhiteList)
+                {
                     maxSize = setting.getItem().stackSize;
-                }else{
+                } else
+                {
                     maxSize = totalStackSize - setting.getItem().stackSize;
                 }
                 bufferSize = Math.min(bufferSize, maxSize);
@@ -150,22 +183,27 @@ public class ItemBufferElement implements IItemBufferElement
         return bufferSize;
     }
 
-    public ItemBufferElement getSplitElement(int elementAmount, int id, boolean fair) {
+    public ItemBufferElement getSplitElement(int elementAmount, int id, boolean fair)
+    {
 
         ItemBufferElement element = new ItemBufferElement(this.component, this.setting, this.inventoryHolder, this.useWhiteList);
         element.holders = new ArrayList<SlotStackInventoryHolder>();
-        for (SlotStackInventoryHolder holder : holders) {
+        for (SlotStackInventoryHolder holder : holders)
+        {
             element.addTarget((holder).getSplitElement(elementAmount, id, fair));
         }
-        if (useWhiteList) {
+        if (useWhiteList)
+        {
             element.sharedBy = sharedBy * elementAmount;
             element.fairShare = fair;
             element.shareId = elementAmount * shareId + id;
             element.currentStackSize -= totalStackSize - currentStackSize;
-            if (element.currentStackSize < 0) {
+            if (element.currentStackSize < 0)
+            {
                 element.currentStackSize = 0;
             }
-        }else{
+        } else
+        {
             element.currentStackSize = Math.min(currentStackSize, element.totalStackSize);
         }
 

@@ -1,5 +1,6 @@
 package advancedfactorymanager.blocks;
 
+import advancedfactorymanager.AdvancedFactoryManager;
 import advancedfactorymanager.tileentities.TileEntityCamouflage;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -13,15 +14,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import advancedfactorymanager.AdvancedFactoryManager;
 
 import java.util.List;
 
 
-public class BlockCableCamouflages extends BlockCamouflageBase {
+public class BlockCableCamouflages extends BlockCamouflageBase
+{
 
 
-    protected BlockCableCamouflages() {
+    protected BlockCableCamouflages()
+    {
         super(Material.iron);
         setCreativeTab(ModBlocks.creativeTab);
         setStepSound(soundTypeMetal);
@@ -29,7 +31,8 @@ public class BlockCableCamouflages extends BlockCamouflageBase {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
+    public TileEntity createNewTileEntity(World world, int meta)
+    {
         return new TileEntityCamouflage();
     }
 
@@ -38,44 +41,55 @@ public class BlockCableCamouflages extends BlockCamouflageBase {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerBlockIcons(IIconRegister register) {
+    public void registerBlockIcons(IIconRegister register)
+    {
         icons = new IIcon[TileEntityCamouflage.CamouflageType.values().length];
-        for (int i = 0; i < icons.length; i++) {
+        for (int i = 0; i < icons.length; i++)
+        {
             icons[i] = register.registerIcon(AdvancedFactoryManager.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon());
         }
     }
+
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side, int meta) {
+    public IIcon getIcon(int side, int meta)
+    {
         return getDefaultIcon(side, meta, meta);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getDefaultIcon(int side, int blockMeta, int camoMeta) {
+    public IIcon getDefaultIcon(int side, int blockMeta, int camoMeta)
+    {
         return icons[camoMeta % icons.length];
     }
 
     @Override
-    public void getSubBlocks(Item block, CreativeTabs tabs, List list) {
-        for (int i = 0; i < TileEntityCamouflage.CamouflageType.values().length; i++) {
+    public void getSubBlocks(Item block, CreativeTabs tabs, List list)
+    {
+        for (int i = 0; i < TileEntityCamouflage.CamouflageType.values().length; i++)
+        {
             list.add(new ItemStack(block, 1, i));
         }
     }
 
-    public int getId(int meta) {
+    public int getId(int meta)
+    {
         return meta % TileEntityCamouflage.CamouflageType.values().length;
     }
 
     @Override
-    public int damageDropped(int meta) {
+    public int damageDropped(int meta)
+    {
         return meta;
     }
 
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item) {
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
+    {
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
-        if (camouflage != null) {
+        if (camouflage != null)
+        {
             camouflage.setMetaData(item.getItemDamage());
         }
     }

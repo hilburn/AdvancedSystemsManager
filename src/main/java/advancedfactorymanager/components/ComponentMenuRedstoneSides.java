@@ -1,10 +1,6 @@
 package advancedfactorymanager.components;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
@@ -12,25 +8,34 @@ import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
+public abstract class ComponentMenuRedstoneSides extends ComponentMenu
+{
 
-    public ComponentMenuRedstoneSides(FlowComponent parent) {
+    public ComponentMenuRedstoneSides(FlowComponent parent)
+    {
         super(parent);
 
         selection = 0x3F; //All selected
 
         checkBoxList = new CheckBoxList();
 
-        for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++) {
+        for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
+        {
             checkBoxList.addCheckBox(new CheckBoxSide(i));
         }
 
-        radioButtonList = new RadioButtonList() {
+        radioButtonList = new RadioButtonList()
+        {
             @Override
-            public void updateSelectedOption(int selectedOption) {
+            public void updateSelectedOption(int selectedOption)
+            {
                 setFirstOption(selectedOption == 0);
                 sendServerData(true);
             }
@@ -56,31 +61,39 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
     private static final int TEXT_MARGIN_X = 5;
     private static final int TEXT_Y = 5;
 
-    private class CheckBoxSide extends CheckBox {
+    private class CheckBoxSide extends CheckBox
+    {
         private int id;
-        public CheckBoxSide(int id) {
+
+        public CheckBoxSide(int id)
+        {
             super(Localization.getForgeDirectionLocalization(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
 
             this.id = id;
         }
 
         @Override
-        public void setValue(boolean val) {
-            if (val) {
+        public void setValue(boolean val)
+        {
+            if (val)
+            {
                 selection |= 1 << id;
-            }else{
-                 selection &= ~(1 << id);
+            } else
+            {
+                selection &= ~(1 << id);
             }
         }
 
         @Override
-        public boolean getValue() {
+        public boolean getValue()
+        {
             return (selection & (1 << id)) != 0;
         }
 
         @Override
-        public void onUpdate() {
-           sendServerData(false);
+        public void onUpdate()
+        {
+            sendServerData(false);
         }
     }
 
@@ -89,10 +102,10 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
     protected int selection;
 
 
-
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY) {
+    public void draw(GuiManager gui, int mX, int mY)
+    {
         gui.drawSplitString(getMessage(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X, 0.7F, 0x404040);
 
         checkBoxList.draw(gui, mX, mY);
@@ -103,40 +116,47 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY) {
+    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void onClick(int mX, int mY, int button) {
+    public void onClick(int mX, int mY, int button)
+    {
         checkBoxList.onClick(mX, mY);
         radioButtonList.onClick(mX, mY, button);
     }
 
     @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen) {
+    public void onDrag(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen) {
+    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void writeData(DataWriter dw) {
+    public void writeData(DataWriter dw)
+    {
         dw.writeBoolean(useFirstOption());
         dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
     }
 
     @Override
-    public void readData(DataReader dr) {
+    public void readData(DataReader dr)
+    {
         setFirstOption(dr.readBoolean());
-       selection = dr.readData(DataBitHelper.MENU_REDSTONE_SETTING);
+        selection = dr.readData(DataBitHelper.MENU_REDSTONE_SETTING);
     }
 
     @Override
-    public void copyFrom(ComponentMenu menu) {
+    public void copyFrom(ComponentMenu menu)
+    {
         ComponentMenuRedstoneSides menuRedstone = (ComponentMenuRedstoneSides)menu;
 
         selection = menuRedstone.selection;
@@ -144,39 +164,47 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
     }
 
     @Override
-    public void refreshData(ContainerManager container, ComponentMenu newData) {
+    public void refreshData(ContainerManager container, ComponentMenu newData)
+    {
         ComponentMenuRedstoneSides newDataRedstone = (ComponentMenuRedstoneSides)newData;
 
-       if (useFirstOption() != newDataRedstone.useFirstOption()) {
-           setFirstOption(newDataRedstone.useFirstOption());
+        if (useFirstOption() != newDataRedstone.useFirstOption())
+        {
+            setFirstOption(newDataRedstone.useFirstOption());
 
-           sendClientData(container, true);
-       }
+            sendClientData(container, true);
+        }
 
-       if (selection != newDataRedstone.selection) {
+        if (selection != newDataRedstone.selection)
+        {
             selection = newDataRedstone.selection;
 
-           sendClientData(container, false);
+            sendClientData(container, false);
         }
     }
 
-    private void sendClientData(ContainerManager container, boolean syncRequire) {
+    private void sendClientData(ContainerManager container, boolean syncRequire)
+    {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, syncRequire);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    private void sendServerData(boolean syncRequire) {
+    private void sendServerData(boolean syncRequire)
+    {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, syncRequire);
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void writeData(DataWriter dw, boolean syncRequire) {
+    private void writeData(DataWriter dw, boolean syncRequire)
+    {
         dw.writeBoolean(syncRequire);
-        if (syncRequire) {
+        if (syncRequire)
+        {
             dw.writeBoolean(useFirstOption());
-        }else{
+        } else
+        {
             dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
         }
     }
@@ -185,48 +213,56 @@ public abstract class ComponentMenuRedstoneSides extends ComponentMenu {
     private static final String NBT_ALL = "RequrieAll";
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup) {
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
         //Forgot to save it in earlier versions
-        if (version >= 3) {
+        if (version >= 3)
+        {
             selection = nbtTagCompound.getByte(NBT_ACTIVE);
             setFirstOption(nbtTagCompound.getBoolean(NBT_ALL));
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup) {
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
         nbtTagCompound.setByte(NBT_ACTIVE, (byte)selection);
         nbtTagCompound.setBoolean(NBT_ALL, useFirstOption());
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr) {
-        if (dr.readBoolean()) {
+    public void readNetworkComponent(DataReader dr)
+    {
+        if (dr.readBoolean())
+        {
             setFirstOption(dr.readBoolean());
-        }else{
+        } else
+        {
             selection = dr.readData(DataBitHelper.MENU_REDSTONE_SETTING);
         }
     }
 
 
-
-
-
-    protected boolean useFirstOption() {
+    protected boolean useFirstOption()
+    {
         return radioButtonList.getSelectedOption() == 0;
     }
 
-    protected void setFirstOption(boolean val) {
+    protected void setFirstOption(boolean val)
+    {
         radioButtonList.setSelectedOption(val ? 0 : 1);
     }
 
-    public boolean isSideRequired(int i) {
+    public boolean isSideRequired(int i)
+    {
         return (selection & (1 << i)) != 0;
     }
 
     @Override
-    public void addErrors(List<String> errors) {
-        if (isVisible() && selection == 0) {
+    public void addErrors(List<String> errors)
+    {
+        if (isVisible() && selection == 0)
+        {
             errors.add(Localization.NO_REDSTONE_SIDES_ERROR.toString());
         }
     }

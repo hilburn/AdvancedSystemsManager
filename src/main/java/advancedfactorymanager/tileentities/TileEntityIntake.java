@@ -15,61 +15,75 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class TileEntityIntake extends TileEntityClusterElement implements IInventory {
+public class TileEntityIntake extends TileEntityClusterElement implements IInventory
+{
 
     private List<EntityItem> items;
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         updateInventory();
         return items.size() + 1; //always leave an empty slot
     }
 
     @Override
-    public ItemStack getStackInSlot(int id) {
+    public ItemStack getStackInSlot(int id)
+    {
         updateInventory();
         id--;
-        if (id < 0 || !canPickUp(items.get(id))) {
+        if (id < 0 || !canPickUp(items.get(id)))
+        {
             return null;
-        }else{
+        } else
+        {
             return items.get(id).getEntityItem();
         }
     }
 
     @Override
-    public ItemStack decrStackSize(int id, int count) {
+    public ItemStack decrStackSize(int id, int count)
+    {
         ItemStack item = getStackInSlot(id);
-        if (item != null) {
-            if (item.stackSize <= count) {
+        if (item != null)
+        {
+            if (item.stackSize <= count)
+            {
                 setInventorySlotContents(id, null);
                 return item;
             }
 
             ItemStack ret = item.splitStack(count);
 
-            if (item.stackSize == 0) {
+            if (item.stackSize == 0)
+            {
                 setInventorySlotContents(id, null);
             }
 
             return ret;
-        }else{
+        } else
+        {
             return null;
         }
     }
 
     @Override
-    public void setInventorySlotContents(int id, ItemStack itemstack) {
+    public void setInventorySlotContents(int id, ItemStack itemstack)
+    {
         updateInventory();
         id--;
-        if (id < 0 || !canPickUp(items.get(id))) {
-            if (itemstack != null) {
+        if (id < 0 || !canPickUp(items.get(id)))
+        {
+            if (itemstack != null)
+            {
                 ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[ModBlocks.blockCableIntake.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
 
                 double posX = xCoord + 0.5 + direction.offsetX * 0.75;
                 double posY = yCoord + 0.5 + direction.offsetY * 0.75;
                 double posZ = zCoord + 0.5 + direction.offsetZ * 0.75;
 
-                if (direction.offsetY == 0) {
+                if (direction.offsetY == 0)
+                {
                     posY -= 0.1;
                 }
 
@@ -84,15 +98,19 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
                 worldObj.spawnEntityInWorld(item);
 
 
-                if (id < 0) {
+                if (id < 0)
+                {
                     items.add(item);
-                }else{
+                } else
+                {
                     items.set(id, item);
                 }
             }
-        }else if (itemstack != null){
+        } else if (itemstack != null)
+        {
             items.get(id).setEntityItemStack(itemstack);
-        }else{
+        } else
+        {
             //seems to be an issue with setting it to null
             items.get(id).setEntityItemStack(items.get(id).getEntityItem().copy());
             items.get(id).getEntityItem().stackSize = 0;
@@ -101,19 +119,23 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
     }
 
     @Override
-    public String getInventoryName() {
+    public String getInventoryName()
+    {
         return ModBlocks.blockCableIntake.getLocalizedName();
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomInventoryName()
+    {
         return true;
     }
 
     private static final int DISTANCE = 3;
 
-    private void  updateInventory() {
-        if (items == null) {
+    private void updateInventory()
+    {
+        if (items == null)
+        {
             items = new ArrayList<EntityItem>();
 
             int lowX = xCoord - DISTANCE;
@@ -127,9 +149,11 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
             items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(lowX, lowY, lowZ, highX, highY, highZ));
 
             //remove items we can't use right away, this check is done when we interact with items too, to make sure it hasn't changed
-            for (Iterator<EntityItem> iterator = items.iterator(); iterator.hasNext(); ) {
+            for (Iterator<EntityItem> iterator = items.iterator(); iterator.hasNext(); )
+            {
                 EntityItem next = iterator.next();
-                if (!canPickUp(next)) {
+                if (!canPickUp(next))
+                {
                     iterator.remove();
                 }
             }
@@ -137,46 +161,55 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) {
+    public ItemStack getStackInSlotOnClosing(int i)
+    {
         return null;
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getInventoryStackLimit()
+    {
         return 64;
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    {
         return false;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory()
+    {
 
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory()
+    {
 
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
         return true;
     }
 
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         items = null;
     }
 
-    private boolean canPickUp(EntityItem item) {
+    private boolean canPickUp(EntityItem item)
+    {
         return !item.isDead && (item.delayBeforeCanPickup == 0 || ModBlocks.blockCableIntake.isAdvanced(getBlockMetadata()));
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations() {
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
     }
 }

@@ -2,6 +2,8 @@ package advancedfactorymanager.components;
 
 import advancedfactorymanager.api.IItemBufferElement;
 import advancedfactorymanager.api.IItemBufferSubElement;
+import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.tileentities.TileEntityManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -9,8 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import advancedfactorymanager.blocks.ConnectionBlockType;
-import advancedfactorymanager.tileentities.TileEntityManager;
 
 import java.util.*;
 
@@ -236,7 +236,8 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
                         {
                             foundItems.put(i, DUMMY_ITEM);
                             break;
-                        } if (subCount > 0 && setting.isEqualForCommandExecutor(itemstack))
+                        }
+                        if (subCount > 0 && setting.isEqualForCommandExecutor(itemstack))
                         {
                             foundItems.put(i, itemstack.copy());
                             if (this.craftingMenu.getDummy().isItemValidForRecipe(this.recipe, this.craftingMenu.getResultItem(), foundItems, this.useAdvancedDetection()))

@@ -1,8 +1,8 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.tileentities.TileEntityRFNode;
 import advancedfactorymanager.blocks.ConnectionBlock;
 import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.tileentities.TileEntityRFNode;
 
 public abstract class ComponentMenuRF extends ComponentMenuContainer
 {

@@ -1,26 +1,28 @@
 package advancedfactorymanager.interfaces;
 
+import advancedfactorymanager.blocks.UserPermission;
+import advancedfactorymanager.helpers.CollisionHelper;
+import advancedfactorymanager.helpers.Localization;
+import advancedfactorymanager.network.DataBitHelper;
+import advancedfactorymanager.network.DataWriter;
+import advancedfactorymanager.network.PacketHandler;
+import advancedfactorymanager.tileentities.TileEntityRelay;
+import advancedfactorymanager.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import advancedfactorymanager.helpers.CollisionHelper;
-import advancedfactorymanager.helpers.Localization;
-import advancedfactorymanager.tileentities.TileEntityRelay;
-import advancedfactorymanager.blocks.UserPermission;
-import advancedfactorymanager.network.DataBitHelper;
-import advancedfactorymanager.network.DataWriter;
-import advancedfactorymanager.network.PacketHandler;
-import advancedfactorymanager.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class GuiRelay extends GuiBase {
-    public GuiRelay(final TileEntityRelay relay, InventoryPlayer player) {
+public class GuiRelay extends GuiBase
+{
+    public GuiRelay(final TileEntityRelay relay, InventoryPlayer player)
+    {
         super(new ContainerRelay(relay, player));
 
         xSize = 229;
@@ -28,207 +30,251 @@ public class GuiRelay extends GuiBase {
 
         this.relay = relay;
 
-        buttons.add(new Button(Localization.GIVE_PERMISSION, BUTTON_X_LEFT, BUTTON_Y_DOWN) {
+        buttons.add(new Button(Localization.GIVE_PERMISSION, BUTTON_X_LEFT, BUTTON_Y_DOWN)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1;
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return getUserPermission() == null;
             }
 
             @Override
-            public void onClick() {
-                if (relay.getPermissions().size() < TileEntityRelay.PERMISSION_MAX_LENGTH) {
+            public void onClick()
+            {
+                if (relay.getPermissions().size() < TileEntityRelay.PERMISSION_MAX_LENGTH)
+                {
                     relay.getPermissions().add(new UserPermission(getUserName()));
                     addUser();
                 }
             }
         });
 
-        buttons.add(new Button(Localization.REVOKE_PERMISSION, BUTTON_X_RIGHT, BUTTON_Y_DOWN) {
+        buttons.add(new Button(Localization.REVOKE_PERMISSION, BUTTON_X_RIGHT, BUTTON_Y_DOWN)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1;
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return getUserPermission() != null;
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 removeUser();
             }
         });
 
-        buttons.add(new Button(Localization.ACTIVATE_USER, BUTTON_X_LEFT, BUTTON_Y_TOP) {
+        buttons.add(new Button(Localization.ACTIVATE_USER, BUTTON_X_LEFT, BUTTON_Y_TOP)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() != -1 && isOp(getUserPermission(), true);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return !relay.getPermissions().get(getSelectedPermission()).isActive();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.getPermissions().get(getSelectedPermission()).setActive(true);
                 updateUser(getSelectedPermission());
             }
         });
 
 
-        buttons.add(new Button(Localization.DEACTIVATE_USER, BUTTON_X_RIGHT, BUTTON_Y_TOP) {
+        buttons.add(new Button(Localization.DEACTIVATE_USER, BUTTON_X_RIGHT, BUTTON_Y_TOP)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() != -1 && isOp(getUserPermission(), true);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return relay.getPermissions().get(getSelectedPermission()).isActive();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.getPermissions().get(getSelectedPermission()).setActive(false);
                 updateUser(getSelectedPermission());
             }
         });
 
-        buttons.add(new Button(Localization.DELETE_USER, BUTTON_X_MIDDLE, BUTTON_Y_BOT) {
+        buttons.add(new Button(Localization.DELETE_USER, BUTTON_X_MIDDLE, BUTTON_Y_BOT)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() != -1 && isOp(getUserPermission(), true);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return true;
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 removeUser(getSelectedPermission());
                 selectedPermission = -1;
             }
         });
 
-        buttons.add(new Button(Localization.MAKE_EDITOR, BUTTON_X_LEFT, BUTTON_Y_MIDDLE) {
+        buttons.add(new Button(Localization.MAKE_EDITOR, BUTTON_X_LEFT, BUTTON_Y_MIDDLE)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() != -1 && isOwner(getUserPermission(), true) && !isOwner(relay.getPermissions().get(getSelectedPermission()), false);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return !relay.getPermissions().get(getSelectedPermission()).isOp();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.getPermissions().get(getSelectedPermission()).setOp(true);
                 updateUser(getSelectedPermission());
             }
         });
 
-        buttons.add(new Button(Localization.REMOVE_EDITOR, BUTTON_X_RIGHT, BUTTON_Y_MIDDLE) {
+        buttons.add(new Button(Localization.REMOVE_EDITOR, BUTTON_X_RIGHT, BUTTON_Y_MIDDLE)
+        {
             @Override
-            public boolean isVisible() {
-                return getSelectedPermission() != -1 && isOwner(getUserPermission(), true)  && !isOwner(relay.getPermissions().get(getSelectedPermission()), false);
+            public boolean isVisible()
+            {
+                return getSelectedPermission() != -1 && isOwner(getUserPermission(), true) && !isOwner(relay.getPermissions().get(getSelectedPermission()), false);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return relay.getPermissions().get(getSelectedPermission()).isOp();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.getPermissions().get(getSelectedPermission()).setOp(false);
                 updateUser(getSelectedPermission());
             }
         });
 
-        buttons.add(new Button(Localization.SHOW_LIST_TO_ALL, BUTTON_X_LEFT, BUTTON_Y_FURTHER_DOWN) {
+        buttons.add(new Button(Localization.SHOW_LIST_TO_ALL, BUTTON_X_LEFT, BUTTON_Y_FURTHER_DOWN)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1 && isOp(getUserPermission(), true);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return relay.doesListRequireOp();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.setListRequireOp(false);
                 updateGlobalSettings();
             }
         });
 
-        buttons.add(new Button(Localization.SHOW_TO_EDITORS, BUTTON_X_RIGHT, BUTTON_Y_FURTHER_DOWN) {
+        buttons.add(new Button(Localization.SHOW_TO_EDITORS, BUTTON_X_RIGHT, BUTTON_Y_FURTHER_DOWN)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1 && isOp(getUserPermission(), true);
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return !relay.doesListRequireOp();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.setListRequireOp(true);
                 updateGlobalSettings();
             }
         });
 
-        buttons.add(new Button(Localization.ENABLE_CREATIVE_MODE, BUTTON_X_LEFT, BUTTON_Y_FAR_BOT) {
+        buttons.add(new Button(Localization.ENABLE_CREATIVE_MODE, BUTTON_X_LEFT, BUTTON_Y_FAR_BOT)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1 && isOp(getUserPermission(), true) && (Minecraft.getMinecraft().playerController.isInCreativeMode() || relay.isCreativeMode());
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return !relay.isCreativeMode();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.setCreativeMode(true);
                 updateGlobalSettings();
             }
         });
 
-        buttons.add(new Button(Localization.DISABLE_CREATIVE_MODE, BUTTON_X_RIGHT, BUTTON_Y_FAR_BOT) {
+        buttons.add(new Button(Localization.DISABLE_CREATIVE_MODE, BUTTON_X_RIGHT, BUTTON_Y_FAR_BOT)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedPermission() == -1 && isOp(getUserPermission(), true) && (Minecraft.getMinecraft().playerController.isInCreativeMode() || relay.isCreativeMode());
             }
 
             @Override
-            public boolean isEnabled() {
+            public boolean isEnabled()
+            {
                 return relay.isCreativeMode();
             }
 
             @Override
-            public void onClick() {
+            public void onClick()
+            {
                 relay.setCreativeMode(false);
                 updateGlobalSettings();
             }
         });
     }
-
 
 
     private TileEntityRelay relay;
@@ -292,22 +338,27 @@ public class GuiRelay extends GuiBase {
     private static final int PAGE_BUTTON_Y = 147;
 
     @Override
-    public ResourceLocation getComponentResource() {
+    public ResourceLocation getComponentResource()
+    {
         return TEXTURE;
     }
 
     private int selectedPermission = -1;
 
-    private int getSelectedPermission() {
-        if (selectedPermission < 0 || selectedPermission >= relay.getPermissions().size() || (relay.doesListRequireOp() && !isOp(getUserPermission(), true))) {
+    private int getSelectedPermission()
+    {
+        if (selectedPermission < 0 || selectedPermission >= relay.getPermissions().size() || (relay.doesListRequireOp() && !isOp(getUserPermission(), true)))
+        {
             return selectedPermission = -1;
-        }else{
+        } else
+        {
             return selectedPermission;
         }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int mX, int mY) {
+    protected void drawGuiContainerBackgroundLayer(float f, int mX, int mY)
+    {
         hasCachedPermission = false;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -321,9 +372,11 @@ public class GuiRelay extends GuiBase {
         UserPermission selected = getSelectedPermission() == -1 ? null : relay.getPermissions().get(getSelectedPermission());
 
 
-        if (!relay.doesListRequireOp() || isOp(player, true)) {
+        if (!relay.doesListRequireOp() || isOp(player, true))
+        {
             int start = getStartId();
-            for (int i = start; i <= getEndId(); i++) {
+            for (int i = start; i <= getEndId(); i++)
+            {
                 UserPermission permission = relay.getPermissions().get(i);
 
                 int x = LIST_POS_X;
@@ -334,52 +387,63 @@ public class GuiRelay extends GuiBase {
 
                 drawTexture(x, y, srcXMenu * LIST_MENU_WIDTH, ySize + srcYMenu * LIST_MENU_HEIGHT, LIST_MENU_WIDTH, LIST_MENU_HEIGHT);
 
-                for (int j = 0; j < 2; j++) {
+                for (int j = 0; j < 2; j++)
+                {
                     renderInfoBox(j, permission, x + LIST_MENU_WIDTH - (1 + j) * (INFO_SIZE + INFO_MARGIN_X), y + INFO_MARGIN_Y);
                 }
 
                 drawString(permission.getName(), x + LIST_TEXT_POS_X, y + LIST_TEXT_POS_Y, 0.7F, 0xEEEEEE);
             }
 
-            if (getPageCount() > 1) {
+            if (getPageCount() > 1)
+            {
                 drawCenteredString(Localization.PAGE.toString() + " " + (currentPage + 1) + " " + Localization.OF.toString() + " " + getPageCount(), LIST_POS_X, PAGE_Y, 0.6F, LIST_MENU_WIDTH, 0x404040);
 
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 2; i++)
+                {
                     int x = i == 0 ? PAGE_BUTTON_X_LEFT : PAGE_BUTTON_X_RIGHT;
                     int y = PAGE_BUTTON_Y;
 
                     int srcXButton = i;
                     int srcYButton = CollisionHelper.inBounds(x, y, PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE, mX, mY) ? 1 : 0;
-                    drawTexture(x, y, srcXButton * PAGE_BUTTON_SIZE,  ySize + LIST_MENU_HEIGHT * 2 + INFO_SIZE + BUTTON_HEIGHT * 3 + srcYButton * PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE);
+                    drawTexture(x, y, srcXButton * PAGE_BUTTON_SIZE, ySize + LIST_MENU_HEIGHT * 2 + INFO_SIZE + BUTTON_HEIGHT * 3 + srcYButton * PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE);
                 }
             }
-        }else{
+        } else
+        {
             drawCenteredString(Localization.NO_ACCESS.toString(), LIST_POS_X, LIST_POS_Y + NO_ACCESS_TEXT_Y, 1F, LIST_MENU_WIDTH, 0x804040);
         }
 
         UserPermission info = relay.doesListRequireOp() && !isOp(player, true) ? player : selected;
-        if (info != null) {
+        if (info != null)
+        {
             drawString(info.getName(), INFO_BOX_POS_X + INFO_BOX_NAME_X, INFO_BOX_POS_Y + INFO_BOX_NAME_Y, 0.7F, 0x404040);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++)
+            {
                 int x = INFO_BOX_POS_X + INFO_BOX_INFO_X;
                 int y = INFO_BOX_POS_Y + INFO_BOX_INFO_Y + i * (INFO_SIZE + INFO_MARGIN_INFO_Y);
                 renderInfoBox(i, info, x, y);
                 drawInfoBoxString(i, info, x + INFO_SIZE + INFO_TEXT_X, y + INFO_TEXT_Y);
             }
-        }else{
+        } else
+        {
             String str;
 
-            if (isOp(player, true)) {
+            if (isOp(player, true))
+            {
                 str = Localization.EDITOR_DESCRIPTION_SHORT.toString();
-            }else{
+            } else
+            {
                 str = Localization.USER_DESCRIPTION_SHORT.toString();
             }
 
             drawSplitString(str, INFO_BOX_POS_X + INFO_BOX_FULL_TEXT_X, INFO_BOX_POS_Y + INFO_BOX_FULL_TEXT_Y, INFO_BOX_FULL_TEXT_W, 0.7F, 0x404040);
         }
 
-        for (Button button : buttons) {
-            if (button.isVisible()) {
+        for (Button button : buttons)
+        {
+            if (button.isVisible())
+            {
                 int textureId = button.isEnabled() ? CollisionHelper.inBounds(button.x, button.y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY) ? 2 : 1 : 0;
 
                 drawTexture(button.x, button.y, 0, ySize + LIST_MENU_HEIGHT * 2 + INFO_SIZE + BUTTON_HEIGHT * textureId, BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -389,57 +453,69 @@ public class GuiRelay extends GuiBase {
 
 
         String message = null;
-        if (getSelectedPermission() == -1){
+        if (getSelectedPermission() == -1)
+        {
             message = Localization.USER_DESCRIPTION_LONG.toString();
-        }else if(isOp(getUserPermission(), true)) {
+        } else if (isOp(getUserPermission(), true))
+        {
             message = Localization.EDITOR_DESCRIPTION_LONG.toString();
         }
 
-        if (message != null) {
+        if (message != null)
+        {
             drawSplitString(message, BUTTON_AREA_X, BUTTON_AREA_Y, BUTTON_AREA_WIDTH, 0.6F, 0x404040);
         }
     }
 
-    private int getStartId() {
+    private int getStartId()
+    {
         int maxPageId = getPageCount();
-        if (currentPage >= maxPageId) {
+        if (currentPage >= maxPageId)
+        {
             currentPage = maxPageId - 1;
         }
 
         return currentPage * PERMISSIONS_PER_PAGE;
     }
 
-    private int getPageCount() {
+    private int getPageCount()
+    {
         return (relay.getPermissions().size() - 1) / PERMISSIONS_PER_PAGE + 1;
     }
 
-    private int getEndId() {
+    private int getEndId()
+    {
         return Math.min(getStartId() + PERMISSIONS_PER_PAGE, relay.getPermissions().size()) - 1;
     }
 
-    private void renderInfoBox(int id, UserPermission permission, int x, int y) {
+    private void renderInfoBox(int id, UserPermission permission, int x, int y)
+    {
         int textureId = id == 0 ? isOwner(permission, false) ? 5 : isOp(permission, false) ? 4 : 3 : permission.isActive() ? relay.isCreativeMode() ? 2 : 1 : 0;
 
         drawTexture(x, y, textureId * INFO_SIZE, ySize + LIST_MENU_HEIGHT * 2, INFO_SIZE, INFO_SIZE);
     }
 
-    private void drawInfoBoxString(int id, UserPermission permission, int x, int y) {
+    private void drawInfoBoxString(int id, UserPermission permission, int x, int y)
+    {
         String str = id == 0 ? isOwner(permission, false) ? Localization.PERMISSION_OWNER.toString() : isOp(permission, false) ? Localization.PERMISSION_EDITOR.toString() : Localization.PERMISSION_USER.toString() : relay.isCreativeMode() ? permission.isActive() ? Localization.PERMISSION_RESTRICTED.toString() : Localization.PERMISSION_CREATIVE.toString() : permission.isActive() ? Localization.PERMISSION_INVENTORY.toString() : Localization.PERMISSION_DENIED.toString();
 
         drawString(str, x, y, 0.7F, 0x404040);
     }
 
-    private boolean isOwner(UserPermission permission, boolean viewer) {
+    private boolean isOwner(UserPermission permission, boolean viewer)
+    {
         return (permission != null && permission.getName().equals(relay.getOwner())) || (viewer && getUserName().equals(relay.getOwner()));
     }
 
-    private boolean isOp(UserPermission permission, boolean viewer) {
-        return  isOwner(permission, viewer) || (permission != null && permission.isOp());
+    private boolean isOp(UserPermission permission, boolean viewer)
+    {
+        return isOwner(permission, viewer) || (permission != null && permission.isOp());
     }
 
 
     @Override
-    protected void mouseClicked(int mX, int mY, int b) {
+    protected void mouseClicked(int mX, int mY, int b)
+    {
         mX = scaleX(mX);
         mY = scaleY(mY);
 
@@ -450,34 +526,44 @@ public class GuiRelay extends GuiBase {
 
         UserPermission player = getUserPermission();
 
-        if (!relay.doesListRequireOp() || isOp(player, true)) {
+        if (!relay.doesListRequireOp() || isOp(player, true))
+        {
             int start = getStartId();
-            for (int i = start; i <= getEndId(); i++) {
+            for (int i = start; i <= getEndId(); i++)
+            {
                 UserPermission permission = relay.getPermissions().get(i);
 
                 int x = LIST_POS_X;
                 int y = LIST_POS_Y + (i - start) * LIST_MENU_HEIGHT;
 
-                if (CollisionHelper.inBounds(x, y, LIST_MENU_WIDTH, LIST_MENU_HEIGHT, mX, mY)) {
-                    if (getSelectedPermission() == i) {
+                if (CollisionHelper.inBounds(x, y, LIST_MENU_WIDTH, LIST_MENU_HEIGHT, mX, mY))
+                {
+                    if (getSelectedPermission() == i)
+                    {
                         selectedPermission = -1;
-                    }else{
+                    } else
+                    {
                         selectedPermission = i;
                     }
                     break;
                 }
             }
 
-            if (getPageCount() > 1) {
-                for (int i = -1; i <= 1; i+=2) {
+            if (getPageCount() > 1)
+            {
+                for (int i = -1; i <= 1; i += 2)
+                {
                     int x = i == -1 ? PAGE_BUTTON_X_LEFT : PAGE_BUTTON_X_RIGHT;
                     int y = PAGE_BUTTON_Y;
 
-                    if (CollisionHelper.inBounds(x, y, PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE, mX, mY)) {
+                    if (CollisionHelper.inBounds(x, y, PAGE_BUTTON_SIZE, PAGE_BUTTON_SIZE, mX, mY))
+                    {
                         currentPage += i;
-                        if (currentPage < 0) {
+                        if (currentPage < 0)
+                        {
                             currentPage = getPageCount() - 1;
-                        }else if (currentPage == getPageCount()){
+                        } else if (currentPage == getPageCount())
+                        {
                             currentPage = 0;
                         }
 
@@ -487,8 +573,10 @@ public class GuiRelay extends GuiBase {
             }
         }
 
-        for (Button button : buttons) {
-            if (button.isVisible() && button.isEnabled() && CollisionHelper.inBounds(button.x, button.y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY)) {
+        for (Button button : buttons)
+        {
+            if (button.isVisible() && button.isEnabled() && CollisionHelper.inBounds(button.x, button.y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY))
+            {
                 button.onClick();
                 break;
             }
@@ -498,20 +586,26 @@ public class GuiRelay extends GuiBase {
     private UserPermission cachedPermission;
     private boolean hasCachedPermission;
 
-    private String getUserName()  {
+    private String getUserName()
+    {
         return Utils.stripControlCodes(Minecraft.getMinecraft().thePlayer.getDisplayName());
     }
 
-    private UserPermission getUserPermission() {
-        if (hasCachedPermission) {
+    private UserPermission getUserPermission()
+    {
+        if (hasCachedPermission)
+        {
             return cachedPermission;
-        }else{
+        } else
+        {
             hasCachedPermission = true;
             cachedPermission = null;
         }
 
-        for (UserPermission permission : relay.getPermissions()) {
-            if (permission.getName().equals(getUserName())) {
+        for (UserPermission permission : relay.getPermissions())
+        {
+            if (permission.getName().equals(getUserName()))
+            {
                 cachedPermission = permission;
                 break;
             }
@@ -520,22 +614,27 @@ public class GuiRelay extends GuiBase {
     }
 
 
-    private abstract class Button {
+    private abstract class Button
+    {
         private Localization name;
         private int x, y;
 
-        protected Button(Localization name, int x, int y) {
+        protected Button(Localization name, int x, int y)
+        {
             this.name = name;
             this.x = x;
             this.y = y;
         }
 
         public abstract boolean isVisible();
+
         public abstract boolean isEnabled();
+
         public abstract void onClick();
     }
 
-    private void removeUser(int id) {
+    private void removeUser(int id)
+    {
         DataWriter dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(false); //existing
@@ -544,16 +643,20 @@ public class GuiRelay extends GuiBase {
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void removeUser() {
-        for (int i = 0; i < relay.getPermissions().size(); i++) {
-            if (relay.getPermissions().get(i).getName().equals(getUserName())) {
+    private void removeUser()
+    {
+        for (int i = 0; i < relay.getPermissions().size(); i++)
+        {
+            if (relay.getPermissions().get(i).getName().equals(getUserName()))
+            {
                 removeUser(i);
                 break;
             }
         }
     }
 
-    private void updateGlobalSettings() {
+    private void updateGlobalSettings()
+    {
         DataWriter dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(false); //no user data
         dw.writeBoolean(relay.isCreativeMode());
@@ -561,7 +664,8 @@ public class GuiRelay extends GuiBase {
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void addUser() {
+    private void addUser()
+    {
         DataWriter dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(true); //added
@@ -569,7 +673,8 @@ public class GuiRelay extends GuiBase {
         PacketHandler.sendDataToServer(dw);
     }
 
-    private void updateUser(int id) {
+    private void updateUser(int id)
+    {
         UserPermission permission = relay.getPermissions().get(id);
         DataWriter dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data

@@ -13,15 +13,19 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderCamouflage implements ISimpleBlockRenderingHandler {
+public class RenderCamouflage implements ISimpleBlockRenderingHandler
+{
 
     private int id;
-    public RenderCamouflage() {
+
+    public RenderCamouflage()
+    {
         id = RenderingRegistry.getNextAvailableRenderId();
     }
 
     @Override
-    public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
+    public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
+    {
         block.setBlockBoundsForItemRender();
         renderer.setRenderBoundsFromBlock(block);
 
@@ -65,7 +69,8 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
+    {
         Tessellator.instance.setColorOpaque_F(1F, 1F, 1F);
 
         block.setBlockBoundsBasedOnState(world, x, y, z);
@@ -74,7 +79,8 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler {
 
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
 
-        if (camouflage != null && camouflage.getCamouflageType().useDoubleRendering()) {
+        if (camouflage != null && camouflage.getCamouflageType().useDoubleRendering())
+        {
             BlockCamouflageBase camoBlock = (BlockCamouflageBase)block;
 
             float maxX = (float)block.getBlockBoundsMaxX();
@@ -116,15 +122,16 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean shouldRender3DInInventory(int modelId) {
+    public boolean shouldRender3DInInventory(int modelId)
+    {
         return true;
     }
 
     @Override
-    public int getRenderId() {
+    public int getRenderId()
+    {
         return id;
     }
-
 
 
 }

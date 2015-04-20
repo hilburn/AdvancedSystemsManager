@@ -1,15 +1,16 @@
 package advancedfactorymanager.components;
 
 
-import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.blocks.ConnectionBlock;
-import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.GuiManager;
+import advancedfactorymanager.tileentities.TileEntityManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContainerFilter {
+public class ContainerFilter
+{
 
     private static final int CHECK_BOX_X = 5;
     private static final int CHECK_BOX_FILTER_Y = 5;
@@ -57,7 +58,8 @@ public class ContainerFilter {
 
     public ComponentMenuContainer currentMenu;
 
-    public ContainerFilter() {
+    public ContainerFilter()
+    {
         checkBoxes = new CheckBoxList();
 
         filterVariableSelection = new ArrayList<Integer>();
@@ -66,7 +68,8 @@ public class ContainerFilter {
         Localization[] subFilterLabels = {Localization.FILTER_POSITION_LABEL, Localization.FILTER_DISTANCE_LABEL, Localization.FILTER_SELECTION_LABEL, Localization.FILTER_VARIABLE_LABEL};
         useSubFilter = new CheckBox[subFilterLabels.length];
 
-        for (int i = 0; i < subFilterPages.length; i++) {
+        for (int i = 0; i < subFilterPages.length; i++)
+        {
             checkBoxes.addCheckBox(useSubFilter[i] = new CheckBoxPage(subFilterLabels[i], ComponentMenuContainer.Page.FILTER, CHECK_BOX_X, CHECK_BOX_FILTER_Y + CHECK_BOX_FILTER_SPACING * i));
         }
         checkBoxes.addCheckBox(invertFilterMatch = new CheckBoxPage(Localization.INVERT, ComponentMenuContainer.Page.FILTER, CHECK_BOX_X, CHECK_BOX_FILTER_INVERT_Y));
@@ -79,7 +82,8 @@ public class ContainerFilter {
 
         textBoxes = new TextBoxNumberList();
         Localization[] xyz = {Localization.X, Localization.Y, Localization.Z};
-        for (int i = 0; i < xyz.length; i++) {
+        for (int i = 0; i < xyz.length; i++)
+        {
             int y = CHECK_BOX_POSITION_Y + CHECK_BOX_POSITION_SPACING * i;
 
             checkBoxes.addCheckBox(useRange[i] = new CheckBoxPage(xyz[i], ComponentMenuContainer.Page.POSITION, CHECK_BOX_X, y));
@@ -90,7 +94,8 @@ public class ContainerFilter {
 
         Localization[] distance = {Localization.CABLE_DISTANCE, Localization.DISTANCE};
 
-        for (int i = 0; i < distance.length; i++) {
+        for (int i = 0; i < distance.length; i++)
+        {
             int y = CHECK_BOX_DISTANCE_Y + CHECK_BOX_DISTANCE_SPACING * i;
 
             checkBoxes.addCheckBox(useRange[i + 3] = new CheckBoxPage(distance[i], ComponentMenuContainer.Page.DISTANCE, CHECK_BOX_X, y));
@@ -102,23 +107,29 @@ public class ContainerFilter {
             checkBoxes.addCheckBox(invertRange[i + 3] = new CheckBoxPage(Localization.INVERT, ComponentMenuContainer.Page.DISTANCE, CHECK_BOX_DISTANCE_INVERT_X, y));
         }
 
-        radioButtonsSelection = new RadioButtonList() {
+        radioButtonsSelection = new RadioButtonList()
+        {
             @Override
-            public void updateSelectedOption(int selectedOption) {
+            public void updateSelectedOption(int selectedOption)
+            {
                 setSelectedOption(selectedOption);
             }
         };
         Localization[] selection = {Localization.ONLY_SELECTED, Localization.HIDE_SELECTED};
-        for (int i = 0; i < selection.length; i++) {
+        for (int i = 0; i < selection.length; i++)
+        {
             radioButtonsSelection.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING * i, selection[i]));
         }
 
         //checkBoxes.addCheckBox(new CheckBoxPage(Localization.RELOAD_ON_CHANGE, ComponentMenuContainer.Page.SELECTION, CHECK_BOX_X, CHECK_BOX_SELECTION_Y));
 
-        scrollControllerVariable = new ScrollController<Variable>(false) {
+        scrollControllerVariable = new ScrollController<Variable>(false)
+        {
             @Override
-            protected List<Variable> updateSearch(String search, boolean all) {
-                if (currentMenu == null) {
+            protected List<Variable> updateSearch(String search, boolean all)
+            {
+                if (currentMenu == null)
+                {
                     return new ArrayList<Variable>();
                 }
 
@@ -126,67 +137,85 @@ public class ContainerFilter {
             }
 
             @Override
-            protected void onClick(Variable variable, int mX, int mY, int button) {
-                if (filterVariableSelection.contains(variable.getId())) {
+            protected void onClick(Variable variable, int mX, int mY, int button)
+            {
+                if (filterVariableSelection.contains(variable.getId()))
+                {
                     filterVariableSelection.remove((Integer)variable.getId());
-                }else{
+                } else
+                {
                     filterVariableSelection.add(variable.getId());
                 }
             }
 
             @Override
-            protected void draw(GuiManager gui, Variable variable, int x, int y, boolean hover) {
+            protected void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
+            {
                 currentMenu.drawContainer(gui, variable, filterVariableSelection, x, y, hover);
             }
 
             @Override
-            protected void drawMouseOver(GuiManager gui, Variable variable, int mX, int mY) {
+            protected void drawMouseOver(GuiManager gui, Variable variable, int mX, int mY)
+            {
                 gui.drawMouseOver(currentMenu.getMouseOverForContainer(variable, filterVariableSelection), mX, mY);
             }
         };
 
-        radioButtonVariable = new RadioButtonList() {
+        radioButtonVariable = new RadioButtonList()
+        {
             @Override
-            public void updateSelectedOption(int selectedOption) {
+            public void updateSelectedOption(int selectedOption)
+            {
                 setSelectedOption(selectedOption);
             }
         };
 
         Localization[] varOptions = {Localization.USE_UNUSED, Localization.USE_FILTER};
-        for (int i = 0; i < varOptions.length; i++) {
+        for (int i = 0; i < varOptions.length; i++)
+        {
             radioButtonVariable.add(new RadioButton(RADIO_BUTTON_X + RADIO_BUTTON_SPACING_X * i, RADIO_BUTTON_Y_VARIABLE, varOptions[i]));
         }
-        checkBoxes.addCheckBox(variableInvert = new CheckBoxPage(Localization.INVERT, ComponentMenuContainer.Page.VARIABLE, CHECK_BOX_X, CHECK_BOX_INVERT_VARIABLE_Y) {
+        checkBoxes.addCheckBox(variableInvert = new CheckBoxPage(Localization.INVERT, ComponentMenuContainer.Page.VARIABLE, CHECK_BOX_X, CHECK_BOX_INVERT_VARIABLE_Y)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return super.isVisible() && isVariableListVisible();
             }
         });
     }
 
-    public boolean isVariableListVisible() {
+    public boolean isVariableListVisible()
+    {
         return radioButtonVariable.getSelectedOption() == 1;
     }
 
-    public boolean matches(TileEntityManager manager, List<Integer> selectedInventories, ConnectionBlock block) {
+    public boolean matches(TileEntityManager manager, List<Integer> selectedInventories, ConnectionBlock block)
+    {
         boolean filterMatch = true;
 
-        for (int i = 0; i < useSubFilter.length; i++) {
+        for (int i = 0; i < useSubFilter.length; i++)
+        {
 
-            if (filterMatch && useSubFilter[i].getValue()) {
+            if (filterMatch && useSubFilter[i].getValue())
+            {
                 int rangeStart = 0, rangeEnd = 2;
-                switch (i) {
+                switch (i)
+                {
                     case 1:
                         rangeStart = 3;
                         rangeEnd = 4;
                         //fall through (i.e. no break)
                     case 0:
-                        for (int j = rangeStart; j <= rangeEnd; j++) {
-                            if (useRange[j].getValue()) {
+                        for (int j = rangeStart; j <= rangeEnd; j++)
+                        {
+                            if (useRange[j].getValue())
+                            {
 
 
                                 int value = 0;
-                                switch (j) {
+                                switch (j)
+                                {
                                     case 0:
                                         value = block.getTileEntity().xCoord - manager.xCoord;
                                         break;
@@ -206,7 +235,8 @@ public class ContainerFilter {
                                 boolean isRangeValid = lowerRange[j].getNumber() <= value && value <= higherRange[j].getNumber();
 
                                 //sub filter isn't matching
-                                if (isRangeValid == invertRange[j].getValue()) {
+                                if (isRangeValid == invertRange[j].getValue())
+                                {
                                     filterMatch = false;
                                     break;
                                 }
@@ -218,31 +248,39 @@ public class ContainerFilter {
                         boolean selected = selectedInventories.contains(block.getId());
 
                         //sub filter isn't matching
-                        if (selected != onlySelected) {
+                        if (selected != onlySelected)
+                        {
                             filterMatch = false;
                         }
                         break;
                     case 3:
-                        if (radioButtonVariable.getSelectedOption() == 0) {
-                            for (Variable variable : manager.getVariables()) {
-                                if (block.isPartOfVariable(variable)){
+                        if (radioButtonVariable.getSelectedOption() == 0)
+                        {
+                            for (Variable variable : manager.getVariables())
+                            {
+                                if (block.isPartOfVariable(variable))
+                                {
                                     //sub filter isn't matching
                                     filterMatch = false;
                                     break;
                                 }
                             }
-                        }else{
+                        } else
+                        {
                             boolean variableMatch = false;
 
-                            for (Variable variable : manager.getVariables()) {
-                                if (filterVariableSelection.contains(variable.getId()) && block.isPartOfVariable(variable)){
+                            for (Variable variable : manager.getVariables())
+                            {
+                                if (filterVariableSelection.contains(variable.getId()) && block.isPartOfVariable(variable))
+                                {
                                     //sub filter isn't matching
                                     variableMatch = true;
                                     break;
                                 }
                             }
 
-                            if (variableMatch == variableInvert.getValue()) {
+                            if (variableMatch == variableInvert.getValue())
+                            {
                                 //sub filter isn't matching
                                 filterMatch = false;
                             }
@@ -256,25 +294,31 @@ public class ContainerFilter {
         return filterMatch != invertFilterMatch.getValue();
     }
 
-    public void clear() {
-        for (CheckBox checkBox : useSubFilter) {
+    public void clear()
+    {
+        for (CheckBox checkBox : useSubFilter)
+        {
             checkBox.setValue(false);
         }
         invertFilterMatch.setValue(false);
 
-        for (CheckBox checkBox : useRange) {
+        for (CheckBox checkBox : useRange)
+        {
             checkBox.setValue(false);
         }
 
-        for (CheckBox checkBox : invertRange) {
+        for (CheckBox checkBox : invertRange)
+        {
             checkBox.setValue(false);
         }
 
-        for (TextBoxPage textBoxPage : lowerRange) {
+        for (TextBoxPage textBoxPage : lowerRange)
+        {
             textBoxPage.resetDefault();
         }
 
-        for (TextBoxPage textBoxPage : higherRange) {
+        for (TextBoxPage textBoxPage : higherRange)
+        {
             textBoxPage.resetDefault();
         }
 
@@ -285,44 +329,53 @@ public class ContainerFilter {
         variableInvert.setValue(false);
     }
 
-    private class CheckBoxPage extends CheckBox {
+    private class CheckBoxPage extends CheckBox
+    {
 
 
         private boolean checked; //this checkbox is only used on the client side so we don't have to anything special with the values
         private ComponentMenuContainer.Page page;
 
-        public CheckBoxPage(Localization name, ComponentMenuContainer.Page page, int x, int y) {
+        public CheckBoxPage(Localization name, ComponentMenuContainer.Page page, int x, int y)
+        {
             super(name, x, y);
             this.page = page;
         }
 
 
         @Override
-        public void setValue(boolean val) {
+        public void setValue(boolean val)
+        {
             checked = val;
         }
 
         @Override
-        public boolean getValue() {
+        public boolean getValue()
+        {
             return checked;
         }
 
         @Override
-        public void onUpdate() {
+        public void onUpdate()
+        {
 
         }
 
         @Override
-        public boolean isVisible() {
+        public boolean isVisible()
+        {
             return currentMenu.getCurrentPage() == page;
         }
     }
 
-    class TextBoxPage extends TextBoxNumber {
+    class TextBoxPage extends TextBoxNumber
+    {
         private ComponentMenuContainer.Page page;
         private boolean negative;
         private int defaultNumber;
-        public TextBoxPage(ComponentMenuContainer.Page page, int x, int y, boolean negative, int defaultNumber) {
+
+        public TextBoxPage(ComponentMenuContainer.Page page, int x, int y, boolean negative, int defaultNumber)
+        {
             super(x, y, 3, false);
             this.page = page;
             this.negative = negative;
@@ -331,31 +384,37 @@ public class ContainerFilter {
         }
 
         @Override
-        public boolean isVisible() {
+        public boolean isVisible()
+        {
             return page == currentMenu.getCurrentPage();
         }
 
         @Override
-        public int getMaxNumber() {
+        public int getMaxNumber()
+        {
             return 128;
         }
 
         @Override
-        public float getTextSize() {
+        public float getTextSize()
+        {
             return negative ? 0.7F : super.getTextSize();
         }
 
         @Override
-        public int getTextY() {
+        public int getTextY()
+        {
             return negative ? 4 : super.getTextY();
         }
 
         @Override
-        public int getMinNumber() {
+        public int getMinNumber()
+        {
             return negative ? -128 : super.getMinNumber();
         }
 
-        private void resetDefault() {
+        private void resetDefault()
+        {
             setNumber(defaultNumber);
         }
     }

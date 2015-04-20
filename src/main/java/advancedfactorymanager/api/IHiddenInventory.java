@@ -1,7 +1,7 @@
 package advancedfactorymanager.api;
 
-import net.minecraft.item.ItemStack;
 import advancedfactorymanager.components.*;
+import net.minecraft.item.ItemStack;
 
 import java.util.Collection;
 import java.util.List;

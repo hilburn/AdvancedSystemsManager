@@ -1,9 +1,6 @@
 package advancedfactorymanager.components;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
@@ -11,15 +8,22 @@ import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.nbt.NBTTagCompound;
 
-public class ComponentMenuInterval extends ComponentMenu {
-    public ComponentMenuInterval(FlowComponent parent) {
+public class ComponentMenuInterval extends ComponentMenu
+{
+    public ComponentMenuInterval(FlowComponent parent)
+    {
         super(parent);
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(interval = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 3, true) {
+        textBoxes.addTextBox(interval = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 3, true)
+        {
             @Override
-            public void onNumberChanged() {
+            public void onNumberChanged()
+            {
                 DataWriter dw = getWriterForServerComponentPacket();
                 dw.writeData(getNumber(), DataBitHelper.MENU_INTERVAL);
                 PacketHandler.sendDataToServer(dw);
@@ -40,7 +44,8 @@ public class ComponentMenuInterval extends ComponentMenu {
     private static final int TEXT_SECOND_Y = 38;
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.INTERVAL_MENU.toString();
     }
 
@@ -49,43 +54,51 @@ public class ComponentMenuInterval extends ComponentMenu {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY) {
+    public void draw(GuiManager gui, int mX, int mY)
+    {
         gui.drawSplitString(Localization.INTERVAL_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 0.7F, 0x404040);
-        gui.drawString(Localization.SECOND.toString(),TEXT_SECONDS_X, TEXT_SECOND_Y, 0.7F, 0x404040);
+        gui.drawString(Localization.SECOND.toString(), TEXT_SECONDS_X, TEXT_SECOND_Y, 0.7F, 0x404040);
         textBoxes.draw(gui, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY) {
+    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    {
 
     }
 
     @Override
-    public void onClick(int mX, int mY, int button) {
+    public void onClick(int mX, int mY, int button)
+    {
         textBoxes.onClick(mX, mY, button);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k) {
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
         return textBoxes.onKeyStroke(gui, c, k);
     }
 
     @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen) {
+    public void onDrag(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen) {
+    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void writeData(DataWriter dw) {
+    public void writeData(DataWriter dw)
+    {
         int val = getInterval();
-        if (val == 0) {
+        if (val == 0)
+        {
             val = 1;
         }
 
@@ -93,50 +106,59 @@ public class ComponentMenuInterval extends ComponentMenu {
     }
 
     @Override
-    public void readData(DataReader dr) {
+    public void readData(DataReader dr)
+    {
         setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
     }
 
     @Override
-    public void copyFrom(ComponentMenu menu) {
-       setInterval(((ComponentMenuInterval)menu).getInterval());
+    public void copyFrom(ComponentMenu menu)
+    {
+        setInterval(((ComponentMenuInterval)menu).getInterval());
     }
 
     @Override
-    public void refreshData(ContainerManager container, ComponentMenu newData) {
+    public void refreshData(ContainerManager container, ComponentMenu newData)
+    {
         ComponentMenuInterval newDataInterval = (ComponentMenuInterval)newData;
 
-        if (newDataInterval.getInterval() != getInterval()) {
+        if (newDataInterval.getInterval() != getInterval())
+        {
             setInterval(newDataInterval.getInterval());
 
             DataWriter dw = getWriterForClientComponentPacket(container);
             dw.writeData(getInterval(), DataBitHelper.MENU_INTERVAL);
             PacketHandler.sendDataToListeningClients(container, dw);
         }
-}
-
-    @Override
-    public void readNetworkComponent(DataReader dr) {
-       setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
     }
 
-    public int getInterval() {
+    @Override
+    public void readNetworkComponent(DataReader dr)
+    {
+        setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
+    }
+
+    public int getInterval()
+    {
         return interval.getNumber();
     }
 
-    public void setInterval(int val) {
+    public void setInterval(int val)
+    {
         interval.setNumber(val);
     }
 
     private static final String NBT_INTERVAL = "Interval";
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup) {
-       setInterval(nbtTagCompound.getShort(NBT_INTERVAL));
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
+        setInterval(nbtTagCompound.getShort(NBT_INTERVAL));
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup) {
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
         nbtTagCompound.setShort(NBT_INTERVAL, (short)getInterval());
     }
 

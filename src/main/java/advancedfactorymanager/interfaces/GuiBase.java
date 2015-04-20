@@ -1,6 +1,9 @@
 package advancedfactorymanager.interfaces;
 
 
+import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.settings.Settings;
+import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -21,17 +24,16 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import advancedfactorymanager.AdvancedFactoryManager;
-import advancedfactorymanager.tileentities.TileEntityClusterElement;
-import advancedfactorymanager.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiBase extends GuiAntiNEI {
-    public GuiBase(Container container) {
+public abstract class GuiBase extends GuiAntiNEI
+{
+    public GuiBase(Container container)
+    {
         super(container);
     }
 
@@ -39,7 +41,8 @@ public abstract class GuiBase extends GuiAntiNEI {
 
     public abstract ResourceLocation getComponentResource();
 
-    public void drawTexture(int x, int y, int srcX, int srcY, int w, int h) {
+    public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
+    {
         float scale = getScale();
 
         drawScaleFriendlyTexture(
@@ -52,7 +55,8 @@ public abstract class GuiBase extends GuiAntiNEI {
         );
     }
 
-    private double fixScaledCoordinate(int val, float scale, int size) {
+    private double fixScaledCoordinate(int val, float scale, int size)
+    {
         double d = val / scale;
         d *= size;
         d = Math.floor(d);
@@ -62,7 +66,8 @@ public abstract class GuiBase extends GuiAntiNEI {
         return d;
     }
 
-    public void drawScaleFriendlyTexture(double x, double y, double srcX, double srcY, double w, double h) {
+    public void drawScaleFriendlyTexture(double x, double y, double srcX, double srcY, double w, double h)
+    {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.instance;
@@ -74,25 +79,29 @@ public abstract class GuiBase extends GuiAntiNEI {
         tessellator.draw();
     }
 
-    public static void bindTexture(ResourceLocation resource)  {
+    public static void bindTexture(ResourceLocation resource)
+    {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
     }
 
-    public static ResourceLocation registerTexture(String name) {
-        return new ResourceLocation(AdvancedFactoryManager.RESOURCE_LOCATION, "textures/gui/" +  name + ".png");
+    public static ResourceLocation registerTexture(String name)
+    {
+        return new ResourceLocation(AdvancedFactoryManager.RESOURCE_LOCATION, "textures/gui/" + name + ".png");
     }
 
-    public void drawString(String str, int x, int y, float mult, int color) {
+    public void drawString(String str, int x, int y, float mult, int color)
+    {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawString(str, (int) ((x + guiLeft) / mult), (int) ((y + guiTop) / mult), color);
+        fontRendererObj.drawString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GL11.glPopMatrix();
     }
 
-    public void drawSplitString(String str, int x, int y, int w, float mult, int color) {
+    public void drawSplitString(String str, int x, int y, int w, float mult, int color)
+    {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
         fontRendererObj.drawSplitString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
@@ -102,30 +111,38 @@ public abstract class GuiBase extends GuiAntiNEI {
         GL11.glPopMatrix();
     }
 
-    public void drawString(String str, int x, int y, int color) {
+    public void drawString(String str, int x, int y, int color)
+    {
         drawString(str, x, y, 1F, color);
     }
 
-    public void drawMouseOver(String str, int x, int y, int width) {
+    public void drawMouseOver(String str, int x, int y, int width)
+    {
 
 
         drawMouseOver(getLinesFromText(str, width), x, y);
     }
 
-    public List<String> getLinesFromText(String str, int width) {
+    public List<String> getLinesFromText(String str, int width)
+    {
         List<String> lst = new ArrayList<String>();
         String[] words = str.split(" ");
         String line = "";
-        for (String word : words) {
+        for (String word : words)
+        {
             String newLine;
-            if (line.equals("")) {
+            if (line.equals(""))
+            {
                 newLine = word;
-            }else{
+            } else
+            {
                 newLine = line + " " + word;
             }
-            if (getStringWidth(newLine) < width) {
+            if (getStringWidth(newLine) < width)
+            {
                 line = newLine;
-            }else{
+            } else
+            {
                 lst.add(line);
                 line = word;
             }
@@ -135,14 +152,18 @@ public abstract class GuiBase extends GuiAntiNEI {
         return lst;
     }
 
-    private int getStringMaxWidth(List<String> lines) {
+    private int getStringMaxWidth(List<String> lines)
+    {
         int width = 0;
 
-        if (lines != null) {
-            for (String line : lines) {
+        if (lines != null)
+        {
+            for (String line : lines)
+            {
                 int w = fontRendererObj.getStringWidth(line);
 
-                if (w > width) {
+                if (w > width)
+                {
                     width = w;
                 }
             }
@@ -151,17 +172,24 @@ public abstract class GuiBase extends GuiAntiNEI {
         return width;
     }
 
-    private int renderLines(List<String> lines, int mX, int mY, boolean first) {
+    private int renderLines(List<String> lines, int mX, int mY, boolean first)
+    {
         return renderLines(lines, mX, mY, first, false);
     }
-    private int renderLines(List<String> lines, int mX, int mY, boolean first, boolean fake) {
-        if (lines != null) {
-            for (String line : lines) {
-                if (!fake) {
+
+    private int renderLines(List<String> lines, int mX, int mY, boolean first, boolean fake)
+    {
+        if (lines != null)
+        {
+            for (String line : lines)
+            {
+                if (!fake)
+                {
                     fontRendererObj.drawStringWithShadow(line, mX, mY, -1);
                 }
 
-                if (first){
+                if (first)
+                {
                     mY += 2;
                     first = false;
                 }
@@ -173,11 +201,15 @@ public abstract class GuiBase extends GuiAntiNEI {
         return mY;
     }
 
-    public void drawMouseOver(IAdvancedTooltip tooltip, int mX, int mY) {
+    public void drawMouseOver(IAdvancedTooltip tooltip, int mX, int mY)
+    {
         drawMouseOver(tooltip, mX, mY, mX, mY);
     }
-    public void drawMouseOver(IAdvancedTooltip tooltip, int x, int y, int mX, int mY) {
-        if (tooltip != null) {
+
+    public void drawMouseOver(IAdvancedTooltip tooltip, int x, int y, int mX, int mY)
+    {
+        if (tooltip != null)
+        {
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_LIGHTING);
@@ -196,10 +228,12 @@ public abstract class GuiBase extends GuiAntiNEI {
 
             x += guiLeft + 12;
             y += guiTop - 12;
-            if (x + width > this.width){
+            if (x + width > this.width)
+            {
                 x -= 28 + width;
             }
-            if (y + height + 6 > this.height){
+            if (y + height + 6 > this.height)
+            {
                 y = this.height - height - 6;
             }
 
@@ -232,11 +266,16 @@ public abstract class GuiBase extends GuiAntiNEI {
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         }
     }
-    public int getAdvancedToolTipContentStartX(IAdvancedTooltip tooltip) {
+
+    public int getAdvancedToolTipContentStartX(IAdvancedTooltip tooltip)
+    {
         return 12;
     }
-    public int getAdvancedToolTipContentStartY(IAdvancedTooltip tooltip) {
-        if (tooltip != null) {
+
+    public int getAdvancedToolTipContentStartY(IAdvancedTooltip tooltip)
+    {
+        if (tooltip != null)
+        {
             return renderLines(tooltip.getPrefix(this), 0, 0, true, true) - 12;
         }
 
@@ -244,56 +283,71 @@ public abstract class GuiBase extends GuiAntiNEI {
     }
 
 
-
-    public void drawMouseOver(String str, int x, int y) {
+    public void drawMouseOver(String str, int x, int y)
+    {
         drawMouseOver(Arrays.asList(str.split("\n")), x, y);
     }
 
-    public void drawMouseOver(List lst, int x, int y) {
-        if (lst != null) {
+    public void drawMouseOver(List lst, int x, int y)
+    {
+        if (lst != null)
+        {
             drawHoveringText(lst, x + guiLeft, y + guiTop, fontRendererObj);
         }
     }
 
 
-    public void drawBlock(TileEntity te, int x, int y) {
+    public void drawBlock(TileEntity te, int x, int y)
+    {
         ItemStack item = getItemStackFromBlock(te);
-        if (item != null) {
+        if (item != null)
+        {
             drawItemStack(item, x, y);
         }
     }
 
 
-    public String getBlockName(TileEntity te) {
+    public String getBlockName(TileEntity te)
+    {
         ItemStack item = getItemStackFromBlock(te);
 
-        if (item != null) {
+        if (item != null)
+        {
             return getItemName(item);
         }
 
         return "Unknown";
     }
 
-    public String getItemName(ItemStack item) {
-        try {
+    public String getItemName(ItemStack item)
+    {
+        try
+        {
             List str = item.getTooltip(Minecraft.getMinecraft().thePlayer, false);
-            if (str != null && str.size() > 0) {
+            if (str != null && str.size() > 0)
+            {
                 return (String)str.get(0);
             }
-        }catch (Throwable ignored) {}
+        } catch (Throwable ignored)
+        {
+        }
 
         return "Unknown";
     }
 
-    private ItemStack getItemStackFromBlock(TileEntity te) {
-        if (te != null) {
-            if (te instanceof TileEntityClusterElement) {
+    private ItemStack getItemStackFromBlock(TileEntity te)
+    {
+        if (te != null)
+        {
+            if (te instanceof TileEntityClusterElement)
+            {
                 return ((TileEntityClusterElement)te).getItemStackFromBlock();
             }
 
             World world = te.getWorldObj();
             Block block = te.getBlockType();
-            if (world != null && block != null) {
+            if (world != null && block != null)
+            {
                 int x = te.xCoord;
                 int y = te.yCoord;
                 int z = te.zCoord;
@@ -305,10 +359,13 @@ public abstract class GuiBase extends GuiAntiNEI {
         return null;
     }
 
-    public ItemStack getItemStackFromBlock(World world, int x, int y, int z) {
-        if (world != null) {
+    public ItemStack getItemStackFromBlock(World world, int x, int y, int z)
+    {
+        if (world != null)
+        {
             Block block = world.getBlock(x, y, z);
-            if (block != null) {
+            if (block != null)
+            {
                 return getItemStackFromBlock(world, x, y, z, block, world.getBlockMetadata(x, y, z));
             }
         }
@@ -316,38 +373,48 @@ public abstract class GuiBase extends GuiAntiNEI {
         return null;
     }
 
-    private ItemStack getItemStackFromBlock(World world, int x, int y, int z, Block block, int meta) {
-        try {
+    private ItemStack getItemStackFromBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        try
+        {
             //try to get it by picking the block
             ItemStack item = block.getPickBlock(new MovingObjectPosition(x, y, z, 1, Vec3.createVectorHelper(x, y, z)), world, x, y, z, Minecraft.getMinecraft().thePlayer);
-            if (item != null) {
+            if (item != null)
+            {
                 return item;
             }
-        }catch (Throwable ignored) {}
+        } catch (Throwable ignored)
+        {
+        }
 
 
-        try{
+        try
+        {
             //try to get it from dropped items
             List<ItemStack> items = block.getDrops(world, x, y, z, meta, 0);
-            if (items != null && items.size() > 0 && items.get(0) != null) {
+            if (items != null && items.size() > 0 && items.get(0) != null)
+            {
                 return items.get(0);
             }
-        }catch (Throwable ignored) {}
-
+        } catch (Throwable ignored)
+        {
+        }
 
 
         //get it from its id and meta
-        return  new ItemStack(block, 1, meta);
+        return new ItemStack(block, 1, meta);
     }
 
-    public void drawItemAmount(ItemStack itemstack, int x, int y) {
+    public void drawItemAmount(ItemStack itemstack, int x, int y)
+    {
         itemRender.renderItemOverlayIntoGUI(fontRendererObj, this.mc.getTextureManager(), itemstack, x + guiLeft, y + guiTop);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 
-    public void drawItemStack(ItemStack itemstack, int x, int y) {
+    public void drawItemStack(ItemStack itemstack, int x, int y)
+    {
         GL11.glPushMatrix();
 
         RenderHelper.enableGUIStandardItemLighting();
@@ -359,15 +426,19 @@ public abstract class GuiBase extends GuiAntiNEI {
         itemRender.zLevel = 1F;
 
 
-        try {
+        try
+        {
             itemRender.renderItemIntoGUI(fontRendererObj, this.mc.getTextureManager(), itemstack, x + guiLeft, y + guiTop);
-        }catch (Exception ex) {
-            if (itemstack.getItemDamage() != 0) {
+        } catch (Exception ex)
+        {
+            if (itemstack.getItemDamage() != 0)
+            {
                 ItemStack newStack = itemstack.copy();
                 newStack.setItemDamage(0);
                 drawItemStack(newStack, x, y);
             }
-        }finally {
+        } finally
+        {
             itemRender.zLevel = 0F;
 
             bindTexture(getComponentResource());
@@ -380,19 +451,24 @@ public abstract class GuiBase extends GuiAntiNEI {
 
     }
 
-    public int getStringWidth(String str) {
+    public int getStringWidth(String str)
+    {
         return fontRendererObj.getStringWidth(str);
     }
 
 
-    public void drawCenteredString(String str, int x, int y, float mult, int width, int color) {
+    public void drawCenteredString(String str, int x, int y, float mult, int width, int color)
+    {
         drawString(str, x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
     }
 
-    public void drawCursor(int x, int y, int z, int color) {
+    public void drawCursor(int x, int y, int z, int color)
+    {
         drawCursor(x, y, z, 1F, color);
     }
-    public void drawCursor(int x, int y, int z, float size, int color) {
+
+    public void drawCursor(int x, int y, int z, float size, int color)
+    {
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 0, z);
         x += guiLeft;
@@ -405,7 +481,8 @@ public abstract class GuiBase extends GuiAntiNEI {
     }
 
 
-    public void drawLine(int x1, int y1, int x2, int y2) {
+    public void drawLine(int x1, int y1, int x2, int y2)
+    {
         GL11.glPushMatrix();
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -431,27 +508,26 @@ public abstract class GuiBase extends GuiAntiNEI {
     }
 
 
-
-
-
     @Override
-    public final void drawDefaultBackground() {
+    public final void drawDefaultBackground()
+    {
         super.drawDefaultBackground();
 
         startScaling();
     }
 
 
-
     @Override
-    public void drawScreen(int x, int y, float f) {
+    public void drawScreen(int x, int y, float f)
+    {
 
         super.drawScreen(scaleX(x), scaleY(y), f);
 
         stopScaling();
     }
 
-    private void startScaling() {
+    private void startScaling()
+    {
         //start scale
         GL11.glPushMatrix();
 
@@ -462,12 +538,14 @@ public abstract class GuiBase extends GuiAntiNEI {
         GL11.glTranslatef((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale), 0.0F);
     }
 
-    private void stopScaling() {
+    private void stopScaling()
+    {
         //stop scale
         GL11.glPopMatrix();
     }
 
-    protected float getScale() {
+    protected float getScale()
+    {
 
         net.minecraft.client.gui.ScaledResolution scaledresolution = new net.minecraft.client.gui.ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         float w = scaledresolution.getScaledWidth() * 0.9F;
@@ -475,7 +553,8 @@ public abstract class GuiBase extends GuiAntiNEI {
         float multX = w / xSize;
         float multY = h / ySize;
         float mult = Math.min(multX, multY);
-        if (mult > 1F && !Settings.isEnlargeInterfaces()) {
+        if (mult > 1F && !Settings.isEnlargeInterfaces())
+        {
             mult = 1F;
         }
 
@@ -484,14 +563,17 @@ public abstract class GuiBase extends GuiAntiNEI {
         return mult;
     }
 
-    protected int scaleX(float x) {
+    protected int scaleX(float x)
+    {
         float scale = getScale();
         x /= scale;
         x += guiLeft;
         x -= (this.width - this.xSize * scale) / (2 * scale);
         return (int)x;
     }
-    protected int scaleY(float y) {
+
+    protected int scaleY(float y)
+    {
         float scale = getScale();
         y /= scale;
         y += guiTop;
@@ -499,24 +581,30 @@ public abstract class GuiBase extends GuiAntiNEI {
         return (int)y;
     }
 
-    public void drawIcon(IIcon icon, int x, int y) {
+    public void drawIcon(IIcon icon, int x, int y)
+    {
         drawTexturedModelRectFromIcon(guiLeft + x, guiTop + y, icon, 16, 16);
     }
 
-    public void drawFluid(Fluid fluid, int x, int y) {
+    public void drawFluid(Fluid fluid, int x, int y)
+    {
 
 
         IIcon icon = fluid.getIcon();
 
-        if (icon == null) {
-            if (FluidRegistry.WATER.equals(fluid)) {
+        if (icon == null)
+        {
+            if (FluidRegistry.WATER.equals(fluid))
+            {
                 icon = Blocks.water.getIcon(0, 0);
-            }else if(FluidRegistry.LAVA.equals(fluid)) {
+            } else if (FluidRegistry.LAVA.equals(fluid))
+            {
                 icon = Blocks.lava.getIcon(0, 0);
             }
         }
 
-        if (icon != null) {
+        if (icon != null)
+        {
             bindTexture(TERRAIN);
             setColor(fluid.getColor());
 
@@ -527,24 +615,29 @@ public abstract class GuiBase extends GuiAntiNEI {
         }
     }
 
-    private void setColor(int color) {
+    private void setColor(int color)
+    {
         float[] colorComponents = new float[3];
-        for (int i = 0; i < colorComponents.length; i++) {
+        for (int i = 0; i < colorComponents.length; i++)
+        {
             colorComponents[i] = ((color & (255 << (i * 8))) >> (i * 8)) / 255F;
         }
         GL11.glColor4f(colorComponents[2], colorComponents[1], colorComponents[0], 1F);
     }
 
 
-    public int getFontHeight() {
+    public int getFontHeight()
+    {
         return fontRendererObj.FONT_HEIGHT;
     }
 
-    public int getLeft() {
+    public int getLeft()
+    {
         return guiLeft;
     }
 
-    public int getTop() {
+    public int getTop()
+    {
         return guiTop;
     }
 }

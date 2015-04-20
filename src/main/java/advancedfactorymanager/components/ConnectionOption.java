@@ -3,7 +3,8 @@ package advancedfactorymanager.components;
 
 import advancedfactorymanager.helpers.Localization;
 
-public enum ConnectionOption {
+public enum ConnectionOption
+{
     STANDARD_INPUT(Localization.CONNECTION_INPUT, ConnectionType.INPUT),
     STANDARD_OUTPUT(Localization.CONNECTION_OUTPUT, ConnectionType.OUTPUT),
     INTERVAL(Localization.CONNECTION_INTERVAL, ConnectionType.OUTPUT),
@@ -25,37 +26,46 @@ public enum ConnectionOption {
     private ConnectionType type;
 
 
-    private ConnectionOption(Localization name, ConnectionType type) {
+    private ConnectionOption(Localization name, ConnectionType type)
+    {
         this.name = name;
         this.type = type;
     }
 
-    public boolean isInput() {
+    public boolean isInput()
+    {
         return type == ConnectionType.INPUT;
     }
 
 
-    public ConnectionType getType() {
+    public ConnectionType getType()
+    {
         return type;
     }
 
 
-    public String getName(FlowComponent component, int id) {
+    public String getName(FlowComponent component, int id)
+    {
 
-        if (name != null) {
+        if (name != null)
+        {
             return name.toString();
-        }else if (this == DYNAMIC_INPUT){
+        } else if (this == DYNAMIC_INPUT)
+        {
             return id < component.getChildrenInputNodes().size() ? component.getChildrenInputNodes().get(id).getName() : "";
-        }else {
+        } else
+        {
             return id < component.getChildrenOutputNodes().size() ? component.getChildrenOutputNodes().get(id).getName() : "";
         }
     }
 
-    public boolean isValid(FlowComponent component, int id) {
+    public boolean isValid(FlowComponent component, int id)
+    {
         return name != null || (this == DYNAMIC_INPUT ? id < component.getChildrenInputNodes().size() : id < component.getChildrenOutputNodes().size());
     }
 
-    public enum ConnectionType {
+    public enum ConnectionType
+    {
         INPUT,
         OUTPUT,
         SIDE

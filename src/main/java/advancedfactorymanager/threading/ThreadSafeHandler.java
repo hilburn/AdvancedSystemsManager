@@ -1,11 +1,11 @@
 package advancedfactorymanager.threading;
 
+import advancedfactorymanager.components.ScrollController;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import advancedfactorymanager.components.ScrollController;
 
 import java.util.LinkedHashMap;
 import java.util.List;

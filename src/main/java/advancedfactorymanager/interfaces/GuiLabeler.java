@@ -1,5 +1,8 @@
 package advancedfactorymanager.interfaces;
 
+import advancedfactorymanager.items.ItemLabeler;
+import advancedfactorymanager.network.MessageHandler;
+import advancedfactorymanager.network.message.LabelSyncMessage;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -12,9 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import advancedfactorymanager.items.ItemLabeler;
-import advancedfactorymanager.network.MessageHandler;
-import advancedfactorymanager.network.message.LabelSyncMessage;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,13 +1,14 @@
 package advancedfactorymanager.blocks;
 
 import advancedfactorymanager.api.IRedstoneNode;
+import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.tileentities.*;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
-import advancedfactorymanager.helpers.Localization;
 
-public enum ConnectionBlockType {
+public enum ConnectionBlockType
+{
     INVENTORY(Localization.TYPE_INVENTORY, IInventory.class, false),
     TANK(Localization.TYPE_TANK, IFluidHandler.class, false),
     EMITTER(Localization.TYPE_EMITTER, TileEntityOutput.class, false),
@@ -21,30 +22,36 @@ public enum ConnectionBlockType {
     private Class clazz;
     private boolean group;
 
-    private ConnectionBlockType(Localization name, Class clazz, boolean group) {
+    private ConnectionBlockType(Localization name, Class clazz, boolean group)
+    {
         this.name = name;
         this.clazz = clazz;
         this.group = group;
     }
 
-    public boolean isInstance(TileEntity tileEntity) {
+    public boolean isInstance(TileEntity tileEntity)
+    {
         return clazz.isInstance(tileEntity);
     }
 
-    public <T> T getObject(TileEntity tileEntity) {
+    public <T> T getObject(TileEntity tileEntity)
+    {
         return (T)tileEntity;
     }
 
-    public boolean isGroup() {
+    public boolean isGroup()
+    {
         return group;
     }
 
-    public Localization getName() {
+    public Localization getName()
+    {
         return name;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return name.toString();
     }
 }

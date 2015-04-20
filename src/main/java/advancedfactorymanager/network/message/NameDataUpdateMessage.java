@@ -1,14 +1,14 @@
 package advancedfactorymanager.network.message;
 
+import advancedfactorymanager.naming.BlockCoord;
+import advancedfactorymanager.naming.NameRegistry;
+import advancedfactorymanager.network.MessageHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
-import advancedfactorymanager.naming.BlockCoord;
-import advancedfactorymanager.naming.NameRegistry;
-import advancedfactorymanager.network.MessageHandler;
 
 public class NameDataUpdateMessage implements IMessage, IMessageHandler<NameDataUpdateMessage, IMessage>
 {

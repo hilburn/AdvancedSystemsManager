@@ -1,11 +1,11 @@
 package advancedfactorymanager.naming;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
 import advancedfactorymanager.network.MessageHandler;
 import advancedfactorymanager.network.message.FullDataSyncMessage;
 import advancedfactorymanager.network.message.NameDataUpdateMessage;
 import advancedfactorymanager.network.message.WorldDataSyncMessage;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class NameRegistry
         if (world.isRemote)
         {
             MessageHandler.INSTANCE.sendToServer(new NameDataUpdateMessage(world.provider.dimensionId, coord));
-        }else
+        } else
         {
             if (!instance.nameMapping.containsKey(world.provider.dimensionId))
                 instance.nameMapping.put(world.provider.dimensionId, new NameData());

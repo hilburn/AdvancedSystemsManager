@@ -16,16 +16,20 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public abstract class BlockCamouflageBase extends BlockContainer {
+public abstract class BlockCamouflageBase extends BlockContainer
+{
 
-    protected BlockCamouflageBase(Material material) {
+    protected BlockCamouflageBase(Material material)
+    {
         super(material);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z)) {
+    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z))
+        {
             setBlockBounds(0, 0, 0, 0, 0, 0);
         }
 
@@ -33,8 +37,10 @@ public abstract class BlockCamouflageBase extends BlockContainer {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z)) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
+        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z))
+        {
             return null;
         }
 
@@ -42,14 +48,18 @@ public abstract class BlockCamouflageBase extends BlockContainer {
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
-    private boolean setBlockCollisionBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+    private boolean setBlockCollisionBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    {
         setBlockBoundsBasedOnState(world, x, y, z);
 
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
-        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape()) {
-            if (!camouflage.isUseCollision()) {
+        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
+        {
+            if (!camouflage.isUseCollision())
+            {
                 return false;
-            }else if(camouflage.isFullCollision()) {
+            } else if (camouflage.isFullCollision())
+            {
                 setBlockBoundsForItemRender();
             }
         }
@@ -58,7 +68,8 @@ public abstract class BlockCamouflageBase extends BlockContainer {
     }
 
     @Override
-    public boolean getBlocksMovement(IBlockAccess world, int x, int y, int z) {
+    public boolean getBlocksMovement(IBlockAccess world, int x, int y, int z)
+    {
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
 
         return camouflage == null || camouflage.isNormalBlock();
@@ -66,8 +77,10 @@ public abstract class BlockCamouflageBase extends BlockContainer {
 
 
     @Override
-    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end) {
-        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z)) {
+    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end)
+    {
+        if (!setBlockCollisionBoundsBasedOnState(world, x, y, z))
+        {
             setBlockBounds(0, 0, 0, 0, 0, 0);
         }
 
@@ -76,10 +89,13 @@ public abstract class BlockCamouflageBase extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer){
+    public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer)
+    {
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, worldObj, target.blockX, target.blockY, target.blockZ);
-        if (camouflage != null) {
-            if (camouflage.addBlockEffect(this, target.sideHit, effectRenderer)) {
+        if (camouflage != null)
+        {
+            if (camouflage.addBlockEffect(this, target.sideHit, effectRenderer))
+            {
                 return true;
             }
         }
@@ -87,48 +103,59 @@ public abstract class BlockCamouflageBase extends BlockContainer {
     }
 
     @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    {
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
-        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape()) {
+        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
+        {
             camouflage.setBlockBounds(this);
-        }else{
+        } else
+        {
             setBlockBoundsForItemRender();
         }
     }
 
     @Override
-    public float getBlockHardness(World world, int x, int y, int z) {
+    public float getBlockHardness(World world, int x, int y, int z)
+    {
         TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
-        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape() && !camouflage.isUseCollision()) {
+        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape() && !camouflage.isUseCollision())
+        {
             return 600000;
         }
         return super.getBlockHardness(world, x, y, z);
     }
 
     @Override
-    public void setBlockBoundsForItemRender() {
+    public void setBlockBoundsForItemRender()
+    {
         setBlockBounds(0, 0, 0, 1, 1, 1);
     }
 
     @Override
-    public int getRenderType() {
+    public int getRenderType()
+    {
         return ModBlocks.CAMOUFLAGE_RENDER_ID;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube()
+    {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+    public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    {
         TileEntityCamouflage te = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
 
-        if (te != null) {
+        if (te != null)
+        {
             IIcon icon = te.getIconWithDefault(world, x, y, z, this, side, false);
 
-            if (icon != null) {
+            if (icon != null)
+            {
                 return icon;
             }
         }
@@ -138,7 +165,8 @@ public abstract class BlockCamouflageBase extends BlockContainer {
 
 
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean renderAsNormalBlock()
+    {
         return false;
     }
 

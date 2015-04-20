@@ -1,5 +1,6 @@
 package advancedfactorymanager.commands;
 
+import advancedfactorymanager.helpers.LocalizationHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -9,7 +10,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.DimensionManager;
-import advancedfactorymanager.helpers.LocalizationHelper;
 
 import java.io.File;
 import java.io.IOException;

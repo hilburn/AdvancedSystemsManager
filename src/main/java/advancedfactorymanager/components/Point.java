@@ -1,43 +1,52 @@
 package advancedfactorymanager.components;
 
 
-public class Point {
+public class Point
+{
     private int x, y;
 
-    public Point(int x, int y) {
+    public Point(int x, int y)
+    {
         this.x = x;
         this.y = y;
     }
 
-    public Point() {
+    public Point()
+    {
     }
 
-    public int getX() {
+    public int getX()
+    {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(int x)
+    {
         this.x = x;
     }
 
-    public int getY() {
+    public int getY()
+    {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(int y)
+    {
         this.y = y;
     }
 
-    public Point copy() {
+    public Point copy()
+    {
         return new Point(x, y);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Point point = (Point) o;
+        Point point = (Point)o;
 
         if (x != point.x) return false;
         if (y != point.y) return false;
@@ -46,13 +55,15 @@ public class Point {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int result = x;
         result = 31 * result + y;
         return result;
     }
 
-    public void adjustToGrid() {
+    public void adjustToGrid()
+    {
         x = ((x - 2) / 10) * 10 + 2;
         y = ((y - 4) / 10) * 10 + 4;
     }

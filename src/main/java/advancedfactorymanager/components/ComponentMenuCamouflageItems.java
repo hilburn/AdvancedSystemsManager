@@ -1,35 +1,41 @@
 package advancedfactorymanager.components;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.GuiManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ComponentMenuCamouflageItems extends ComponentMenuItem {
-    public ComponentMenuCamouflageItems(FlowComponent parent) {
+public class ComponentMenuCamouflageItems extends ComponentMenuItem
+{
+    public ComponentMenuCamouflageItems(FlowComponent parent)
+    {
         super(parent);
     }
 
     @Override
-    protected int getSettingCount() {
+    protected int getSettingCount()
+    {
         return 1;
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.CAMOUFLAGE_ITEM_MENU.toString();
     }
 
     @Override
-    protected boolean doAllowEdit() {
+    protected boolean doAllowEdit()
+    {
         return false;
     }
 
     @Override
-    protected void initRadioButtons() {
+    protected void initRadioButtons()
+    {
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Localization.CLEAR_CAMOUFLAGE));
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Localization.SET_CAMOUFLAGE));
     }
@@ -40,23 +46,28 @@ public class ComponentMenuCamouflageItems extends ComponentMenuItem {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY) {
+    public void draw(GuiManager gui, int mX, int mY)
+    {
         super.draw(gui, mX, mY);
 
-        if (!isEditing() && !isSearching()) {
+        if (!isEditing() && !isSearching())
+        {
             gui.drawSplitString(Localization.CAMOUFLAGE_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 0.7F, 0x404040);
         }
     }
 
     @Override
-    public void addErrors(List<String> errors) {
-        if (!isFirstRadioButtonSelected() && !getSettings().get(0).isValid()) {
+    public void addErrors(List<String> errors)
+    {
+        if (!isFirstRadioButtonSelected() && !getSettings().get(0).isValid())
+        {
             errors.add(Localization.NO_CAMOUFLAGE_SETTING.toString());
         }
     }
 
     @Override
-    protected boolean isListVisible() {
+    protected boolean isListVisible()
+    {
         return isSearching() || !isFirstRadioButtonSelected();
     }
 }

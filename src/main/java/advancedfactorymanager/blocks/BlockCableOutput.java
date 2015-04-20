@@ -1,6 +1,7 @@
 package advancedfactorymanager.blocks;
 
 
+import advancedfactorymanager.AdvancedFactoryManager;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntityOutput;
 import cpw.mods.fml.relauncher.Side;
@@ -12,11 +13,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import advancedfactorymanager.AdvancedFactoryManager;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableOutput extends BlockContainer {
-    public BlockCableOutput() {
+public class BlockCableOutput extends BlockContainer
+{
+    public BlockCableOutput()
+    {
         super(Material.iron);
         setCreativeTab(ModBlocks.creativeTab);
         setStepSound(soundTypeMetal);
@@ -25,7 +27,8 @@ public class BlockCableOutput extends BlockContainer {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int var2) {
+    public TileEntity createNewTileEntity(World world, int var2)
+    {
         return new TileEntityOutput();
     }
 
@@ -38,7 +41,8 @@ public class BlockCableOutput extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerBlockIcons(IIconRegister register) {
+    public void registerBlockIcons(IIconRegister register)
+    {
         strongIcon = register.registerIcon(AdvancedFactoryManager.RESOURCE_LOCATION + ":cable_output_strong");
         weakIcon = register.registerIcon(AdvancedFactoryManager.RESOURCE_LOCATION + ":cable_output_weak");
         inactiveIcon = register.registerIcon(AdvancedFactoryManager.RESOURCE_LOCATION + ":cable_idle");
@@ -46,49 +50,60 @@ public class BlockCableOutput extends BlockContainer {
 
 
     @Override
-    public IIcon getIcon(int side, int meta) {
+    public IIcon getIcon(int side, int meta)
+    {
         return weakIcon;
     }
 
     @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    {
         TileEntityOutput te = getTileEntity(world, x, y, z);
-        if (te != null && te.getStrengthFromSide(side) > 0) {
+        if (te != null && te.getStrengthFromSide(side) > 0)
+        {
             return te.hasStrongSignalAtSide(side) ? strongIcon : weakIcon;
         }
-        return inactiveIcon;    }
+        return inactiveIcon;
+    }
 
 
     @Override
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
         TileEntityOutput te = getTileEntity(world, x, y, z);
-        if (te != null) {
+        if (te != null)
+        {
             return te.getStrengthFromOppositeSide(side);
         }
         return 0;
     }
 
     @Override
-    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
+    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
+    {
         TileEntityOutput te = getTileEntity(world, x, y, z);
-        if (te != null && te.hasStrongSignalAtOppositeSide(side)) {
+        if (te != null && te.hasStrongSignalAtOppositeSide(side))
+        {
             return te.getStrengthFromOppositeSide(side);
         }
 
         return 0;
     }
 
-    private TileEntityOutput getTileEntity(IBlockAccess world, int x, int y, int z) {
+    private TileEntityOutput getTileEntity(IBlockAccess world, int x, int y, int z)
+    {
         return TileEntityCluster.getTileEntity(TileEntityOutput.class, world, x, y, z);
     }
 
     @Override
-    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side) {
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+    {
         return true;
     }
 
     @Override
-    public boolean canProvidePower(){
+    public boolean canProvidePower()
+    {
         return true;
     }
 }

@@ -1,14 +1,16 @@
 package advancedfactorymanager.components;
 
 
-
-public class CraftingSetting extends ItemSetting {
-    public CraftingSetting(int id) {
+public class CraftingSetting extends ItemSetting
+{
+    public CraftingSetting(int id)
+    {
         super(id);
     }
 
     @Override
-    public boolean isAmountSpecific() {
+    public boolean isAmountSpecific()
+    {
         return false;
     }
 }

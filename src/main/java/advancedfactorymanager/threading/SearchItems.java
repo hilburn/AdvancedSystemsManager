@@ -1,10 +1,10 @@
 package advancedfactorymanager.threading;
 
+import advancedfactorymanager.components.ScrollController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import advancedfactorymanager.components.ScrollController;
 
 import java.util.ArrayList;
 import java.util.List;

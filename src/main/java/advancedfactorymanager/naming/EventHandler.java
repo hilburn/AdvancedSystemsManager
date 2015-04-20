@@ -1,5 +1,11 @@
 package advancedfactorymanager.naming;
 
+import advancedfactorymanager.items.ItemDuplicator;
+import advancedfactorymanager.items.ItemLabeler;
+import advancedfactorymanager.network.MessageHandler;
+import advancedfactorymanager.network.message.SearchRegistryGenerateMessage;
+import advancedfactorymanager.registry.ItemRegistry;
+import advancedfactorymanager.tileentities.TileEntityManager;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,12 +19,6 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import advancedfactorymanager.items.ItemLabeler;
-import advancedfactorymanager.items.ItemDuplicator;
-import advancedfactorymanager.network.MessageHandler;
-import advancedfactorymanager.network.message.SearchRegistryGenerateMessage;
-import advancedfactorymanager.registry.ItemRegistry;
-import advancedfactorymanager.tileentities.TileEntityManager;
 
 public class EventHandler
 {
@@ -91,8 +91,7 @@ public class EventHandler
                     }
                     event.setCanceled(true);
                 }
-            }
-            else if (stack.getItem() == ItemRegistry.duplicator && player.isSneaking())
+            } else if (stack.getItem() == ItemRegistry.duplicator && player.isSneaking())
             {
                 TileEntity te = world.getTileEntity(x, y, z);
                 if (te instanceof TileEntityManager)

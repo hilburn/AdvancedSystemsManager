@@ -1,12 +1,13 @@
 package advancedfactorymanager.components;
 
+import advancedfactorymanager.interfaces.GuiManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ChatAllowedCharacters;
-import advancedfactorymanager.interfaces.GuiManager;
 
 
-public class TextBoxLogic {
+public class TextBoxLogic
+{
     private String text;
     private int cursor;
     private int cursorPosition;
@@ -15,17 +16,20 @@ public class TextBoxLogic {
     private boolean updatedCursor;
     private float mult;
 
-    public TextBoxLogic(int charLimit, int width) {
+    public TextBoxLogic(int charLimit, int width)
+    {
         this.charLimit = charLimit;
         this.width = width;
         mult = 1F;
     }
 
     @SideOnly(Side.CLIENT)
-    private void addText(GuiManager gui, String str) {
+    private void addText(GuiManager gui, String str)
+    {
         String newText = text.substring(0, cursor) + str + text.substring(cursor);
 
-        if (newText.length() <= charLimit && gui.getStringWidth(newText) * mult <= width) {
+        if (newText.length() <= charLimit && gui.getStringWidth(newText) * mult <= width)
+        {
             text = newText;
             moveCursor(gui, str.length());
             textChanged();
@@ -33,11 +37,15 @@ public class TextBoxLogic {
     }
 
     @SideOnly(Side.CLIENT)
-    private void deleteText(GuiManager gui, int direction) {
-        if (cursor + direction >= 0 && cursor + direction <= text.length()) {
-            if (direction > 0) {
+    private void deleteText(GuiManager gui, int direction)
+    {
+        if (cursor + direction >= 0 && cursor + direction <= text.length())
+        {
+            if (direction > 0)
+            {
                 text = text.substring(0, cursor) + text.substring(cursor + 1);
-            }else{
+            } else
+            {
                 text = text.substring(0, cursor - 1) + text.substring(cursor);
                 moveCursor(gui, direction);
             }
@@ -46,21 +54,27 @@ public class TextBoxLogic {
     }
 
     @SideOnly(Side.CLIENT)
-    private void moveCursor(GuiManager gui, int steps) {
+    private void moveCursor(GuiManager gui, int steps)
+    {
         cursor += steps;
 
         updateCursor();
     }
 
 
-    protected void textChanged() {}
+    protected void textChanged()
+    {
+    }
 
-    public String getText() {
+    public String getText()
+    {
         return text;
     }
 
-    public int getCursorPosition(GuiManager gui) {
-        if (updatedCursor) {
+    public int getCursorPosition(GuiManager gui)
+    {
+        if (updatedCursor)
+        {
             cursorPosition = (int)(gui.getStringWidth(text.substring(0, cursor)) * mult);
             updatedCursor = false;
         }
@@ -68,29 +82,39 @@ public class TextBoxLogic {
         return cursorPosition;
     }
 
-    public void setText(String text) {
+    public void setText(String text)
+    {
         this.text = text;
     }
 
     @SideOnly(Side.CLIENT)
-    public void onKeyStroke(GuiManager gui, char c, int k) {
-        if (k == 203) {
+    public void onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (k == 203)
+        {
             moveCursor(gui, -1);
-        }else if(k == 205) {
+        } else if (k == 205)
+        {
             moveCursor(gui, 1);
-        }else if (k == 14) {
+        } else if (k == 14)
+        {
             deleteText(gui, -1);
-        }else if (k == 211) {
+        } else if (k == 211)
+        {
             deleteText(gui, 1);
-        }else if (ChatAllowedCharacters.isAllowedCharacter(c)) {
+        } else if (ChatAllowedCharacters.isAllowedCharacter(c))
+        {
             addText(gui, Character.toString(c));
         }
     }
 
-    public void updateCursor() {
-        if (cursor < 0) {
+    public void updateCursor()
+    {
+        if (cursor < 0)
+        {
             cursor = 0;
-        }else if (cursor > text.length()) {
+        } else if (cursor > text.length())
+        {
             cursor = text.length();
         }
 
@@ -98,17 +122,20 @@ public class TextBoxLogic {
     }
 
 
-    public void resetCursor() {
+    public void resetCursor()
+    {
         cursor = text.length();
         updatedCursor = true;
     }
 
-    public void setTextAndCursor(String s) {
+    public void setTextAndCursor(String s)
+    {
         setText(s);
         resetCursor();
     }
 
-    public void setMult(float mult) {
+    public void setMult(float mult)
+    {
         this.mult = mult;
     }
 }

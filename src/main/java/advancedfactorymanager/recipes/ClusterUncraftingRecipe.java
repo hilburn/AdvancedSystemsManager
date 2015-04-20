@@ -1,5 +1,8 @@
 package advancedfactorymanager.recipes;
 
+import advancedfactorymanager.blocks.ClusterRegistry;
+import advancedfactorymanager.blocks.ItemCluster;
+import advancedfactorymanager.blocks.ModBlocks;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.inventory.IInventory;
@@ -8,9 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
-import advancedfactorymanager.blocks.ClusterRegistry;
-import advancedfactorymanager.blocks.ItemCluster;
-import advancedfactorymanager.blocks.ModBlocks;
 
 public class ClusterUncraftingRecipe implements IRecipe
 {

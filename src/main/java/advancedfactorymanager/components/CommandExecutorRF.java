@@ -1,6 +1,15 @@
 package advancedfactorymanager.components;
 
 import advancedfactorymanager.api.*;
+import advancedfactorymanager.blocks.ConnectionBlock;
+import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.components.ComponentMenuListOrder.LoopOrder;
+import advancedfactorymanager.components.ComponentMenuVariable.VariableMode;
+import advancedfactorymanager.helpers.StevesEnum;
+import advancedfactorymanager.reference.Null;
+import advancedfactorymanager.tileentities.TileEntityCreative;
+import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.tileentities.TileEntityRFNode;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -14,15 +23,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-import advancedfactorymanager.helpers.StevesEnum;
-import advancedfactorymanager.reference.Null;
-import advancedfactorymanager.tileentities.TileEntityRFNode;
-import advancedfactorymanager.blocks.ConnectionBlock;
-import advancedfactorymanager.blocks.ConnectionBlockType;
-import advancedfactorymanager.tileentities.TileEntityCreative;
-import advancedfactorymanager.tileentities.TileEntityManager;
-import advancedfactorymanager.components.ComponentMenuListOrder.LoopOrder;
-import advancedfactorymanager.components.ComponentMenuVariable.VariableMode;
 
 import java.util.*;
 
@@ -665,7 +665,8 @@ public class CommandExecutorRF extends CommandExecutor
                 }
             }
         }
-        if (bufferSize > 0 && validOutputs.size() > 0 && !rfBuffer.isEmpty()) insertRF(directions, validOutputs, bufferSize);
+        if (bufferSize > 0 && validOutputs.size() > 0 && !rfBuffer.isEmpty())
+            insertRF(directions, validOutputs, bufferSize);
     }
 
     private void removeRF(int amount)
@@ -722,10 +723,9 @@ public class CommandExecutorRF extends CommandExecutor
         {
             if (inventory.getTile() instanceof IHiddenInventory)
             {
-                IHiddenInventory node = (IHiddenInventory) inventory.getTile();
+                IHiddenInventory node = (IHiddenInventory)inventory.getTile();
                 node.addItemsToBuffer(menuItem, inventory, itemBuffer, this);
-            }
-            else
+            } else
             {
                 Iterator<SlotSideTarget> itr;
                 SlotSideTarget slot;
@@ -777,7 +777,7 @@ public class CommandExecutorRF extends CommandExecutor
         if (menuItem.useWhiteList() == (setting != null) || setting != null && setting.isLimitedByAmount())
         {
             FlowComponent owner = menuItem.getParent();
-            SlotStackInventoryHolder target =  new SlotStackInventoryHolder(itemStack, inventory.getInventory(), slot.getSlot());
+            SlotStackInventoryHolder target = new SlotStackInventoryHolder(itemStack, inventory.getInventory(), slot.getSlot());
             boolean added = false;
 
             for (ItemBufferElement itemBufferElement : this.itemBuffer)
@@ -813,8 +813,7 @@ public class CommandExecutorRF extends CommandExecutor
                 {
                     var13.addSide(0);
                 }
-            }
-            else
+            } else
             {
                 IFluidHandler tank = slotHolder.getTank();
                 for (int side = 0; side < ComponentMenuTarget.directions.length; ++side)
@@ -861,10 +860,9 @@ public class CommandExecutorRF extends CommandExecutor
             ComponentMenuStuff menuItem = (ComponentMenuStuff)componentMenu;
             if (tank.getTile() instanceof IHiddenTank)
             {
-                IHiddenTank node = (IHiddenTank) tank.getTile();
+                IHiddenTank node = (IHiddenTank)tank.getTile();
                 node.addFluidsToBuffer(menuItem, tank, liquidBuffer, this);
-            }
-            else if (tank.getTank() instanceof TileEntityCreative)
+            } else if (tank.getTank() instanceof TileEntityCreative)
             {
                 Iterator<SlotSideTarget> itr;
                 if (menuItem.useWhiteList())
@@ -1041,7 +1039,7 @@ public class CommandExecutorRF extends CommandExecutor
     {
         itemBufferElement.prepareSubElements();
 
-        IInventory inventory = inventoryHolder.getTile() instanceof IHiddenInventory? Null.NULL_INVENTORY :inventoryHolder.getInventory();
+        IInventory inventory = inventoryHolder.getTile() instanceof IHiddenInventory ? Null.NULL_INVENTORY : inventoryHolder.getInventory();
         IItemBufferSubElement subElement;
         while ((subElement = itemBufferElement.getSubElement()) != null)
         {
@@ -1068,7 +1066,7 @@ public class CommandExecutorRF extends CommandExecutor
 
                 if (inventoryHolder.getTile() instanceof IHiddenInventory)
                 {
-                    IHiddenInventory hidden = (IHiddenInventory) inventoryHolder.getTile();
+                    IHiddenInventory hidden = (IHiddenInventory)inventoryHolder.getTile();
                     int moveCount = Math.min(hidden.getInsertable(itemStack), itemStack.stackSize);
                     if (moveCount > 0)
                     {
@@ -1092,8 +1090,7 @@ public class CommandExecutorRF extends CommandExecutor
                             subElement.onUpdate();
                         }
                     }
-                }
-                else
+                } else
                 {
 
                     for (SlotSideTarget slot : inventoryHolder.getValidSlots().values())
@@ -1161,7 +1158,7 @@ public class CommandExecutorRF extends CommandExecutor
                 outputCounters.clear();
             }
 
-            IFluidHandler tank = tankHolder.getTile() instanceof IHiddenTank? ((IHiddenTank)tankHolder.getTile()).getTank() : tankHolder.getTank();
+            IFluidHandler tank = tankHolder.getTile() instanceof IHiddenTank ? ((IHiddenTank)tankHolder.getTile()).getTank() : tankHolder.getTank();
 
             for (LiquidBufferElement liquidBufferElement : this.liquidBuffer)
             {
@@ -1282,8 +1279,7 @@ public class CommandExecutorRF extends CommandExecutor
         if (inventoryHolder.getTile() instanceof IHiddenInventory)
         {
             ((IHiddenInventory)inventoryHolder.getTile()).isItemValid(((ComponentMenuStuff)componentMenu).getSettings(), conditionSettingCheckerMap);
-        }
-        else
+        } else
         {
             for (SlotSideTarget slot : inventoryHolder.getValidSlots().values())
             {
@@ -1317,7 +1313,7 @@ public class CommandExecutorRF extends CommandExecutor
 
             for (int side : slot.getSides())
             {
-                FluidTankInfo[] currentTankInfos = tank.getTile() instanceof IHiddenTank ? ((IHiddenTank)tank.getTile()).getTank().getTankInfo(null):tank.getTank().getTankInfo(ForgeDirection.VALID_DIRECTIONS[side]);
+                FluidTankInfo[] currentTankInfos = tank.getTile() instanceof IHiddenTank ? ((IHiddenTank)tank.getTile()).getTank().getTankInfo(null) : tank.getTank().getTankInfo(ForgeDirection.VALID_DIRECTIONS[side]);
                 if (currentTankInfos != null)
                 {
                     for (FluidTankInfo fluidTankInfo : currentTankInfos)

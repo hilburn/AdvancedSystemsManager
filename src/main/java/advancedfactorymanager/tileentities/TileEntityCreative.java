@@ -14,101 +14,121 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.EnumSet;
 
 
-public class TileEntityCreative extends TileEntityClusterElement implements IInventory, IFluidHandler {
+public class TileEntityCreative extends TileEntityClusterElement implements IInventory, IFluidHandler
+{
 
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+    {
         return resource == null ? 0 : resource.amount;
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+    {
         return resource == null ? null : resource.copy();
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+    {
         return null;
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
+    public boolean canFill(ForgeDirection from, Fluid fluid)
+    {
         return true;
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    public boolean canDrain(ForgeDirection from, Fluid fluid)
+    {
         return true;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    public FluidTankInfo[] getTankInfo(ForgeDirection from)
+    {
         return new FluidTankInfo[0];
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 1;
     }
 
     @Override
-    public ItemStack getStackInSlot(int i) {
+    public ItemStack getStackInSlot(int i)
+    {
         return null;
     }
 
     @Override
-    public ItemStack decrStackSize(int i, int j) {
+    public ItemStack decrStackSize(int i, int j)
+    {
         return null;
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) {
+    public ItemStack getStackInSlotOnClosing(int i)
+    {
         return null;
     }
 
     @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
+    public void setInventorySlotContents(int i, ItemStack itemstack)
+    {
 
     }
 
     @Override
-    public String getInventoryName() {
+    public String getInventoryName()
+    {
         return ModBlocks.CABLE_CREATIVE_NAME_TAG;
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomInventoryName()
+    {
         return false;
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getInventoryStackLimit()
+    {
         return 64;
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    {
         return false;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory()
+    {
 
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory()
+    {
 
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
         return true;
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations() {
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
         return EnumSet.noneOf(ClusterMethodRegistration.class);
     }
 }

@@ -23,15 +23,19 @@ public class CamouflageDataProvider implements IWailaDataProvider
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
         TileEntity te = accessor.getTileEntity();
-        if (te != null && !isShiftDown()) {
+        if (te != null && !isShiftDown())
+        {
             TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
-            if (camouflage != null ) {
+            if (camouflage != null)
+            {
                 int id = camouflage.getId(accessor.getPosition().sideHit);
                 int meta = camouflage.getMeta(accessor.getPosition().sideHit);
 
-                if (id != 0) {
+                if (id != 0)
+                {
                     Block block = Block.getBlockById(id);
-                    if (block != null) {
+                    if (block != null)
+                    {
                         return new ItemStack(block, 1, block.damageDropped(meta));
                     }
                 }
@@ -41,7 +45,8 @@ public class CamouflageDataProvider implements IWailaDataProvider
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean isShiftDown() {
+    private boolean isShiftDown()
+    {
         return GuiScreen.isShiftKeyDown();
     }
 

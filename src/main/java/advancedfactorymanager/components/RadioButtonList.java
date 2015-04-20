@@ -1,15 +1,16 @@
 package advancedfactorymanager.components;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import advancedfactorymanager.helpers.CollisionHelper;
 import advancedfactorymanager.interfaces.GuiManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RadioButtonList {
+public abstract class RadioButtonList
+{
 
     private static final int RADIO_SIZE = 8;
     private static final int RADIO_SRC_X = 30;
@@ -20,16 +21,21 @@ public abstract class RadioButtonList {
     private List<RadioButton> radioButtonList;
     private int selectedOption;
 
-    public RadioButtonList() {
+    public RadioButtonList()
+    {
         radioButtonList = new ArrayList<RadioButton>();
 
     }
+
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY) {
-        for (int i = 0; i < radioButtonList.size(); i++) {
+    public void draw(GuiManager gui, int mX, int mY)
+    {
+        for (int i = 0; i < radioButtonList.size(); i++)
+        {
             RadioButton radioButton = radioButtonList.get(i);
 
-            if (radioButton.isVisible()) {
+            if (radioButton.isVisible())
+            {
                 int srcRadioX = getSelectedOption() == i ? 1 : 0;
                 int srcRadioY = CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY) ? 1 : 0;
 
@@ -39,36 +45,44 @@ public abstract class RadioButtonList {
         }
     }
 
-    public void onClick(int mX, int mY, int button) {
-        for (int i = 0; i < radioButtonList.size(); i++) {
+    public void onClick(int mX, int mY, int button)
+    {
+        for (int i = 0; i < radioButtonList.size(); i++)
+        {
             RadioButton radioButton = radioButtonList.get(i);
 
-            if (radioButton.isVisible() && CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY) && getSelectedOption() != i) {
+            if (radioButton.isVisible() && CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY) && getSelectedOption() != i)
+            {
                 updateSelectedOption(i);
                 break;
             }
         }
     }
 
-    public int getSelectedOption() {
+    public int getSelectedOption()
+    {
         return selectedOption;
     }
 
-    public void setSelectedOption(int selectedOption) {
+    public void setSelectedOption(int selectedOption)
+    {
         this.selectedOption = selectedOption;
     }
 
     public abstract void updateSelectedOption(int selectedOption);
 
-    public void add(RadioButton radioButton) {
+    public void add(RadioButton radioButton)
+    {
         radioButtonList.add(radioButton);
     }
 
-    public final int getRawSelectedOption() {
+    public final int getRawSelectedOption()
+    {
         return selectedOption;
     }
 
-    public int size() {
+    public int size()
+    {
         return radioButtonList.size();
     }
 }

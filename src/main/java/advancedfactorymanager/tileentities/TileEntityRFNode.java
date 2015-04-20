@@ -1,23 +1,22 @@
 package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.api.ISystemListener;
+import advancedfactorymanager.blocks.ClusterMethodRegistration;
+import advancedfactorymanager.components.*;
+import advancedfactorymanager.helpers.StevesEnum;
+import advancedfactorymanager.network.MessageHandler;
+import advancedfactorymanager.network.message.RFNodeUpdateMessage;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import advancedfactorymanager.components.ComponentMenuRF;
-import advancedfactorymanager.components.ComponentMenuRFInput;
-import advancedfactorymanager.components.ComponentMenuTargetRF;
-import advancedfactorymanager.helpers.StevesEnum;
-import advancedfactorymanager.network.MessageHandler;
-import advancedfactorymanager.network.message.RFNodeUpdateMessage;
-import advancedfactorymanager.blocks.*;
-import advancedfactorymanager.components.ComponentMenu;
-import advancedfactorymanager.components.FlowComponent;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener
 {
@@ -43,7 +42,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
                 managers.clear();
             }
             if (!this.isPartOfCluster() && updated) sendUpdatePacket();
-            for (int i = 0; i<inputSides.length; i++)
+            for (int i = 0; i < inputSides.length; i++)
             {
                 ForgeDirection dir = ForgeDirection.getOrientation(i);
                 TileEntity te = getTileEntity(dir);
@@ -216,7 +215,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             this.updated = true;
             this.inputSides = new boolean[6];
             this.outputSides = new boolean[6];
-        }else
+        } else
         {
             for (FlowComponent component : components)
             {

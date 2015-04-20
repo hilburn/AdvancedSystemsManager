@@ -84,6 +84,7 @@ public class Null
             return false;
         }
     }
+
     public static IInventory NULL_INVENTORY = new NullInventory();
     public static ItemStack NULL_STACK = new ItemStack(Blocks.end_portal, 0);
 }

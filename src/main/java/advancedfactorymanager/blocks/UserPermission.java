@@ -1,40 +1,50 @@
 package advancedfactorymanager.blocks;
 
 
-public class UserPermission {
+public class UserPermission
+{
     private String name;
     private boolean op;
     private boolean active;
 
-    public UserPermission(String name) {
-        if (name == null) {
+    public UserPermission(String name)
+    {
+        if (name == null)
+        {
             this.name = "Unknown";
-        } else{
+        } else
+        {
             this.name = name;
         }
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public boolean isOp() {
+    public boolean isOp()
+    {
         return op;
     }
 
-    public void setOp(boolean op) {
+    public void setOp(boolean op)
+    {
         this.op = op;
     }
 
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(boolean active)
+    {
         this.active = active;
     }
 
-    public UserPermission copy() {
+    public UserPermission copy()
+    {
         UserPermission temp = new UserPermission(getName());
         temp.setOp(isOp());
         temp.setActive(isActive());

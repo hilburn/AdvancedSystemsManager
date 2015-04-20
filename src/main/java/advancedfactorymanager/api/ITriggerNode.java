@@ -1,7 +1,9 @@
 package advancedfactorymanager.api;
 
 
-public interface ITriggerNode {
+public interface ITriggerNode
+{
     int[] getData();
+
     int[] getOldData();
 }

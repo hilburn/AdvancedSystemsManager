@@ -1,7 +1,8 @@
 package advancedfactorymanager.blocks;
 
 
-public enum ClusterMethodRegistration {
+public enum ClusterMethodRegistration
+{
     ON_BLOCK_PLACED_BY,
     ON_NEIGHBOR_BLOCK_CHANGED,
     CAN_CONNECT_REDSTONE,

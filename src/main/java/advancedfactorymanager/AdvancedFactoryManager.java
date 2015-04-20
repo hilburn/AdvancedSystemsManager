@@ -1,27 +1,27 @@
 package advancedfactorymanager;
 
-import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.components.ModItemHelper;
 import advancedfactorymanager.helpers.Config;
 import advancedfactorymanager.interfaces.GuiHandler;
 import advancedfactorymanager.naming.EventHandler;
 import advancedfactorymanager.naming.NameData;
 import advancedfactorymanager.naming.NameRegistry;
+import advancedfactorymanager.network.FileHelper;
 import advancedfactorymanager.network.MessageHandler;
+import advancedfactorymanager.network.PacketEventHandler;
+import advancedfactorymanager.proxy.CommonProxy;
 import advancedfactorymanager.recipes.ClusterUncraftingRecipe;
 import advancedfactorymanager.reference.Metadata;
 import advancedfactorymanager.reference.Reference;
 import advancedfactorymanager.registry.BlockRegistry;
 import advancedfactorymanager.registry.CommandRegistry;
 import advancedfactorymanager.registry.ItemRegistry;
+import advancedfactorymanager.tileentities.TileEntityManager;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.components.ModItemHelper;
-import advancedfactorymanager.network.FileHelper;
-import advancedfactorymanager.network.PacketEventHandler;
-import advancedfactorymanager.proxy.CommonProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,7 +57,8 @@ public class AdvancedFactoryManager
     public static Logger log = LogManager.getLogger(Reference.ID);
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event)
+    {
 
         metadata = Metadata.init(metadata);
         Config.init(event.getSuggestedConfigurationFile());
@@ -74,7 +75,8 @@ public class AdvancedFactoryManager
     }
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event)
+    {
         PROXY.init();
 
         packetHandler.register(new PacketEventHandler());
@@ -100,7 +102,8 @@ public class AdvancedFactoryManager
     }
 
     @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event)
+    {
         if (Loader.isModLoaded("JABBA"))
         {
             try

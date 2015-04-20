@@ -3,9 +3,10 @@ package advancedfactorymanager.components;
 
 import advancedfactorymanager.helpers.Localization;
 
-public enum ComponentType {
+public enum ComponentType
+{
     TRIGGER(0, Localization.TRIGGER_SHORT, Localization.TRIGGER_LONG,
-            new ConnectionSet[] {ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD},
+            new ConnectionSet[]{ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD},
             ComponentMenuReceivers.class, ComponentMenuBUDs.class, ComponentMenuInterval.class, ComponentMenuRedstoneSidesTrigger.class, ComponentMenuRedstoneStrength.class, ComponentMenuUpdateBlock.class, ComponentMenuResult.class),
     INPUT(1, Localization.INPUT_SHORT, Localization.INPUT_LONG,
             new ConnectionSet[]{ConnectionSet.STANDARD},
@@ -57,14 +58,14 @@ public enum ComponentType {
             ComponentMenuSigns.class, ComponentMenuSignText.class, ComponentMenuResult.class);
 
 
-
     private Class<? extends ComponentMenu>[] classes;
     private int id;
     private ConnectionSet[] sets;
     private Localization name;
     private Localization longName;
 
-    private ComponentType(int id, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends ComponentMenu> ... classes) {
+    private ComponentType(int id, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends ComponentMenu>... classes)
+    {
         this.classes = classes;
         this.id = id;
         this.sets = sets;
@@ -72,42 +73,52 @@ public enum ComponentType {
         this.longName = longName;
     }
 
-    public Class<? extends ComponentMenu>[] getClasses() {
+    public Class<? extends ComponentMenu>[] getClasses()
+    {
         return classes;
     }
 
-    public int getId() {
+    public int getId()
+    {
         return id;
     }
 
-    public static ComponentType getTypeFromId(int id) {
-        for (ComponentType componentType : values()) {
-            if (id == componentType.id) {
+    public static ComponentType getTypeFromId(int id)
+    {
+        for (ComponentType componentType : values())
+        {
+            if (id == componentType.id)
+            {
                 return componentType;
             }
         }
-        return  null;
+        return null;
     }
 
-    public ConnectionSet[] getSets() {
+    public ConnectionSet[] getSets()
+    {
         return sets;
     }
 
 
-    public String getName() {
+    public String getName()
+    {
         return name.toString();
     }
 
-    public String getLongName() {
+    public String getLongName()
+    {
         return longName.toString();
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return getName() + "[" + getLongName() + "]";
     }
 
-    public Localization getLongUnLocalizedName() {
+    public Localization getLongUnLocalizedName()
+    {
         return longName;
     }
 }

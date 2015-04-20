@@ -1,6 +1,7 @@
 package advancedfactorymanager.api;
 
 
-public interface IRedstoneNode {
+public interface IRedstoneNode
+{
     int[] getPower();
 }

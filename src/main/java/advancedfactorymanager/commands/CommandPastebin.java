@@ -1,5 +1,8 @@
 package advancedfactorymanager.commands;
 
+import advancedfactorymanager.helpers.HttpPost;
+import advancedfactorymanager.helpers.LocalizationHelper;
+import advancedfactorymanager.items.ItemDuplicator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -10,9 +13,6 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import advancedfactorymanager.helpers.HttpPost;
-import advancedfactorymanager.helpers.LocalizationHelper;
-import advancedfactorymanager.items.ItemDuplicator;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;

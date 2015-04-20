@@ -1,8 +1,10 @@
 package advancedfactorymanager.components;
 
 
-public class ComponentMenuLiquidOutput extends ComponentMenuLiquid {
-    public ComponentMenuLiquidOutput(FlowComponent parent) {
+public class ComponentMenuLiquidOutput extends ComponentMenuLiquid
+{
+    public ComponentMenuLiquidOutput(FlowComponent parent)
+    {
         super(parent);
 
         setFirstRadioButtonSelected(false);

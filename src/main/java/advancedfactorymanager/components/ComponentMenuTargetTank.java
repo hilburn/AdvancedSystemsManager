@@ -1,9 +1,6 @@
 package advancedfactorymanager.components;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.nbt.NBTTagCompound;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.ContainerManager;
 import advancedfactorymanager.interfaces.GuiManager;
@@ -11,14 +8,21 @@ import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.nbt.NBTTagCompound;
 
-public class ComponentMenuTargetTank extends ComponentMenuTarget {
-    public ComponentMenuTargetTank(FlowComponent parent) {
+public class ComponentMenuTargetTank extends ComponentMenuTarget
+{
+    public ComponentMenuTargetTank(FlowComponent parent)
+    {
         super(parent);
 
-        radioButtons = new RadioButtonList() {
+        radioButtons = new RadioButtonList()
+        {
             @Override
-            public void updateSelectedOption(int selectedOption) {
+            public void updateSelectedOption(int selectedOption)
+            {
                 DataWriter dw = getWriterForServerComponentPacket();
                 dw.writeData(selectedDirectionId, DataBitHelper.MENU_TARGET_DIRECTION_ID);
                 dw.writeData(DataTypeHeader.START_OR_TANK_DATA.getId(), DataBitHelper.MENU_TARGET_TYPE_HEADER);
@@ -39,20 +43,25 @@ public class ComponentMenuTargetTank extends ComponentMenuTarget {
     private RadioButtonList radioButtons;
 
     @Override
-    protected Button getSecondButton() {
-        return new Button(27) {
+    protected Button getSecondButton()
+    {
+        return new Button(27)
+        {
             @Override
-            protected String getLabel() {
+            protected String getLabel()
+            {
                 return useAdvancedSetting(selectedDirectionId) ? Localization.ADVANCED_MODE.toString() : Localization.SIMPLE_MODE.toString();
             }
 
             @Override
-            protected String getMouseOverText() {
+            protected String getMouseOverText()
+            {
                 return useAdvancedSetting(selectedDirectionId) ? Localization.SIMPLE_MODE_LONG.toString() : Localization.ADVANCED_MODE_LONG.toString();
             }
 
             @Override
-            protected void onClicked() {
+            protected void onClicked()
+            {
                 writeData(DataTypeHeader.USE_ADVANCED_SETTING, useAdvancedSetting(selectedDirectionId) ? 0 : 1);
             }
         };
@@ -60,61 +69,73 @@ public class ComponentMenuTargetTank extends ComponentMenuTarget {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected void drawAdvancedComponent(GuiManager gui, int mX, int mY) {
+    protected void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    {
         radioButtons.draw(gui, mX, mY);
     }
 
     @Override
-    protected void refreshAdvancedComponent() {
-        if (selectedDirectionId != -1) {
+    protected void refreshAdvancedComponent()
+    {
+        if (selectedDirectionId != -1)
+        {
             radioButtons.setSelectedOption(onlyFull[selectedDirectionId] ? 1 : 0);
         }
     }
 
     @Override
-    protected void writeAdvancedSetting(DataWriter dw, int i) {
+    protected void writeAdvancedSetting(DataWriter dw, int i)
+    {
         dw.writeBoolean(onlyFull[i]);
     }
 
     @Override
-    protected void readAdvancedSetting(DataReader dr, int i) {
+    protected void readAdvancedSetting(DataReader dr, int i)
+    {
         onlyFull[i] = dr.readBoolean();
     }
 
     @Override
-    protected void copyAdvancedSetting(ComponentMenu menu, int i) {
+    protected void copyAdvancedSetting(ComponentMenu menu, int i)
+    {
         ComponentMenuTargetTank menuTarget = (ComponentMenuTargetTank)menu;
         onlyFull[i] = menuTarget.onlyFull[i];
     }
 
     @Override
-    protected void onAdvancedClick(int mX, int mY, int button) {
+    protected void onAdvancedClick(int mX, int mY, int button)
+    {
         radioButtons.onClick(mX, mY, button);
     }
 
     private static final String NBT_FULL = "ONLY_FULL";
 
     @Override
-    protected void loadAdvancedComponent(NBTTagCompound directionTag, int i) {
+    protected void loadAdvancedComponent(NBTTagCompound directionTag, int i)
+    {
         onlyFull[i] = directionTag.getBoolean(NBT_FULL);
     }
 
     @Override
-    protected void saveAdvancedComponent(NBTTagCompound directionTag, int i) {
+    protected void saveAdvancedComponent(NBTTagCompound directionTag, int i)
+    {
         directionTag.setBoolean(NBT_FULL, onlyFull[i]);
     }
 
     @Override
-    protected void resetAdvancedSetting(int i) {
+    protected void resetAdvancedSetting(int i)
+    {
         onlyFull[i] = false;
     }
 
     @Override
-    protected void refreshAdvancedComponentData(ContainerManager container, ComponentMenu newData, int i) {
+    protected void refreshAdvancedComponentData(ContainerManager container, ComponentMenu newData, int i)
+    {
         ComponentMenuTargetTank newDataTarget = (ComponentMenuTargetTank)newData;
 
-        if (onlyFull[i] != newDataTarget.onlyFull[i]) {
-            onlyFull[i] =  newDataTarget.onlyFull[i];
+        if (onlyFull[i] != newDataTarget.onlyFull[i])
+        {
+            onlyFull[i] = newDataTarget.onlyFull[i];
 
             DataWriter dw = getWriterForClientComponentPacket(container);
             dw.writeData(i, DataBitHelper.MENU_TARGET_DIRECTION_ID);
@@ -125,12 +146,14 @@ public class ComponentMenuTargetTank extends ComponentMenuTarget {
     }
 
     @Override
-    protected void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i) {
+    protected void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i)
+    {
         onlyFull[i] = dr.readBoolean();
         refreshAdvancedComponent();
     }
 
-    public boolean requireEmpty(int side) {
+    public boolean requireEmpty(int side)
+    {
         return !onlyFull[side];
     }
 

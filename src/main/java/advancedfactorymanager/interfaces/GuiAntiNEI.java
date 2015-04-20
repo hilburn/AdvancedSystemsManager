@@ -21,7 +21,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public abstract class GuiAntiNEI extends GuiScreen {
+public abstract class GuiAntiNEI extends GuiScreen
+{
 
     protected int xSize = 176;
     protected int ySize = 166;
@@ -84,7 +85,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
         this.theSlot = null;
         short short1 = 240;
         short short2 = 240;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) short1 / 1.0F, (float) short2 / 1.0F);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)short1 / 1.0F, (float)short2 / 1.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int k1;
 
@@ -123,9 +124,8 @@ public abstract class GuiAntiNEI extends GuiScreen {
             if (this.draggedStack != null && this.isRightMouseClick)
             {
                 itemstack = itemstack.copy();
-                itemstack.stackSize = MathHelper.ceiling_float_int((float) itemstack.stackSize / 2.0F);
-            }
-            else if (this.field_147007_t && this.field_147008_s.size() > 1)
+                itemstack.stackSize = MathHelper.ceiling_float_int((float)itemstack.stackSize / 2.0F);
+            } else if (this.field_147007_t && this.field_147008_s.size() > 1)
             {
                 itemstack = itemstack.copy();
                 itemstack.stackSize = this.field_146996_I;
@@ -183,7 +183,9 @@ public abstract class GuiAntiNEI extends GuiScreen {
         itemRender.zLevel = 0.0F;
     }
 
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {}
+    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    {
+    }
 
     protected abstract void drawGuiContainerBackgroundLayer(float var1, int var2, int var3);
 
@@ -201,8 +203,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
         {
             itemstack = itemstack.copy();
             itemstack.stackSize /= 2;
-        }
-        else if (this.field_147007_t && this.field_147008_s.contains(p_146977_1_) && itemstack1 != null)
+        } else if (this.field_147007_t && this.field_147008_s.contains(p_146977_1_) && itemstack1 != null)
         {
             if (this.field_147008_s.size() == 1)
             {
@@ -226,8 +227,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                     s = EnumChatFormatting.YELLOW + "" + p_146977_1_.getSlotStackLimit();
                     itemstack.stackSize = p_146977_1_.getSlotStackLimit();
                 }
-            }
-            else
+            } else
             {
                 this.field_147008_s.remove(p_146977_1_);
                 this.func_146980_g();
@@ -353,21 +353,18 @@ public abstract class GuiAntiNEI extends GuiScreen {
                         this.clickedSlot = slot;
                         this.draggedStack = null;
                         this.isRightMouseClick = par3 == 1;
-                    }
-                    else
+                    } else
                     {
                         this.clickedSlot = null;
                     }
-                }
-                else if (!this.field_147007_t)
+                } else if (!this.field_147007_t)
                 {
                     if (this.mc.thePlayer.inventory.getItemStack() == null)
                     {
                         if (par3 == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100)
                         {
                             this.handleMouseClick(slot, k1, par3, 3);
-                        }
-                        else
+                        } else
                         {
                             boolean flag2 = k1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
                             byte b0 = 0;
@@ -376,8 +373,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                             {
                                 this.field_146994_N = slot.getHasStack() ? slot.getStack() : null;
                                 b0 = 1;
-                            }
-                            else if (k1 == -999)
+                            } else if (k1 == -999)
                             {
                                 b0 = 4;
                             }
@@ -386,8 +382,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                         }
 
                         this.field_146995_H = true;
-                    }
-                    else
+                    } else
                     {
                         this.field_147007_t = true;
                         this.field_146988_G = par3;
@@ -396,8 +391,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                         if (par3 == 0)
                         {
                             this.field_146987_F = 0;
-                        }
-                        else if (par3 == 1)
+                        } else if (par3 == 1)
                         {
                             this.field_146987_F = 1;
                         }
@@ -426,8 +420,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                     {
                         this.draggedStack = this.clickedSlot.getStack().copy();
                     }
-                }
-                else if (this.draggedStack.stackSize > 1 && slot != null && Container.func_94527_a(slot, this.draggedStack, false))
+                } else if (this.draggedStack.stackSize > 1 && slot != null && Container.func_94527_a(slot, this.draggedStack, false))
                 {
                     long i1 = Minecraft.getSystemTime();
 
@@ -441,16 +434,14 @@ public abstract class GuiAntiNEI extends GuiScreen {
                             this.field_146986_E = i1 + 750L;
                             --this.draggedStack.stackSize;
                         }
-                    }
-                    else
+                    } else
                     {
                         this.field_146985_D = slot;
                         this.field_146986_E = i1;
                     }
                 }
             }
-        }
-        else if (this.field_147007_t && slot != null && itemstack != null && itemstack.stackSize > this.field_147008_s.size() && Container.func_94527_a(slot, itemstack, true) && slot.isItemValid(itemstack) && this.inventorySlots.canDragIntoSlot(slot))
+        } else if (this.field_147007_t && slot != null && itemstack != null && itemstack.stackSize > this.field_147008_s.size() && Container.func_94527_a(slot, itemstack, true) && slot.isItemValid(itemstack) && this.inventorySlots.canDragIntoSlot(slot))
         {
             this.field_147008_s.add(slot);
             this.func_146980_g();
@@ -496,16 +487,14 @@ public abstract class GuiAntiNEI extends GuiScreen {
                         }
                     }
                 }
-            }
-            else
+            } else
             {
                 this.handleMouseClick(slot, j1, p_146286_3_, 6);
             }
 
             this.field_146993_M = false;
             this.field_146997_J = 0L;
-        }
-        else
+        } else
         {
             if (this.field_147007_t && this.field_146988_G != p_146286_3_)
             {
@@ -547,13 +536,11 @@ public abstract class GuiAntiNEI extends GuiScreen {
                             this.returningStackDestSlot = this.clickedSlot;
                             this.returningStack = this.draggedStack;
                             this.returningStackTime = Minecraft.getSystemTime();
-                        }
-                        else
+                        } else
                         {
                             this.returningStack = null;
                         }
-                    }
-                    else if (this.draggedStack != null)
+                    } else if (this.draggedStack != null)
                     {
                         this.field_147011_y = p_146286_1_ - l;
                         this.field_147010_z = p_146286_2_ - i1;
@@ -565,8 +552,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
                     this.draggedStack = null;
                     this.clickedSlot = null;
                 }
-            }
-            else if (this.field_147007_t && !this.field_147008_s.isEmpty())
+            } else if (this.field_147007_t && !this.field_147008_s.isEmpty())
             {
                 this.handleMouseClick(null, -999, Container.func_94534_d(0, this.field_146987_F), 5);
                 iterator = this.field_147008_s.iterator();
@@ -578,14 +564,12 @@ public abstract class GuiAntiNEI extends GuiScreen {
                 }
 
                 this.handleMouseClick(null, -999, Container.func_94534_d(2, this.field_146987_F), 5);
-            }
-            else if (this.mc.thePlayer.inventory.getItemStack() != null)
+            } else if (this.mc.thePlayer.inventory.getItemStack() != null)
             {
                 if (p_146286_3_ == this.mc.gameSettings.keyBindPickBlock.getKeyCode() + 100)
                 {
                     this.handleMouseClick(slot, j1, p_146286_3_, 3);
-                }
-                else
+                } else
                 {
                     flag1 = j1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
 
@@ -645,8 +629,7 @@ public abstract class GuiAntiNEI extends GuiScreen {
             if (par2 == this.mc.gameSettings.keyBindPickBlock.getKeyCode())
             {
                 this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, 0, 3);
-            }
-            else if (par2 == this.mc.gameSettings.keyBindDrop.getKeyCode())
+            } else if (par2 == this.mc.gameSettings.keyBindDrop.getKeyCode())
             {
                 this.handleMouseClick(this.theSlot, this.theSlot.slotNumber, isCtrlKeyDown() ? 1 : 0, 4);
             }

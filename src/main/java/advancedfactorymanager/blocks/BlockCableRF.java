@@ -1,5 +1,8 @@
 package advancedfactorymanager.blocks;
 
+import advancedfactorymanager.reference.Names;
+import advancedfactorymanager.reference.Reference;
+import advancedfactorymanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
@@ -9,9 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.reference.Reference;
-import advancedfactorymanager.tileentities.TileEntityRFNode;
 
 public class BlockCableRF extends BlockContainer
 {

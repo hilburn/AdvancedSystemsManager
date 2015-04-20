@@ -1,13 +1,13 @@
 package advancedfactorymanager.blocks;
 
+import advancedfactorymanager.reference.Names;
+import advancedfactorymanager.reference.Reference;
+import advancedfactorymanager.tileentities.TileEntityAENode;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.reference.Reference;
-import advancedfactorymanager.tileentities.TileEntityAENode;
 
 public class BlockCableAE extends BlockContainer
 {

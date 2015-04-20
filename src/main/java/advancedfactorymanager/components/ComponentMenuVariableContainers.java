@@ -1,45 +1,55 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.helpers.Localization;
 
 import java.util.EnumSet;
 
 
-public class ComponentMenuVariableContainers extends ComponentMenuContainer {
-    public ComponentMenuVariableContainers(FlowComponent parent) {
+public class ComponentMenuVariableContainers extends ComponentMenuContainer
+{
+    public ComponentMenuVariableContainers(FlowComponent parent)
+    {
         super(parent, null);
     }
 
     @Override
-    protected void initRadioButtons() {
+    protected void initRadioButtons()
+    {
         //nothing
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.VARIABLE_CONTAINERS_MENU.toString();
     }
 
     @Override
-    protected EnumSet<ConnectionBlockType> getValidTypes() {
+    protected EnumSet<ConnectionBlockType> getValidTypes()
+    {
         ComponentMenuContainerTypes componentMenuContainerTypes = ((ComponentMenuContainerTypes)getParent().getMenus().get(1));
 
-        if (componentMenuContainerTypes.isVisible()) {
+        if (componentMenuContainerTypes.isVisible())
+        {
             return componentMenuContainerTypes.getValidTypes();
-        }else{
+        } else
+        {
             int variableId = ((ComponentMenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
             Variable variable = getParent().getManager().getVariables()[variableId];
-            if (variable.isValid()) {
+            if (variable.isValid())
+            {
                 return ((ComponentMenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
-            }else{
+            } else
+            {
                 return EnumSet.noneOf(ConnectionBlockType.class);
             }
         }
     }
 
     @Override
-    public boolean isVariableAllowed(EnumSet<ConnectionBlockType> validTypes, int i) {
+    public boolean isVariableAllowed(EnumSet<ConnectionBlockType> validTypes, int i)
+    {
         return super.isVariableAllowed(validTypes, i) && i != ((ComponentMenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
     }
 }

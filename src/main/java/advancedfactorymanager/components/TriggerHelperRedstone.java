@@ -1,24 +1,27 @@
 package advancedfactorymanager.components;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
 import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.tileentities.TileEntityInput;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
 import java.util.List;
 
-public class TriggerHelperRedstone extends TriggerHelper {
+public class TriggerHelperRedstone extends TriggerHelper
+{
     private int strengthId;
 
-    public TriggerHelperRedstone(int sidesId, int strengthId) {
+    public TriggerHelperRedstone(int sidesId, int strengthId)
+    {
         super(true, 0, sidesId, ConnectionBlockType.RECEIVER);
 
         this.strengthId = strengthId;
     }
 
     @Override
-    protected boolean isBlockPowered(FlowComponent component, int power) {
+    protected boolean isBlockPowered(FlowComponent component, int power)
+    {
         ComponentMenuRedstoneStrength menuStrength = (ComponentMenuRedstoneStrength)component.getMenus().get(strengthId);
         boolean inRange = menuStrength.getLow() <= power && power <= menuStrength.getHigh();
 
@@ -26,44 +29,57 @@ public class TriggerHelperRedstone extends TriggerHelper {
     }
 
     @Override
-    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid) {
-        if (isTriggerPowered(item, true)) {
+    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
+    {
+        if (isTriggerPowered(item, true))
+        {
             valid.add(ConnectionOption.REDSTONE_HIGH);
         }
-        if (isTriggerPowered(item, false)) {
+        if (isTriggerPowered(item, false))
+        {
             valid.add(ConnectionOption.REDSTONE_LOW);
         }
     }
 
-    public void onRedstoneTrigger(FlowComponent item, TileEntityInput inputTrigger) {
+    public void onRedstoneTrigger(FlowComponent item, TileEntityInput inputTrigger)
+    {
         List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
 
-        if (receivers != null) {
+        if (receivers != null)
+        {
             ComponentMenuContainer componentMenuContainer = (ComponentMenuContainer)item.getMenus().get(containerId);
             int[] newPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
             int[] oldPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
-            if (canUseMergedDetection && componentMenuContainer.getOption() == 0) {
-                for (SlotInventoryHolder receiver : receivers) {
+            if (canUseMergedDetection && componentMenuContainer.getOption() == 0)
+            {
+                for (SlotInventoryHolder receiver : receivers)
+                {
                     TileEntityInput input = receiver.getReceiver();
 
-                    for (int i = 0; i < newPower.length; i++) {
+                    for (int i = 0; i < newPower.length; i++)
+                    {
                         newPower[i] = Math.min(15, newPower[i] + input.getData()[i]);
                         oldPower[i] = Math.min(15, oldPower[i] + input.getOldData()[i]);
                     }
                 }
-                if (isPulseReceived(item, newPower, oldPower, true)) {
+                if (isPulseReceived(item, newPower, oldPower, true))
+                {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_HIGH));
                 }
-                if (isPulseReceived(item, newPower, oldPower, false)) {
+                if (isPulseReceived(item, newPower, oldPower, false))
+                {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_LOW));
                 }
-            }else {
+            } else
+            {
                 TileEntityInput trigger = (componentMenuContainer.getOption() == 0 || (componentMenuContainer.getOption() == 1 && canUseMergedDetection)) ? inputTrigger : null;
-                if (isPulseReceived(item, receivers, trigger, true)) {
+                if (isPulseReceived(item, receivers, trigger, true))
+                {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_HIGH));
                 }
 
-                if (isPulseReceived(item, receivers, trigger, false)) {
+                if (isPulseReceived(item, receivers, trigger, false))
+                {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_LOW));
                 }
             }

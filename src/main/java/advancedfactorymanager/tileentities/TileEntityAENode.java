@@ -1,5 +1,11 @@
 package advancedfactorymanager.tileentities;
 
+import advancedfactorymanager.api.IHiddenInventory;
+import advancedfactorymanager.api.IHiddenTank;
+import advancedfactorymanager.blocks.ClusterMethodRegistration;
+import advancedfactorymanager.components.*;
+import advancedfactorymanager.helpers.AEHelper;
+import advancedfactorymanager.registry.BlockRegistry;
 import appeng.api.AEApi;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionHost;
@@ -16,14 +22,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import advancedfactorymanager.api.IHiddenInventory;
-import advancedfactorymanager.api.IHiddenTank;
-import advancedfactorymanager.components.AEFluidBufferElement;
-import advancedfactorymanager.components.AEItemBufferElement;
-import advancedfactorymanager.helpers.AEHelper;
-import advancedfactorymanager.registry.BlockRegistry;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.components.*;
 
 import java.util.*;
 
@@ -137,7 +135,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
         @Override
         public boolean canDrain(ForgeDirection from, Fluid fluid)
         {
-            return AEHelper.find(getNode(), new FluidStack(fluid, 1))!=null;
+            return AEHelper.find(getNode(), new FluidStack(fluid, 1)) != null;
         }
 
         @Override
@@ -182,7 +180,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
 
     public IGridNode getNode()
     {
-        if( this.gridNode == null && FMLCommonHandler.instance().getEffectiveSide().isServer() && this.isReady)
+        if (this.gridNode == null && FMLCommonHandler.instance().getEffectiveSide().isServer() && this.isReady)
         {
             this.gridNode = AEApi.instance().createGridNode(this.gridBlock);
             this.gridNode.updateState();
@@ -247,7 +245,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     public int getInsertable(ItemStack stack)
     {
         ItemStack insertable = AEHelper.getInsertable(getNode(), stack, this);
-        return insertable == null? 0 : insertable.stackSize;
+        return insertable == null ? 0 : insertable.stackSize;
     }
 
     @Override
@@ -277,7 +275,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     {
         for (Setting setting : settings)
         {
-            ItemStack stack = AEHelper.find(getNode(), ((ItemSetting) setting).getItem());
+            ItemStack stack = AEHelper.find(getNode(), ((ItemSetting)setting).getItem());
             if (stack != null)
             {
                 ConditionSettingChecker conditionSettingChecker = conditionSettingCheckerMap.get(setting.getId());
@@ -295,7 +293,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
         if (menuItem.useWhiteList() == (setting != null) || setting != null && setting.isLimitedByAmount())
         {
             FlowComponent owner = menuItem.getParent();
-            SlotStackInventoryHolder target =  new AEItemBufferElement(stack, this);
+            SlotStackInventoryHolder target = new AEItemBufferElement(stack, this);
             boolean added = false;
 
             for (ItemBufferElement itemBufferElement : itemBuffer)
@@ -334,7 +332,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
         if (menuItem.useWhiteList() == (setting != null) || setting != null && setting.isLimitedByAmount())
         {
             FlowComponent owner = menuItem.getParent();
-            StackTankHolder target =  new AEFluidBufferElement(stack, (TileEntityAENode)tank.getTile());
+            StackTankHolder target = new AEFluidBufferElement(stack, (TileEntityAENode)tank.getTile());
             boolean added = false;
 
             for (LiquidBufferElement liquidBufferElement : liquidBuffer)

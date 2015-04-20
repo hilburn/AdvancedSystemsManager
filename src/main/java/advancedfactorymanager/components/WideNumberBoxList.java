@@ -1,9 +1,9 @@
 package advancedfactorymanager.components;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import advancedfactorymanager.helpers.CollisionHelper;
 import advancedfactorymanager.interfaces.GuiManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Iterator;

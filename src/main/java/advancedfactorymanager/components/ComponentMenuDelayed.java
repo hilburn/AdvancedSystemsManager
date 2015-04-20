@@ -1,13 +1,13 @@
 package advancedfactorymanager.components;
 
-import net.minecraft.nbt.NBTTagCompound;
-import stevesaddons.asm.StevesHooks;
 import advancedfactorymanager.helpers.StevesEnum;
 import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import net.minecraft.nbt.NBTTagCompound;
+import stevesaddons.asm.StevesHooks;
 
 import java.util.EnumSet;
 import java.util.List;

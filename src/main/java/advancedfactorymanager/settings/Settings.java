@@ -1,16 +1,17 @@
 package advancedfactorymanager.settings;
 
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import advancedfactorymanager.tileentities.TileEntityManager;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.FileHelper;
 import advancedfactorymanager.network.PacketHandler;
+import advancedfactorymanager.tileentities.TileEntityManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
-public final class Settings {
+public final class Settings
+{
 
     private static final String NAME = "StevesFactoryManagerInside";
     private static final int VERSION = 1;
@@ -25,15 +26,19 @@ public final class Settings {
     private static boolean priorityMoveFirst;
 
     @SideOnly(Side.CLIENT)
-    public static void openMenu(TileEntityManager manager) {
+    public static void openMenu(TileEntityManager manager)
+    {
         manager.specialRenderer = new SettingsScreen(manager);
     }
 
-    public static void load() {
+    public static void load()
+    {
         DataReader dr = FileHelper.read(NAME);
 
-        if (dr != null) {
-            try {
+        if (dr != null)
+        {
+            try
+            {
                 int version = dr.readByte();
 
                 autoCloseGroup = dr.readBoolean();
@@ -44,20 +49,25 @@ public final class Settings {
                 autoSide = dr.readBoolean();
                 autoBlacklist = dr.readBoolean();
                 enlargeInterfaces = dr.readBoolean();
-                if (version >= 1) {
+                if (version >= 1)
+                {
                     priorityMoveFirst = dr.readBoolean();
                 }
-            }catch (Exception ignored){
+            } catch (Exception ignored)
+            {
                 loadDefault();
-            }finally {
+            } finally
+            {
                 dr.close();
             }
-        }else{
+        } else
+        {
             loadDefault();
         }
     }
 
-    private static void loadDefault() {
+    private static void loadDefault()
+    {
         autoCloseGroup = false;
         largeOpenHitBox = false;
         largeOpenHitBoxMenu = false;
@@ -68,10 +78,12 @@ public final class Settings {
         enlargeInterfaces = false;
     }
 
-    private static void save() {
+    private static void save()
+    {
         DataWriter dw = FileHelper.getWriter(NAME);
 
-        if (dw != null) {
+        if (dw != null)
+        {
             dw.writeByte(VERSION);
 
             dw.writeBoolean(autoCloseGroup);
@@ -88,105 +100,131 @@ public final class Settings {
         }
     }
 
-    public static boolean isAutoCloseGroup() {
+    public static boolean isAutoCloseGroup()
+    {
         return autoCloseGroup;
     }
 
-    public static void setAutoCloseGroup(boolean autoCloseGroup) {
+    public static void setAutoCloseGroup(boolean autoCloseGroup)
+    {
         Settings.autoCloseGroup = autoCloseGroup;
         save();
     }
 
-    public static boolean isLargeOpenHitBox() {
+    public static boolean isLargeOpenHitBox()
+    {
         return largeOpenHitBox;
     }
 
-    public static void setLargeOpenHitBox(boolean largeOpenHitBox) {
+    public static void setLargeOpenHitBox(boolean largeOpenHitBox)
+    {
         Settings.largeOpenHitBox = largeOpenHitBox;
         save();
     }
 
-    public static boolean isLargeOpenHitBoxMenu() {
+    public static boolean isLargeOpenHitBoxMenu()
+    {
         return largeOpenHitBoxMenu;
     }
 
-    public static void setLargeOpenHitBoxMenu(boolean largeOpenHitBoxMenu) {
+    public static void setLargeOpenHitBoxMenu(boolean largeOpenHitBoxMenu)
+    {
         Settings.largeOpenHitBoxMenu = largeOpenHitBoxMenu;
         save();
     }
 
-    public static boolean isQuickGroupOpen() {
+    public static boolean isQuickGroupOpen()
+    {
         return quickGroupOpen;
     }
 
-    public static void setQuickGroupOpen(boolean quickGroupOpen) {
+    public static void setQuickGroupOpen(boolean quickGroupOpen)
+    {
         Settings.quickGroupOpen = quickGroupOpen;
         save();
     }
 
-    public static boolean isCommandTypes() {
+    public static boolean isCommandTypes()
+    {
         return commandTypes;
     }
 
-    public static void setCommandTypes(boolean commandTypes) {
+    public static void setCommandTypes(boolean commandTypes)
+    {
         Settings.commandTypes = commandTypes;
         save();
     }
 
-    public static boolean isAutoSide() {
+    public static boolean isAutoSide()
+    {
         return autoSide;
     }
 
-    public static void setAutoSide(boolean autoSide) {
+    public static void setAutoSide(boolean autoSide)
+    {
         Settings.autoSide = autoSide;
         save();
     }
 
-    public static boolean isAutoBlacklist() {
+    public static boolean isAutoBlacklist()
+    {
         return autoBlacklist;
     }
 
-    public static void setAutoBlacklist(boolean autoBlacklist) {
+    public static void setAutoBlacklist(boolean autoBlacklist)
+    {
         Settings.autoBlacklist = autoBlacklist;
         save();
     }
 
-    public static boolean isLimitless(TileEntityManager manager) {
-       return ( manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord) & 1) != 0;
+    public static boolean isLimitless(TileEntityManager manager)
+    {
+        return (manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord) & 1) != 0;
     }
 
-    public static void setLimitless(TileEntityManager manager, boolean limitless) {
-        if (manager.getWorldObj().isRemote) {
+    public static void setLimitless(TileEntityManager manager, boolean limitless)
+    {
+        if (manager.getWorldObj().isRemote)
+        {
             DataWriter dw = PacketHandler.getWriterForServerActionPacket();
             dw.writeBoolean(limitless);
             PacketHandler.sendDataToServer(dw);
-        }else{
+        } else
+        {
             int meta = manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord);
-            if (limitless) {
+            if (limitless)
+            {
                 meta |= 1;
-            }else{
+            } else
+            {
                 meta &= ~1;
             }
             manager.getWorldObj().setBlockMetadataWithNotify(manager.xCoord, manager.yCoord, manager.zCoord, meta, 3);
         }
     }
 
-    public static boolean isEnlargeInterfaces() {
+    public static boolean isEnlargeInterfaces()
+    {
         return enlargeInterfaces;
     }
 
-    public static void setEnlargeInterfaces(boolean enlargeInterfaces) {
+    public static void setEnlargeInterfaces(boolean enlargeInterfaces)
+    {
         Settings.enlargeInterfaces = enlargeInterfaces;
         save();
     }
 
-    public static boolean isPriorityMoveFirst() {
+    public static boolean isPriorityMoveFirst()
+    {
         return priorityMoveFirst;
     }
 
-    public static void setPriorityMoveFirst(boolean priorityMoveFirst) {
+    public static void setPriorityMoveFirst(boolean priorityMoveFirst)
+    {
         Settings.priorityMoveFirst = priorityMoveFirst;
     }
 
-    private Settings() {}
+    private Settings()
+    {
+    }
 }

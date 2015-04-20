@@ -1,7 +1,7 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.helpers.StevesEnum;
 import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.helpers.StevesEnum;
 
 import java.util.EnumSet;
 import java.util.List;

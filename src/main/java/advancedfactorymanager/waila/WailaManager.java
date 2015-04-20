@@ -1,6 +1,7 @@
 package advancedfactorymanager.waila;
 
-import advancedfactorymanager.blocks.*;
+import advancedfactorymanager.blocks.BlockCableOutput;
+import advancedfactorymanager.blocks.BlockCamouflageBase;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;

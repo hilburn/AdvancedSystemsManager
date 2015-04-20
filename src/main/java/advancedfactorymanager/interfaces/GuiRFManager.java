@@ -1,5 +1,13 @@
 package advancedfactorymanager.interfaces;
 
+import advancedfactorymanager.animation.AnimationController;
+import advancedfactorymanager.components.FlowComponent;
+import advancedfactorymanager.helpers.CollisionHelper;
+import advancedfactorymanager.helpers.Localization;
+import advancedfactorymanager.network.DataWriter;
+import advancedfactorymanager.network.PacketHandler;
+import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.tileentities.TileEntityManager.Button;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -10,14 +18,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import advancedfactorymanager.helpers.CollisionHelper;
-import advancedfactorymanager.helpers.Localization;
-import advancedfactorymanager.animation.AnimationController;
-import advancedfactorymanager.tileentities.TileEntityManager;
-import advancedfactorymanager.tileentities.TileEntityManager.Button;
-import advancedfactorymanager.components.FlowComponent;
-import advancedfactorymanager.network.DataWriter;
-import advancedfactorymanager.network.PacketHandler;
 
 import java.util.ArrayList;
 import java.util.Iterator;

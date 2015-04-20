@@ -9,7 +9,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-public final class ModBlocks {
+public final class ModBlocks
+{
 
     private static final String MANAGER_TILE_ENTITY_TAG = "TileEntityMachineManagerName";
     public static final String MANAGER_NAME_TAG = "BlockMachineManagerName";
@@ -79,16 +80,19 @@ public final class ModBlocks {
     public static CreativeTabs creativeTab;
 
 
-
-    public static void init() {
-        creativeTab = new CreativeTabs("sfm") {
+    public static void init()
+    {
+        creativeTab = new CreativeTabs("sfm")
+        {
             @Override
-            public ItemStack getIconItemStack() {
+            public ItemStack getIconItemStack()
+            {
                 return new ItemStack(blockManager);
             }
 
             @Override
-            public Item getTabIconItem() {
+            public Item getTabIconItem()
+            {
                 return null;
             }
         };
@@ -155,7 +159,8 @@ public final class ModBlocks {
         ClusterRegistry.register(TileEntitySignUpdater.class, blockCableSign);
     }
 
-    public static void addRecipes() {
+    public static void addRecipes()
+    {
         GameRegistry.addRecipe(new ItemStack(blockManager),
                 "III",
                 "IRI",
@@ -262,5 +267,7 @@ public final class ModBlocks {
         GameRegistry.addRecipe(new ClusterRecipe());
     }
 
-   private ModBlocks() {}
+    private ModBlocks()
+    {
+    }
 }

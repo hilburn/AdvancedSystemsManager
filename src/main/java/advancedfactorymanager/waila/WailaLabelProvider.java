@@ -1,5 +1,7 @@
 package advancedfactorymanager.waila;
 
+import advancedfactorymanager.naming.BlockCoord;
+import advancedfactorymanager.naming.NameRegistry;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -10,8 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import advancedfactorymanager.naming.BlockCoord;
-import advancedfactorymanager.naming.NameRegistry;
 
 import java.util.List;
 

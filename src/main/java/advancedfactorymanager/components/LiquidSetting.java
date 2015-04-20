@@ -1,27 +1,30 @@
 package advancedfactorymanager.components;
 
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LiquidSetting extends Setting {
+public class LiquidSetting extends Setting
+{
     private Fluid fluid;
     private int amount;
 
-    public LiquidSetting(int id) {
+    public LiquidSetting(int id)
+    {
         super(id);
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         super.clear();
 
         fluid = null;
@@ -29,18 +32,22 @@ public class LiquidSetting extends Setting {
     }
 
     @Override
-    public List<String> getMouseOver() {
+    public List<String> getMouseOver()
+    {
         List<String> ret = new ArrayList<String>();
 
-        if (fluid == null) {
+        if (fluid == null)
+        {
             ret.add(Localization.NO_LIQUID_SELECTED.toString());
-        }else{
+        } else
+        {
             ret.add(ComponentMenuLiquid.getDisplayName(fluid));
         }
 
         ret.add("");
         ret.add(Localization.CHANGE_LIQUID.toString());
-        if (fluid != null) {
+        if (fluid != null)
+        {
             ret.add(Localization.EDIT_SETTING.toString());
         }
 
@@ -48,77 +55,92 @@ public class LiquidSetting extends Setting {
     }
 
     @Override
-    public int getAmount() {
+    public int getAmount()
+    {
         return amount;
     }
 
     @Override
-    public void setAmount(int val) {
+    public void setAmount(int val)
+    {
         amount = val;
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isValid()
+    {
         return fluid != null;
     }
 
 
     @Override
-    public void writeData(DataWriter dw) {
-       dw.writeData(fluid.getID(), DataBitHelper.MENU_FLUID_ID);
+    public void writeData(DataWriter dw)
+    {
+        dw.writeData(fluid.getID(), DataBitHelper.MENU_FLUID_ID);
     }
 
     @Override
-    public void readData(DataReader dr) {
+    public void readData(DataReader dr)
+    {
         fluid = FluidRegistry.getFluid(dr.readData(DataBitHelper.MENU_FLUID_ID));
     }
 
     @Override
-    public void copyFrom(Setting setting) {
+    public void copyFrom(Setting setting)
+    {
         fluid = ((LiquidSetting)setting).fluid;
     }
 
     @Override
-    public int getDefaultAmount() {
+    public int getDefaultAmount()
+    {
         return 1000;
     }
 
     private static final String NBT_FLUID_ID = "FluidId";
     private static final String NBT_FLUID_AMOUNT = "Amount";
+
     @Override
-    public void load(NBTTagCompound settingTag) {
+    public void load(NBTTagCompound settingTag)
+    {
         //TODO load properly
         fluid = FluidRegistry.getFluid(settingTag.getShort(NBT_FLUID_ID));
         amount = settingTag.getInteger(NBT_FLUID_AMOUNT);
     }
 
     @Override
-    public void save(NBTTagCompound settingTag) {
+    public void save(NBTTagCompound settingTag)
+    {
         //TODO save properly
         settingTag.setShort(NBT_FLUID_ID, (short)fluid.getID());
         settingTag.setInteger(NBT_FLUID_AMOUNT, amount);
     }
 
     @Override
-    public boolean isContentEqual(Setting otherSetting) {
+    public boolean isContentEqual(Setting otherSetting)
+    {
         return fluid.getID() == ((LiquidSetting)otherSetting).fluid.getID();
     }
 
     @Override
-    public void setContent(Object obj) {
+    public void setContent(Object obj)
+    {
         fluid = (Fluid)obj;
         setDefaultAmount();
     }
 
-    public int getLiquidId() {
+    public int getLiquidId()
+    {
         return fluid.getID();
     }
 
-    public void setLiquidFromId(int id) {
+    public void setLiquidFromId(int id)
+    {
         fluid = FluidRegistry.getFluid(id);
     }
 
-    public Fluid getFluid() {
+    public Fluid getFluid()
+    {
         return fluid;
     }
 }

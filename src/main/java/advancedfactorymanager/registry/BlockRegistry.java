@@ -1,20 +1,20 @@
 package advancedfactorymanager.registry;
 
+import advancedfactorymanager.blocks.BlockCableAE;
+import advancedfactorymanager.blocks.BlockCableRF;
+import advancedfactorymanager.blocks.ClusterRegistry;
+import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.helpers.Config;
+import advancedfactorymanager.reference.Names;
+import advancedfactorymanager.tileentities.TileEntityAENode;
+import advancedfactorymanager.tileentities.TileEntityRFCluster;
+import advancedfactorymanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import advancedfactorymanager.blocks.BlockCableAE;
-import advancedfactorymanager.blocks.BlockCableRF;
-import advancedfactorymanager.helpers.Config;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.tileentities.TileEntityAENode;
-import advancedfactorymanager.tileentities.TileEntityRFNode;
-import advancedfactorymanager.blocks.ClusterRegistry;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.tileentities.TileEntityRFCluster;
 
 public class BlockRegistry
 {
@@ -46,11 +46,11 @@ public class BlockRegistry
             Item quartz = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
             ItemStack redstone = new ItemStack(Blocks.redstone_block);
             ItemStack cable = new ItemStack(ModBlocks.blockCable);
-            ItemStack fluix = new ItemStack(quartz,1,12);
-            ItemStack certus = new ItemStack(quartz,1,10);
+            ItemStack fluix = new ItemStack(quartz, 1, 12);
+            ItemStack certus = new ItemStack(quartz, 1, 10);
             Block fluidBlock = GameRegistry.findBlock("extracells", "ecbaseblock");
-            GameRegistry.addRecipe(new ItemStack(cableAENode), "FRQ", "ACB", "QRF", 'R', redstone, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
-            GameRegistry.addRecipe(new ItemStack(cableAENode), "QRF", "ACB", "FRQ", 'R', redstone, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
+            GameRegistry.addRecipe(new ItemStack(cableAENode), "FRQ", "ACB", "QRF", 'R', redstone, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null ? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
+            GameRegistry.addRecipe(new ItemStack(cableAENode), "QRF", "ACB", "FRQ", 'R', redstone, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null ? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
         }
     }
 }

@@ -4,7 +4,8 @@ package advancedfactorymanager.helpers;
 import advancedfactorymanager.AdvancedFactoryManager;
 import net.minecraft.util.StatCollector;
 
-public enum Localization {
+public enum Localization
+{
     TRIGGER_SHORT,
     TRIGGER_LONG,
     INPUT_SHORT,
@@ -38,7 +39,7 @@ public enum Localization {
     CAMOUFLAGE_SHORT,
     CAMOUFLAGE_LONG,
     SIGN_SHORT,
-    SIGN_LONG ,
+    SIGN_LONG,
 
     CONNECTION_INPUT,
     CONNECTION_OUTPUT,
@@ -354,7 +355,7 @@ public enum Localization {
     EDITOR_DESCRIPTION_SHORT,
     USER_DESCRIPTION_SHORT,
     EDITOR_DESCRIPTION_LONG,
-    USER_DESCRIPTION_LONG ,
+    USER_DESCRIPTION_LONG,
     PERMISSION_OWNER,
     PERMISSION_EDITOR,
     PERMISSION_USER,
@@ -364,23 +365,27 @@ public enum Localization {
     PERMISSION_DENIED;
 
 
-
     private String name;
 
-    private Localization() {
+    private Localization()
+    {
         String[] split = super.toString().split("_");
         this.name = "";
-        for (String s : split) {
+        for (String s : split)
+        {
             this.name += s.charAt(0) + s.substring(1).toLowerCase();
         }
     }
 
-    public String toString() {
+    public String toString()
+    {
         return StatCollector.translateToLocal("gui." + AdvancedFactoryManager.UNLOCALIZED_START + name);
     }
 
-    public static Localization getForgeDirectionLocalization(int id) {
-        switch (id) {
+    public static Localization getForgeDirectionLocalization(int id)
+    {
+        switch (id)
+        {
             case 0:
                 return DOWN;
             case 1:

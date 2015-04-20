@@ -1,7 +1,8 @@
 package advancedfactorymanager.network;
 
 
-public enum DataBitHelper {
+public enum DataBitHelper
+{
     FLOW_CONTROL_COUNT(9),
     FLOW_CONTROL_X(9),
     FLOW_CONTROL_Y(8),
@@ -76,14 +77,15 @@ public enum DataBitHelper {
     LINE_LENGTH(4);
 
 
-
     private int bitCount;
 
-    private DataBitHelper(int bitCount) {
+    private DataBitHelper(int bitCount)
+    {
         this.bitCount = bitCount;
     }
 
-    public int getBitCount() {
+    public int getBitCount()
+    {
         return bitCount;
     }
 }

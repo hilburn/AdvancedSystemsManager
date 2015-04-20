@@ -3,7 +3,6 @@ package advancedfactorymanager.tileentities;
 import advancedfactorymanager.api.ISystemListener;
 import advancedfactorymanager.api.ITriggerNode;
 import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,21 +20,26 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     private int[] data = new int[ForgeDirection.VALID_DIRECTIONS.length];
 
     @Override
-    public void added(TileEntityManager owner) {
-        if (!managerList.contains(owner)) {
+    public void added(TileEntityManager owner)
+    {
+        if (!managerList.contains(owner))
+        {
             managerList.add(owner);
         }
     }
 
     @Override
-    public void removed(TileEntityManager owner) {
+    public void removed(TileEntityManager owner)
+    {
         managerList.remove(owner);
     }
 
-    public void onTrigger() {
+    public void onTrigger()
+    {
         updateData();
 
-        for (int i = managerList.size() - 1; i >= 0; i--) {
+        for (int i = managerList.size() - 1; i >= 0; i--)
+        {
             managerList.get(i).triggerBUD(this);
         }
 
@@ -44,21 +48,25 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
 
-
     @Override
-    public int[] getData() {
+    public int[] getData()
+    {
         return data;
     }
 
     @Override
-    public int[] getOldData() {
+    public int[] getOldData()
+    {
         return oldData;
     }
 
-    public void updateData() {
-        if (worldObj != null) {
+    public void updateData()
+    {
+        if (worldObj != null)
+        {
             data = new int[data.length];
-            for (int i = 0; i < data.length; i++) {
+            for (int i = 0; i < data.length; i++)
+            {
                 ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[i];
                 int x = direction.offsetX + this.xCoord;
                 int y = direction.offsetY + this.yCoord;
@@ -69,7 +77,8 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
         }
     }
 
-    public void makeOld() {
+    public void makeOld()
+    {
         oldData = data;
     }
 
@@ -77,9 +86,11 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     private static final String NBT_DATA = "Data";
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound) {
+    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    {
         NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < sidesTag.tagCount(); i++) {
+        for (int i = 0; i < sidesTag.tagCount(); i++)
+        {
 
             NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
 
@@ -88,14 +99,15 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
 
-
     @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound) {
+    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    {
         NBTTagList sidesTag = new NBTTagList();
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++)
+        {
             NBTTagCompound sideTag = new NBTTagCompound();
 
-            sideTag.setShort(NBT_DATA, (short) data[i]);
+            sideTag.setShort(NBT_DATA, (short)data[i]);
 
             sidesTag.appendTag(sideTag);
         }
@@ -105,7 +117,8 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations() {
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
         return EnumSet.of(ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
     }
 }

@@ -1,6 +1,7 @@
 package advancedfactorymanager.network;
 
 
-public interface IComponentNetworkReader {
+public interface IComponentNetworkReader
+{
     void readNetworkComponent(DataReader dr);
 }

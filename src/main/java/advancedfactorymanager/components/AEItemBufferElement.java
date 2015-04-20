@@ -1,11 +1,11 @@
 package advancedfactorymanager.components;
 
-import appeng.api.storage.data.IAEItemStack;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import advancedfactorymanager.helpers.AEHelper;
 import advancedfactorymanager.reference.Null;
 import advancedfactorymanager.tileentities.TileEntityAENode;
+import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 public class AEItemBufferElement extends SlotStackInventoryHolder
 {
@@ -22,46 +22,56 @@ public class AEItemBufferElement extends SlotStackInventoryHolder
     }
 
     @Override
-    public ItemStack getItemStack() {
+    public ItemStack getItemStack()
+    {
         return item.getItemStack();
     }
 
     @Override
-    public IInventory getInventory() {
+    public IInventory getInventory()
+    {
         return null;
     }
 
     @Override
-    public int getSlot() {
+    public int getSlot()
+    {
         return 0;
     }
 
     @Override
-    public void remove() {
+    public void remove()
+    {
 
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate()
+    {
 
     }
 
     @Override
-    public int getSizeLeft() {
+    public int getSizeLeft()
+    {
         return (int)Math.min(item.getStackSize(), sizeLeft);
     }
 
-    public void reduceAmount(int val) {
+    public void reduceAmount(int val)
+    {
         AEHelper.extract(inventory.getNode(), item.copy().setStackSize(val), inventory);
     }
 
-    public SlotStackInventoryHolder getSplitElement(int elementAmount, int id, boolean fair) {
+    public SlotStackInventoryHolder getSplitElement(int elementAmount, int id, boolean fair)
+    {
         AEItemBufferElement element = new AEItemBufferElement(this.item, this.inventory);
         int oldAmount = this.getSizeLeft();
         int amount = oldAmount / elementAmount;
-        if(!fair) {
+        if (!fair)
+        {
             int amountLeft = oldAmount % elementAmount;
-            if(id < amountLeft) {
+            if (id < amountLeft)
+            {
                 ++amount;
             }
         }

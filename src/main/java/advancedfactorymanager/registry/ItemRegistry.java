@@ -1,15 +1,15 @@
 package advancedfactorymanager.registry;
 
+import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.items.ItemDuplicator;
+import advancedfactorymanager.items.ItemLabeler;
+import advancedfactorymanager.reference.Names;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import advancedfactorymanager.items.ItemLabeler;
-import advancedfactorymanager.items.ItemDuplicator;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.blocks.ModBlocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;

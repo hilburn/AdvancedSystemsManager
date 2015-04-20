@@ -1,11 +1,5 @@
 package advancedfactorymanager.components;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import advancedfactorymanager.helpers.CollisionHelper;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.ContainerManager;
@@ -13,40 +7,55 @@ import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ComponentMenuItem extends ComponentMenuStuff {
+public class ComponentMenuItem extends ComponentMenuStuff
+{
 
 
-    protected  ComponentMenuItem(FlowComponent parent, Class<? extends Setting> settingClass) {
+    protected ComponentMenuItem(FlowComponent parent, Class<? extends Setting> settingClass)
+    {
         super(parent, settingClass);
 
-        if (settings.get(0).isAmountSpecific()) {
-            numberTextBoxes.addTextBox(amountTextBox = new TextBoxNumber(80 ,24, 3, true) {
+        if (settings.get(0).isAmountSpecific())
+        {
+            numberTextBoxes.addTextBox(amountTextBox = new TextBoxNumber(80, 24, 3, true)
+            {
                 @Override
-                public boolean isVisible() {
+                public boolean isVisible()
+                {
                     return selectedSetting.isLimitedByAmount();
                 }
 
                 @Override
-                public void onNumberChanged() {
+                public void onNumberChanged()
+                {
                     selectedSetting.setAmount(getNumber());
                     writeServerData(DataTypeHeader.AMOUNT);
                 }
             });
         }
 
-        numberTextBoxes.addTextBox(damageValueTextBox = new TextBoxNumber(70, 52, 5, true) {
+        numberTextBoxes.addTextBox(damageValueTextBox = new TextBoxNumber(70, 52, 5, true)
+        {
             @Override
-            public boolean isVisible() {
+            public boolean isVisible()
+            {
                 return getSelectedSetting().canChangeMetaData() && getSelectedSetting().getFuzzyMode().requiresMetaData();
             }
 
             @Override
-            public void onNumberChanged() {
+            public void onNumberChanged()
+            {
                 getSelectedSetting().getItem().setItemDamage(getNumber());
                 writeServerData(DataTypeHeader.META);
             }
@@ -70,7 +79,8 @@ public class ComponentMenuItem extends ComponentMenuStuff {
         });*/
     }
 
-    public ComponentMenuItem(FlowComponent parent) {
+    public ComponentMenuItem(FlowComponent parent)
+    {
         this(parent, ItemSetting.class);
     }
 
@@ -90,23 +100,28 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     private TextBoxNumber damageValueTextBox;
     private TextBoxNumber amountTextBox;
 
-    protected ItemSetting getSelectedSetting() {
+    protected ItemSetting getSelectedSetting()
+    {
         return (ItemSetting)selectedSetting;
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return Localization.ITEM_MENU.toString();
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected void drawInfoMenuContent(GuiManager gui, int mX, int mY) {
-        if (damageValueTextBox.isVisible()) {
+    protected void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    {
+        if (damageValueTextBox.isVisible())
+        {
             gui.drawString(Localization.DAMAGE_VALUE.toString(), DMG_VAL_TEXT_X, DMG_VAL_TEXT_Y, 0.7F, 0x404040);
         }
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++)
+        {
             int x = i == 0 ? ARROW_X_LEFT : ARROW_X_RIGHT;
             int y = ARROW_Y;
 
@@ -120,49 +135,60 @@ public class ComponentMenuItem extends ComponentMenuStuff {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected void drawResultObject(GuiManager gui, Object obj, int x, int y) {
+    protected void drawResultObject(GuiManager gui, Object obj, int x, int y)
+    {
         gui.drawItemStack((ItemStack)obj, x, y);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected void drawSettingObject(GuiManager gui, Setting setting, int x, int y) {
-        drawResultObject(gui,((ItemSetting)setting).getItem(), x, y);
+    protected void drawSettingObject(GuiManager gui, Setting setting, int x, int y)
+    {
+        drawResultObject(gui, ((ItemSetting)setting).getItem(), x, y);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected List<String> getResultObjectMouseOver(Object o) {
+    protected List<String> getResultObjectMouseOver(Object o)
+    {
         return getToolTip((ItemStack)o);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected List<String> getSettingObjectMouseOver(Setting setting) {
+    protected List<String> getSettingObjectMouseOver(Setting setting)
+    {
         return getResultObjectMouseOver(((ItemSetting)setting).getItem());
     }
 
     @Override
-    protected void updateTextBoxes() {
-        if (amountTextBox != null) {
+    protected void updateTextBoxes()
+    {
+        if (amountTextBox != null)
+        {
             amountTextBox.setNumber(selectedSetting.getAmount());
         }
         damageValueTextBox.setNumber(getSelectedSetting().getItem().getItemDamage());
     }
 
     @Override
-    public void refreshData(ContainerManager container, ComponentMenu newData) {
+    public void refreshData(ContainerManager container, ComponentMenu newData)
+    {
         super.refreshData(container, newData);
-        for (int i = 0; i < settings.size(); i++) {
+        for (int i = 0; i < settings.size(); i++)
+        {
             ItemSetting setting = (ItemSetting)settings.get(i);
             ItemSetting newSetting = (ItemSetting)((ComponentMenuStuff)newData).settings.get(i);
-            if (newSetting.getFuzzyMode() != setting.getFuzzyMode()) {
+            if (newSetting.getFuzzyMode() != setting.getFuzzyMode())
+            {
                 setting.setFuzzyMode(newSetting.getFuzzyMode());
                 writeClientData(container, DataTypeHeader.USE_FUZZY, setting);
             }
 
-            if (newSetting.isValid() && setting.isValid()) {
-                if (newSetting.getItem().getItemDamage() != setting.getItem().getItemDamage()) {
+            if (newSetting.isValid() && setting.isValid())
+            {
+                if (newSetting.getItem().getItemDamage() != setting.getItem().getItemDamage())
+                {
                     setting.getItem().setItemDamage(newSetting.getItem().getItemDamage());
                     writeClientData(container, DataTypeHeader.META, setting);
                 }
@@ -172,23 +198,27 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     }
 
     @Override
-    protected DataBitHelper getAmountBitLength() {
+    protected DataBitHelper getAmountBitLength()
+    {
         return DataBitHelper.MENU_ITEM_AMOUNT;
     }
 
     @Override
-    protected void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting) {
+    protected void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting)
+    {
         ItemSetting itemSetting = (ItemSetting)setting;
 
-        switch (header) {
+        switch (header)
+        {
             case SET_ITEM:
                 int id = dr.readData(DataBitHelper.MENU_ITEM_ID);
-                int dmg =  dr.readData(DataBitHelper.MENU_ITEM_META);
+                int dmg = dr.readData(DataBitHelper.MENU_ITEM_META);
 
                 itemSetting.setItem(new ItemStack(Item.getItemById(id), 1, dmg));
                 itemSetting.getItem().setTagCompound(dr.readNBT());
 
-                if (isEditing()) {
+                if (isEditing())
+                {
                     updateTextBoxes();
                 }
 
@@ -197,9 +227,11 @@ public class ComponentMenuItem extends ComponentMenuStuff {
                 itemSetting.setFuzzyMode(FuzzyMode.values()[dr.readData(DataBitHelper.FUZZY_MODE)]);
                 break;
             case META:
-                if (setting.isValid()) {
+                if (setting.isValid())
+                {
                     itemSetting.getItem().setItemDamage(dr.readData(DataBitHelper.MENU_ITEM_META));
-                    if (isEditing()) {
+                    if (isEditing())
+                    {
                         damageValueTextBox.setNumber(itemSetting.getItem().getItemDamage());
                     }
                 }
@@ -209,9 +241,11 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     }
 
     @Override
-    protected void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting) {
+    protected void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting)
+    {
         ItemSetting itemSetting = (ItemSetting)setting;
-        switch (header) {
+        switch (header)
+        {
             case SET_ITEM:
                 dw.writeData(Item.getIdFromItem(itemSetting.getItem().getItem()), DataBitHelper.MENU_ITEM_ID);
                 dw.writeData(itemSetting.getItem().getItemDamage(), DataBitHelper.MENU_ITEM_META);
@@ -227,52 +261,66 @@ public class ComponentMenuItem extends ComponentMenuStuff {
 
     @SideOnly(Side.CLIENT)
     @Override
-    protected List updateSearch(String search, boolean showAll) {
+    protected List updateSearch(String search, boolean showAll)
+    {
         List ret = new ArrayList();
 
-        if (search.equals(".inv")) {
+        if (search.equals(".inv"))
+        {
             IInventory inventory = Minecraft.getMinecraft().thePlayer.inventory;
             int itemLength = inventory.getSizeInventory();
-            for (int i = 0; i < itemLength; i++) {
+            for (int i = 0; i < itemLength; i++)
+            {
                 ItemStack item = inventory.getStackInSlot(i);
-                if (item != null) {
+                if (item != null)
+                {
                     item = item.copy();
                     item.stackSize = 1;
                     boolean exists = false;
-                    for (Object other : ret) {
-                        if (ItemStack.areItemStacksEqual(item, (ItemStack)other)) {
+                    for (Object other : ret)
+                    {
+                        if (ItemStack.areItemStacksEqual(item, (ItemStack)other))
+                        {
                             exists = true;
                             break;
                         }
                     }
 
-                    if (!exists) {
+                    if (!exists)
+                    {
                         ret.add(item);
                     }
                 }
             }
-        }else{
+        } else
+        {
             Iterator itemTypeIterator = Item.itemRegistry.iterator();
-            while (itemTypeIterator.hasNext()){
+            while (itemTypeIterator.hasNext())
+            {
                 Item item = (Item)itemTypeIterator.next();
 
-                if (item != null && item.getCreativeTab() != null) {
+                if (item != null && item.getCreativeTab() != null)
+                {
                     item.getSubItems(item, null, ret);
                 }
             }
 
-            if (!showAll) {
+            if (!showAll)
+            {
                 Iterator<ItemStack> itemIterator = ret.iterator();
 
-                while (itemIterator.hasNext()) {
+                while (itemIterator.hasNext())
+                {
 
                     ItemStack itemStack = itemIterator.next();
                     List<String> description;
 
                     //if it encounters some weird items
-                    try {
+                    try
+                    {
                         description = itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
-                    }catch (Throwable ex) {
+                    } catch (Throwable ex)
+                    {
                         itemIterator.remove();
                         continue;
                     }
@@ -281,15 +329,18 @@ public class ComponentMenuItem extends ComponentMenuStuff {
 
                     boolean foundSequence = false;
 
-                    while (descriptionIterator.hasNext()) {
+                    while (descriptionIterator.hasNext())
+                    {
                         String line = descriptionIterator.next().toLowerCase();
-                        if (line.contains(search)) {
+                        if (line.contains(search))
+                        {
                             foundSequence = true;
                             break;
                         }
                     }
 
-                    if (!foundSequence) {
+                    if (!foundSequence)
+                    {
                         itemIterator.remove();
                     }
                 }
@@ -300,13 +351,18 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     }
 
     @SideOnly(Side.CLIENT)
-    public static List<String> getToolTip(ItemStack itemStack) {
-        try {
+    public static List<String> getToolTip(ItemStack itemStack)
+    {
+        try
+        {
             return itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
-        }catch (Exception ex) {
-            if (itemStack.getItemDamage() == 0) {
+        } catch (Exception ex)
+        {
+            if (itemStack.getItemDamage() == 0)
+            {
                 return new ArrayList<String>();
-            }else{
+            } else
+            {
                 ItemStack newItem = itemStack.copy();
                 newItem.setItemDamage(0);
                 return getToolTip(newItem);
@@ -315,13 +371,18 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     }
 
     @SideOnly(Side.CLIENT)
-    public static String getDisplayName(ItemStack itemStack) {
-        try {
+    public static String getDisplayName(ItemStack itemStack)
+    {
+        try
+        {
             return itemStack.getDisplayName();
-        }catch (Exception ex) {
-            if (itemStack.getItemDamage() == 0) {
+        } catch (Exception ex)
+        {
+            if (itemStack.getItemDamage() == 0)
+            {
                 return "";
-            }else{
+            } else
+            {
                 ItemStack newItem = itemStack.copy();
                 newItem.setItemDamage(0);
                 return getDisplayName(newItem);
@@ -330,21 +391,27 @@ public class ComponentMenuItem extends ComponentMenuStuff {
     }
 
     @Override
-    public void onClick(int mX, int mY, int button) {
+    public void onClick(int mX, int mY, int button)
+    {
         super.onClick(mX, mY, button);
 
-        if (isEditing()) {
-            for (int i = -1; i <= 1; i+=2) {
+        if (isEditing())
+        {
+            for (int i = -1; i <= 1; i += 2)
+            {
                 int x = i == 1 ? ARROW_X_RIGHT : ARROW_X_LEFT;
                 int y = ARROW_Y;
 
 
-                if (CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY)) {
+                if (CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY))
+                {
                     int id = getSelectedSetting().getFuzzyMode().ordinal();
                     id += i;
-                    if (id < 0) {
+                    if (id < 0)
+                    {
                         id = FuzzyMode.values().length - 1;
-                    }else if(id == FuzzyMode.values().length) {
+                    } else if (id == FuzzyMode.values().length)
+                    {
                         id = 0;
                     }
                     getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);

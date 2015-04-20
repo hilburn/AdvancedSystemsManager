@@ -1,6 +1,12 @@
 package advancedfactorymanager.items;
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.naming.NameRegistry;
+import advancedfactorymanager.reference.Names;
+import advancedfactorymanager.reference.Reference;
+import advancedfactorymanager.registry.ItemRegistry;
+import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
@@ -18,12 +24,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
-import advancedfactorymanager.naming.NameRegistry;
-import advancedfactorymanager.reference.Names;
-import advancedfactorymanager.reference.Reference;
-import advancedfactorymanager.registry.ItemRegistry;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.tileentities.TileEntityClusterElement;
 
 import java.util.ArrayList;
 import java.util.List;

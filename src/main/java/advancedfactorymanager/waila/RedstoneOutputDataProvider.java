@@ -36,20 +36,25 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
     {
         TileEntityOutput emitter = (TileEntityOutput)iWailaDataAccessor.getTileEntity();
 
-        if (isShiftDown()) {
-            for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++) {
+        if (isShiftDown())
+        {
+            for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
+            {
                 list.add(getEmitterSide(emitter, i, true));
             }
-        }else{
+        } else
+        {
             list.add(getEmitterSide(emitter, iWailaDataAccessor.getPosition().sideHit, false));
         }
         return list;
     }
 
-    private String getEmitterSide(TileEntityOutput emitter, int side, boolean full) {
+    private String getEmitterSide(TileEntityOutput emitter, int side, boolean full)
+    {
         String str = (emitter.hasStrongSignalAtSide(side) ? Localization.STRONG_POWER.toString() : Localization.WEAK_POWER.toString()) + ": " + emitter.getStrengthFromSide(side) + " ";
 
-        if (full) {
+        if (full)
+        {
             str = Localization.getForgeDirectionLocalization(side) + " " + str;
         }
 
@@ -57,7 +62,8 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean isShiftDown() {
+    private boolean isShiftDown()
+    {
         return GuiScreen.isShiftKeyDown();
     }
 

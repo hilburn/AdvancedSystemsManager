@@ -7,42 +7,51 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class TriggerHelperBUD extends TriggerHelper {
+public class TriggerHelperBUD extends TriggerHelper
+{
     public static final int TRIGGER_BUD_BLOCK_ID = 5;
 
-    public TriggerHelperBUD() {
+    public TriggerHelperBUD()
+    {
         super(false, 1, 3, ConnectionBlockType.BUD);
     }
 
     @Override
-    protected boolean isBlockPowered(FlowComponent component, int power) {
+    protected boolean isBlockPowered(FlowComponent component, int power)
+    {
         int id = power >>> 4;
         int meta = power & 15;
 
 
+        ComponentMenuUpdateBlock updateMenu = (ComponentMenuUpdateBlock)component.getMenus().get(TRIGGER_BUD_BLOCK_ID);
 
-        ComponentMenuUpdateBlock updateMenu =  (ComponentMenuUpdateBlock)component.getMenus().get(TRIGGER_BUD_BLOCK_ID);
-
-        if (updateMenu.useId()) {
+        if (updateMenu.useId())
+        {
             boolean idMatch = id == updateMenu.getBlockId();
 
-            if (updateMenu.isIdInverted() == idMatch) {
+            if (updateMenu.isIdInverted() == idMatch)
+            {
                 return false;
             }
         }
 
-        for (ComponentMenuUpdateBlock.MetaSetting setting : updateMenu.getMetaSettings()) {
-            if (setting.inUse()) {
+        for (ComponentMenuUpdateBlock.MetaSetting setting : updateMenu.getMetaSettings())
+        {
+            if (setting.inUse())
+            {
                 int count = 0;
                 int settingMeta = 0;
-                for (int i = 0; i < setting.bits.length; i++) {
-                    if (setting.bits[i]) {
+                for (int i = 0; i < setting.bits.length; i++)
+                {
+                    if (setting.bits[i])
+                    {
                         settingMeta |= ((meta >> i) & 1) << count;
                         count++;
                     }
                 }
                 boolean metaMatch = setting.lowerTextBox.getNumber() <= settingMeta && settingMeta <= setting.higherTextBox.getNumber();
-                if (setting.inverted == metaMatch) {
+                if (setting.inverted == metaMatch)
+                {
                     return false;
                 }
             }
@@ -52,56 +61,69 @@ public class TriggerHelperBUD extends TriggerHelper {
     }
 
     @Override
-    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid) {
+    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
+    {
         List<SlotInventoryHolder> buds = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
 
-        if (buds != null) {
-            for (SlotInventoryHolder bud : buds) {
+        if (buds != null)
+        {
+            for (SlotInventoryHolder bud : buds)
+            {
                 bud.getBUD().updateData();
             }
 
-            if (isSpecialPulseReceived(item, true)) {
+            if (isSpecialPulseReceived(item, true))
+            {
                 valid.add(ConnectionOption.BUD_PULSE_HIGH);
                 valid.add(ConnectionOption.BUD_HIGH);
-            }else if (isTriggerPowered(item, true)) {
+            } else if (isTriggerPowered(item, true))
+            {
                 valid.add(ConnectionOption.BUD_HIGH);
             }
 
-            if (isSpecialPulseReceived(item, false)) {
+            if (isSpecialPulseReceived(item, false))
+            {
                 valid.add(ConnectionOption.BUD_PULSE_LOW);
                 valid.add(ConnectionOption.BUD_LOW);
-            }else if (isTriggerPowered(item, false)) {
+            } else if (isTriggerPowered(item, false))
+            {
                 valid.add(ConnectionOption.BUD_LOW);
             }
 
 
-
-            for (SlotInventoryHolder bud : buds) {
+            for (SlotInventoryHolder bud : buds)
+            {
                 bud.getBUD().makeOld();
             }
         }
 
     }
 
-    public void triggerBUD(FlowComponent item, TileEntityBUD tileEntityBUD) {
+    public void triggerBUD(FlowComponent item, TileEntityBUD tileEntityBUD)
+    {
         List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
 
-        if (receivers != null) {
+        if (receivers != null)
+        {
             ComponentMenuContainer componentMenuContainer = (ComponentMenuContainer)item.getMenus().get(containerId);
 
             TileEntityBUD trigger = componentMenuContainer.getOption() == 0 ? tileEntityBUD : null;
             EnumSet<ConnectionOption> valid = EnumSet.noneOf(ConnectionOption.class);
-            if (isTriggerPowered(item, true)) {
+            if (isTriggerPowered(item, true))
+            {
                 valid.add(ConnectionOption.BUD);
 
-                if (isPulseReceived(item, receivers, trigger, true)) {
+                if (isPulseReceived(item, receivers, trigger, true))
+                {
                     valid.add(ConnectionOption.BUD_PULSE_HIGH);
                 }
-            }else if (isPulseReceived(item, receivers, trigger, false)) {
+            } else if (isPulseReceived(item, receivers, trigger, false))
+            {
                 valid.add(ConnectionOption.BUD_PULSE_LOW);
             }
 
-            if (!valid.isEmpty()) {
+            if (!valid.isEmpty())
+            {
                 activateTrigger(item, valid);
             }
         }

@@ -1,9 +1,9 @@
 package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.blocks.ClusterMethodRegistration;
+import advancedfactorymanager.helpers.StevesEnum;
 import cofh.api.energy.IEnergyHandler;
 import net.minecraftforge.common.util.ForgeDirection;
-import advancedfactorymanager.helpers.StevesEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class TileEntityRFCluster extends TileEntityCluster implements IEnergyHan
     {
         for (Object i : getRegistrations(StevesEnum.CONNECT_ENERGY))
         {
-             return getTileEntity(i).getEnergyStored(from);
+            return getTileEntity(i).getEnergyStored(from);
         }
         return -1;
     }

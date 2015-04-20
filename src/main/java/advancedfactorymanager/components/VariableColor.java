@@ -1,13 +1,14 @@
 package advancedfactorymanager.components;
 
 
+import advancedfactorymanager.helpers.Localization;
+import advancedfactorymanager.interfaces.Color;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import advancedfactorymanager.helpers.Localization;
-import advancedfactorymanager.interfaces.Color;
 
-public enum VariableColor {
+public enum VariableColor
+{
     WHITE(Localization.VARIABLE_WHITE, Color.WHITE, 1.0F, 1.0F, 1.0F),
     ORANGE(Localization.VARIABLE_ORANGE, Color.ORANGE, 0.85F, 0.5F, 0.2F),
     MAGENTA(Localization.VARIABLE_MAGENTA, Color.MAGENTA, 0.7F, 0.3F, 0.85F),
@@ -31,7 +32,8 @@ public enum VariableColor {
     private float green;
     private float blue;
 
-    private VariableColor(Localization name, Color textColor, float red, float green, float blue) {
+    private VariableColor(Localization name, Color textColor, float red, float green, float blue)
+    {
         this.name = name;
         this.textColor = textColor;
         this.red = red;
@@ -40,17 +42,20 @@ public enum VariableColor {
     }
 
     @SideOnly(Side.CLIENT)
-    public void applyColor() {
+    public void applyColor()
+    {
         GL11.glColor4f(red, green, blue, 1F);
     }
 
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return name.toString();
     }
 
-    public Color getTextColor() {
+    public Color getTextColor()
+    {
         return textColor;
     }
 }

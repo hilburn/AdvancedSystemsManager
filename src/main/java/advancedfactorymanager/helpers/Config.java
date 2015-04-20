@@ -1,9 +1,9 @@
 package advancedfactorymanager.helpers;
 
+import advancedfactorymanager.commands.CommandPastebin;
 import cpw.mods.fml.common.Loader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import advancedfactorymanager.commands.CommandPastebin;
 
 import java.io.File;
 import java.util.Arrays;
