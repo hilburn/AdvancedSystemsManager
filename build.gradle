@@ -83,8 +83,8 @@ dependencies {
 	compile fileTree(dir: 'lib', include: '*.jar')
 }
 
-group = "AdvancedFactoryManager"
-archivesBaseName = "AdvancedFactoryManager"
+group = "AdvancedSystemsManager"
+archivesBaseName = "AdvancedSystemsManager"
 
 minecraft {
     version = "${config.version.minecraft}-${config.version.forge}"

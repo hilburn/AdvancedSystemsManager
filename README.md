@@ -1,4 +1,4 @@
-Advanced Factory Manager
+Advanced Systems Manager
 =========
 A large rewrite and update of Vswe's Steve's Factory Manager Mod.
 

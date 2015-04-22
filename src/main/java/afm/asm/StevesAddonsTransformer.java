@@ -1,9 +1,8 @@
-package afm.asm;
+package asm.asm;
 
-import advancedfactorymanager.AdvancedFactoryManager;
+import advancedsystemsmanager.AdvancedSystemsManager;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.classloading.FMLForgePlugin;
-import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -26,7 +25,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     @Override
                     protected InsnList modifyInstructions(InsnList list)
                     {
-                        return replace(list, "advancedfactorymanager/components/CommandExecutor", "advancedfactorymanager/components/CommandExecutorRF");
+                        return replace(list, "advancedsystemsmanager/flow/CommandExecutor", "advancedsystemsmanager/flow/CommandExecutorRF");
                     }
                 },
         GET_GUI("getGui", "(Lnet/minecraft/tileentity/TileEntity;Lnet/minecraft/entity/player/InventoryPlayer;)Lnet/minecraft/client/gui/GuiScreen;")
@@ -34,7 +33,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     @Override
                     protected InsnList modifyInstructions(InsnList list)
                     {
-                        return replace(list, "advancedfactorymanager/interfaces/GuiManager", "advancedfactorymanager/interfaces/GuiRFManager");
+                        return replace(list, "advancedsystemsmanager/interfaces/GuiManager", "advancedsystemsmanager/interfaces/GuiRFManager");
                     }
                 },
         CREATE_TE("func_149915_a", "(Lnet/minecraft/world/World;I)Lnet/minecraft/tileentity/TileEntity;")
@@ -42,7 +41,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     @Override
                     protected InsnList modifyInstructions(InsnList list)
                     {
-                        return replace(list, "advancedfactorymanager/blocks/TileEntityCluster", "advancedfactorymanager/blocks/TileEntityRFCluster");
+                        return replace(list, "advancedsystemsmanager/blocks/TileEntityCluster", "advancedsystemsmanager/blocks/TileEntityRFCluster");
                     }
                 },
         MANAGER_INIT("<init>", "()V")
@@ -54,7 +53,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         while (!(node instanceof LineNumberNode && ((LineNumberNode)node).line == 85) && node != list.getFirst())
                             node = node.getPrevious();
                         list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "addCopyButton", "(Lvswe/stevesfactory/blocks/TileEntityManager;)V", false));
+                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "addCopyButton", "(Lvswe/stevesfactory/blocks/TileEntityManager;)V", false));
                         return list;
                     }
                 },
@@ -67,9 +66,9 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         while (node.getOpcode() != RETURN && node != list.getFirst()) node = node.getPrevious();
                         list.insertBefore(node, new VarInsnNode(ALOAD, 0));
                         list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(node, new FieldInsnNode(GETFIELD, "advancedfactorymanager/components/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
-                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "fixLoadingStack", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", false));
-                        list.insertBefore(node, new FieldInsnNode(PUTFIELD, "advancedfactorymanager/components/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
+                        list.insertBefore(node, new FieldInsnNode(GETFIELD, "advancedsystemsmanager/flow/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
+                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "fixLoadingStack", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", false));
+                        list.insertBefore(node, new FieldInsnNode(PUTFIELD, "advancedsystemsmanager/flow/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
                         return list;
                     }
                 },
@@ -106,8 +105,8 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                             if (node.getOpcode() == ASTORE)
                             {
                                 list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                                list.insertBefore(node, new FieldInsnNode(GETFIELD, "advancedfactorymanager/blocks/ConnectionBlock", "tileEntity", "Lnet/minecraft/tileentity/TileEntity;"));
-                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "fixToolTip", "(Ljava/lang/String;Lnet/minecraft/tileentity/TileEntity;)Ljava/lang/String;", false));
+                                list.insertBefore(node, new FieldInsnNode(GETFIELD, "advancedsystemsmanager/blocks/ConnectionBlock", "tileEntity", "Lnet/minecraft/tileentity/TileEntity;"));
+                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "fixToolTip", "(Ljava/lang/String;Lnet/minecraft/tileentity/TileEntity;)Ljava/lang/String;", false));
                                 break;
                             }
                             node = node.getNext();
@@ -124,7 +123,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         list.insertBefore(first, new VarInsnNode(ALOAD, 0));
                         list.insertBefore(first, new VarInsnNode(ALOAD, 1));
                         list.insertBefore(first, new VarInsnNode(ILOAD, 2));
-                        list.insertBefore(first, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "updateItemSearch", "(Lvswe/stevesfactory/components/ComponentMenuItem;Ljava/lang/String;Z)Ljava/util/List;", false));
+                        list.insertBefore(first, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "updateItemSearch", "(Lvswe/stevesfactory/components/ComponentMenuItem;Ljava/lang/String;Z)Ljava/util/List;", false));
                         list.insertBefore(first, new InsnNode(ARETURN));
                         return list;
                     }
@@ -146,7 +145,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                             {
                                 list.insertBefore(node, new VarInsnNode(ALOAD, 8));
                                 list.insertBefore(node, new VarInsnNode(ALOAD, 1));
-                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "containerAdvancedSearch", "(Lvswe/stevesfactory/blocks/ConnectionBlock;Ljava/lang/String;)Z", false));
+                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "containerAdvancedSearch", "(Lvswe/stevesfactory/blocks/ConnectionBlock;Ljava/lang/String;)Z", false));
                                 list.insertBefore(node, new JumpInsnNode(IFNE, label));
                                 break;
                             }
@@ -164,9 +163,9 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     {
                         InsnList result = new InsnList();
                         result.add(new VarInsnNode(ALOAD, 1));
-                        result.add(new TypeInsnNode(CHECKCAST, "advancedfactorymanager/blocks/TileEntityCluster$Pair"));
-                        result.add(new FieldInsnNode(GETFIELD, "advancedfactorymanager/blocks/TileEntityCluster$Pair", "te", "Lvswe/stevesfactory/blocks/TileEntityClusterElement;"));
-                        result.add(new TypeInsnNode(CHECKCAST, "advancedfactorymanager/tileentities/TileEntityRFNode"));
+                        result.add(new TypeInsnNode(CHECKCAST, "advancedsystemsmanager/blocks/TileEntityCluster$Pair"));
+                        result.add(new FieldInsnNode(GETFIELD, "advancedsystemsmanager/blocks/TileEntityCluster$Pair", "te", "Lvswe/stevesfactory/blocks/TileEntityClusterElement;"));
+                        result.add(new TypeInsnNode(CHECKCAST, "advancedsystemsmanager/tileentities/TileEntityRFNode"));
                         result.add(new InsnNode(ARETURN));
                         return result;
                     }
@@ -181,7 +180,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         list.clear();
                         list.add(new VarInsnNode(ALOAD, 0));
                         list.add(new VarInsnNode(ILOAD, 1));
-                        list.add(new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "removeFlowComponent", "(Lvswe/stevesfactory/blocks/TileEntityManager;I)V", false));
+                        list.add(new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "removeFlowComponent", "(Lvswe/stevesfactory/blocks/TileEntityManager;I)V", false));
                         list.add(new InsnNode(RETURN));
                         return list;
                     }
@@ -288,9 +287,9 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     {
                         list.clear();
                         list.add(new VarInsnNode(ALOAD, 0));
-                        list.add(new FieldInsnNode(GETFIELD, "advancedfactorymanager/blocks/ConnectionBlockType", "clazz", "Ljava/lang/Class;"));
+                        list.add(new FieldInsnNode(GETFIELD, "advancedsystemsmanager/blocks/ConnectionBlockType", "clazz", "Ljava/lang/Class;"));
                         list.add(new VarInsnNode(ALOAD, 1));
-                        list.add(new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "instanceOf", "(Ljava/lang/Class;Lnet/minecraft/tileentity/TileEntity;)Z", false));
+                        list.add(new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "instanceOf", "(Ljava/lang/Class;Lnet/minecraft/tileentity/TileEntity;)Z", false));
                         list.add(new InsnNode(IRETURN));
                         return list;
                     }
@@ -302,9 +301,9 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     {
                         MethodNode isVisible = new MethodNode(ACC_PUBLIC, this.name, this.args, null, new String[0]);
                         isVisible.instructions.add(new VarInsnNode(ALOAD, 0));
-                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedfactorymanager/components/ComponentMenuInterval","getParent","()Lvswe/stevesfactory/components/FlowComponent;",false));
-                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedfactorymanager/components/FlowComponent", "getConnectionSet", "()Lvswe/stevesfactory/components/ConnectionSet;",false));
-                        isVisible.instructions.add(new FieldInsnNode(GETSTATIC, "advancedfactorymanager/helpers/StevesEnum", "DELAYED", "Lvswe/stevesfactory/components/ConnectionSet;"));
+                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedsystemsmanager/flow/ComponentMenuInterval","getParent","()Lvswe/stevesfactory/components/FlowComponent;",false));
+                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedsystemsmanager/flow/FlowComponent", "getConnectionSet", "()Lvswe/stevesfactory/components/ConnectionSet;",false));
+                        isVisible.instructions.add(new FieldInsnNode(GETSTATIC, "advancedsystemsmanager/helpers/StevesEnum", "DELAYED", "Lvswe/stevesfactory/components/ConnectionSet;"));
                         LabelNode l1 = new LabelNode(new Label());
                         isVisible.instructions.add(new JumpInsnNode(IF_ACMPEQ, l1));
                         isVisible.instructions.add(new InsnNode(ICONST_1));
@@ -325,7 +324,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         {
                             if (node instanceof FieldInsnNode && ((FieldInsnNode)node).name.equals("timer"))
                             {
-                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "afm/asm/StevesHooks", "tickTriggers", "(Lvswe/stevesfactory/blocks/TileEntityManager;)Lvswe/stevesfactory/blocks/TileEntityManager;", false));
+                                list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "tickTriggers", "(Lvswe/stevesfactory/blocks/TileEntityManager;)Lvswe/stevesfactory/blocks/TileEntityManager;", false));
                                 break;
                             }
                             node = node.getNext();
@@ -482,7 +481,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
 
         public void complete()
         {
-            AdvancedFactoryManager.log.info("Applied " + this + " transformer");
+            AdvancedSystemsManager.log.info("Applied " + this + " transformer");
         }
 
         public MethodNode getMethod(ClassNode classNode)
@@ -572,7 +571,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
             ClassReader classReader = new ClassReader(bytes);
             classReader.accept(classNode, 0);
 
-            AdvancedFactoryManager.log.log(Level.INFO, "Applying Transformer" + (transformers.length > 1 ? "s " : " ") + "to " + getName());
+            AdvancedSystemsManager.log.info("Applying Transformer" + (transformers.length > 1 ? "s " : " ") + "to " + getName());
 
             for (Transformer transformer : getTransformers())
             {

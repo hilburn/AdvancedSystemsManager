@@ -1,0 +1,472 @@
+# ======================================
+#				BLOCKS
+# ======================================
+
+tile.asm.BlockMachineManager.name=Machine Inventory Manager
+tile.asm.BlockCable.name=Inventory Cable
+tile.asm.BlockCableRelay.name=Inventory Relay
+tile.asm.BlockAdvancedCableRelay.name=Advanced Inventory Relay
+tile.asm.BlockCableOutput.name=Redstone Emitter
+tile.asm.BlockCableInput.name=Redstone Receiver
+tile.asm.BlockCableCreative.name=Creative Supplier
+tile.asm.BlockCableIntake.name=Item Valve
+tile.asm.BlockInstantCableIntake.name=Rapid Item Valve
+tile.asm.BlockCableBUD.name=Block Detector
+tile.asm.BlockCableBreaker.name=Block Gate
+tile.asm.BlockCableCluster.name=Cable Cluster
+tile.asm.BlockAdvancedCableCluster.name=Advanced Cable Cluster
+tile.asm.BlockCableCamouflage.name=Cable Camouflage
+tile.asm.BlockCableInsideCamouflage.name=Double Sided Cable Camouflage
+tile.asm.BlockCableShapeCamouflage.name=Transforming Cable Camouflage
+tile.asm.BlockCableSign.name=Sign Updater
+tile.cable_rf.name=RF Node
+tile.cable_ae.name=Energistics Connector
+
+# ======================================
+#			COMPONENT TYPES
+# ======================================
+gui.asm.TriggerShort=Trigger
+gui.asm.TriggerLong=Trigger
+gui.asm.InputShort=Input
+gui.asm.InputLong=Input
+gui.asm.OutputShort=Output
+gui.asm.OutputLong=Output
+gui.asm.ConditionShort=Condition
+gui.asm.ConditionLong=Condition
+gui.asm.FlowControlShort=Flow
+gui.asm.FlowControlLong=Flow Control
+gui.asm.LiquidInputShort=Input (L)
+gui.asm.LiquidInputLong=Liquid Input
+gui.asm.LiquidOutputShort=Output (L)
+gui.asm.LiquidOutputLong=Liquid Output
+gui.asm.LiquidConditionShort=Condition (L)
+gui.asm.LiquidConditionLong=Liquid Condition
+gui.asm.RedstoneEmitterShort=Emitter
+gui.asm.RedstoneEmitterLong=Redstone Emitter
+gui.asm.RedstoneConditionShort=Condition (R)
+gui.asm.RedstoneConditionLong=Redstone Condition
+gui.asm.ContainerVariableShort=Variable
+gui.asm.ContainerVariableLong=Container Variable
+gui.asm.ForEachLoopShort=For Each
+gui.asm.ForEachLoopLong=For Each Loop
+gui.asm.AutoCrafterShort=Crafter
+gui.asm.AutoCrafterLong=Auto Crafter
+gui.asm.GroupShort=Group
+gui.asm.GroupLong=Command Group
+gui.asm.NodeShort=Node
+gui.asm.NodeLong=Group Node
+gui.asm.CamouflageShort=Camouflage
+gui.asm.CamouflageLong=Camouflage Updater
+gui.asm.SignShort=Sign
+gui.asm.SignLong=Sign Updater
+
+# ======================================
+#			CONNECTION OPTIONS
+# ======================================
+
+gui.asm.ConnectionInput=Input
+gui.asm.ConnectionOutput=Output
+gui.asm.ConnectionInterval=Interval
+gui.asm.ConnectionOnHighRedstonePulse=On high pulse
+gui.asm.ConnectionOnLowRedstonePulse=On low pulse
+gui.asm.ConnectionWhileHighRedstone=While high signal
+gui.asm.ConnectionWhileLowRedstone=While low signal
+gui.asm.ConnectionTrue=True
+gui.asm.ConnectionFalse=False
+gui.asm.ConnectionForEach=For each
+gui.asm.ConnectionOnBlockUpdate=On block update
+gui.asm.ConnectionOnHighBlockPulse=On high pulse
+gui.asm.ConnectionWhileHighBlock=While high signal
+gui.asm.ConnectionOnLowBlockPulse=On low pulse
+gui.asm.ConnectionWhileLowBlock=While low signal
+
+
+# ======================================
+#			CONNECTION SETS
+# ======================================
+
+gui.asm.ConnectionSetStandard=Standard
+gui.asm.ConnectionSetInterval=On interval
+gui.asm.ConnectionSetRedstone=Redstone controlled
+gui.asm.ConnectionSetCondition=Condition
+gui.asm.ConnectionSetCollector2=Collector - 2 inputs
+gui.asm.ConnectionSetCollector5=Collector - 5 inputs
+gui.asm.ConnectionSetSplit2=Split - 2 outputs
+gui.asm.ConnectionSetSplit5=Split - 5 outputs
+gui.asm.ConnectionSetDeclaration=Declaration
+gui.asm.ConnectionSetForEach=For each
+gui.asm.ConnectionSetBud=Block update detector
+gui.asm.ConnectionSetOutputNode=Output Node
+gui.asm.ConnectionSetInputNode=Input Node
+gui.asm.ConnectionSetDynamic=Dynamic
+
+# ======================================
+#			COMPONENT MENUS
+# ======================================
+
+gui.asm.DetectorMenu=Update Detectors
+gui.asm.RequireAllTargets=Require all targets
+gui.asm.RequireOneTarget=Require one target
+gui.asm.RunSharedOnce=Run a shared command once
+gui.asm.RunOnePerTarget=Run command once per target
+gui.asm.Selected=[Selected]
+gui.asm.OverflowMenu=Excess Inventories
+gui.asm.NoDetectorError=No detector selected
+gui.asm.NoOverflowError=No excess inventory selected
+gui.asm.OverflowInfo=These inventories will be used if some of the crafted items don't fit. It will also be used for container items, such as buckets.
+gui.asm.ContainerTypeMenu=Container Types
+gui.asm.CraftingMenu=Crafting
+gui.asm.EmitterMenu=Emitters
+gui.asm.NoEmitterError=No emitter selected
+gui.asm.RequiresAll=Requires all
+gui.asm.IfAny=If Any
+gui.asm.WhiteList=White list
+gui.asm.BlackList=Black list
+gui.asm.EmptyTank=Empty tank
+gui.asm.FilledTank=Filled tank
+gui.asm.StrongPower=Strong power
+gui.asm.WeakPower=Weak power
+gui.asm.Sequential=Sequential
+gui.asm.Split=Split
+gui.asm.IntervalMenu=Interval
+gui.asm.IntervalInfo=Time between this command is triggered
+gui.asm.Second=second(s)
+gui.asm.InventoryMenu=Inventories
+gui.asm.NoInventoryError=No inventory selected
+gui.asm.ItemMenu=Items
+gui.asm.DamageValue=Damage value
+gui.asm.NoConditionError=No condition selected
+gui.asm.Buckets=Buckets
+gui.asm.MilliBuckets=Milli Buckets
+gui.asm.LiquidsMenu=Liquids
+gui.asm.UseAll=Use all
+gui.asm.Reversed=Reversed
+gui.asm.LoopOrderMenu=Loop Order
+gui.asm.ValueOrderMenu=Value Order
+gui.asm.RedstoneNodeMenu=Redstone Nodes
+gui.asm.NoNodeError=No nodes selected
+gui.asm.DoEmitPulse=Do emit pulse
+gui.asm.Seconds=Seconds
+gui.asm.Ticks=Ticks
+gui.asm.PulseMenu=Pulse
+gui.asm.ReceiversMenu=Redstone Receivers
+gui.asm.NoReceiverError=No receivers selected
+gui.asm.RedstoneOutputMenu=Output
+gui.asm.RedstoneStrength=Redstone strength
+gui.asm.DigitalToggle=Digital signal toggle
+gui.asm.NoRedstoneSidesError=No redstone sides selected
+gui.asm.RedstoneSidesMenu=Sides
+gui.asm.RedstoneSidesInfo=Select which block sides the redstone should be detected at
+gui.asm.UpdateSidesInfo=Select which block sides updates should be detected at
+gui.asm.RedstoneSidesMenuTrigger=Redstone Sides
+gui.asm.UpdateSidesMenu=Update Sides
+gui.asm.NoSidesError=No sides selected
+gui.asm.InvertSelection=Invert selection
+gui.asm.RedstoneStrengthMenu=Analog Redstone
+gui.asm.RedstoneStrengthInfo=Select the strength range required for the redstone signal
+gui.asm.Through=through
+gui.asm.InvalidRedstoneRangeError=Invalid strength range
+gui.asm.RedundantRedstoneRangeError=Redundant strength range
+gui.asm.RedstoneStrengthMenuCondition=Strength
+gui.asm.ConnectionsMenu=Connections
+gui.asm.FairSplit=Use fair split
+gui.asm.EmptyPins=Include empty pins
+gui.asm.SplitMenu=Split
+gui.asm.SpecifyAmount=Specify amount?
+gui.asm.Delete=Delete
+gui.asm.DeleteItemSelection=Delete this item selection
+gui.asm.GoBack=Go back
+gui.asm.Cancel=Cancel
+gui.asm.EmptyWhiteListError=The whitelist is empty
+gui.asm.TankMenu=Tanks
+gui.asm.NoTankError=No tank selected
+gui.asm.Activate=Activate
+gui.asm.Deactivate=Deactivate
+gui.asm.ActivateLong=Click to use this side
+gui.asm.DeactivateLong=Click to prevent this side from being used
+gui.asm.NoDirectionError=No direction is active
+gui.asm.AllSlots=Use all slots
+gui.asm.IdRange=Use id range
+gui.asm.AllSlotsLong=Click to use all slots for this side instead
+gui.asm.IdRangeLong=Click to use a slot id range for this specific side
+gui.asm.InvalidRange=range is invalid
+gui.asm.AdvancedMode=Advanced mode
+gui.asm.SimpleMode=Simple mode
+gui.asm.AdvancedModeLong=Click to use advanced mode for this side instead
+gui.asm.SimpleModeLong=Click to use simple mode for this side instead
+gui.asm.UseId=Use id
+gui.asm.Invert=Invert
+gui.asm.UpdateBlockMenu=Update Block
+gui.asm.Meta=Meta
+gui.asm.GlobalValueSet=Global value set
+gui.asm.VariableMenu=Variable
+gui.asm.NotDeclaredError=This variable hasn't been declared
+gui.asm.AlreadyDeclaredError=This variable has already been declared
+gui.asm.VariableContainersMenu=Containers
+gui.asm.VariableList=List
+gui.asm.VariableElement=Element
+gui.asm.LoopVariableMenu=Variables
+gui.asm.ListNotDeclared=List variable hasn't been declared
+gui.asm.ElementNotDeclared=Element variable hasn't been declared
+gui.asm.VariableWhite=White variable
+gui.asm.VariableOrange=Orange variable
+gui.asm.VariableMagenta=Magenta variable
+gui.asm.VariableLightBlue=Light blue variable
+gui.asm.VariableYellow=Yellow variable
+gui.asm.VariableLime=Lime variable
+gui.asm.VariablePink=Pink variable
+gui.asm.VariableGray=Gray variable
+gui.asm.VariableLightGray=Light gray variable
+gui.asm.VariableCyan=Cyan variable
+gui.asm.VariablePurple=Purple variable
+gui.asm.VariableBlue=Blue variable
+gui.asm.VariableBrown=Brown variable
+gui.asm.VariableGreen=Green variable
+gui.asm.VariableRed=Red variable
+gui.asm.VariableBlack=Black variable
+gui.asm.NoLiquidSelected=[No liquid selected]
+gui.asm.ChangeLiquid=Left click to change liquid
+gui.asm.EditSetting=Right click to edit settings
+gui.asm.NoItemSelected=[No item selected]
+gui.asm.ChangeItem=Left click to change item
+gui.asm.FullDescription=Hold shift to see the item's full description
+gui.asm.DetectionPrecise=Precise detection
+gui.asm.DetectionNbtFuzzy=NBT independent detection
+gui.asm.DetectionFuzzy=Fuzzy detection
+gui.asm.DetectionOreDictionary=Ore dictionary support
+gui.asm.ItemsFound=Found
+gui.asm.RedstoneEmitterSidesMenu=Sides
+gui.asm.RedstoneEmitterSidesInfo=Select which block sides the redstone should be emitted at
+gui.asm.TypeInventory=Inventory
+gui.asm.TypeTank=Tank
+gui.asm.TypeEmitter=Emitter
+gui.asm.TypeReceiver=Receiver
+gui.asm.TypeNode=Node
+gui.asm.TypeBud=BUD
+gui.asm.OrderStandard=Standard
+gui.asm.OrderCable=Cable order
+gui.asm.OrderRandom=Randomize
+gui.asm.ExtendOld=Extend old
+gui.asm.KeepAll=Keep all
+gui.asm.KeepOld=Keep old
+gui.asm.KeepNew=Keep new
+gui.asm.Fixed=Fixed
+gui.asm.Toggle=Toggle
+gui.asm.Max=Max
+gui.asm.Min=Min
+gui.asm.Increase=Increase
+gui.asm.Decrease=Decrease
+gui.asm.Forward=Forward
+gui.asm.Backward=Backward
+gui.asm.Global=Global
+gui.asm.Local=Local
+gui.asm.Add=Add
+gui.asm.Remove=Remove
+gui.asm.Set=Set
+gui.asm.Down=Down
+gui.asm.Up=Up
+gui.asm.North=North
+gui.asm.South=South
+gui.asm.West=West
+gui.asm.East=East
+gui.asm.GroupMenu=Content
+gui.asm.GroupInfo=Drop commands here to put them into this group, or click to open the group.
+gui.asm.FilterPositionLabel=Use position range
+gui.asm.FilterDistanceLabel=Use distance range
+gui.asm.FilterSelectionLabel=Use selection filter
+gui.asm.FilterVariableLabel=Use variable filter
+gui.asm.X=X
+gui.asm.Y=Y
+gui.asm.Z=Z
+gui.asm.CableDistance=Cable distance
+gui.asm.Distance=Distance
+gui.asm.OnlySelected=Only selected
+gui.asm.HideSelected=Hide selected
+gui.asm.ReloadOnChange=Reload on change
+gui.asm.UseUnused=Use unused
+gui.asm.UseFilter=Use filter
+gui.asm.AbsoluteRanges=The absolute ranges are
+gui.asm.FilterShort=F
+gui.asm.FilterLong=Select filter
+gui.asm.MultiShort=M
+gui.asm.MultiLong=Define multi selection interaction
+gui.asm.SubMenuShort=SET
+gui.asm.SubMenuLong=Open sub filter menu
+gui.asm.ClearShort=CLR
+gui.asm.ClearLong=Clear all the filter settings
+gui.asm.SelectAllShort=A
+gui.asm.SelectAllLong=Select all
+gui.asm.SelectNoneShort=N
+gui.asm.SelectNoneLong=Deselect all
+gui.asm.SelectInvertShort=I
+gui.asm.SelectInvertLong=Invert selection
+gui.asm.SelectedContainers=selected containers
+gui.asm.NoMultiSetting=This command has no special options for multi selections
+gui.asm.SingleSelected=Multiple containers needs to be selected for these options to be available
+gui.asm.RelativeCoordinates=These are relative coordinates [Hover]
+gui.asm.BlockAway=block away
+gui.asm.BlocksAway=blocks away
+gui.asm.CableAway=cable away
+gui.asm.CablesAway=cables away
+gui.asm.EmptyCluster=Empty cluster
+gui.asm.TypeCamouflage=Camouflage
+gui.asm.CamouflageSidesInfo=Select which sides of the block where the camouflage should be updated
+gui.asm.CamouflageSidesName=Sides
+gui.asm.CamouflageItemMenu=Camouflage
+gui.asm.CamouflageBlockMenu=Blocks
+gui.asm.NoCamouflageBlocksError=No camouflage blocks selected
+gui.asm.ClearCamouflage=Clear camo
+gui.asm.SetCamouflage=Set camo
+gui.asm.CamouflageInfo=Define whether to clear or set the camouflage. If you set the camouflage, define which block to set it to.
+gui.asm.NoCamouflageSetting=No camouflage setting selected
+gui.asm.SelectVariableShort=V
+gui.asm.SelectVariableLong=Show all variables
+gui.asm.CamouflageOnlyOutside=Only outside
+gui.asm.CamouflageOnlyInside=Only inside
+gui.asm.CamouflageOppositeInside=Inverted inside
+gui.asm.CamouflageSameInside=Both
+gui.asm.CamouflageNoUpdate=Don't update
+gui.asm.CamouflageBoundsUse=Update bounds
+gui.asm.CamouflageCollisionUse=Collision
+gui.asm.CamouflageCollisionFull=Full collision
+gui.asm.To=to
+gui.asm.BoundsMenu=Bounds
+gui.asm.InsideMenu=Inside
+gui.asm.BoundsWarning=The collision and bounds can only be updated in Transforming Cable Camouflages
+gui.asm.InsideWarning=The inside camouflage can only be updated in Double Sided Cable Camouflages and their upgrades
+gui.asm.ModGrouping=Mod detection
+gui.asm.AllItems=Match all
+gui.asm.TargetMenu=Target
+gui.asm.TypeSign=Sign updaters
+gui.asm.Signs=Signs
+gui.asm.NoSignsError=No sign updaters selected
+gui.asm.SignText=Sign text
+gui.asm.UpdateLine=Update?
+gui.asm.TooltipExtraInfo=Hold shift for more info
+gui.asm.TooltipLock=Click to lock tooltip
+gui.asm.TooltipUnlock=Release shift or click to unlock tooltip
+gui.asm.TooltipAdjacent=Adjacent blocks
+gui.asm.PriorityMoveFirst=Move before crafting
+gui.asm.PriorityCraftFirst=Craft before moving
+
+# ======================================
+#		  OTHER MANAGER INTERFACE
+# ======================================
+
+gui.asm.DeleteCommand=Delete [Drop command here]
+gui.asm.CreateCommand=Create
+gui.asm.MaximumComponentError=Maximum component amount reached
+gui.asm.ExitGroup=Close group
+gui.asm.ExitGroupDrop=Move from group [Drop command here]
+gui.asm.Commands=Commands
+gui.asm.Preferences=User Preferences
+gui.asm.Settings=Manager Settings
+gui.asm.CloseGroupLabel=Groups will automatically be closed when the interface is reopened.
+gui.asm.OpenMenuLargeHitBox=Clicking on the top part of a command (or the full small command) will open or close it.
+gui.asm.OpenMenuLargeHitBoxMenu=Clicking on a menu's name will open or close it (opposed to having to click the arrow).
+gui.asm.OpenGroupQuick=Enlarging a group command automatically opens the group (unless you hold shift)
+gui.asm.ShowCommandType=Always show the command type of the command, even when it's named. (Holding Ctrl to display the types works regardless of this setting)
+gui.asm.AutoSide=Automatically select one side for inputs, outputs and conditions. Outputs will use the up side and the others will use the down side.
+gui.asm.AutoBlackList=Automatically select an empty blacklist for input commands as well. (Output commands start with an empty blacklist regardless of this setting.)
+gui.asm.Limitless=Remove all limits of this manager. Without this selected there's a limit of 511 commands, 1023 connected inventories and a max reach of 128 blocks. [Creative only]
+gui.asm.EnlargeInterfaces=Enlarge interfaces to fit the full screen, unless they do that already. (Interfaces are always made smaller to fit the screen regardless of this setting.)
+gui.asm.AutoMoveFirst=Set the default option for new crafting commands to prioritize movement.
+
+gui.asm.CopyCommand=Copy [Drop Command Here]
+
+# ======================================
+#		 ADVANCED RELAY INTERFACE
+# ======================================
+gui.asm.GivePermission=Give permission
+gui.asm.RevokePermission=Revoke permission
+gui.asm.ActivateUser=Activate
+gui.asm.DeactivateUser=Deactivate
+gui.asm.DeleteUser=Delete user
+gui.asm.MakeEditor=Make editor
+gui.asm.RemoveEditor=Remove editor
+gui.asm.ShowListToAll=Show list to all
+gui.asm.ShowToEditors=Show to editors
+gui.asm.EnableCreativeMode=Enable creative mode
+gui.asm.DisableCreativeMode=Disable creative mode
+gui.asm.Page=Page
+gui.asm.Of=of
+gui.asm.NoAccess=NO ACCESS
+gui.asm.EditorDescriptionShort=You may define who this block can access, people need to give you permission first though.
+gui.asm.UserDescriptionShort=You are not allowed to control this block. You have access to read the settings though.
+gui.asm.EditorDescriptionLong=As an editor you can decide which players this block should interact with. You can only choose among the players who have given their permission.
+gui.asm.UserDescriptionLong=This block will be able to access players' inventories, among other inventories. For this block to be able to access your inventory you will have to give it permission to do so. An editor can then decide whether the block should interact with your inventory or not.
+gui.asm.PermissionOwner=Owner
+gui.asm.PermissionEditor=Editor
+gui.asm.PermissionUser=Read only
+gui.asm.PermissionRestricted=Restricted access
+gui.asm.PermissionCreative=Creative access
+gui.asm.PermissionInventory=Inventory access
+gui.asm.PermissionDenied=No access
+
+
+# ======================================
+#				OTHER
+# ======================================
+
+itemGroup.asm=Advanced Factory Manager
+
+
+
+#Item Localization
+item.duplicator.name=Manager Duplicator
+item.labeler.name=Factory Labeler
+
+
+gui.asm.RfInputLong=RF Input
+gui.asm.RfInputShort=RF Input
+
+gui.asm.RfOutputLong=RF Output
+gui.asm.RfOutputShort=RF Output
+
+gui.asm.TypeRf=RF Storage
+gui.asm.TypeRfInput=RF Provider
+gui.asm.TypeRfOutput=RF Receiver
+gui.asm.NoRfError=No RF Storage Selected
+
+gui.asm.RfConditionShort=RF Condition
+gui.asm.RfConditionLong=RF Condition
+gui.asm.RfConditionMenu=RF Level
+gui.asm.RfConditionInfo=Set the trigger level in the text box, and trigger above or below
+gui.asm.RfConditionError=Invalid trigger level
+gui.asm.Below=Trigger low
+
+gui.asm.DelayOutput=Delayed Output
+gui.asm.DelayTrigger=Delayed Trigger
+gui.asm.DelayInfo=Set the delay in seconds, ticks before the trigger fires (minimum 5 ticks)
+gui.asm.DelayError=Delay too low.
+gui.asm.DelayRestart=Restart
+gui.asm.DelayIgnore=Ignore
+
+asm.waila.labelled=Label: %s
+asm.idsucompat.isEmpty=Empty
+asm.idsucompat.contains=Contains: %s
+
+asm.chat.cleared=Label cleared
+asm.chat.saved=Label set as "%s"
+
+asm.command.notFound=Command not found
+asm.command.noPermission=You not have permission to use this command
+asm.command.loadFailed=Loading failed
+asm.command.loadSuccess=Manager loaded from: %s
+asm.command.nothingToSave=Duplicator is empty
+asm.command.saveFailed=Save failed
+asm.command.noDuplicator=Command can only be applied to a Manager Duplicator
+asm.command.savedTo=Manager saved to: %s
+asm.command.copiedToClip=Pastebin link loaded onto clipboard
+
+asm.command.info.help.start=Available commands are:
+asm.command.help.syntax=/asm help [command]
+asm.command.info.help=For help with all available commands.
+asm.command.info.load=Load the given filename to a held Duplicator.
+asm.command.load.syntax=/asm load <filename>
+asm.command.info.save=Saves the held Duplicator to a file with optional name (defaults to player's name + coordinates)
+asm.command.save.syntax=/asm save [filename]
+asm.command.info.pastebin=Put or get data between Pastebin and a held Duplicator.
+asm.command.pastebin.syntax=/asm pastebin {put | get <paste>}
+asm.command.info.clear=Clears a held Duplicator
+asm.command.clear.syntax=/asm clear

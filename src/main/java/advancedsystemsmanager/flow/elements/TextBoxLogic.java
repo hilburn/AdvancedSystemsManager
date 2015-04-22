@@ -1,0 +1,141 @@
+package advancedsystemsmanager.flow.elements;
+
+import advancedsystemsmanager.interfaces.GuiManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.ChatAllowedCharacters;
+
+
+public class TextBoxLogic
+{
+    public String text;
+    public int cursor;
+    public int cursorPosition;
+    public int charLimit;
+    public int width;
+    public boolean updatedCursor;
+    public float mult;
+
+    public TextBoxLogic(int charLimit, int width)
+    {
+        this.charLimit = charLimit;
+        this.width = width;
+        mult = 1F;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void addText(GuiManager gui, String str)
+    {
+        String newText = text.substring(0, cursor) + str + text.substring(cursor);
+
+        if (newText.length() <= charLimit && gui.getStringWidth(newText) * mult <= width)
+        {
+            text = newText;
+            moveCursor(gui, str.length());
+            textChanged();
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void deleteText(GuiManager gui, int direction)
+    {
+        if (cursor + direction >= 0 && cursor + direction <= text.length())
+        {
+            if (direction > 0)
+            {
+                text = text.substring(0, cursor) + text.substring(cursor + 1);
+            } else
+            {
+                text = text.substring(0, cursor - 1) + text.substring(cursor);
+                moveCursor(gui, direction);
+            }
+            textChanged();
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void moveCursor(GuiManager gui, int steps)
+    {
+        cursor += steps;
+
+        updateCursor();
+    }
+
+
+    public void textChanged()
+    {
+    }
+
+    public String getText()
+    {
+        return text;
+    }
+
+    public int getCursorPosition(GuiManager gui)
+    {
+        if (updatedCursor)
+        {
+            cursorPosition = (int)(gui.getStringWidth(text.substring(0, cursor)) * mult);
+            updatedCursor = false;
+        }
+
+        return cursorPosition;
+    }
+
+    public void setText(String text)
+    {
+        this.text = text;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (k == 203)
+        {
+            moveCursor(gui, -1);
+        } else if (k == 205)
+        {
+            moveCursor(gui, 1);
+        } else if (k == 14)
+        {
+            deleteText(gui, -1);
+        } else if (k == 211)
+        {
+            deleteText(gui, 1);
+        } else if (ChatAllowedCharacters.isAllowedCharacter(c))
+        {
+            addText(gui, Character.toString(c));
+        }
+    }
+
+    public void updateCursor()
+    {
+        if (cursor < 0)
+        {
+            cursor = 0;
+        } else if (cursor > text.length())
+        {
+            cursor = text.length();
+        }
+
+        updatedCursor = true;
+    }
+
+
+    public void resetCursor()
+    {
+        cursor = text.length();
+        updatedCursor = true;
+    }
+
+    public void setTextAndCursor(String s)
+    {
+        setText(s);
+        resetCursor();
+    }
+
+    public void setMult(float mult)
+    {
+        this.mult = mult;
+    }
+}

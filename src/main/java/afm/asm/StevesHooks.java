@@ -1,5 +1,8 @@
-package afm.asm;
+package asm.asm;
 
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.ScrollController;
+import advancedsystemsmanager.flow.menus.MenuItem;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -13,16 +16,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-import advancedfactorymanager.api.IHiddenInventory;
-import advancedfactorymanager.api.IHiddenTank;
-import advancedfactorymanager.components.ComponentMenuTriggered;
-import advancedfactorymanager.naming.BlockCoord;
-import advancedfactorymanager.naming.NameRegistry;
-import advancedfactorymanager.reference.Null;
-import advancedfactorymanager.threading.SearchItems;
-import advancedfactorymanager.util.ConnectionBlock;
-import advancedfactorymanager.tileentities.TileEntityManager;
-import advancedfactorymanager.components.*;
+import advancedsystemsmanager.api.IHiddenInventory;
+import advancedsystemsmanager.api.IHiddenTank;
+import advancedsystemsmanager.flow.menus.MenuTriggered;
+import advancedsystemsmanager.naming.BlockCoord;
+import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.threading.SearchItems;
+import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.tileentities.TileEntityManager;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -125,7 +127,7 @@ public class StevesHooks
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
-    public static List updateItemSearch(ComponentMenuItem menu, String search, boolean showAll)
+    public static List updateItemSearch(MenuItem menu, String search, boolean showAll)
     {
         ScrollController searchController = menu.getScrollingList();
         Thread thread = new Thread(new SearchItems(search, menu.getScrollingList(), showAll));
@@ -141,7 +143,7 @@ public class StevesHooks
         return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(getContentString(tileEntity)).find();
     }
 
-    public static void registerTicker(FlowComponent component, ComponentMenuTriggered menu)
+    public static void registerTicker(FlowComponent component, MenuTriggered menu)
     {
         if (!getRegistry(menu).containsEntry(component.getManager(), component))
         {
@@ -161,7 +163,7 @@ public class StevesHooks
         {
             for (Iterator<FlowComponent> itr = triggers.iterator(); itr.hasNext();)
             {
-                ComponentMenuTriggered toTrigger = (ComponentMenuTriggered)itr.next().getMenus().get(6);
+                MenuTriggered toTrigger = (MenuTriggered)itr.next().getMenus().get(6);
                 if (toTrigger.isVisible())
                 {
                     toTrigger.tick();
@@ -174,7 +176,7 @@ public class StevesHooks
         }
     }
 
-    private static Multimap<TileEntityManager, FlowComponent> getRegistry(ComponentMenuTriggered menu)
+    private static Multimap<TileEntityManager, FlowComponent> getRegistry(MenuTriggered menu)
     {
         return delayedRegistry;
     }

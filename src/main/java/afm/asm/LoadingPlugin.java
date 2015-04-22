@@ -1,4 +1,4 @@
-package afm.asm;
+package asm.asm;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.classloading.FMLForgePlugin;
