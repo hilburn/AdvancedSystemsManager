@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.util.ConnectionBlockType;
 import cpw.mods.fml.relauncher.Side;

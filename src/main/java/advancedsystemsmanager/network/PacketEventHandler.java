@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network;
 
-import advancedsystemsmanager.interfaces.ContainerBase;
+import advancedsystemsmanager.gui.ContainerBase;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;

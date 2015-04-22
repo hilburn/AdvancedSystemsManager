@@ -3,15 +3,15 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.interfaces.ContainerManager;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.ComponentType;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.settings.Settings;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;

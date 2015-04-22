@@ -4,7 +4,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.network.DataBitHelper;

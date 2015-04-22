@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

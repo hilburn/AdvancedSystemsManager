@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -41,7 +42,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
         icons = new IIcon[TileEntityCamouflage.CamouflageType.values().length];
         for (int i = 0; i < icons.length; i++)
         {
-            icons[i] = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon());
+            icons[i] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon());
         }
     }
 

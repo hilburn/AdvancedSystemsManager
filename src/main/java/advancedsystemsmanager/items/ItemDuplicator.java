@@ -3,7 +3,7 @@ package advancedsystemsmanager.items;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,6 +25,7 @@ public class ItemDuplicator extends Item
     }
 
     @Override
+    @SuppressWarnings(value = "unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_)
     {
         if (stack.hasTagCompound() && validateNBT(stack))

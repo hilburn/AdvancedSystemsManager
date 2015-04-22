@@ -2,7 +2,7 @@ package advancedsystemsmanager;
 
 import advancedsystemsmanager.flow.setting.ModItemHelper;
 import advancedsystemsmanager.helpers.Config;
-import advancedsystemsmanager.interfaces.GuiHandler;
+import advancedsystemsmanager.gui.GuiHandler;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameData;
 import advancedsystemsmanager.naming.NameRegistry;
@@ -38,7 +38,6 @@ import java.util.HashMap;
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION_FULL)
 public class AdvancedSystemsManager
 {
-    public static final String RESOURCE_LOCATION = "advancedsystemsmanager";
     public static final String UNLOCALIZED_START = "asm.";
 
     public static FMLEventChannel packetHandler;
@@ -54,7 +53,6 @@ public class AdvancedSystemsManager
 
     public static GuiHandler guiHandler = new GuiHandler();
 
-
     public static LogHelper log = new LogHelper(Reference.ID);
 
     @Mod.EventHandler
@@ -66,7 +64,6 @@ public class AdvancedSystemsManager
         ItemRegistry.registerItems();
         BlockRegistry.registerBlocks();
         MessageHandler.init();
-
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
 

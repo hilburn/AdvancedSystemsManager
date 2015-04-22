@@ -1,13 +1,13 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.api.IItemBufferElement;
-import advancedsystemsmanager.api.IItemBufferSubElement;
+import advancedsystemsmanager.api.execution.IItemBufferElement;
+import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import advancedsystemsmanager.flow.menus.MenuContainerScrap;
 import advancedsystemsmanager.flow.menus.MenuCrafting;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.FuzzyMode;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlockType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
@@ -183,7 +183,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     }
 
     @Override
-    public void reduceAmount(int amount)
+    public void reduceBufferAmount(int amount)
     {
         this.justRemoved = true;
         if (this.overflowBuffer > 0)
@@ -199,7 +199,13 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     }
 
     @Override
-    public ItemStack getItemStack()
+    public void reduceContainerAmount(int amount)
+    {
+
+    }
+
+    @Override
+    public ItemStack getValue()
     {
         if (this.useAdvancedDetection())
         {
@@ -207,6 +213,18 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         }
 
         return this.result;
+    }
+
+    @Override
+    public IInventory getContainer()
+    {
+        return null;
+    }
+
+    @Override
+    public IItemBufferSubElement getSplitElement(int elementAmount, int id, boolean fair)
+    {
+        return null;
     }
 
     public boolean useAdvancedDetection()
@@ -229,7 +247,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
             while (iterator.hasNext())
             {
                 IItemBufferSubElement itemBufferSubElement = (IItemBufferSubElement)iterator.next();
-                ItemStack itemstack = itemBufferSubElement.getItemStack();
+                ItemStack itemstack = itemBufferSubElement.getValue();
                 int subCount = Math.min(count, itemBufferSubElement.getSizeLeft());
 
                 for (int i = 0; i < 9; ++i)
@@ -257,7 +275,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
                                     }
 
                                     itemBufferElement.decreaseStackSize(1);
-                                    itemBufferSubElement.reduceAmount(1);
+                                    itemBufferSubElement.reduceBufferAmount(1);
                                     if (itemBufferSubElement.getSizeLeft() == 0)
                                     {
                                         itemBufferSubElement.remove();
@@ -351,6 +369,12 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public static boolean isBucket(CraftingSetting setting)
     {
         return FluidContainerRegistry.isBucket(setting.getItem());
+    }
+
+    @Override
+    public int getSlot()
+    {
+        return 0;
     }
 
     public static class FluidElement

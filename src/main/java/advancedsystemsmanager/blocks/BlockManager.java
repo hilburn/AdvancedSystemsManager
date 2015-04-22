@@ -2,8 +2,9 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -60,9 +61,9 @@ public class BlockManager extends BlockContainer
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        sideIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":manager_side");
-        topIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":manager_top");
-        botIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":manager_bot");
+        sideIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":manager_side");
+        topIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":manager_top");
+        botIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":manager_bot");
     }
 
     @SideOnly(Side.CLIENT)

@@ -16,15 +16,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-import advancedsystemsmanager.api.IHiddenInventory;
-import advancedsystemsmanager.api.IHiddenTank;
+import advancedsystemsmanager.api.execution.IHiddenInventory;
+import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.flow.menus.MenuTriggered;
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.threading.SearchItems;
 import advancedsystemsmanager.util.ConnectionBlock;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.*;
 import java.util.regex.Pattern;

@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.elements;
 
 
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.Color;
+import advancedsystemsmanager.gui.Color;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;

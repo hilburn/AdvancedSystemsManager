@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +28,6 @@ public class BlockCableCreative extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        blockIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_creative");
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_creative");
     }
 }

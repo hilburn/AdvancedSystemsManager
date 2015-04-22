@@ -2,6 +2,7 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityOutput;
@@ -38,9 +39,9 @@ public class BlockCableOutput extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        strongIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_output_strong");
-        weakIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_output_weak");
-        inactiveIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_idle");
+        strongIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_output_strong");
+        weakIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_output_weak");
+        inactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
     }
 
 

@@ -1,7 +1,7 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

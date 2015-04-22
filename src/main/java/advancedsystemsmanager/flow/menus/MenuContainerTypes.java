@@ -2,8 +2,8 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.ContainerManager;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.FlowComponent;

@@ -2,7 +2,7 @@ package advancedsystemsmanager.compatibility.jabba;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.compatibility.CompatBase;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.tileentity.TileEntity;
 
 import java.lang.reflect.Field;

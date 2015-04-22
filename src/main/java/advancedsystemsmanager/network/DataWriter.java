@@ -1,9 +1,9 @@
 package advancedsystemsmanager.network;
 
 
-import advancedsystemsmanager.interfaces.ContainerBase;
+import advancedsystemsmanager.gui.ContainerBase;
 import advancedsystemsmanager.settings.Settings;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import io.netty.buffer.ByteBuf;

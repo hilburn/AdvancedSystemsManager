@@ -3,8 +3,8 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.ContainerManager;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;

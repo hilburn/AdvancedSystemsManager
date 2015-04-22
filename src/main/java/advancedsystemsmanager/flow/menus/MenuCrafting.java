@@ -4,7 +4,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.execution.CraftingDummy;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.FlowComponent;

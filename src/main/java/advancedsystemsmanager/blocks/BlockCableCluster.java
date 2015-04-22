@@ -2,6 +2,7 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.items.blocks.ItemCluster;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -48,10 +49,10 @@ public class BlockCableCluster extends BlockCamouflageBase
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        sideIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_cluster");
-        frontIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_cluster_front");
-        sideIconAdv = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_cluster_adv");
-        frontIconAdv = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_cluster_adv_front");
+        sideIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster");
+        frontIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_front");
+        sideIconAdv = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_adv");
+        frontIconAdv = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_adv_front");
     }
 
     @SideOnly(Side.CLIENT)

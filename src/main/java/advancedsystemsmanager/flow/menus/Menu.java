@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.interfaces.ContainerManager;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;

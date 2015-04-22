@@ -9,6 +9,7 @@ import advancedsystemsmanager.items.blocks.ItemRelay;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
 import advancedsystemsmanager.tileentities.*;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;

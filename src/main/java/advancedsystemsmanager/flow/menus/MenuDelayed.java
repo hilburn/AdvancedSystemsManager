@@ -4,7 +4,7 @@ import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;

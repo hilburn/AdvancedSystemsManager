@@ -1,18 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.api.IContainerSelection;
+import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.ContainerFilter;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.*;
+import advancedsystemsmanager.gui.*;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.ConnectionBlockType;
 import cpw.mods.fml.relauncher.Side;

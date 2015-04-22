@@ -2,8 +2,9 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,7 +34,7 @@ public class BlockCable extends Block
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        blockIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable");
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable");
     }
 
     @Override

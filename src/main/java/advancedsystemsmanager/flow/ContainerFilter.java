@@ -4,8 +4,8 @@ package advancedsystemsmanager.flow;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.GuiManager;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
 
 import java.util.ArrayList;

@@ -1,6 +1,10 @@
 package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.api.*;
+import advancedsystemsmanager.api.execution.IHiddenInventory;
+import advancedsystemsmanager.api.execution.IHiddenTank;
+import advancedsystemsmanager.api.execution.IItemBufferElement;
+import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
@@ -14,7 +18,7 @@ import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.ConnectionBlockType;
@@ -1051,7 +1055,7 @@ public class CommandExecutorRF extends CommandExecutor
         IItemBufferSubElement subElement;
         while ((subElement = itemBufferElement.getSubElement()) != null)
         {
-            ItemStack itemStack = subElement.getItemStack();
+            ItemStack itemStack = subElement.getValue();
             Setting setting = this.isItemValid(menuItem.getSettings(), itemStack);
             if (menuItem.useWhiteList() != (setting == null) || setting != null && setting.isLimitedByAmount())
             {
@@ -1088,7 +1092,7 @@ public class CommandExecutorRF extends CommandExecutor
                             ItemStack toInsert = itemStack.copy();
                             toInsert.stackSize = moveCount;
                             hidden.insertItemStack(toInsert);
-                            subElement.reduceAmount(moveCount);
+                            subElement.reduceBufferAmount(moveCount);
 
                             if (subElement.getSizeLeft() == 0)
                             {
@@ -1124,7 +1128,7 @@ public class CommandExecutorRF extends CommandExecutor
                                     itemBufferElement.decreaseStackSize(moveCount);
                                     outputItemCounter.modifyStackSize(moveCount);
                                     itemInSlot.stackSize += moveCount;
-                                    subElement.reduceAmount(moveCount);
+                                    subElement.reduceBufferAmount(moveCount);
                                     if (newItem)
                                     {
                                         inventory.setInventorySlotContents(slot.getSlot(), itemInSlot);

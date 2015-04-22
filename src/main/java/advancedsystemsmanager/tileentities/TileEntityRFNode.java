@@ -9,6 +9,7 @@ import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.RFNodeUpdateMessage;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;

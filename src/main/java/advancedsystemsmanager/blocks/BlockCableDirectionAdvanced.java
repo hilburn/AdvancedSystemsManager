@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cpw.mods.fml.relauncher.Side;
@@ -39,10 +40,10 @@ public abstract class BlockCableDirectionAdvanced extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        activeIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":" + getFrontTextureName(false));
-        advancedActiveIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":" + getFrontTextureName(true));
-        inactiveIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":" + getSideTextureName(false));
-        advancedInactiveIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":" + getSideTextureName(true));
+        activeIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(false));
+        advancedActiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true));
+        inactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(false));
+        advancedInactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(true));
     }
 
     protected abstract String getFrontTextureName(boolean isAdvanced);

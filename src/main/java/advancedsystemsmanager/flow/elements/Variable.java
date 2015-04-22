@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.elements;
 
 
-import advancedsystemsmanager.api.IContainerSelection;
+import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.interfaces.GuiManager;
+import advancedsystemsmanager.gui.GuiManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.lwjgl.opengl.GL11;
@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Variable implements IContainerSelection
+public class Variable implements IContainerSelection<GuiManager>
 {
     public int id;
     public FlowComponent declaration;

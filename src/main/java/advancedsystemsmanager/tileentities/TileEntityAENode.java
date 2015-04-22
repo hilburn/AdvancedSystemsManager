@@ -1,7 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.IHiddenInventory;
-import advancedsystemsmanager.api.IHiddenTank;
+import advancedsystemsmanager.api.execution.IHiddenInventory;
+import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.*;
 import advancedsystemsmanager.flow.menus.MenuStuff;

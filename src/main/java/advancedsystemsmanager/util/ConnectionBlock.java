@@ -1,11 +1,11 @@
 package advancedsystemsmanager.util;
 
-import advancedsystemsmanager.api.IContainerSelection;
+import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.interfaces.GuiManager;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.EnumSet;
 
-public class ConnectionBlock implements IContainerSelection
+public class ConnectionBlock implements IContainerSelection<GuiManager>
 {
 
     private TileEntity tileEntity;

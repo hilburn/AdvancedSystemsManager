@@ -2,6 +2,7 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityBreaker;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -44,10 +45,10 @@ public class BlockCableBreaker extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        blockIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_idle");
-        doubleIIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_breaker");
-        frontIIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_breaker_front");
-        sideIIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_breaker_direction");
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
+        doubleIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker");
+        frontIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker_front");
+        sideIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker_direction");
     }
 
     @SideOnly(Side.CLIENT)

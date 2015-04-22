@@ -1,8 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.ITileEntityInterface;
-import advancedsystemsmanager.interfaces.ContainerRelay;
-import advancedsystemsmanager.interfaces.GuiRelay;
+import advancedsystemsmanager.gui.ContainerRelay;
+import advancedsystemsmanager.gui.GuiRelay;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
@@ -293,12 +293,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             IInventory inventory = getInventory();
 
-            if (inventory != null)
-            {
-                return inventory.hasCustomInventoryName();
-            }
+            return inventory != null && inventory.hasCustomInventoryName();
 
-            return false;
         } finally
         {
             unBlockUsage();
@@ -331,12 +327,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             IInventory inventory = getInventory();
 
-            if (inventory != null)
-            {
-                return inventory.isUseableByPlayer(entityplayer);
-            }
+            return inventory != null && inventory.isUseableByPlayer(entityplayer);
 
-            return false;
         } finally
         {
             unBlockUsage();
@@ -351,12 +343,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             IInventory inventory = getInventory();
 
-            if (inventory != null)
-            {
-                return inventory.isItemValidForSlot(i, itemstack);
-            }
+            return inventory != null && inventory.isItemValidForSlot(i, itemstack);
 
-            return false;
         } finally
         {
             unBlockUsage();

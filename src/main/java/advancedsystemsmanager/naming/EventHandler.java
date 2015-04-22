@@ -5,7 +5,7 @@ import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SearchRegistryGenerateMessage;
 import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,7 +1,7 @@
 package advancedsystemsmanager.api;
 
 
-import advancedsystemsmanager.tileentities.TileEntityManager;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 public interface ISystemListener
 {

@@ -3,6 +3,7 @@ package advancedsystemsmanager.tileentities;
 import advancedsystemsmanager.api.IRedstoneNode;
 import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITriggerNode;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

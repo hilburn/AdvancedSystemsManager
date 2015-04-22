@@ -2,6 +2,7 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -29,7 +30,7 @@ public class BlockCableBUD extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        blockIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_bud");
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_bud");
     }
 
     @Override

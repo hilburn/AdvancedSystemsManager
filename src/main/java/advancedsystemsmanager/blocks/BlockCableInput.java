@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityInput;
@@ -30,7 +31,7 @@ public class BlockCableInput extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        blockIcon = register.registerIcon(AdvancedSystemsManager.RESOURCE_LOCATION + ":cable_input");
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_input");
     }
 
     @Override

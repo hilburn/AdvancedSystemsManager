@@ -1,8 +1,8 @@
 package advancedsystemsmanager.nbt;
 
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.interfaces.GuiManager;
-import advancedsystemsmanager.interfaces.IInterfaceRenderer;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.gui.IInterfaceRenderer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;

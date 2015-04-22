@@ -33,7 +33,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                     @Override
                     protected InsnList modifyInstructions(InsnList list)
                     {
-                        return replace(list, "advancedsystemsmanager/interfaces/GuiManager", "advancedsystemsmanager/interfaces/GuiRFManager");
+                        return replace(list, "advancedsystemsmanager/gui/GuiManager", "advancedsystemsmanager/gui/GuiRFManager");
                     }
                 },
         CREATE_TE("func_149915_a", "(Lnet/minecraft/world/World;I)Lnet/minecraft/tileentity/TileEntity;")
