@@ -66,8 +66,7 @@ public class CopyHelper
                         Connection newConnection = new Connection(connectTo.getId(), entry.getValue().getConnectionId());
                         added.get(component).setConnection(entry.getKey(), newConnection);
                     }
-                }
-                catch (NullPointerException ignored)
+                } catch (NullPointerException ignored)
                 {
                     break;
                 }

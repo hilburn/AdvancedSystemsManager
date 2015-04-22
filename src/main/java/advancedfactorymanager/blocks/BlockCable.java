@@ -2,7 +2,9 @@ package advancedfactorymanager.blocks;
 
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;

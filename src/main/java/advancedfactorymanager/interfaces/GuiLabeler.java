@@ -280,7 +280,7 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
     @Optional.Method(modid = "NotEnoughItems")
     public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
-        return null;
+        return visiblityData;
     }
 
     @Override

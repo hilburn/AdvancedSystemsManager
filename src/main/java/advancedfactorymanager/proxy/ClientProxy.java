@@ -1,8 +1,8 @@
 package advancedfactorymanager.proxy;
 
 
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.blocks.RenderCamouflage;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.settings.Settings;
 import advancedfactorymanager.threading.ThreadSafeHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;

@@ -5,9 +5,7 @@ import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,14 +19,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 
 
-public abstract class BlockCableDirectionAdvanced extends BlockContainer
+public abstract class BlockCableDirectionAdvanced extends BlockClusterElement
 {
-    public BlockCableDirectionAdvanced()
+    public BlockCableDirectionAdvanced(String name)
     {
-        super(Material.iron);
-        setCreativeTab(ModBlocks.creativeTab);
-        setStepSound(soundTypeMetal);
-        setHardness(1.2F);
+        super(name);
     }
 
     @SideOnly(Side.CLIENT)

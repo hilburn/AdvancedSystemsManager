@@ -1,20 +1,30 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.recipes;
 
 
+import advancedfactorymanager.items.blocks.ItemCluster;
+import advancedfactorymanager.registry.ClusterRegistry;
+import advancedfactorymanager.registry.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.RecipeSorter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;
+
 public class ClusterRecipe implements IRecipe
 {
-
     private ItemStack output;
+
+    static
+    {
+        RecipeSorter.register("afm:cluster", ClusterRecipe.class, SHAPED, "after:minecraft:shapeless");
+    }
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world)
@@ -114,7 +124,7 @@ public class ClusterRecipe implements IRecipe
     @Override
     public int getRecipeSize()
     {
-        return 10;
+        return 9;
     }
 
     @Override

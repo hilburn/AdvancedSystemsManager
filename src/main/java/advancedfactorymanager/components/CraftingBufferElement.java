@@ -2,8 +2,8 @@ package advancedfactorymanager.components;
 
 import advancedfactorymanager.api.IItemBufferElement;
 import advancedfactorymanager.api.IItemBufferSubElement;
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.util.ConnectionBlockType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;

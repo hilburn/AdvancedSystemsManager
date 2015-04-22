@@ -1,11 +1,11 @@
 package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.blocks.BlockCamouflageBase;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.components.ComponentMenuCamouflageInside;
 import advancedfactorymanager.components.ComponentMenuCamouflageShape;
 import advancedfactorymanager.network.*;
+import advancedfactorymanager.registry.ModBlocks;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;

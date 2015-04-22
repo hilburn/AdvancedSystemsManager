@@ -2,13 +2,12 @@ package advancedfactorymanager.blocks;
 
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntitySignUpdater;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -18,15 +17,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableSign extends BlockContainer
+public class BlockCableSign extends BlockClusterElement
 {
     public BlockCableSign()
     {
-        super(Material.iron);
-        setCreativeTab(ModBlocks.creativeTab);
-        setStepSound(soundTypeMetal);
-        setBlockName(AdvancedFactoryManager.UNLOCALIZED_START + ModBlocks.CABLE_SIGN_UNLOCALIZED_NAME);
-        setHardness(1.2F);
+        super(AdvancedFactoryManager.UNLOCALIZED_START + ModBlocks.CABLE_SIGN_UNLOCALIZED_NAME);
     }
 
     @Override

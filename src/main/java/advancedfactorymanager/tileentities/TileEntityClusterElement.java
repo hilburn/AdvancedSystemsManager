@@ -1,7 +1,7 @@
 package advancedfactorymanager.tileentities;
 
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ClusterRegistry;
+import advancedfactorymanager.registry.ClusterRegistry;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

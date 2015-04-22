@@ -1,4 +1,4 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.registry;
 
 
 import advancedfactorymanager.tileentities.TileEntityClusterElement;

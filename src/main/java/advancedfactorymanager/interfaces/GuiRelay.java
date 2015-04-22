@@ -1,12 +1,12 @@
 package advancedfactorymanager.interfaces;
 
-import advancedfactorymanager.blocks.UserPermission;
 import advancedfactorymanager.helpers.CollisionHelper;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
 import advancedfactorymanager.tileentities.TileEntityRelay;
+import advancedfactorymanager.util.UserPermission;
 import advancedfactorymanager.util.Utils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

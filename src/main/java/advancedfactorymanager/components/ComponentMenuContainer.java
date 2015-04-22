@@ -2,8 +2,6 @@ package advancedfactorymanager.components;
 
 
 import advancedfactorymanager.api.IContainerSelection;
-import advancedfactorymanager.blocks.ConnectionBlock;
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.helpers.CollisionHelper;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.*;
@@ -12,6 +10,8 @@ import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
 import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.util.ConnectionBlock;
+import advancedfactorymanager.util.ConnectionBlockType;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;

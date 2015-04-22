@@ -1,8 +1,8 @@
 package advancedfactorymanager.items;
 
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.reference.Names;
 import advancedfactorymanager.reference.Reference;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

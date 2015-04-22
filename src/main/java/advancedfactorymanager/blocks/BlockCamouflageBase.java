@@ -1,12 +1,11 @@
 package advancedfactorymanager.blocks;
 
 
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCamouflage;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -16,12 +15,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public abstract class BlockCamouflageBase extends BlockContainer
+public abstract class BlockCamouflageBase extends BlockClusterElement
 {
 
-    protected BlockCamouflageBase(Material material)
+    public BlockCamouflageBase(String name)
     {
-        super(material);
+        super(name);
     }
 
     @Override

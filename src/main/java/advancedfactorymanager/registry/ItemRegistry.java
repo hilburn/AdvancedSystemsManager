@@ -1,6 +1,5 @@
 package advancedfactorymanager.registry;
 
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.items.ItemDuplicator;
 import advancedfactorymanager.items.ItemLabeler;
 import advancedfactorymanager.reference.Names;

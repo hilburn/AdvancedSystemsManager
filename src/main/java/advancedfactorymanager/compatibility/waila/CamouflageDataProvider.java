@@ -1,4 +1,4 @@
-package advancedfactorymanager.waila;
+package advancedfactorymanager.compatibility.waila;
 
 import advancedfactorymanager.tileentities.TileEntityCamouflage;
 import advancedfactorymanager.tileentities.TileEntityCluster;

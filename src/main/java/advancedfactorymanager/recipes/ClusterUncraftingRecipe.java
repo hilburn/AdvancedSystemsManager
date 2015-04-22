@@ -1,8 +1,8 @@
 package advancedfactorymanager.recipes;
 
-import advancedfactorymanager.blocks.ClusterRegistry;
-import advancedfactorymanager.blocks.ItemCluster;
-import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.items.blocks.ItemCluster;
+import advancedfactorymanager.registry.ClusterRegistry;
+import advancedfactorymanager.registry.ModBlocks;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.inventory.IInventory;
@@ -19,7 +19,7 @@ public class ClusterUncraftingRecipe implements IRecipe
 
     static
     {
-        RecipeSorter.register("clusterUncrafting", ClusterUncraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("afm:clusterUncrafting", ClusterUncraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
     }
 
     @Override
@@ -30,19 +30,19 @@ public class ClusterUncraftingRecipe implements IRecipe
 
     public boolean matches(IInventory crafting)
     {
-        boolean cluster = false;
+        boolean hasCluster = false;
         for (int i = 0; i < crafting.getSizeInventory(); i++)
         {
             ItemStack stack = crafting.getStackInSlot(i);
             if (stack == null) continue;
-            if (!cluster && (stack.isItemEqual(ClusterUncraftingRecipe.cluster) || stack.isItemEqual(this.advcluster)))
+            if (!hasCluster && (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)))
             {
-                cluster = true;
+                hasCluster = true;
                 continue;
             }
             return false;
         }
-        return cluster;
+        return hasCluster;
     }
 
     public ItemStack getCluster(IInventory crafting)
@@ -51,7 +51,7 @@ public class ClusterUncraftingRecipe implements IRecipe
         {
             ItemStack stack = crafting.getStackInSlot(i);
             if (stack == null) continue;
-            if (stack.isItemEqual(this.cluster) || stack.isItemEqual(this.advcluster)) return stack;
+            if (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)) return stack;
         }
         return null;
     }

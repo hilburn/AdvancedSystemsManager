@@ -18,8 +18,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static advancedfactorymanager.reference.Reference.ID;
 import static advancedfactorymanager.AdvancedFactoryManager.packetHandler;
+import static advancedfactorymanager.reference.Reference.ID;
 
 public class DataWriter
 {

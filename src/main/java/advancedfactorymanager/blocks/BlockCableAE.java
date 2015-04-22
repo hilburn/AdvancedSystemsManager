@@ -3,21 +3,15 @@ package advancedfactorymanager.blocks;
 import advancedfactorymanager.reference.Names;
 import advancedfactorymanager.reference.Reference;
 import advancedfactorymanager.tileentities.TileEntityAENode;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockCableAE extends BlockContainer
+public class BlockCableAE extends BlockClusterElement
 {
     public BlockCableAE()
     {
-        super(Material.glass);
-        this.setCreativeTab(ModBlocks.creativeTab);
-        this.setStepSound(soundTypeGlass);
-        this.setBlockName(Names.CABLE_AE);
-        this.setHardness(1.2F);
+        super(Names.CABLE_AE);
     }
 
     @Override

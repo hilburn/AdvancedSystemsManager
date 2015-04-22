@@ -1,10 +1,10 @@
 package advancedfactorymanager.components;
 
 
-import advancedfactorymanager.blocks.ConnectionBlock;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.GuiManager;
 import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.util.ConnectionBlock;
 
 import java.util.ArrayList;
 import java.util.List;

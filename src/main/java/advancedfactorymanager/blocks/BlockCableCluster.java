@@ -1,12 +1,13 @@
 package advancedfactorymanager.blocks;
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.items.blocks.ItemCluster;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,11 +28,9 @@ import java.util.List;
 
 public class BlockCableCluster extends BlockCamouflageBase
 {
-    protected BlockCableCluster()
+    public BlockCableCluster()
     {
-        super(Material.iron);
-        setCreativeTab(ModBlocks.creativeTab);
-        setStepSound(soundTypeMetal);
+        super(AdvancedFactoryManager.UNLOCALIZED_START + ModBlocks.CABLE_CLUSTER_UNLOCALIZED_NAME);
         setHardness(2F);
     }
 
@@ -219,7 +218,7 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        return cluster != null ? cluster.isProvidingWeakPower(side): 0;
+        return cluster != null ? cluster.isProvidingWeakPower(side) : 0;
     }
 
     @Override
@@ -227,7 +226,7 @@ public class BlockCableCluster extends BlockCamouflageBase
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
 
-        return cluster != null ? cluster.isProvidingStrongPower(side): 0;
+        return cluster != null ? cluster.isProvidingStrongPower(side) : 0;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package advancedfactorymanager.tileentities;
 
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
 import advancedfactorymanager.components.ComponentMenuSignText;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraftforge.common.util.ForgeDirection;

@@ -1,7 +1,5 @@
 package advancedfactorymanager.commands;
 
-import advancedfactorymanager.helpers.HttpPost;
-import advancedfactorymanager.helpers.LocalizationHelper;
 import advancedfactorymanager.helpers.Threaded;
 import advancedfactorymanager.items.ItemDuplicator;
 import net.minecraft.client.Minecraft;
@@ -10,17 +8,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 
-import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

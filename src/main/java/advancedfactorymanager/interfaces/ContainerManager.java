@@ -1,10 +1,10 @@
 package advancedfactorymanager.interfaces;
 
-import advancedfactorymanager.blocks.ConnectionBlock;
-import advancedfactorymanager.blocks.WorldCoordinate;
 import advancedfactorymanager.components.FlowComponent;
 import advancedfactorymanager.network.PacketHandler;
 import advancedfactorymanager.tileentities.TileEntityManager;
+import advancedfactorymanager.util.ConnectionBlock;
+import advancedfactorymanager.util.WorldCoordinate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;

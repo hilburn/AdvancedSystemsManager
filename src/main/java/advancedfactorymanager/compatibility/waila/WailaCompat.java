@@ -1,16 +1,19 @@
-package advancedfactorymanager.waila;
+package advancedfactorymanager.compatibility.waila;
 
 import advancedfactorymanager.blocks.BlockCableOutput;
 import advancedfactorymanager.blocks.BlockCamouflageBase;
+import advancedfactorymanager.compatibility.CompatBase;
+import advancedfactorymanager.helpers.Config;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class WailaManager
+public class WailaCompat extends CompatBase
 {
     public static void callbackRegister(IWailaRegistrar registrar)
     {
@@ -26,5 +29,14 @@ public class WailaManager
         registrar.registerBodyProvider(new RedstoneOutputDataProvider(), BlockCableOutput.class);
 
         registrar.registerStackProvider(new CamouflageDataProvider(), BlockCamouflageBase.class);
+    }
+
+    @Override
+    protected void init()
+    {
+        if (Config.wailaIntegration)
+        {
+            FMLInterModComms.sendMessage("Waila", "register", "advancedfactorymanager.compatibility.waila.WailaCompat.callbackRegister");
+        }
     }
 }

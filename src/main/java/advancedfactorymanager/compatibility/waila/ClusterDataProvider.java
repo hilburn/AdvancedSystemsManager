@@ -1,7 +1,7 @@
-package advancedfactorymanager.waila;
+package advancedfactorymanager.compatibility.waila;
 
 
-import advancedfactorymanager.blocks.ClusterRegistry;
+import advancedfactorymanager.registry.ClusterRegistry;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import cofh.api.energy.IEnergyProvider;
 import mcp.mobius.waila.api.ITaggedList;

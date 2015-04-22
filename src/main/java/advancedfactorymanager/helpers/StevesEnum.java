@@ -1,8 +1,8 @@
 package advancedfactorymanager.helpers;
 
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.components.*;
+import advancedfactorymanager.util.ClusterMethodRegistration;
+import advancedfactorymanager.util.ConnectionBlockType;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;

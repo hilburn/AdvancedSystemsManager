@@ -1,11 +1,11 @@
 package advancedfactorymanager.blocks;
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCamouflage;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,12 +20,9 @@ import java.util.List;
 
 public class BlockCableCamouflages extends BlockCamouflageBase
 {
-    protected BlockCableCamouflages()
+    public BlockCableCamouflages()
     {
-        super(Material.iron);
-        setCreativeTab(ModBlocks.creativeTab);
-        setStepSound(soundTypeMetal);
-        setHardness(1.2F);
+        super(AdvancedFactoryManager.UNLOCALIZED_START + ModBlocks.CABLE_CAMOUFLAGE_NAME_TAG);
     }
 
     @Override

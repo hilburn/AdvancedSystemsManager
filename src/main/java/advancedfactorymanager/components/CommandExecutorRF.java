@@ -1,8 +1,6 @@
 package advancedfactorymanager.components;
 
 import advancedfactorymanager.api.*;
-import advancedfactorymanager.blocks.ConnectionBlock;
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.components.ComponentMenuListOrder.LoopOrder;
 import advancedfactorymanager.components.ComponentMenuVariable.VariableMode;
 import advancedfactorymanager.helpers.StevesEnum;
@@ -10,6 +8,8 @@ import advancedfactorymanager.reference.Null;
 import advancedfactorymanager.tileentities.TileEntityCreative;
 import advancedfactorymanager.tileentities.TileEntityManager;
 import advancedfactorymanager.tileentities.TileEntityRFNode;
+import advancedfactorymanager.util.ConnectionBlock;
+import advancedfactorymanager.util.ConnectionBlockType;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;

@@ -2,11 +2,11 @@ package advancedfactorymanager.tileentities;
 
 
 import advancedfactorymanager.api.ITileEntityInterface;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ClusterRegistry;
-import advancedfactorymanager.blocks.ItemCluster;
 import advancedfactorymanager.helpers.StevesEnum;
+import advancedfactorymanager.items.blocks.ItemCluster;
 import advancedfactorymanager.network.*;
+import advancedfactorymanager.registry.ClusterRegistry;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;

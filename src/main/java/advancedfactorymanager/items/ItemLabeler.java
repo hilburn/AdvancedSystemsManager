@@ -1,11 +1,11 @@
 package advancedfactorymanager.items;
 
 import advancedfactorymanager.AdvancedFactoryManager;
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.naming.NameRegistry;
 import advancedfactorymanager.reference.Names;
 import advancedfactorymanager.reference.Reference;
 import advancedfactorymanager.registry.ItemRegistry;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;

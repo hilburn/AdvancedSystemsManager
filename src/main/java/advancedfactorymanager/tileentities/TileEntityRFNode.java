@@ -1,11 +1,11 @@
 package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.api.ISystemListener;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
 import advancedfactorymanager.components.*;
 import advancedfactorymanager.helpers.StevesEnum;
 import advancedfactorymanager.network.MessageHandler;
 import advancedfactorymanager.network.message.RFNodeUpdateMessage;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;

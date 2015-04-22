@@ -2,13 +2,13 @@ package advancedfactorymanager.tileentities;
 
 
 import advancedfactorymanager.api.IRedstoneNode;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.blocks.WorldCoordinate;
 import advancedfactorymanager.components.ComponentMenuPulse;
 import advancedfactorymanager.components.ComponentMenuRedstoneOutput;
 import advancedfactorymanager.components.ComponentMenuRedstoneSidesEmitter;
 import advancedfactorymanager.network.*;
+import advancedfactorymanager.registry.ModBlocks;
+import advancedfactorymanager.util.ClusterMethodRegistration;
+import advancedfactorymanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

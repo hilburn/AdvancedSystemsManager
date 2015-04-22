@@ -3,7 +3,7 @@ package advancedfactorymanager.components;
 
 import advancedfactorymanager.api.IRedstoneNode;
 import advancedfactorymanager.api.ITriggerNode;
-import advancedfactorymanager.blocks.ConnectionBlockType;
+import advancedfactorymanager.util.ConnectionBlockType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;

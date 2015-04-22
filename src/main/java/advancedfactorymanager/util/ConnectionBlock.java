@@ -1,4 +1,4 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.util;
 
 import advancedfactorymanager.api.IContainerSelection;
 import advancedfactorymanager.components.ComponentMenuContainer;

@@ -1,7 +1,7 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.tileentities.TileEntityBUD;
+import advancedfactorymanager.util.ConnectionBlockType;
 
 import java.util.EnumSet;
 import java.util.List;

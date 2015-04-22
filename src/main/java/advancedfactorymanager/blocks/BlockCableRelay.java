@@ -1,6 +1,7 @@
 package advancedfactorymanager.blocks;
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCluster;
 import advancedfactorymanager.tileentities.TileEntityClusterElement;
 import advancedfactorymanager.tileentities.TileEntityRelay;
@@ -14,6 +15,10 @@ import net.minecraft.world.World;
 //This is indeed not a subclass to the cable, you can't relay signals through this block
 public class BlockCableRelay extends BlockCableDirectionAdvanced
 {
+    public BlockCableRelay()
+    {
+        super(AdvancedFactoryManager.UNLOCALIZED_START + ModBlocks.CABLE_RELAY_UNLOCALIZED_NAME);
+    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int var2)
@@ -70,6 +75,4 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced
             return false;
         }
     }
-
-
 }

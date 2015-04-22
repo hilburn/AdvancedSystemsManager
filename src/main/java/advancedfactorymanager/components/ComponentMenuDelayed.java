@@ -6,8 +6,8 @@ import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
-import net.minecraft.nbt.NBTTagCompound;
 import afm.asm.StevesHooks;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.EnumSet;
 import java.util.List;

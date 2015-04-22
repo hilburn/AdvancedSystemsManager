@@ -1,7 +1,7 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.helpers.Localization;
+import advancedfactorymanager.util.ConnectionBlockType;
 
 import java.util.List;
 

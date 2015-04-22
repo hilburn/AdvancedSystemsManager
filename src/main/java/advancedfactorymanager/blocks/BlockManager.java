@@ -2,6 +2,7 @@ package advancedfactorymanager.blocks;
 
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;

@@ -1,8 +1,8 @@
 package advancedfactorymanager.interfaces;
 
-import advancedfactorymanager.blocks.UserPermission;
 import advancedfactorymanager.network.PacketHandler;
 import advancedfactorymanager.tileentities.TileEntityRelay;
+import advancedfactorymanager.util.UserPermission;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;

@@ -536,7 +536,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
         CLUSTER_BLOCK("advancedfactorymanager.blocks.BlockCableCluster", Transformer.CREATE_TE),
         ITEM_SETTING_LOAD("advancedfactorymanager.components.ItemSetting", Transformer.ITEM_SETTING_LOAD),
         COMPONENT_MENU_ITEM("advancedfactorymanager.components.ComponentMenuItem", Transformer.ITEM_SEARCH),
-        CONNECTION_BLOCK("advancedfactorymanager.blocks.ConnectionBlock", Transformer.GET_DESCRIPTION),
+        CONNECTION_BLOCK("advancedfactorymanager.util.ConnectionBlock", Transformer.GET_DESCRIPTION),
         COMPONENT_MENU_CONTAINER("advancedfactorymanager.components.ComponentMenuContainer$2", Transformer.CONTAINER_SEARCH),
         CLUSTER_TILE("advancedfactorymanager.tileentities.TileEntityCluster", Transformer.PUBLIC_PAIR, Transformer.GET_PUBLIC_REGISTRATIONS),
         RF_CLUSTER_TILE("advancedfactorymanager.tileentities.TileEntityRFCluster", Transformer.GET_REGISTRATIONS, Transformer.GET_RF_NODE),
@@ -544,7 +544,7 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
         SETTINGS("advancedfactorymanager.settings.Settings", Transformer.LOAD_DEFAULT),
         CONTAINER_TYPES("advancedfactorymanager.components.ComponentMenuContainerTypes", Transformer.WRITE_TO_NBT, Transformer.READ_FROM_NBT),
         DATA_BIT_HELPER("advancedfactorymanager.network.DataBitHelper", Transformer.BIT_HELPER_INIT),
-        CONNECTION_BLOCK_TYPE("advancedfactorymanager.blocks.ConnectionBlockType", Transformer.IS_INSTANCE),
+        CONNECTION_BLOCK_TYPE("advancedfactorymanager.util.ConnectionBlockType", Transformer.IS_INSTANCE),
         COMPONENT_MENU_INTERVAL("advancedfactorymanager.components.ComponentMenuInterval", Transformer.IS_VISIBLE);
 
         private String name;

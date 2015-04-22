@@ -1,5 +1,6 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.recipes;
 
+import advancedfactorymanager.registry.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

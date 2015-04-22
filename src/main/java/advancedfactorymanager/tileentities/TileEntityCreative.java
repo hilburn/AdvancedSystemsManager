@@ -1,7 +1,7 @@
 package advancedfactorymanager.tileentities;
 
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ModBlocks;
+import advancedfactorymanager.registry.ModBlocks;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

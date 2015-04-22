@@ -1,6 +1,13 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.registry;
 
 
+import advancedfactorymanager.blocks.*;
+import advancedfactorymanager.items.blocks.ItemCamouflage;
+import advancedfactorymanager.items.blocks.ItemCluster;
+import advancedfactorymanager.items.blocks.ItemIntake;
+import advancedfactorymanager.items.blocks.ItemRelay;
+import advancedfactorymanager.recipes.ClusterRecipe;
+import advancedfactorymanager.recipes.ClusterUpgradeRecipe;
 import advancedfactorymanager.tileentities.*;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;

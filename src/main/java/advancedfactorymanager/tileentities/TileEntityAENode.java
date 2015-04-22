@@ -2,10 +2,10 @@ package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.api.IHiddenInventory;
 import advancedfactorymanager.api.IHiddenTank;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
 import advancedfactorymanager.components.*;
 import advancedfactorymanager.helpers.AEHelper;
 import advancedfactorymanager.registry.BlockRegistry;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import appeng.api.AEApi;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionHost;

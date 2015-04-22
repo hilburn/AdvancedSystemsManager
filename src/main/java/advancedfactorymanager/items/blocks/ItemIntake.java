@@ -1,7 +1,8 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.items.blocks;
 
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

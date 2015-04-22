@@ -1,8 +1,8 @@
 package advancedfactorymanager.components;
 
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.interfaces.GuiManager;
+import advancedfactorymanager.util.ConnectionBlockType;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

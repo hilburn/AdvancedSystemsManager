@@ -2,8 +2,6 @@ package advancedfactorymanager.registry;
 
 import advancedfactorymanager.blocks.BlockCableAE;
 import advancedfactorymanager.blocks.BlockCableRF;
-import advancedfactorymanager.blocks.ClusterRegistry;
-import advancedfactorymanager.blocks.ModBlocks;
 import advancedfactorymanager.helpers.Config;
 import advancedfactorymanager.reference.Names;
 import advancedfactorymanager.tileentities.TileEntityAENode;

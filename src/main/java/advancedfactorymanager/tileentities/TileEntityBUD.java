@@ -2,7 +2,7 @@ package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.api.ISystemListener;
 import advancedfactorymanager.api.ITriggerNode;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
+import advancedfactorymanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

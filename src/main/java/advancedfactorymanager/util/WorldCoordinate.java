@@ -1,4 +1,4 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.util;
 
 
 import net.minecraft.tileentity.TileEntity;

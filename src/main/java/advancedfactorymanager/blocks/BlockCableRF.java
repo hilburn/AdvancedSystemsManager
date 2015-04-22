@@ -5,25 +5,19 @@ import advancedfactorymanager.reference.Reference;
 import advancedfactorymanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockCableRF extends BlockContainer
+public class BlockCableRF extends BlockClusterElement
 {
     private IIcon[] icons;
 
     public BlockCableRF()
     {
-        super(Material.iron);
-        this.setCreativeTab(ModBlocks.creativeTab);
-        this.setStepSound(soundTypeMetal);
-        this.setBlockName(Names.CABLE_RF);
-        this.setHardness(1.2F);
+        super(Names.CABLE_RF);
     }
 
     @Override

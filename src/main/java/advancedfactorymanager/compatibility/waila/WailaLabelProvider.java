@@ -1,4 +1,4 @@
-package advancedfactorymanager.waila;
+package advancedfactorymanager.compatibility.waila;
 
 import advancedfactorymanager.naming.BlockCoord;
 import advancedfactorymanager.naming.NameRegistry;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class WailaLabelProvider implements IWailaDataProvider
 {
-    public static final String LABELLED = "advancedfactorymanager.waila.labelled";
+    public static final String LABELLED = "advancedfactorymanager.compatibility.waila.labelled";
 
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)

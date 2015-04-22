@@ -1,15 +1,15 @@
 package advancedfactorymanager.tileentities;
 
 import advancedfactorymanager.api.ITileEntityInterface;
-import advancedfactorymanager.blocks.ClusterMethodRegistration;
-import advancedfactorymanager.blocks.ModBlocks;
-import advancedfactorymanager.blocks.UserPermission;
 import advancedfactorymanager.interfaces.ContainerRelay;
 import advancedfactorymanager.interfaces.GuiRelay;
 import advancedfactorymanager.network.DataBitHelper;
 import advancedfactorymanager.network.DataReader;
 import advancedfactorymanager.network.DataWriter;
 import advancedfactorymanager.network.PacketHandler;
+import advancedfactorymanager.registry.ModBlocks;
+import advancedfactorymanager.util.ClusterMethodRegistration;
+import advancedfactorymanager.util.UserPermission;
 import advancedfactorymanager.util.Utils;
 import advancedfactorymanager.wrappers.InventoryWrapper;
 import advancedfactorymanager.wrappers.InventoryWrapperHorse;

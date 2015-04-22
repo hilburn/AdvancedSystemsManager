@@ -1,8 +1,8 @@
 package advancedfactorymanager.components;
 
 
-import advancedfactorymanager.blocks.ConnectionBlockType;
 import advancedfactorymanager.tileentities.TileEntityInput;
+import advancedfactorymanager.util.ConnectionBlockType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;

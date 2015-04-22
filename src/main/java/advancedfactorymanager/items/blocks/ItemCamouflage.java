@@ -1,6 +1,7 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.items.blocks;
 
 import advancedfactorymanager.AdvancedFactoryManager;
+import advancedfactorymanager.registry.ModBlocks;
 import advancedfactorymanager.tileentities.TileEntityCamouflage;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

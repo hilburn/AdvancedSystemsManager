@@ -11,12 +11,10 @@ import advancedfactorymanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ComponentMenuItem extends ComponentMenuStuff

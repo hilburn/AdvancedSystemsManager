@@ -1,4 +1,4 @@
-package advancedfactorymanager.waila;
+package advancedfactorymanager.compatibility.waila;
 
 import advancedfactorymanager.helpers.Localization;
 import advancedfactorymanager.tileentities.TileEntityOutput;

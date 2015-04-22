@@ -1,4 +1,4 @@
-package advancedfactorymanager.blocks;
+package advancedfactorymanager.util;
 
 import advancedfactorymanager.api.IRedstoneNode;
 import advancedfactorymanager.helpers.Localization;
