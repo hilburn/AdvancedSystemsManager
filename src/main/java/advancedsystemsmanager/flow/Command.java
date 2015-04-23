@@ -1,12 +1,16 @@
 package advancedsystemsmanager.flow;
 
+import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.reference.Textures;
+import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Set;
 
 public class Command implements ICommand
 {
@@ -80,5 +84,17 @@ public class Command implements ICommand
     public ResourceLocation getTexture()
     {
         return Textures.BUTTONS;
+    }
+
+    @Override
+    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    {
+
+    }
+
+    @Override
+    public Set<ConnectionOption> getActiveChildren(FlowComponent command)
+    {
+        return null;
     }
 }
