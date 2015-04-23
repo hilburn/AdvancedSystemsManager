@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -87,7 +87,7 @@ public class TileEntityCreative extends TileEntityClusterElement implements IInv
     @Override
     public String getInventoryName()
     {
-        return ModBlocks.CABLE_CREATIVE_NAME_TAG;
+        return Names.CABLE_CREATIVE;
     }
 
     @Override

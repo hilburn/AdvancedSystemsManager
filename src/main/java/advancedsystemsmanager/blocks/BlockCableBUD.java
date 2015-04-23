@@ -1,9 +1,7 @@
 package advancedsystemsmanager.blocks;
 
-
-import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -17,7 +15,7 @@ public class BlockCableBUD extends BlockClusterElement
 {
     public BlockCableBUD()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_BUD_UNLOCALIZED_NAME);
+        super(Names.CABLE_BUD);
     }
 
     @Override

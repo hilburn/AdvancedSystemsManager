@@ -2,8 +2,9 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.items.blocks.ItemCluster;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,7 +32,7 @@ public class BlockCableCluster extends BlockCamouflageBase
 {
     public BlockCableCluster()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_CLUSTER_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_CLUSTER);
         setHardness(2F);
     }
 
@@ -84,7 +85,7 @@ public class BlockCableCluster extends BlockCamouflageBase
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
-            ModBlocks.blockCable.updateInventories(world, x, y, z);
+            BlockRegistry.blockCable.updateInventories(world, x, y, z);
         }
     }
 
@@ -107,7 +108,7 @@ public class BlockCableCluster extends BlockCamouflageBase
         if (te != null && te instanceof TileEntityCluster)
         {
             TileEntityCluster cluster = (TileEntityCluster)te;
-            ItemStack itemStack = new ItemStack(ModBlocks.blockCableCluster, 1, damageDropped(meta));
+            ItemStack itemStack = new ItemStack(BlockRegistry.blockCableCluster, 1, damageDropped(meta));
             NBTTagCompound compound = new NBTTagCompound();
             itemStack.setTagCompound(compound);
             NBTTagCompound cable = new NBTTagCompound();
@@ -176,7 +177,7 @@ public class BlockCableCluster extends BlockCamouflageBase
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
-            ModBlocks.blockCable.updateInventories(world, x, y, z);
+            BlockRegistry.blockCable.updateInventories(world, x, y, z);
         }
     }
 
@@ -201,7 +202,7 @@ public class BlockCableCluster extends BlockCamouflageBase
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
-            ModBlocks.blockCable.updateInventories(world, x, y, z);
+            BlockRegistry.blockCable.updateInventories(world, x, y, z);
         }
     }
 

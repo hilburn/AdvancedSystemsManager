@@ -10,14 +10,13 @@ import advancedsystemsmanager.network.FileHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.PacketEventHandler;
 import advancedsystemsmanager.proxy.CommonProxy;
-import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
 import advancedsystemsmanager.reference.Metadata;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.registry.ModBlocks;
-import advancedsystemsmanager.util.LogHelper;
+import hilburnlib.registry.Registerer;
+import hilburnlib.utils.LogHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
@@ -28,7 +27,9 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -55,21 +56,39 @@ public class AdvancedSystemsManager
 
     public static LogHelper log = new LogHelper(Reference.ID);
 
+    public static CreativeTabs creativeTab;
+
+    static Registerer registerer = new Registerer(log);
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-
         metadata = Metadata.init(metadata);
         Config.init(event.getSuggestedConfigurationFile());
-        ItemRegistry.registerItems();
-        BlockRegistry.registerBlocks();
+
+        registerer.scan(BlockRegistry.class);
+        registerer.scan(ItemRegistry.class);
+
         MessageHandler.init();
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
 
         FileHelper.setConfigDir(event.getModConfigurationDirectory());
 
-        ModBlocks.init();
+        creativeTab = new CreativeTabs(Reference.ID)
+        {
+            @Override
+            public ItemStack getIconItemStack()
+            {
+                return new ItemStack(BlockRegistry.blockManager);
+            }
+
+            @Override
+            public Item getTabIconItem()
+            {
+                return null;
+            }
+        };
     }
 
     @Mod.EventHandler
@@ -79,15 +98,11 @@ public class AdvancedSystemsManager
 
         packetHandler.register(new PacketEventHandler());
 
-        ModBlocks.addRecipes();
         //new ChatListener();
         NetworkRegistry.INSTANCE.registerGuiHandler(AdvancedSystemsManager.INSTANCE, guiHandler);
 
         ItemRegistry.registerRecipes();
         BlockRegistry.registerRecipes();
-        ClusterUncraftingRecipe uncrafting = new ClusterUncraftingRecipe();
-        GameRegistry.addRecipe(uncrafting);
-        FMLCommonHandler.instance().bus().register(uncrafting);
         EventHandler handler = new EventHandler();
         FMLCommonHandler.instance().bus().register(handler);
         MinecraftForge.EVENT_BUS.register(handler);

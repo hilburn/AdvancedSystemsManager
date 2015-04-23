@@ -1,8 +1,8 @@
 package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.items.blocks.ItemCluster;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
-import advancedsystemsmanager.registry.ModBlocks;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.inventory.IInventory;
@@ -14,8 +14,8 @@ import net.minecraftforge.oredict.RecipeSorter;
 
 public class ClusterUncraftingRecipe implements IRecipe
 {
-    private static ItemStack cluster = new ItemStack(ModBlocks.blockCableCluster);
-    private static ItemStack advcluster = new ItemStack(ModBlocks.blockCableCluster, 1, 8);
+    private static ItemStack cluster = new ItemStack(BlockRegistry.blockCableCluster);
+    private static ItemStack advcluster = new ItemStack(BlockRegistry.blockCableCluster, 1, 8);
 
     static
     {

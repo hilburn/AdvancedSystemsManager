@@ -6,7 +6,7 @@ import advancedsystemsmanager.flow.menus.MenuPulse;
 import advancedsystemsmanager.flow.menus.MenuRedstoneOutput;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;
 import advancedsystemsmanager.network.*;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
@@ -212,9 +212,9 @@ public class TileEntityOutput extends TileEntityClusterElement implements IPacke
 
     private void notifyUpdate(int x, int y, int z, boolean spread)
     {
-        if (worldObj.getBlock(x, y, z) != ModBlocks.blockCable && (x != xCoord || y != yCoord || z != zCoord))
+        if (worldObj.getBlock(x, y, z) != BlockRegistry.blockCable && (x != xCoord || y != yCoord || z != zCoord))
         {
-            worldObj.notifyBlockOfNeighborChange(x, y, z, ModBlocks.blockCableOutput);
+            worldObj.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.blockCableOutput);
 
             if (spread)
             {

@@ -1,6 +1,6 @@
 package advancedsystemsmanager.recipes;
 
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -15,16 +15,16 @@ public class ClusterUpgradeRecipe extends ShapelessRecipes
 {
 
     private static final ItemStack RESULT;
-    private static final List RECIPE;
+    private static final List<ItemStack> RECIPE;
 
     static
     {
-        RESULT = new ItemStack(ModBlocks.blockCableCluster, 1, 8);
-        RECIPE = new ArrayList();
-        RECIPE.add(new ItemStack(ModBlocks.blockCableCluster, 1, 0));
+        RESULT = new ItemStack(BlockRegistry.blockCableCluster, 1, 8);
+        RECIPE = new ArrayList<ItemStack>();
+        RECIPE.add(new ItemStack(BlockRegistry.blockCableCluster, 1, 0));
         for (int i = 0; i < 8; i++)
         {
-            RECIPE.add(new ItemStack(ModBlocks.blockCable));
+            RECIPE.add(new ItemStack(BlockRegistry.blockCable));
         }
     }
 
@@ -41,7 +41,7 @@ public class ClusterUpgradeRecipe extends ShapelessRecipes
         {
             ItemStack itemStack = inv.getStackInSlot(i);
 
-            if (itemStack != null && itemStack.getItem() != null && Block.getBlockFromItem(itemStack.getItem()) == ModBlocks.blockCableCluster)
+            if (itemStack != null && itemStack.getItem() != null && Block.getBlockFromItem(itemStack.getItem()) == BlockRegistry.blockCableCluster)
             {
                 ItemStack copy = itemStack.copy();
                 copy.setItemDamage(8);

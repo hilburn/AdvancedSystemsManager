@@ -1,7 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
@@ -17,7 +17,7 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced
 {
     public BlockCableRelay()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_RELAY_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_RELAY);
     }
 
     @Override

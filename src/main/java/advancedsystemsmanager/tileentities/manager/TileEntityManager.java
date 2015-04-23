@@ -10,18 +10,16 @@ import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
 import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.helpers.CopyHelper;
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ComponentType;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -78,8 +76,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         {
             variables[i] = new Variable(i);
         }
-
-
     }
 
     private List<Integer> removedIds;
@@ -207,7 +203,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                                 }
 
 
-                                if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && ModBlocks.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
+                                if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
                                 {
                                     queue.add(target);
                                 }

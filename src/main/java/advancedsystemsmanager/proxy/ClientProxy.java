@@ -1,11 +1,7 @@
 package advancedsystemsmanager.proxy;
 
-
-import advancedsystemsmanager.blocks.RenderCamouflage;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.threading.ThreadSafeHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,9 +11,6 @@ public class ClientProxy extends CommonProxy
     @Override
     public void init()
     {
-        RenderCamouflage camouflage = new RenderCamouflage();
-        ModBlocks.CAMOUFLAGE_RENDER_ID = camouflage.getRenderId();
-        RenderingRegistry.registerBlockHandler(camouflage);
         Settings.load();
     }
 

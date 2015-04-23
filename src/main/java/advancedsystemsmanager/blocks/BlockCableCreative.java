@@ -1,8 +1,8 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,7 +15,7 @@ public class BlockCableCreative extends BlockClusterElement
 {
     public BlockCableCreative()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_CREATIVE_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_CREATIVE);
     }
 
     @Override

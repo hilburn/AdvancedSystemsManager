@@ -2,8 +2,8 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityBreaker;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -24,7 +24,7 @@ public class BlockCableBreaker extends BlockClusterElement
 {
     public BlockCableBreaker()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_BREAKER_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_BREAKER);
     }
 
     @Override

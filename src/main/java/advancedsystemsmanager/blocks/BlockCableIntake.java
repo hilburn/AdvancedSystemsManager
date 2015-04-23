@@ -2,7 +2,7 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityIntake;
 import net.minecraft.tileentity.TileEntity;
@@ -14,7 +14,7 @@ public class BlockCableIntake extends BlockCableDirectionAdvanced
 
     public BlockCableIntake()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_INTAKE_NAME_TAG);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_INTAKE);
     }
 
     @Override

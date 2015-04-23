@@ -1,8 +1,8 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityInput;
 import cpw.mods.fml.relauncher.Side;
@@ -18,7 +18,7 @@ public class BlockCableInput extends BlockClusterElement
 {
     public BlockCableInput()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_INPUT_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_INPUT);
     }
 
     @Override

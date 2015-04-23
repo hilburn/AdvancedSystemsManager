@@ -1,10 +1,10 @@
 package advancedsystemsmanager.items.blocks;
 
-
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
-import advancedsystemsmanager.registry.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -66,6 +66,6 @@ public class ItemCluster extends ItemBlock
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        return "tile." + AdvancedSystemsManager.UNLOCALIZED_START + (ModBlocks.blockCableCluster.isAdvanced(item.getItemDamage()) ? ModBlocks.CABLE_ADVANCED_CLUSTER_UNLOCALIZED_NAME : ModBlocks.CABLE_CLUSTER_UNLOCALIZED_NAME);
+        return "tile." + AdvancedSystemsManager.UNLOCALIZED_START + (BlockRegistry.blockCableCluster.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_CLUSTER_UNLOCALIZED_NAME : Names.CABLE_CLUSTER_UNLOCALIZED_NAME);
     }
 }

@@ -2,8 +2,8 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -26,9 +26,9 @@ public class BlockManager extends BlockContainer
     {
         super(Material.iron);
 
-        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.MANAGER_UNLOCALIZED_NAME);
+        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + Names.MANAGER);
         setStepSound(soundTypeMetal);
-        setCreativeTab(ModBlocks.creativeTab);
+        setCreativeTab(AdvancedSystemsManager.creativeTab);
         setHardness(2F);
     }
 

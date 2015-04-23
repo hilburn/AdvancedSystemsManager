@@ -7,7 +7,7 @@ import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.UserPermission;
 import advancedsystemsmanager.util.Utils;
@@ -99,7 +99,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
     private boolean isAdvanced()
     {
-        return ModBlocks.blockCableRelay.isAdvanced(getBlockMetadata());
+        return BlockRegistry.blockCableRelay.isAdvanced(getBlockMetadata());
     }
 
     @Override
@@ -568,7 +568,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             }
         }
 
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[ModBlocks.blockCableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.blockCableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
 
         int x = xCoord + direction.offsetX;
         int y = yCoord + direction.offsetY;

@@ -5,7 +5,6 @@ import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -32,7 +31,7 @@ public class ItemLabeler extends Item
 {
     public ItemLabeler()
     {
-        this.setCreativeTab(ModBlocks.creativeTab);
+        this.setCreativeTab(AdvancedSystemsManager.creativeTab);
         this.setUnlocalizedName(Names.LABELER);
         this.setTextureName(Reference.ID.toLowerCase() + ":" + Names.LABELER);
         this.setMaxStackSize(1);

@@ -22,6 +22,10 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     private static final int BUTTON_SPACING = 2;
     private int x, y, maxHeight;
 
+    public ManagerButtonList()
+    {
+    }
+
     public ManagerButtonList(int x, int y, int maxHeight)
     {
         this.x = x;
@@ -93,6 +97,17 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     public boolean isVisible()
     {
         return true;
+    }
+
+    public void setPosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public void setMaxHeight(int height)
+    {
+        this.maxHeight = height;
     }
 
     private class VisibleIterator implements Iterator<IManagerButton>

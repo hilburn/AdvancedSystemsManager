@@ -1,7 +1,5 @@
 package advancedsystemsmanager.blocks;
 
-
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -17,7 +15,7 @@ import net.minecraft.world.World;
 
 public abstract class BlockCamouflageBase extends BlockClusterElement
 {
-
+    public static int RENDER_ID;
     public BlockCamouflageBase(String name)
     {
         super(name);
@@ -134,7 +132,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElement
     @Override
     public int getRenderType()
     {
-        return ModBlocks.CAMOUFLAGE_RENDER_ID;
+        return RENDER_ID;
     }
 
     @Override

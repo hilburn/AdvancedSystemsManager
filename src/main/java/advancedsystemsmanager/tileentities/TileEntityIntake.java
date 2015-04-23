@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,7 +76,7 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
         {
             if (itemstack != null)
             {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[ModBlocks.blockCableIntake.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.blockCableIntake.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
 
                 double posX = xCoord + 0.5 + direction.offsetX * 0.75;
                 double posY = yCoord + 0.5 + direction.offsetY * 0.75;
@@ -121,7 +121,7 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
     @Override
     public String getInventoryName()
     {
-        return ModBlocks.blockCableIntake.getLocalizedName();
+        return BlockRegistry.blockCableIntake.getLocalizedName();
     }
 
     @Override
@@ -204,7 +204,7 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
 
     private boolean canPickUp(EntityItem item)
     {
-        return !item.isDead && (item.delayBeforeCanPickup == 0 || ModBlocks.blockCableIntake.isAdvanced(getBlockMetadata()));
+        return !item.isDead && (item.delayBeforeCanPickup == 0 || BlockRegistry.blockCableIntake.isAdvanced(getBlockMetadata()));
     }
 
     @Override

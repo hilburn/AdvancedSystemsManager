@@ -4,7 +4,7 @@ import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
 import advancedsystemsmanager.network.*;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -143,7 +143,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public CamouflageType getCamouflageType()
     {
-        return CamouflageType.values()[ModBlocks.blockCableCamouflage.getId(getBlockMetadata())];
+        return CamouflageType.values()[BlockRegistry.blockCableCamouflage.getId(getBlockMetadata())];
     }
 
     public void setBlockBounds(BlockCamouflageBase blockCamouflageBase)

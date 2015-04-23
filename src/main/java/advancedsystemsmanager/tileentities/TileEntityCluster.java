@@ -246,7 +246,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
         int toReceive = 0;
-        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.RECEIVE_ENERGY))
         {
             toReceive += ((TileEntityRFNode)blockContainer.te).receiveEnergy(from, maxReceive - toReceive, simulate);
         }
@@ -257,7 +257,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
         int toExtract = maxExtract;
-        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.EXTRACT_ENERGY))
         {
             toExtract += ((TileEntityRFNode)blockContainer.te).extractEnergy(from, maxExtract - toExtract, simulate);
         }
@@ -268,7 +268,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     public int getEnergyStored(ForgeDirection from)
     {
         int stored = -1;
-        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.STORED_ENERGY))
         {
             stored += ((TileEntityRFNode)blockContainer.te).getEnergyStored(from);
         }
@@ -279,7 +279,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     public int getMaxEnergyStored(ForgeDirection from)
     {
         int max = -1;
-        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.STORED_ENERGY))
         {
             max += ((TileEntityRFNode)blockContainer.te).getMaxEnergyStored(from);
         }
@@ -289,7 +289,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     @Override
     public boolean canConnectEnergy(ForgeDirection from)
     {
-        for (Pair blockContainer : getRegistrations(StevesEnum.ENERGY))
+        for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.CONNECT_ENERGY))
         {
             if (((TileEntityRFNode)blockContainer.te).canConnectEnergy(from)) return true;
         }

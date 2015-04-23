@@ -1,8 +1,8 @@
 package advancedsystemsmanager.items;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -18,9 +18,9 @@ public class ItemDuplicator extends Item
 {
     public ItemDuplicator()
     {
-        this.setCreativeTab(ModBlocks.creativeTab);
-        this.setUnlocalizedName(Names.DRIVE);
-        this.setTextureName(Reference.ID.toLowerCase() + ":" + Names.DRIVE);
+        this.setCreativeTab(AdvancedSystemsManager.creativeTab);
+        this.setUnlocalizedName(Names.DUPLICATOR);
+        this.setTextureName(Reference.ID.toLowerCase() + ":" + Names.DUPLICATOR);
         this.setMaxStackSize(1);
     }
 

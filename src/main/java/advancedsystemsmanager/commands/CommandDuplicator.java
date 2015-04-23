@@ -17,7 +17,6 @@ public abstract class CommandDuplicator implements ISubCommand
 
     static
     {
-        new TileEntityManager().writeToNBT(defaultTagCompound);
         defaultTagCompound.setTag("ench", new NBTTagList());
     }
 

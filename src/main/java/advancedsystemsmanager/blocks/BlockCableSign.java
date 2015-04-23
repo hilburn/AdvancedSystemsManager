@@ -2,8 +2,8 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntitySignUpdater;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +22,7 @@ public class BlockCableSign extends BlockClusterElement
 {
     public BlockCableSign()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_SIGN_UNLOCALIZED_NAME);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_SIGN);
     }
 
     @Override

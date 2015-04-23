@@ -1,8 +1,8 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -21,9 +21,10 @@ import java.util.List;
 
 public class BlockCableCamouflages extends BlockCamouflageBase
 {
+
     public BlockCableCamouflages()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_CAMOUFLAGE_NAME_TAG);
+        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_CAMOUFLAGE);
     }
 
     @Override

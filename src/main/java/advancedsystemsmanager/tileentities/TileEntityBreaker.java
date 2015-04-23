@@ -2,7 +2,7 @@ package advancedsystemsmanager.tileentities;
 
 
 import advancedsystemsmanager.network.*;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.relauncher.Side;
@@ -301,7 +301,7 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     @Override
     public String getInventoryName()
     {
-        return ModBlocks.blockCableBreaker.getLocalizedName();
+        return BlockRegistry.blockCableBreaker.getLocalizedName();
     }
 
     @Override

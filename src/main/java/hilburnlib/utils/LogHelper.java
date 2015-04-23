@@ -1,4 +1,4 @@
-package advancedsystemsmanager.util;
+package hilburnlib.utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.LogManager;
@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 public class LogHelper
 {
     private Logger log;
+    private boolean debug;
 
     public LogHelper(String id)
     {
@@ -15,7 +16,8 @@ public class LogHelper
 
     public void debug(Object obj)
     {
-        log.debug(obj);
+        if (debug)
+            log.debug(obj);
     }
 
     public void info(Object obj)
@@ -36,5 +38,10 @@ public class LogHelper
     public void error(Exception e, String message)
     {
         FMLCommonHandler.instance().raiseException(e, message, false);
+    }
+
+    public void setDebug(boolean debug)
+    {
+        this.debug = debug;
     }
 }

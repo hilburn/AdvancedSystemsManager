@@ -2,8 +2,9 @@ package advancedsystemsmanager.blocks;
 
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.ModBlocks;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
@@ -24,9 +25,9 @@ public class BlockCable extends Block
     public BlockCable()
     {
         super(Material.iron);
-        setCreativeTab(ModBlocks.creativeTab);
+        setCreativeTab(AdvancedSystemsManager.creativeTab);
         setStepSound(soundTypeMetal);
-        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + ModBlocks.CABLE_UNLOCALIZED_NAME);
+        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE);
         setHardness(0.4F);
     }
 
@@ -90,7 +91,7 @@ public class BlockCable extends Block
                                 //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
                                 Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
                                 int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
-                                if (block == ModBlocks.blockManager)
+                                if (block == BlockRegistry.blockManager)
                                 {
                                     TileEntity tileEntity = world.getTileEntity(target.getX(), target.getY(), target.getZ());
                                     if (tileEntity != null && tileEntity instanceof TileEntityManager)
@@ -115,6 +116,6 @@ public class BlockCable extends Block
 
     public boolean isCable(Block block, int meta)
     {
-        return block == ModBlocks.blockCable || (block == ModBlocks.blockCableCluster && ModBlocks.blockCableCluster.isAdvanced(meta));
+        return block == BlockRegistry.blockCable || (block == BlockRegistry.blockCableCluster && BlockRegistry.blockCableCluster.isAdvanced(meta));
     }
 }

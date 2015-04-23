@@ -65,6 +65,7 @@ public class Mods
     public static final String RAILCRAFT = "Railcraft";
     public static final String ROUTERREBORN = "RouterReborn";
     public static final String REACTORCRAFT = "ReactorCraft";
+    public static final String RF_API = "CoFHAPI|energy";
     public static final String ROTARYRAFT = "RotaryCraft";
     public static final String SGCRAFT = "SGCraft";
     public static final String STARTINGINVENTORY = "StartingInventory";
