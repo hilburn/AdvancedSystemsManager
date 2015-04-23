@@ -11,6 +11,7 @@ import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import hilburnlib.registry.Register;
@@ -23,7 +24,7 @@ import net.minecraft.item.ItemStack;
 public class BlockRegistry
 {
 //    Manager
-    @Register(tileEntity = TileEntityRFNode.class, name = Names.MANAGER)
+    @Register(tileEntity = TileEntityManager.class, name = Names.MANAGER)
     public static BlockManager blockManager;
 
     @Register(name = Names.CABLE)

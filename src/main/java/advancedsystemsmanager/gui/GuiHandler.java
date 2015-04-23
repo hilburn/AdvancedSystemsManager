@@ -17,15 +17,16 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        TileEntity te = world.getTileEntity(x, y, z);
+        if (ID > 0)
+        {
+            TileEntity te = world.getTileEntity(x, y, z);
 
-        if (te != null && te instanceof ITileEntityInterface)
-        {
-            return ((ITileEntityInterface)te).getContainer(te, player.inventory);
-        } else
-        {
-            return null;
+            if (te != null && te instanceof ITileEntityInterface)
+            {
+                return ((ITileEntityInterface)te).getContainer(te, player.inventory);
+            }
         }
+        return null;
     }
 
     @Override
@@ -33,16 +34,16 @@ public class GuiHandler implements IGuiHandler
     {
 
         if (ID == 0) return new GuiLabeler(player.getCurrentEquippedItem(), player);
-
-        TileEntity te = world.getTileEntity(x, y, z);
-
-        if (te != null && te instanceof ITileEntityInterface)
+        else
         {
-            return ((ITileEntityInterface)te).getGui(te, player.inventory);
-        } else
-        {
-            return null;
+            TileEntity te = world.getTileEntity(x, y, z);
+
+            if (te != null && te instanceof ITileEntityInterface)
+            {
+                return ((ITileEntityInterface)te).getGui(te, player.inventory);
+            }
         }
+        return null;
     }
 
 }

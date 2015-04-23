@@ -2,6 +2,8 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.gui.IManagerButton;
+import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
@@ -10,16 +12,12 @@ import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
 import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.network.*;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.ComponentType;
-import advancedsystemsmanager.registry.ConnectionOption;
-import advancedsystemsmanager.registry.ConnectionSet;
+import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -40,7 +38,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
 
-
 public class TileEntityManager extends TileEntity implements ITileEntityInterface
 {
     public static final TriggerHelperRedstone redstoneTrigger = new TriggerHelperRedstone(3, 4);
@@ -51,13 +48,11 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public static final int BUTTON_SIZE_H = 14;
     public static final int BUTTON_SRC_X = 242;
     public static final int BUTTON_SRC_Y = 0;
-    public static final int BUTTON_INNER_SIZE_W = 12;
-    public static final int BUTTON_INNER_SIZE_H = 12;
     public static final int BUTTON_INNER_SRC_X = 230;
     public static final int BUTTON_INNER_SRC_Y = 0;
     public List<FlowComponent> items;
     private Connection currentlyConnecting;
-    public List<Button> buttons;
+    public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
     private List<FlowComponent> zLevelRenderingList;
     private Variable[] variables;
@@ -69,7 +64,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         items = new ArrayList<FlowComponent>();
         zLevelRenderingList = new ArrayList<FlowComponent>();
-        buttons = new ArrayList<Button>();
+        buttons = ManagerButtonRegistry.getButtons(this);
         removedIds = new ArrayList<Integer>();
         variables = new Variable[VariableColor.values().length];
         for (int i = 0; i < variables.length; i++)
@@ -480,7 +475,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             int buttonId = dr.readData(DataBitHelper.GUI_BUTTON_ID);
             if (buttonId >= 0 && buttonId < buttons.size())
             {
-                Button button = buttons.get(buttonId);
+                IManagerButton button = buttons.get(buttonId);
                 if (button.isVisible())
                 {
                     button.onClick(dr);
@@ -729,152 +724,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         this.selectedComponent = selectedComponent;
     }
-
-
-    public abstract class Button
-    {
-        private int x;
-        private int y;
-        private Localization mouseOver;
-
-        protected Button(Localization mouseOver)
-        {
-            int id = buttons.size();
-            this.x = 5 + (id / 13) * 18;
-            this.y = 5 + (id % 13) * 18;
-            this.mouseOver = mouseOver;
-        }
-
-        protected abstract void onClick(DataReader dr);
-
-        public abstract boolean onClick(DataWriter dw);
-
-        public int getX()
-        {
-            return x;
-        }
-
-        public int getY()
-        {
-            return y;
-        }
-
-        public String getMouseOver()
-        {
-            return mouseOver.toString();
-        }
-
-        public boolean activateOnRelease()
-        {
-            return false;
-        }
-
-        public boolean isVisible()
-        {
-            return true;
-        }
-    }
-
-    private class ButtonCreate extends Button
-    {
-
-        private ComponentType type;
-
-        protected ButtonCreate(ComponentType type)
-        {
-            super(type.getLongUnLocalizedName());
-
-            this.type = type;
-        }
-
-        @Override
-        protected void onClick(DataReader dr)
-        {
-            if (Settings.isLimitless(self) || getFlowItems().size() < MAX_COMPONENT_AMOUNT)
-            {
-                FlowComponent component = new FlowComponent(self, 50, 50, type);
-
-                boolean hasParent = dr.readBoolean();
-                if (hasParent)
-                {
-                    component.setParent(items.get(dr.readComponentId()));
-                }
-
-                boolean autoSide = dr.readBoolean();
-                boolean autoBlackList = dr.readBoolean();
-                boolean moveFirst = dr.readBoolean();
-                boolean isInput = type == ComponentType.INPUT || type == ComponentType.LIQUID_INPUT;
-                boolean isOutput = type == ComponentType.OUTPUT || type == ComponentType.LIQUID_OUTPUT;
-                if (autoSide)
-                {
-                    for (Menu menu : component.getMenus())
-                    {
-                        if (menu instanceof MenuTarget)
-                        {
-                            ((MenuTarget)menu).setActive(isOutput ? 1 : 0);
-                        }
-                    }
-                }
-                if (autoBlackList && isInput)
-                {
-                    for (Menu menu : component.getMenus())
-                    {
-                        if (menu instanceof MenuStuff)
-                        {
-                            ((MenuStuff)menu).setBlackList();
-                        }
-                    }
-                }
-                if (type == ComponentType.AUTO_CRAFTING)
-                {
-                    for (Menu menu : component.getMenus())
-                    {
-                        if (menu instanceof MenuCraftingPriority)
-                        {
-                            ((MenuCraftingPriority)menu).setPrioritizeCrafting(!moveFirst);
-                        }
-                    }
-                }
-
-                getFlowItems().add(component);
-            }
-        }
-
-        @Override
-        public boolean onClick(DataWriter dw)
-        {
-            if (selectedComponent != null)
-            {
-                dw.writeBoolean(true);
-                dw.writeComponentId(self, selectedComponent.getId());
-            } else
-            {
-                dw.writeBoolean(false);
-            }
-
-            //these are written for all different types, that's because the type itself doesn't really know what menus
-            //it will use, this will create a super tiny overhead (each setting is a bit) and could be eliminated with
-            //some semi-ugly code, I decided this approach was fine
-            dw.writeBoolean(Settings.isAutoSide());
-            dw.writeBoolean(Settings.isAutoBlacklist());
-            dw.writeBoolean(Settings.isPriorityMoveFirst());
-
-            return true;
-        }
-
-        @Override
-        public String getMouseOver()
-        {
-            if (!Settings.isLimitless(self) && getFlowItems().size() == MAX_COMPONENT_AMOUNT)
-            {
-                return Localization.MAXIMUM_COMPONENT_ERROR.toString();
-            } else
-            {
-                return Localization.CREATE_COMMAND.toString() + " " + super.getMouseOver();
-            }
-        }
-    }
-
 
     private static final String NBT_TIMER = "Timer";
     private static final String NBT_COMPONENTS = "Components";

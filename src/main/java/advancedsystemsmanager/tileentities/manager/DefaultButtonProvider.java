@@ -23,6 +23,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
     @Override
     public List<IManagerButton> getButtons(TileEntityManager manager)
     {
+        ManagerButton.INDEX = 0;
         List<IManagerButton> buttons = new ArrayList<IManagerButton>();
         for (ComponentType type : ComponentType.values())
         {

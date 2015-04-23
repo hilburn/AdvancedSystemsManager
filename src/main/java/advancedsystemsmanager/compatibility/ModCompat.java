@@ -2,16 +2,19 @@ package advancedsystemsmanager.compatibility;
 
 import advancedsystemsmanager.compatibility.computercraft.ComputerCraftCompat;
 import advancedsystemsmanager.compatibility.jabba.JabbaCompat;
+import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.compatibility.waila.WailaCompat;
 import advancedsystemsmanager.reference.Mods;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 
 public enum ModCompat
 {
     COMPUTERCRAFT(Mods.COMPUTERCRAFT, "ComputerCraft", new ComputerCraftCompat()),
     OPENCOMPUTERS(Mods.OPENCOMPUTERS, "OpenComputers"),
     JABBA(Mods.JABBA, "JABBA", new JabbaCompat()),
-    WAILA(Mods.WAILA, "Waila", new WailaCompat());
+    WAILA(Mods.WAILA, "Waila", new WailaCompat()),
+    RF(Mods.RF_API, "RF API", new RFCompat());
 
     private final String modId;
     private final String modName;
@@ -35,12 +38,12 @@ public enum ModCompat
 
     ModCompat(String modId, String modName)
     {
-        this(modId, modName, null, Loader.isModLoaded(modId));
+        this(modId, modName, null);
     }
 
     ModCompat(String modId, String modName, CompatBase compatClass)
     {
-        this(modId, modName, compatClass, Loader.isModLoaded(modId));
+        this(modId, modName, compatClass, Loader.isModLoaded(modId) || ModAPIManager.INSTANCE.hasAPI(modId));
     }
 
     private ModCompat(String modId, String modName, CompatBase compatClass, boolean loaded)

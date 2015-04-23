@@ -1,5 +1,6 @@
 package advancedsystemsmanager;
 
+import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.flow.setting.ModItemHelper;
 import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.gui.GuiHandler;
@@ -66,15 +67,6 @@ public class AdvancedSystemsManager
         metadata = Metadata.init(metadata);
         Config.init(event.getSuggestedConfigurationFile());
 
-        registerer.scan(BlockRegistry.class);
-        registerer.scan(ItemRegistry.class);
-
-        MessageHandler.init();
-
-        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
-
-        FileHelper.setConfigDir(event.getModConfigurationDirectory());
-
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override
@@ -89,6 +81,15 @@ public class AdvancedSystemsManager
                 return null;
             }
         };
+
+        registerer.scan(BlockRegistry.class);
+        registerer.scan(ItemRegistry.class);
+
+        MessageHandler.init();
+
+        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
+
+        FileHelper.setConfigDir(event.getModConfigurationDirectory());
     }
 
     @Mod.EventHandler
@@ -107,6 +108,8 @@ public class AdvancedSystemsManager
         FMLCommonHandler.instance().bus().register(handler);
         MinecraftForge.EVENT_BUS.register(handler);
         PROXY.initHandlers();
+
+        ModCompat.loadAll();
     }
 
     @Mod.EventHandler

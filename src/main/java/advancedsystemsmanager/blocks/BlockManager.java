@@ -44,7 +44,7 @@ public class BlockManager extends BlockContainer
     {
         if (!world.isRemote)
         {
-            FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 0, world, x, y, z);
+            FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
         }
 
         return true;

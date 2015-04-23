@@ -18,14 +18,14 @@ public class ManagerButtonRegistry
         registerButtonProvider(new DefaultButtonProvider());
     }
 
-    public List<IManagerButton> getButtons(TileEntityManager manager, int x, int y, int maxHeight)
+    public static ManagerButtonList getButtons(TileEntityManager manager)
     {
-        List<IManagerButton> buttons = new ManagerButtonList(x, y, maxHeight);
+        ManagerButtonList buttons = new ManagerButtonList();
         getButtons(manager, buttons);
         return buttons;
     }
 
-    public void getButtons(TileEntityManager manager, List<IManagerButton> buttons)
+    public static void getButtons(TileEntityManager manager, List<IManagerButton> buttons)
     {
         for (IManagerButtonProvider provider : buttonProviders) buttons.addAll(provider.getButtons(manager));
     }

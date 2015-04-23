@@ -7,8 +7,8 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class ManagerButton implements IManagerButton
 {
-    private static final int BUTTON_SHEET_SIZE = 4;
-    private static int INDEX = 0;
+    private static final int BUTTON_SHEET_SIZE = 20;
+    protected static int INDEX = 0;
     protected TileEntityManager manager;
     protected Localization hoverText;
     protected int x, y;
@@ -20,7 +20,7 @@ public abstract class ManagerButton implements IManagerButton
 
     public ManagerButton(TileEntityManager manager, Localization hover, int index)
     {
-        this(manager, hover, (index / BUTTON_SHEET_SIZE) * BUTTON_ICON_SIZE, (index % BUTTON_SHEET_SIZE) * BUTTON_ICON_SIZE);
+        this(manager, hover, 230 - (index / BUTTON_SHEET_SIZE) * BUTTON_ICON_SIZE, (index % BUTTON_SHEET_SIZE) * BUTTON_ICON_SIZE);
     }
 
     public ManagerButton(TileEntityManager manager, Localization hover, int x, int y)

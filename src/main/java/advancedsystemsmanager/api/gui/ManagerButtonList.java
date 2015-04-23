@@ -5,6 +5,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_ICON_SIZE;
 
 public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement<GuiManager>
 {
-    private static final int BUTTON_BACKGROUND_X = 72;
+    private static final int BUTTON_BACKGROUND_X = 242;
     private static final int BUTTON_BACKGROUND_Y = 0;
-    private static final int BUTTON_SPACING = 2;
-    private int x, y, maxHeight;
+    private static final int BUTTON_SPACING = 3;
+    private int x = 10, y = 10, maxHeight = GuiManager.GUI_HEIGHT - 20;
 
     public ManagerButtonList()
     {
@@ -41,7 +42,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
         {
             IManagerButton button = itr.next();
             boolean selected = CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY);
-            guiManager.drawTexture(itr.x, itr.y, BUTTON_BACKGROUND_X, selected ? BUTTON_BACKGROUND_Y : BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE);
+            guiManager.drawTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X, selected ? BUTTON_BACKGROUND_Y : BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE);
             ResourceLocation location = button.getTexture();
             if (location == BUTTONS)
                 guiManager.drawTexture(itr.x + 1, itr.y + 1, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
@@ -51,6 +52,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
                 guiManager.drawTexture(itr.x + 1, itr.y + 1, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
                 GuiManager.bindTexture(BUTTONS);
             }
+            itr.nextPosition();
         }
     }
 
@@ -65,6 +67,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
                 guiManager.drawMouseOver(button.getMouseOver(), mouseX, mouseY);
                 break;
             }
+            itr.nextPosition();
         }
     }
 
@@ -90,6 +93,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
                 }
                 break;
             }
+            itr.nextPosition();
         }
     }
 
@@ -132,12 +136,6 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
         @Override
         public IManagerButton next()
         {
-            y += BUTTON_SIZE + BUTTON_SPACING;
-            if (y > maxHeight)
-            {
-                y = ManagerButtonList.this.y;
-                x += BUTTON_SIZE + BUTTON_SPACING;
-            }
             index = itr.nextIndex();
             return itr.next();
         }
@@ -146,6 +144,16 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
         public void remove()
         {
             itr.remove();
+        }
+
+        public void nextPosition()
+        {
+            y += BUTTON_SIZE + BUTTON_SPACING;
+            if (y > maxHeight)
+            {
+                y = ManagerButtonList.this.y;
+                x += BUTTON_SIZE + BUTTON_SPACING;
+            }
         }
     }
 }
