@@ -1,11 +1,9 @@
 package advancedsystemsmanager.animation;
-
-
-import advancedsystemsmanager.registry.ComponentType;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
 import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.registry.ComponentRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.*;
@@ -75,7 +73,7 @@ public class AnimationController
         }
         for (FlowComponent item : blueprints)
         {
-            if (item.getParent() != null && item.getType() == ComponentType.NODE)
+            if (item.getParent() != null && item.getType() == ComponentRegistry.NODE)
             {
                 int id = item.getParent().getId();
                 Integer count = groupNodes.get(id);
@@ -256,7 +254,7 @@ public class AnimationController
                 {
                     target.setX(blueprint.getX());
                     target.setY(blueprint.getY());
-                    if (target.getType() == ComponentType.GROUP && target.getName().equals(blueprint.getName()))
+                    if (target.getType() == ComponentRegistry.GROUP && target.getName().equals(blueprint.getName()))
                     {
                         progress = Progress.CLOSE;
                     } else
@@ -282,7 +280,7 @@ public class AnimationController
             case RENAME:
                 if (target.getName().equals(blueprint.getName()))
                 {
-                    progress = target.getType() == ComponentType.GROUP ? Progress.CLOSE : Progress.MENUS;
+                    progress = target.getType() == ComponentRegistry.GROUP ? Progress.CLOSE : Progress.MENUS;
                     menuId = target.getMenus().size() - 1;
                     target.setNameEdited(false);
                     delay = 0.5F;
@@ -347,7 +345,7 @@ public class AnimationController
                 progress = Progress.CONNECT;
                 return true;
             case CONNECT:
-                if (target.getType() != ComponentType.GROUP || groupNodes.get(target.getId()) == null)
+                if (target.getType() != ComponentRegistry.GROUP || groupNodes.get(target.getId()) == null)
                 {
                     target.setOpen(false);
                     if (manager.getCurrentlyConnecting() != null)
@@ -401,7 +399,7 @@ public class AnimationController
                             }
                         }
 
-                        if (target.getType() == ComponentType.NODE && target.getParent() != null)
+                        if (target.getType() == ComponentRegistry.NODE && target.getParent() != null)
                         {
                             int id = target.getParent().getId();
                             Integer count = groupNodes.get(id);

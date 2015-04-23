@@ -374,7 +374,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 for (FlowComponent item : items)
                 {
 
-                    if (item.getType() == ComponentType.TRIGGER)
+                    if (item.getType() == ComponentRegistry.TRIGGER)
                     {
                         MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
                         int interval = componentMenuInterval.getInterval();
@@ -440,7 +440,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == ComponentType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
+            if (item.getType() == ComponentRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
             {
                 redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
             }
@@ -451,7 +451,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == ComponentType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
+            if (item.getType() == ComponentRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
             {
                 activateTrigger(item, EnumSet.allOf(ConnectionOption.class));
             }
@@ -553,7 +553,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         int y = dr.readData(DataBitHelper.FLOW_CONTROL_Y);
         int id = dr.readData(DataBitHelper.FLOW_CONTROL_TYPE_ID);
 
-        FlowComponent flowComponent = new FlowComponent(this, x, y, ComponentType.getTypeFromId(id));
+        FlowComponent flowComponent = new FlowComponent(this, x, y, ComponentRegistry.getComponent(id));
         flowComponent.setComponentName(dr.readString(DataBitHelper.NAME_LENGTH));
 
         boolean hasParent = dr.readBoolean();
@@ -696,7 +696,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
         for (FlowComponent item : items)
         {
-            if (item.getType() == ComponentType.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
+            if (item.getType() == ComponentRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
             {
                 int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
                 variables[selectedVariable].setDeclaration(item);
@@ -708,7 +708,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == ComponentType.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
+            if (item.getType() == ComponentRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
             {
                 budTrigger.triggerBUD(item, tileEntityBUD);
             }

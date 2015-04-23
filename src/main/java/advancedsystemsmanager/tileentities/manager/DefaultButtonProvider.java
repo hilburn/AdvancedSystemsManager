@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
+import advancedsystemsmanager.api.execution.IComponentType;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -9,7 +10,7 @@ import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.registry.ComponentType;
+import advancedsystemsmanager.registry.ComponentRegistry;
 import advancedsystemsmanager.settings.Settings;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -23,13 +24,12 @@ public class DefaultButtonProvider implements IManagerButtonProvider
     @Override
     public List<IManagerButton> getButtons(TileEntityManager manager)
     {
-        ManagerButton.INDEX = 0;
         List<IManagerButton> buttons = new ArrayList<IManagerButton>();
-        for (ComponentType type : ComponentType.values())
+        for (IComponentType type : ComponentRegistry.getComponents())
         {
             buttons.add(new ManagerButtonCreate(manager, type));
         }
-        buttons.add(new ManagerButton(manager, Localization.DELETE_COMMAND)
+        buttons.add(new ManagerButton(manager, Localization.DELETE_COMMAND.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
             public void onClick(DataReader dr)
@@ -57,135 +57,6 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             public boolean activateOnRelease()
             {
                 return true;
-            }
-        });
-        buttons.add(new ManagerButton(manager, StevesEnum.COPY_COMMAND)
-        {
-            @Override
-            public void onClick(DataReader dataReader)
-            {
-                if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
-                {
-                    int id = dataReader.readComponentId();
-                    Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
-                    FlowComponent item;
-                    do
-                    {
-                        if (!itr.hasNext()) return;
-                        item = itr.next();
-                    } while (item.getId() != id);
-                    Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager.getFlowItems(), item, Settings.isLimitless(manager));
-                    manager.getFlowItems().addAll(added);
-                }
-            }
-
-            @Override
-            public boolean activateOnRelease()
-            {
-                return true;
-            }
-
-            @Override
-            public boolean onClick(DataWriter dataWriter)
-            {
-                Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
-                FlowComponent item;
-                do
-                {
-                    if (!itr.hasNext()) return false;
-                    item = itr.next();
-                } while (!item.isBeingMoved());
-                dataWriter.writeComponentId(manager, item.getId());
-                return true;
-            }
-
-            @Override
-            public String getMouseOver()
-            {
-                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Localization.MAXIMUM_COMPONENT_ERROR.toString() : super.getMouseOver();
-            }
-        });
-        buttons.add(new ManagerButton(manager, Localization.PREFERENCES)
-        {
-            @Override
-            public void onClick(DataReader dr)
-            {
-
-            }
-
-            @Override
-            public boolean onClick(DataWriter dw)
-            {
-                Settings.openMenu(manager);
-                return false;
-            }
-        });
-
-        buttons.add(new ManagerButton(manager, Localization.EXIT_GROUP)
-        {
-            @Override
-            public void onClick(DataReader dr)
-            {
-                int id = dr.readComponentId();
-                FlowComponent component = manager.getFlowItems().get(id);
-                boolean moveCluster = dr.readBoolean();
-                if (component.getParent() != null)
-                {
-                    MenuGroup.moveComponents(component, component.getParent().getParent(), moveCluster);
-                }
-            }
-
-            @Override
-            public boolean onClick(DataWriter dw)
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        //For the server only
-                        manager.justSentServerComponentRemovalPacket = true;
-                        dw.writeComponentId(manager, item.getId());
-                        dw.writeBoolean(GuiScreen.isShiftKeyDown());
-                        item.resetPosition();
-                        return true;
-                    }
-                }
-
-                //Client only
-                manager.selectedComponent = manager.selectedComponent.getParent();
-                return false;
-            }
-
-            @Override
-            public boolean isVisible()
-            {
-                return manager.selectedComponent != null;
-            }
-
-            @Override
-            public boolean activateOnRelease()
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public String getMouseOver()
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        return Localization.EXIT_GROUP_DROP.toString();
-                    }
-                }
-                return super.getMouseOver();
             }
         });
         return buttons;

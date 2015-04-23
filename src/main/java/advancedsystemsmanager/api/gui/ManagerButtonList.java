@@ -21,7 +21,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     private static final int BUTTON_BACKGROUND_X = 242;
     private static final int BUTTON_BACKGROUND_Y = 0;
     private static final int BUTTON_SPACING = 3;
-    private int x = 10, y = 10, maxHeight = GuiManager.GUI_HEIGHT - 20;
+    private int x = 10, y = 10, maxHeight = GuiManager.GUI_HEIGHT - 25;
 
     public ManagerButtonList()
     {
@@ -80,10 +80,15 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     @Override
     public void onClick(int mouseX, int mouseY, int button)
     {
+        onClick(mouseX, mouseY, false);
+    }
+
+    public void onClick(int mouseX, int mouseY, boolean release)
+    {
         for (VisibleIterator itr = new VisibleIterator(); itr.hasNext();)
         {
             IManagerButton managerButton = itr.next();
-            if (CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY))
+            if (CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY) && managerButton.activateOnRelease() == release)
             {
                 DataWriter dw = PacketHandler.getButtonPacketWriter();
                 dw.writeData(itr.index, DataBitHelper.GUI_BUTTON_ID);

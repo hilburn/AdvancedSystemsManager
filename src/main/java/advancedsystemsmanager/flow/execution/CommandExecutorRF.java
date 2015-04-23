@@ -105,7 +105,7 @@ public class CommandExecutorRF extends CommandExecutor
             try
             {
                 this.usedCommands.add(command.getId());
-                switch (command.getType().ordinal())
+                switch (command.getType().getId())
                 {
                     case 0:
                         MenuTriggered trigger = (MenuTriggered)command.getMenus().get(6);

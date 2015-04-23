@@ -1,6 +1,7 @@
 package advancedsystemsmanager.helpers;
 
-import advancedsystemsmanager.registry.ComponentType;
+import advancedsystemsmanager.flow.ComponentType;
+import advancedsystemsmanager.registry.ComponentRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.menus.*;
@@ -18,7 +19,6 @@ public class StevesEnum
     private static final Class[][] localizationClasses = new Class[][]{{Localization.class}};
     private static final Class[][] clusterMethodClasses = new Class[][]{{ClusterMethodRegistration.class}};
     private static final Class[][] connectionTypeClasses = new Class[][]{{ConnectionBlockType.class, Localization.class, Class.class, boolean.class}};
-    private static final Class[][] componentTypeClasses = new Class[][]{{ComponentType.class, int.class, Localization.class, Localization.class, ConnectionSet[].class, Class[].class}};
     private static final Class[][] connectionSetClasses = new Class[][]{{ConnectionSet.class, Localization.class, ConnectionOption[].class}};
     private static final Class[][] connectionOptionClasses = new Class[][]{{ConnectionOption.class, Localization.class, ConnectionOption.ConnectionType.class}};
 
@@ -65,7 +65,7 @@ public class StevesEnum
 
     public static ComponentType addComponentType(String key, int index, Localization shortName, Localization longName, ConnectionSet[] connections, Class... classes)
     {
-        return EnumHelper.addEnum(componentTypeClasses, ComponentType.class, key, index, shortName, longName, connections, classes);
+        return (ComponentType)ComponentRegistry.registerComponent(new ComponentType(index, shortName, longName, connections, classes));
     }
 
     public static ClusterMethodRegistration addClusterMethod(String key)
@@ -81,22 +81,5 @@ public class StevesEnum
     public static ConnectionOption addConnectionMethod(String key, Localization localization, ConnectionOption.ConnectionType type)
     {
         return EnumHelper.addEnum(connectionOptionClasses, ConnectionOption.class, key, localization, type);
-    }
-
-    public static void applyEnumHacks()
-    {
-        try
-        {
-            Field classes = ComponentType.class.getDeclaredField("classes");
-            Field sets = ComponentType.class.getDeclaredField("sets");
-            classes.setAccessible(true);
-            sets.setAccessible(true);
-            classes.set(ComponentType.TRIGGER, new Class[]{MenuReceivers.class, MenuBUDs.class, MenuInterval.class, MenuRedstoneSidesTrigger.class, MenuRedstoneStrength.class, MenuUpdateBlock.class, MenuDelayed.class, MenuResult.class});
-            sets.set(ComponentType.TRIGGER, new ConnectionSet[]{ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD, DELAYED});
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
     }
 }

@@ -7,9 +7,13 @@ import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
@@ -21,7 +25,7 @@ import java.util.List;
 
 
 @SideOnly(Side.CLIENT)
-public class GuiManager extends GuiBase
+public class GuiManager extends GuiBase implements INEIGuiHandler
 {
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
@@ -61,7 +65,7 @@ public class GuiManager extends GuiBase
     private long lastTicks;
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         bindTexture(BACKGROUND_1);
@@ -70,21 +74,21 @@ public class GuiManager extends GuiBase
         bindTexture(BACKGROUND_2);
         drawTexture(256, 0, 0, 0, 256, 256);
 
-        x -= guiLeft;
-        y -= guiTop;
+        mX -= guiLeft;
+        mY -= guiTop;
 
         bindTexture(COMPONENTS);
 
         if (hasSpecialRenderer())
         {
-            getSpecialRenderer().draw(this, x, y);
-            getSpecialRenderer().drawMouseOver(this, x, y);
+            getSpecialRenderer().draw(this, mX, mY);
+            getSpecialRenderer().drawMouseOver(this, mX, mY);
             return;
         }
 
         if (useButtons)
         {
-            manager.buttons.draw(this, x, y, 0);
+            manager.buttons.draw(this, mX, mY, 0);
         }
 
 
@@ -122,9 +126,9 @@ public class GuiManager extends GuiBase
                 {
                     zLevel -= Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE;
                 }
-                itemBase.draw(this, x, y, zLevel);
+                itemBase.draw(this, mX, mY, zLevel);
 
-                if (itemBase.isBeingMoved() || CollisionHelper.inBounds(itemBase.getX(), itemBase.getY(), itemBase.getComponentWidth(), itemBase.getComponentHeight(), x, y))
+                if (itemBase.isBeingMoved() || CollisionHelper.inBounds(itemBase.getX(), itemBase.getY(), itemBase.getComponentWidth(), itemBase.getComponentHeight(), mX, mY))
                 {
                     CollisionHelper.disableInBoundsCheck = true;
                 }
@@ -142,15 +146,15 @@ public class GuiManager extends GuiBase
 
             if (useButtons)
             {
-                manager.buttons.drawMouseOver(this, x, y);
+                manager.buttons.drawMouseOver(this, mX, mY);
             }
 
             for (FlowComponent itemBase : manager.getZLevelRenderingList())
             {
                 if (itemBase.isVisible())
                 {
-                    itemBase.drawMouseOver(this, x, y);
-                    if (itemBase.isBeingMoved() || CollisionHelper.inBounds(itemBase.getX(), itemBase.getY(), itemBase.getComponentWidth(), itemBase.getComponentHeight(), x, y))
+                    itemBase.drawMouseOver(this, mX, mY);
+                    if (itemBase.isBeingMoved() || CollisionHelper.inBounds(itemBase.getX(), itemBase.getY(), itemBase.getComponentWidth(), itemBase.getComponentHeight(), mX, mY))
                     {
                         CollisionHelper.disableInBoundsCheck = true;
                     }
@@ -297,7 +301,7 @@ public class GuiManager extends GuiBase
 
         if (useButtons)
         {
-            manager.buttons.onClick(x, y, button);
+            manager.buttons.onClick(x, y, true);
         }
 
         if (!manager.justSentServerComponentRemovalPacket)
@@ -488,6 +492,14 @@ public class GuiManager extends GuiBase
         }
 
         super.onGuiClosed();
+    }
+
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
+    {
+        visiblityData.showNEI = false;
+        return visiblityData;
     }
 
 

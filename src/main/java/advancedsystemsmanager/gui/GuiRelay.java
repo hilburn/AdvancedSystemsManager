@@ -357,7 +357,7 @@ public class GuiRelay extends GuiBase
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int mX, int mY)
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
         hasCachedPermission = false;
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

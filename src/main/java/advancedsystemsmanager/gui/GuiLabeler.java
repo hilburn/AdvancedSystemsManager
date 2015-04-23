@@ -3,6 +3,7 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.LabelSyncMessage;
+import advancedsystemsmanager.reference.Reference;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -35,7 +36,7 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
             return res == 0 ? o1.getText().compareTo(o2.getText()) : res;
         }
     };
-    public static final ResourceLocation TEXTURE = new ResourceLocation("asm", "textures/gui/GuiLabeler.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.RESOURCE_LOCATION, "textures/gui/GuiLabeler.png");
     private static final int GUI_WIDTH = 140;
     private static final int GUI_HEIGHT = 200;
     private static final int SCROLL_Y = 25;

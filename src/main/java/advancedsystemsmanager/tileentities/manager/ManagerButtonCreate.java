@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
+import advancedsystemsmanager.api.execution.IComponentType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
@@ -8,16 +9,16 @@ import advancedsystemsmanager.flow.menus.MenuTarget;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.registry.ComponentType;
 import advancedsystemsmanager.settings.Settings;
+import net.minecraft.util.ResourceLocation;
 
 public class ManagerButtonCreate extends ManagerButton
 {
-    private ComponentType type;
+    private IComponentType type;
 
-    public ManagerButtonCreate(TileEntityManager manager, ComponentType type)
+    public ManagerButtonCreate(TileEntityManager manager, IComponentType type)
     {
-        super(manager, type.getLongUnLocalizedName());
+        super(manager, type.getLongName(), type.getX(), type.getY());
         this.type = type;
     }
 
@@ -37,8 +38,8 @@ public class ManagerButtonCreate extends ManagerButton
             boolean autoSide = dr.readBoolean();
             boolean autoBlackList = dr.readBoolean();
             boolean moveFirst = dr.readBoolean();
-            boolean isInput = type == ComponentType.INPUT || type == ComponentType.LIQUID_INPUT;
-            boolean isOutput = type == ComponentType.OUTPUT || type == ComponentType.LIQUID_OUTPUT;
+            boolean isInput = type.getId() == 1 || type.getId() == 5;
+            boolean isOutput = type.getId() == 2 || type.getId() == 6;
             if (autoSide)
             {
                 for (Menu menu : component.getMenus())
@@ -59,7 +60,7 @@ public class ManagerButtonCreate extends ManagerButton
                     }
                 }
             }
-            if (type == ComponentType.AUTO_CRAFTING)
+            if (type.getId() == 12)
             {
                 for (Menu menu : component.getMenus())
                 {
@@ -106,5 +107,11 @@ public class ManagerButtonCreate extends ManagerButton
         {
             return Localization.CREATE_COMMAND.toString() + " " + super.getMouseOver();
         }
+    }
+
+    @Override
+    public ResourceLocation getTexture()
+    {
+        return type.getTexture();
     }
 }

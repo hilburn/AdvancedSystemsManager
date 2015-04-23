@@ -6,21 +6,28 @@ import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -32,8 +39,11 @@ import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiBase extends GuiAntiNEI
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
+    protected Container container;
+
     public GuiBase(Container container)
     {
         super(container);
@@ -120,8 +130,6 @@ public abstract class GuiBase extends GuiAntiNEI
 
     public void drawMouseOver(String str, int x, int y, int width)
     {
-
-
         drawMouseOver(getLinesFromText(str, width), x, y);
     }
 
@@ -519,7 +527,6 @@ public abstract class GuiBase extends GuiAntiNEI
     @Override
     public void drawScreen(int x, int y, float f)
     {
-
         super.drawScreen(scaleX(x), scaleY(y), f);
 
         stopScaling();
@@ -624,19 +631,44 @@ public abstract class GuiBase extends GuiAntiNEI
         GL11.glColor4f(colorComponents[2], colorComponents[1], colorComponents[0], 1F);
     }
 
-
     public int getFontHeight()
     {
         return fontRendererObj.FONT_HEIGHT;
     }
 
-    public int getLeft()
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
-        return guiLeft;
+        visiblityData.showStateButtons = false;
+        return visiblityData;
     }
 
-    public int getTop()
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item)
     {
-        return guiTop;
+        return null;
+    }
+
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
+    {
+        return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);
+    }
+
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui)
+    {
+        return null;
+    }
+
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button)
+    {
+        return false;
     }
 }

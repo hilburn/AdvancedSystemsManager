@@ -103,9 +103,9 @@ public class CommandExecutor
         try
         {
             usedCommands.add(command.getId());
-            switch (command.getType())
+            switch (command.getType().getId())
             {
-                case INPUT:
+                case 0:
                     List<SlotInventoryHolder> inputInventory = getInventories(command.getMenus().get(0));
                     if (inputInventory != null)
                     {
@@ -113,7 +113,7 @@ public class CommandExecutor
                         getItems(command.getMenus().get(2), inputInventory);
                     }
                     break;
-                case OUTPUT:
+                case 1:
                     List<SlotInventoryHolder> outputInventory = getInventories(command.getMenus().get(0));
                     if (outputInventory != null)
                     {
@@ -121,7 +121,7 @@ public class CommandExecutor
                         insertItems(command.getMenus().get(2), outputInventory);
                     }
                     break;
-                case CONDITION:
+                case 2:
                     List<SlotInventoryHolder> conditionInventory = getInventories(command.getMenus().get(0));
                     if (conditionInventory != null)
                     {
@@ -135,7 +135,7 @@ public class CommandExecutor
                         }
                     }
                     return;
-                case LIQUID_INPUT:
+                case 3:
                     List<SlotInventoryHolder> inputTank = getTanks(command.getMenus().get(0));
                     if (inputTank != null)
                     {
@@ -143,7 +143,7 @@ public class CommandExecutor
                         getLiquids(command.getMenus().get(2), inputTank);
                     }
                     break;
-                case LIQUID_OUTPUT:
+                case 4:
                     List<SlotInventoryHolder> outputTank = getTanks(command.getMenus().get(0));
                     if (outputTank != null)
                     {
@@ -151,7 +151,7 @@ public class CommandExecutor
                         insertLiquids(command.getMenus().get(2), outputTank);
                     }
                     break;
-                case LIQUID_CONDITION:
+                case 5:
                     List<SlotInventoryHolder> conditionTank = getTanks(command.getMenus().get(0));
                     if (conditionTank != null)
                     {
@@ -165,7 +165,7 @@ public class CommandExecutor
                         }
                     }
                     return;
-                case FLOW_CONTROL:
+                case 6:
                     if (MenuSplit.isSplitConnection(command))
                     {
                         if (splitFlow(command.getMenus().get(0)))
@@ -174,7 +174,7 @@ public class CommandExecutor
                         }
                     }
                     break;
-                case REDSTONE_EMITTER:
+                case 7:
                     List<SlotInventoryHolder> emitters = getEmitters(command.getMenus().get(0));
                     if (emitters != null)
                     {
@@ -184,7 +184,7 @@ public class CommandExecutor
                         }
                     }
                     break;
-                case REDSTONE_CONDITION:
+                case 8:
                     List<SlotInventoryHolder> nodes = getNodes(command.getMenus().get(0));
                     if (nodes != null)
                     {
@@ -198,18 +198,18 @@ public class CommandExecutor
                     }
 
                     return;
-                case VARIABLE:
+                case 9:
                     List<SlotInventoryHolder> tiles = getTiles(command.getMenus().get(2));
                     if (tiles != null)
                     {
                         updateVariable(tiles, (MenuVariable)command.getMenus().get(0), (MenuListOrder)command.getMenus().get(3));
                     }
                     break;
-                case FOR_EACH:
+                case 10:
                     updateForLoop(command, (MenuVariableLoop)command.getMenus().get(0), (MenuContainerTypes)command.getMenus().get(1), (MenuListOrder)command.getMenus().get(2));
                     executeChildCommands(command, EnumSet.of(ConnectionOption.STANDARD_OUTPUT));
                     return;
-                case AUTO_CRAFTING:
+                case 11:
                     CraftingBufferFluidElement element = new CraftingBufferFluidElement(this, (MenuCrafting)command.getMenus().get(0), (MenuContainerScrap)command.getMenus().get(2));
                     if (((MenuCraftingPriority)command.getMenus().get(1)).shouldPrioritizeCrafting())
                     {
@@ -219,13 +219,13 @@ public class CommandExecutor
                         craftingBufferLow.add(element);
                     }
                     break;
-                case GROUP:
+                case 12:
                     if (connectionId < command.getChildrenInputNodes().size())
                     {
                         executeChildCommands(command.getChildrenInputNodes().get(connectionId), EnumSet.allOf(ConnectionOption.class));
                     }
                     return;
-                case NODE:
+                case 13:
                     FlowComponent parent = command.getParent();
                     if (parent != null)
                     {
@@ -243,7 +243,7 @@ public class CommandExecutor
                         }
                     }
                     return;
-                case CAMOUFLAGE:
+                case 14:
                     List<SlotInventoryHolder> camouflage = getCamouflage(command.getMenus().get(0));
                     if (camouflage != null)
                     {
@@ -269,7 +269,7 @@ public class CommandExecutor
                         }
                     }
                     break;
-                case SIGN:
+                case 15:
                     List<SlotInventoryHolder> sign = getSign(command.getMenus().get(0));
                     if (sign != null)
                     {
