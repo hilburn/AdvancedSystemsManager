@@ -1,7 +1,6 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.helpers.LocalizationHelper;
-import advancedsystemsmanager.registry.CommandRegistry;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -42,7 +41,7 @@ public class CommandHelp implements ISubCommand
             case 1:
                 StringBuilder output = new StringBuilder(LocalizationHelper.translate("asm.command.info.help.start") + " ");
                 List<String> commands = new ArrayList<String>();
-                for (ISubCommand command : CommandRegistry.commands.values())
+                for (ISubCommand command : ParentCommand.commands.values())
                 {
                     if (command.isVisible(sender)) commands.add(command.getCommandName());
                 }
@@ -57,7 +56,7 @@ public class CommandHelp implements ISubCommand
                 break;
             case 2:
                 String commandName = arguments[1];
-                if (!CommandRegistry.commandExists(commandName))
+                if (!ParentCommand.commandExists(commandName))
                 {
                     throw new CommandNotFoundException("asm.command.notFound");
                 }
@@ -76,7 +75,7 @@ public class CommandHelp implements ISubCommand
 
         if (args.length == 2)
         {
-            return CommandRegistry.instance.addTabCompletionOptions(sender, new String[]{args[1]});
+            return ParentCommand.instance.addTabCompletionOptions(sender, new String[]{args[1]});
         }
         return null;
 

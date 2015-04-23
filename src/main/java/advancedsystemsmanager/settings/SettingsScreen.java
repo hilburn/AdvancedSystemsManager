@@ -6,7 +6,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
-import advancedsystemsmanager.registry.ComponentRegistry;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ public class SettingsScreen implements IInterfaceRenderer
         this.manager = manager;
 
         buttons = new ArrayList<Button>();
-        buttons.add(new Button(493, 5, Localization.GO_BACK, 231, 12 * ComponentRegistry.getComponents().size() + 1)
+        buttons.add(new Button(493, 5, Localization.GO_BACK, 231, 12 * CommandRegistry.getComponents().size() + 1)
         {
             @Override
             protected void onClick()

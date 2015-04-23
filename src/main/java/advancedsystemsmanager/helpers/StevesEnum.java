@@ -1,18 +1,16 @@
 package advancedsystemsmanager.helpers;
 
-import advancedsystemsmanager.flow.ComponentType;
-import advancedsystemsmanager.registry.ComponentRegistry;
+import advancedsystemsmanager.api.execution.ICommand;
+import advancedsystemsmanager.flow.Command;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.ConnectionBlockType;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraftforge.common.util.EnumHelper;
-
-import java.lang.reflect.Field;
 
 public class StevesEnum
 {
@@ -46,9 +44,9 @@ public class StevesEnum
     public static final ConnectionBlockType RF_PROVIDER = addConnectionBlockType("RF_PROVIDER", TYPE_RF_INPUT, IEnergyProvider.class, false);
     public static final ConnectionBlockType RF_RECEIVER = addConnectionBlockType("RF_RECEIVER", TYPE_RF_OUTPUT, IEnergyReceiver.class, false);
     public static final ConnectionBlockType RF_CONNECTION = addConnectionBlockType("RF_CONNECTION", TYPE_RF, IEnergyConnection.class, false);
-    public static ComponentType RF_INPUT;
-    public static ComponentType RF_OUTPUT;
-    public static ComponentType RF_CONDITION;
+    public static Command RF_INPUT;
+    public static Command RF_OUTPUT;
+    public static Command RF_CONDITION;
     public static final ConnectionOption DELAYED_OUTPUT = addConnectionMethod("DELAYED_OUTPUT", DELAY_OUTPUT, ConnectionOption.ConnectionType.OUTPUT);
     public static final ConnectionSet DELAYED = addConnectionSet("DELAY_TRIGGER", DELAY_TRIGGER, new ConnectionOption[]{ConnectionOption.STANDARD_INPUT, DELAYED_OUTPUT});
 
@@ -63,9 +61,9 @@ public class StevesEnum
         return EnumHelper.addEnum(connectionTypeClasses, ConnectionBlockType.class, key, localization, theClass, group);
     }
 
-    public static ComponentType addComponentType(String key, int index, Localization shortName, Localization longName, ConnectionSet[] connections, Class... classes)
+    public static Command addComponentType(int index, ICommand.CommandType commandType, Localization shortName, Localization longName, ConnectionSet[] connections, Class... classes)
     {
-        return (ComponentType)ComponentRegistry.registerComponent(new ComponentType(index, shortName, longName, connections, classes));
+        return (Command)CommandRegistry.registerCommand(new Command(index, commandType, shortName, longName, connections, classes));
     }
 
     public static ClusterMethodRegistration addClusterMethod(String key)

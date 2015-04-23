@@ -6,7 +6,7 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.registry.ComponentRegistry;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
@@ -47,10 +47,10 @@ public class MenuResult extends Menu
                 }
                 getParent().setConnectionSet(sets[radioButtons.getSelectedOption()]);
 
-                if (getParent().getType() == ComponentRegistry.VARIABLE)
+                if (getParent().getType() == CommandRegistry.VARIABLE)
                 {
                     getParent().getManager().updateVariables();
-                } else if (getParent().getType() == ComponentRegistry.NODE)
+                } else if (getParent().getType() == CommandRegistry.NODE)
                 {
                     getParent().setParent(getParent().getParent());
                 }

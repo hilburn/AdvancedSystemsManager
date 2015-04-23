@@ -1,14 +1,14 @@
 package advancedsystemsmanager.flow;
 
 
-import advancedsystemsmanager.api.execution.IComponentType;
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.network.*;
-import advancedsystemsmanager.registry.ComponentRegistry;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.settings.Settings;
@@ -98,7 +98,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
     public static final int TEXT_SPACE_SHORT = 65;
     public static final int TEXT_MAX_LENGTH = 31;
 
-    public FlowComponent(TileEntityManager manager, int x, int y, IComponentType type)
+    public FlowComponent(TileEntityManager manager, int x, int y, ICommand type)
     {
         this.x = x;
         this.y = y;
@@ -143,7 +143,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
     public List<Menu> menus;
     public int openMenuId;
     public ConnectionSet connectionSet;
-    public IComponentType type;
+    public ICommand type;
     public TileEntityManager manager;
     public int id;
     public Map<Integer, Connection> connections;
@@ -624,7 +624,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
                 }
             } else if (inArrowBounds(internalX, internalY) || (Settings.isLargeOpenHitBox() && internalY < COMPONENT_SIZE_H))
             {
-                if (!isLarge && type == ComponentRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
+                if (!isLarge && type == CommandRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
                 {
                     manager.setSelectedComponent(this);
                 } else
@@ -1230,7 +1230,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
         }
     }
 
-    public IComponentType getType()
+    public ICommand getType()
     {
         return type;
     }
@@ -1648,7 +1648,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
             int y = nbtTagCompound.getShort(NBT_POS_Y);
             int typeId = nbtTagCompound.getByte(NBT_TYPE);
 
-            component = new FlowComponent(jam, x, y, ComponentRegistry.getComponent(typeId));
+            component = new FlowComponent(jam, x, y, CommandRegistry.getCommand(typeId));
             component.isLoading = true;
 
             if (nbtTagCompound.hasKey(NBT_NAME))
@@ -1694,7 +1694,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
                 component.connections.put((int)connectionTag.getByte(NBT_CONNECTION_POS), connection);
             }
 
-            if (component.type == ComponentRegistry.TRIGGER)
+            if (component.type == CommandRegistry.TRIGGER)
             {
                 component.currentInterval = nbtTagCompound.getShort(NBT_INTERVAL);
             }
@@ -1707,48 +1707,48 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
 
 
                 //added an extra menu to the triggers
-                if (component.type == ComponentRegistry.TRIGGER && i == 1 && version < 1)
+                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 1)
                 {
                     menuId++;
                 }
 
                 //added a second extra menu to the triggers
-                if (component.type == ComponentRegistry.TRIGGER && i == 2 && version < 5)
+                if (component.type == CommandRegistry.TRIGGER && i == 2 && version < 5)
                 {
                     menuId++;
                 }
 
                 //added a third extra menu to the triggers
-                if (component.type == ComponentRegistry.TRIGGER && i == 0 && version < 6)
+                if (component.type == CommandRegistry.TRIGGER && i == 0 && version < 6)
                 {
                     menuId++;
                 }
 
 
                 //added the bud menus to the triggers
-                if (component.type == ComponentRegistry.TRIGGER && i == 1 && version < 8)
+                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 8)
                 {
                     menuId++;
                 }
-                if (component.type == ComponentRegistry.TRIGGER && i == 4 && version < 8)
+                if (component.type == CommandRegistry.TRIGGER && i == 4 && version < 8)
                 {
                     menuId++;
                 }
 
                 //added an extra menu to the flow controls
-                if (component.type == ComponentRegistry.FLOW_CONTROL && i == 0 && version < 4)
+                if (component.type == CommandRegistry.FLOW_CONTROL && i == 0 && version < 4)
                 {
                     menuId++;
                 }
 
                 //added two extra menus to the camouflage updater
-                if (component.type == ComponentRegistry.CAMOUFLAGE && i == 1 && version < 10)
+                if (component.type == CommandRegistry.CAMOUFLAGE && i == 1 && version < 10)
                 {
                     menuId += 2;
                 }
 
                 //added crafting priority to the crafter
-                if (component.type == ComponentRegistry.AUTO_CRAFTING && i == 1 && version < 11)
+                if (component.type == CommandRegistry.AUTO_CRAFTING && i == 1 && version < 11)
                 {
                     menuId++;
                 }
@@ -1824,7 +1824,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
         }
         nbtTagCompound.setTag(NBT_CONNECTION, connections);
 
-        if (type == ComponentRegistry.TRIGGER)
+        if (type == CommandRegistry.TRIGGER)
         {
             nbtTagCompound.setShort(NBT_INTERVAL, (short)currentInterval);
         }

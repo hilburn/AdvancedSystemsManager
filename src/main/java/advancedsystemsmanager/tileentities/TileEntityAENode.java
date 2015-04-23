@@ -259,7 +259,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     }
 
     @Override
-    public void addItemsToBuffer(MenuStuff menuItem, SlotInventoryHolder inventory, List<ItemBufferElement> itemBuffer, CommandExecutorRF commandExecutorRF)
+    public void addItemsToBuffer(MenuStuff menuItem, SlotInventoryHolder inventory, List<ItemBufferElement> itemBuffer, CommandExecutor commandExecutor)
     {
         Iterator<IAEItemStack> itr = AEHelper.getItrItems(this.getNode());
         if (itr == null) return;
@@ -268,7 +268,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
             IAEItemStack stack = itr.next();
             if (stack != null)
             {
-                Setting setting = commandExecutorRF.isItemValid(menuItem.getSettings(), stack.getItemStack());
+                Setting setting = commandExecutor.isItemValid(menuItem.getSettings(), stack.getItemStack());
                 addAEItemToBuffer(menuItem, inventory, setting, stack, itemBuffer);
             }
         }
@@ -316,7 +316,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     }
 
     @Override
-    public void addFluidsToBuffer(MenuStuff menuItem, SlotInventoryHolder tank, List<LiquidBufferElement> liquidBuffer, CommandExecutorRF commandExecutorRF)
+    public void addFluidsToBuffer(MenuStuff menuItem, SlotInventoryHolder tank, List<LiquidBufferElement> liquidBuffer, CommandExecutor commandExecutor)
     {
         Iterator<IAEFluidStack> itr = AEHelper.getItrFluids(this.getNode());
         if (itr == null) return;
@@ -325,7 +325,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
             IAEFluidStack stack = itr.next();
             if (stack != null)
             {
-                Setting setting = commandExecutorRF.isLiquidValid(menuItem, stack.getFluidStack());
+                Setting setting = commandExecutor.isLiquidValid(menuItem, stack.getFluidStack());
                 addAEFluidToBuffer(menuItem, tank, setting, stack, liquidBuffer);
             }
         }

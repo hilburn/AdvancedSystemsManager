@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.execution;
 
-import advancedsystemsmanager.flow.execution.CommandExecutorRF;
+import advancedsystemsmanager.flow.execution.CommandExecutor;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.execution.LiquidBufferElement;
 import advancedsystemsmanager.flow.execution.SlotInventoryHolder;
@@ -12,5 +12,5 @@ public interface IHiddenTank
 {
     IFluidHandler getTank();
 
-    void addFluidsToBuffer(MenuStuff menuItem, SlotInventoryHolder tank, List<LiquidBufferElement> liquidBuffer, CommandExecutorRF commandExecutorRF);
+    void addFluidsToBuffer(MenuStuff menuItem, SlotInventoryHolder tank, List<LiquidBufferElement> liquidBuffer, CommandExecutor commandExecutor);
 }

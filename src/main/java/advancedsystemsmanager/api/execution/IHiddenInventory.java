@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.execution;
 
-import advancedsystemsmanager.flow.execution.CommandExecutorRF;
+import advancedsystemsmanager.flow.execution.CommandExecutor;
 import advancedsystemsmanager.flow.execution.ConditionSettingChecker;
 import advancedsystemsmanager.flow.execution.ItemBufferElement;
 import advancedsystemsmanager.flow.execution.SlotInventoryHolder;
@@ -18,7 +18,7 @@ public interface IHiddenInventory
 
     void insertItemStack(ItemStack stack);
 
-    void addItemsToBuffer(MenuStuff menuItem, SlotInventoryHolder inventory, List<ItemBufferElement> itemBuffer, CommandExecutorRF commandExecutorRF);
+    void addItemsToBuffer(MenuStuff menuItem, SlotInventoryHolder inventory, List<ItemBufferElement> itemBuffer, CommandExecutor commandExecutor);
 
     void isItemValid(Collection<Setting> settings, Map<Integer, ConditionSettingChecker> conditionSettingCheckerMap);
 }

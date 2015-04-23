@@ -14,7 +14,7 @@ import advancedsystemsmanager.proxy.CommonProxy;
 import advancedsystemsmanager.reference.Metadata;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.registry.ItemRegistry;
 import hilburnlib.registry.Registerer;
 import hilburnlib.utils.LogHelper;
@@ -123,7 +123,7 @@ public class AdvancedSystemsManager
     {
         NameRegistry.setNameData(new HashMap<Integer, NameData>());
         ModItemHelper.init();
-        event.registerServerCommand(CommandRegistry.instance);
+        event.registerServerCommand(ParentCommand.instance);
         File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");
         if (!file.exists()) file.mkdirs();
     }

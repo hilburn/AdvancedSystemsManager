@@ -1,16 +1,15 @@
 package advancedsystemsmanager.tileentities.manager;
 
-import advancedsystemsmanager.api.execution.IComponentType;
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.helpers.CopyHelper;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.registry.ComponentRegistry;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.settings.Settings;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
     public List<IManagerButton> getButtons(TileEntityManager manager)
     {
         List<IManagerButton> buttons = new ArrayList<IManagerButton>();
-        for (IComponentType type : ComponentRegistry.getComponents())
+        for (ICommand type : CommandRegistry.getComponents())
         {
             buttons.add(new ManagerButtonCreate(manager, type));
         }

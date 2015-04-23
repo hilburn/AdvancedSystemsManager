@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow;
 
-import advancedsystemsmanager.api.execution.IComponentType;
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.helpers.Localization;
@@ -8,7 +8,7 @@ import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
 
-public class ComponentType implements IComponentType
+public class Command implements ICommand
 {
     protected static final int BUTTON_SHEET_SIZE = 20;
     public Class<? extends Menu>[] classes;
@@ -16,14 +16,16 @@ public class ComponentType implements IComponentType
     public ConnectionSet[] sets;
     public Localization name;
     public Localization longName;
+    private CommandType commandType;
 
-    public ComponentType(int id, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
+    public Command(int id, CommandType commandType, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
     {
         this.classes = classes;
         this.sets = sets;
         this.name = name;
         this.longName = longName;
         this.id = id;
+        this.commandType = commandType;
     }
 
     @Override
@@ -54,6 +56,12 @@ public class ComponentType implements IComponentType
     public String getLongName()
     {
         return longName.toString();
+    }
+
+    @Override
+    public CommandType getCommandType()
+    {
+        return commandType;
     }
 
     @Override

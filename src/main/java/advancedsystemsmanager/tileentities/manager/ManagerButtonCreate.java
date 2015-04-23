@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
-import advancedsystemsmanager.api.execution.IComponentType;
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
@@ -14,9 +14,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class ManagerButtonCreate extends ManagerButton
 {
-    private IComponentType type;
+    private ICommand type;
 
-    public ManagerButtonCreate(TileEntityManager manager, IComponentType type)
+    public ManagerButtonCreate(TileEntityManager manager, ICommand type)
     {
         super(manager, type.getLongName(), type.getX(), type.getY());
         this.type = type;
@@ -38,8 +38,8 @@ public class ManagerButtonCreate extends ManagerButton
             boolean autoSide = dr.readBoolean();
             boolean autoBlackList = dr.readBoolean();
             boolean moveFirst = dr.readBoolean();
-            boolean isInput = type.getId() == 1 || type.getId() == 5;
-            boolean isOutput = type.getId() == 2 || type.getId() == 6;
+            boolean isInput = type.getCommandType() == ICommand.CommandType.INPUT;
+            boolean isOutput = type.getCommandType() == ICommand.CommandType.OUTPUT;
             if (autoSide)
             {
                 for (Menu menu : component.getMenus())
@@ -60,7 +60,7 @@ public class ManagerButtonCreate extends ManagerButton
                     }
                 }
             }
-            if (type.getId() == 12)
+            if (type.getCommandType() == ICommand.CommandType.CRAFTING)
             {
                 for (Menu menu : component.getMenus())
                 {
