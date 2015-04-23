@@ -12,7 +12,6 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.registry.ComponentRegistry;
 import advancedsystemsmanager.settings.Settings;
-import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +56,52 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             public boolean activateOnRelease()
             {
                 return true;
+            }
+        });
+        buttons.add(new ManagerButton(manager, StevesEnum.COPY_COMMAND.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
+        {
+            @Override
+            public void onClick(DataReader dataReader)
+            {
+                if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
+                {
+                    int id = dataReader.readComponentId();
+                    Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
+                    FlowComponent item;
+                    do
+                    {
+                        if (!itr.hasNext()) return;
+                        item = itr.next();
+                    } while (item.getId() != id);
+                    Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager.getFlowItems(), item, Settings.isLimitless(manager));
+                    manager.getFlowItems().addAll(added);
+                }
+            }
+
+            @Override
+            public boolean activateOnRelease()
+            {
+                return true;
+            }
+
+            @Override
+            public boolean onClick(DataWriter dataWriter)
+            {
+                Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
+                FlowComponent item;
+                do
+                {
+                    if (!itr.hasNext()) return false;
+                    item = itr.next();
+                } while (!item.isBeingMoved());
+                dataWriter.writeComponentId(manager, item.getId());
+                return true;
+            }
+
+            @Override
+            public String getMouseOver()
+            {
+                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Localization.MAXIMUM_COMPONENT_ERROR.toString() : super.getMouseOver();
             }
         });
         return buttons;
