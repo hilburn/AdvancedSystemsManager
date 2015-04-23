@@ -1,6 +1,5 @@
 package advancedsystemsmanager.network.message;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -25,9 +24,7 @@ public class SearchRegistryGenerateMessage implements IMessage, IMessageHandler<
     {
         if (ctx.side == Side.CLIENT && SearchItems.searchEntries.isEmpty())
         {
-            long time = System.currentTimeMillis();
             SearchItems.setItems();
-            AdvancedSystemsManager.log.info("Search database generated in " + (System.currentTimeMillis() - time) + "ms");
         }
         return null;
     }

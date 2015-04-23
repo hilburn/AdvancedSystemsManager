@@ -20,80 +20,6 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
 
     private enum Transformer
     {
-        ACTIVATE_TRIGGER("activateTrigger", "(Lvswe/stevesfactory/components/FlowComponent;Ljava/util/EnumSet;)V")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        return replace(list, "advancedsystemsmanager/flow/CommandExecutor", "advancedsystemsmanager/flow/CommandExecutorRF");
-                    }
-                },
-        GET_GUI("getGui", "(Lnet/minecraft/tileentity/TileEntity;Lnet/minecraft/entity/player/InventoryPlayer;)Lnet/minecraft/client/gui/GuiScreen;")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        return replace(list, "advancedsystemsmanager/gui/GuiManager", "advancedsystemsmanager/gui/GuiRFManager");
-                    }
-                },
-        CREATE_TE("func_149915_a", "(Lnet/minecraft/world/World;I)Lnet/minecraft/tileentity/TileEntity;")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        return replace(list, "advancedsystemsmanager/blocks/TileEntityCluster", "advancedsystemsmanager/blocks/TileEntityRFCluster");
-                    }
-                },
-        MANAGER_INIT("<init>", "()V")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        AbstractInsnNode node = list.getLast();
-                        while (!(node instanceof LineNumberNode && ((LineNumberNode)node).line == 85) && node != list.getFirst())
-                            node = node.getPrevious();
-                        list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "addCopyButton", "(Lvswe/stevesfactory/blocks/TileEntityManager;)V", false));
-                        return list;
-                    }
-                },
-        ITEM_SETTING_LOAD("load", "(Lnet/minecraft/nbt/NBTTagCompound;)V")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        AbstractInsnNode node = list.getLast();
-                        while (node.getOpcode() != RETURN && node != list.getFirst()) node = node.getPrevious();
-                        list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(node, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(node, new FieldInsnNode(GETFIELD, "advancedsystemsmanager/flow/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
-                        list.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "fixLoadingStack", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", false));
-                        list.insertBefore(node, new FieldInsnNode(PUTFIELD, "advancedsystemsmanager/flow/ItemSetting", "item", "Lnet/minecraft/item/ItemStack;"));
-                        return list;
-                    }
-                },
-        STRING_NULL_CHECK("updateSearch", "(Ljava/lang/String;Z)Ljava/util/List;")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        AbstractInsnNode node = list.getLast();
-                        LabelNode labelNode = null;
-                        while (node != list.getFirst())
-                        {
-                            if (node instanceof JumpInsnNode)
-                                labelNode = ((JumpInsnNode)node).label;
-                            else if (node instanceof VarInsnNode && node.getOpcode() == ALOAD && ((VarInsnNode)node).var == 10)
-                            {
-                                list.insertBefore(node, new VarInsnNode(ALOAD, 10));
-                                list.insertBefore(node, new JumpInsnNode(IFNULL, labelNode));
-                                break;
-                            }
-                            node = node.getPrevious();
-                        }
-                        return list;
-                    }
-                },
         GET_DESCRIPTION("getDescription", "(Lvswe/stevesfactory/interfaces/GuiManager;)Ljava/lang/String;")
                 {
                     @Override
@@ -111,20 +37,6 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                             }
                             node = node.getNext();
                         }
-                        return list;
-                    }
-                },
-        ITEM_SEARCH("updateSearch", "(Ljava/lang/String;Z)Ljava/util/List;")
-                {
-                    @Override
-                    protected InsnList modifyInstructions(InsnList list)
-                    {
-                        AbstractInsnNode first = list.getFirst();
-                        list.insertBefore(first, new VarInsnNode(ALOAD, 0));
-                        list.insertBefore(first, new VarInsnNode(ALOAD, 1));
-                        list.insertBefore(first, new VarInsnNode(ILOAD, 2));
-                        list.insertBefore(first, new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "updateItemSearch", "(Lvswe/stevesfactory/components/ComponentMenuItem;Ljava/lang/String;Z)Ljava/util/List;", false));
-                        list.insertBefore(first, new InsnNode(ARETURN));
                         return list;
                     }
                 },
@@ -292,26 +204,6 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
                         list.add(new MethodInsnNode(INVOKESTATIC, "asm/asm/StevesHooks", "instanceOf", "(Ljava/lang/Class;Lnet/minecraft/tileentity/TileEntity;)Z", false));
                         list.add(new InsnNode(IRETURN));
                         return list;
-                    }
-                },
-        IS_VISIBLE("isVisible", "()Z")
-                {
-                    @Override
-                    public void transform(ClassNode node)
-                    {
-                        MethodNode isVisible = new MethodNode(ACC_PUBLIC, this.name, this.args, null, new String[0]);
-                        isVisible.instructions.add(new VarInsnNode(ALOAD, 0));
-                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedsystemsmanager/flow/ComponentMenuInterval","getParent","()Lvswe/stevesfactory/components/FlowComponent;",false));
-                        isVisible.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "advancedsystemsmanager/flow/FlowComponent", "getConnectionSet", "()Lvswe/stevesfactory/components/ConnectionSet;",false));
-                        isVisible.instructions.add(new FieldInsnNode(GETSTATIC, "advancedsystemsmanager/helpers/StevesEnum", "DELAYED", "Lvswe/stevesfactory/components/ConnectionSet;"));
-                        LabelNode l1 = new LabelNode(new Label());
-                        isVisible.instructions.add(new JumpInsnNode(IF_ACMPEQ, l1));
-                        isVisible.instructions.add(new InsnNode(ICONST_1));
-                        isVisible.instructions.add(new InsnNode(IRETURN));
-                        isVisible.instructions.add(l1);
-                        isVisible.instructions.add(new InsnNode(ICONST_0));
-                        isVisible.instructions.add(new InsnNode(IRETURN));
-                        node.methods.add(isVisible);
                     }
                 },
         UPDATE_ENTITY(FMLForgePlugin.RUNTIME_DEOBF? "func_145845_h": "updateEntity", "()V")
@@ -531,20 +423,15 @@ public class StevesAddonsTransformer implements IClassTransformer, Opcodes
 
     private enum ClassName
     {
-        TE_MANAGER("advancedfactorymanager.tileentities.TileEntityManager", Transformer.ACTIVATE_TRIGGER, Transformer.GET_GUI, Transformer.MANAGER_INIT, Transformer.REMOVE_COMPONENT, Transformer.UPDATE_ENTITY),
-        CLUSTER_BLOCK("advancedfactorymanager.blocks.BlockCableCluster", Transformer.CREATE_TE),
-        ITEM_SETTING_LOAD("advancedfactorymanager.components.ItemSetting", Transformer.ITEM_SETTING_LOAD),
-        COMPONENT_MENU_ITEM("advancedfactorymanager.components.ComponentMenuItem", Transformer.ITEM_SEARCH),
+        TE_MANAGER("advancedfactorymanager.tileentities.TileEntityManager", Transformer.REMOVE_COMPONENT, Transformer.UPDATE_ENTITY),
         CONNECTION_BLOCK("advancedfactorymanager.util.ConnectionBlock", Transformer.GET_DESCRIPTION),
         COMPONENT_MENU_CONTAINER("advancedfactorymanager.components.ComponentMenuContainer$2", Transformer.CONTAINER_SEARCH),
         CLUSTER_TILE("advancedfactorymanager.tileentities.TileEntityCluster", Transformer.PUBLIC_PAIR, Transformer.GET_PUBLIC_REGISTRATIONS),
         RF_CLUSTER_TILE("advancedfactorymanager.tileentities.TileEntityRFCluster", Transformer.GET_REGISTRATIONS, Transformer.GET_RF_NODE),
-        CLUSTER_PAIR("advancedfactorymanager.tileentities.TileEntityCluster$Pair", Transformer.PUBLIC_TE),
         SETTINGS("advancedfactorymanager.settings.Settings", Transformer.LOAD_DEFAULT),
         CONTAINER_TYPES("advancedfactorymanager.components.ComponentMenuContainerTypes", Transformer.WRITE_TO_NBT, Transformer.READ_FROM_NBT),
         DATA_BIT_HELPER("advancedfactorymanager.network.DataBitHelper", Transformer.BIT_HELPER_INIT),
-        CONNECTION_BLOCK_TYPE("advancedfactorymanager.util.ConnectionBlockType", Transformer.IS_INSTANCE),
-        COMPONENT_MENU_INTERVAL("advancedfactorymanager.components.ComponentMenuInterval", Transformer.IS_VISIBLE);
+        CONNECTION_BLOCK_TYPE("advancedfactorymanager.util.ConnectionBlockType", Transformer.IS_INSTANCE);
 
         private String name;
         private Transformer[] transformers;

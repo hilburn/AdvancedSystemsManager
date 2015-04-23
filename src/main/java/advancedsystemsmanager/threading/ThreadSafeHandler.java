@@ -1,37 +1,47 @@
 package advancedsystemsmanager.threading;
 
-import advancedsystemsmanager.flow.elements.ScrollController;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SideOnly(Side.CLIENT)
 public class ThreadSafeHandler
 {
-    public static Map<ScrollController, List<ItemStack>> handle = new LinkedHashMap<ScrollController, List<ItemStack>>();
+    private static List<SearchItems> handle = new ArrayList<SearchItems>();
 
     @SubscribeEvent
     public void renderEvent(RenderWorldLastEvent e)
     {
-        if (!handle.isEmpty())
+        if (handle.size() > 0)
         {
-            for (Map.Entry<ScrollController, List<ItemStack>> entry : handle.entrySet())
+            for (SearchItems search : handle)
             {
-                setResult(entry.getKey(), entry.getValue());
+                search.setResult();
             }
             handle.clear();
         }
     }
 
-    public static void setResult(ScrollController controller, List<ItemStack> stackList)
+    public static void handle(SearchItems search)
     {
-        controller.getResult().clear();
-        controller.getResult().addAll(stackList);
+        if (search.getTime() > search.getScrollController().getLastUpdate())
+        {
+            SearchItems existing;
+            for (ListIterator<SearchItems> itr = handle.listIterator(); itr.hasNext(); )
+            {
+                if ((existing = itr.next()).getScrollController() == search.getScrollController())
+                {
+                    if (existing.getTime() < search.getTime())
+                    {
+                        itr.remove();
+                        itr.add(search);
+                    }
+                    return;
+                }
+            }
+        }
     }
 }

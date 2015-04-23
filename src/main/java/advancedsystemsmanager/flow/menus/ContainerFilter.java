@@ -1,4 +1,4 @@
-package advancedsystemsmanager.flow;
+package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.flow.elements.*;

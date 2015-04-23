@@ -127,14 +127,6 @@ public class StevesHooks
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
-    public static List updateItemSearch(MenuItem menu, String search, boolean showAll)
-    {
-        ScrollController searchController = menu.getScrollingList();
-        Thread thread = new Thread(new SearchItems(search, menu.getScrollingList(), showAll));
-        thread.start();
-        return searchController.getResult();
-    }
-
     public static boolean containerAdvancedSearch(ConnectionBlock block, String search)
     {
         TileEntity tileEntity = block.getTileEntity();

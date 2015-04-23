@@ -7,6 +7,7 @@ import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
@@ -69,6 +70,12 @@ public class MenuInterval extends Menu
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
 
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() != StevesEnum.DELAYED;
     }
 
     @Override

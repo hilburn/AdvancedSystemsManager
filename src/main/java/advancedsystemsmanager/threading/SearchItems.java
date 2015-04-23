@@ -1,5 +1,6 @@
 package advancedsystemsmanager.threading;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.flow.elements.ScrollController;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,22 +14,23 @@ import java.util.regex.Pattern;
 public class SearchItems implements Runnable
 {
     public static List<SearchEntry> searchEntries = new ArrayList<SearchEntry>();
-
+    private long time;
     private String search;
     private ScrollController controller;
     private boolean showAll;
+    private List<ItemStack> items = new ArrayList<ItemStack>();
 
     public SearchItems(String search, ScrollController controller, boolean showAll)
     {
         this.search = search;
         this.controller = controller;
         this.showAll = showAll;
+        this.time = System.currentTimeMillis();
     }
 
     @Override
     public void run()
     {
-        List<ItemStack> itemStacks = new ArrayList<ItemStack>();
         if (search.equals(".inv"))
         {
             InventoryPlayer inventory = Minecraft.getMinecraft().thePlayer.inventory;
@@ -39,7 +41,7 @@ public class SearchItems implements Runnable
                 {
                     stack = stack.copy();
                     stack.stackSize = 1;
-                    itemStacks.add(stack);
+                    items.add(stack);
                 }
             }
         } else
@@ -48,55 +50,77 @@ public class SearchItems implements Runnable
             {
                 Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
                 boolean advanced = Minecraft.getMinecraft().gameSettings.advancedItemTooltips;
-                for (SearchEntry entry : searchEntries) entry.search(pattern, itemStacks, advanced);
+                for (SearchEntry entry : searchEntries) entry.search(pattern, items, advanced);
             } else
             {
-                for (SearchEntry entry : searchEntries) itemStacks.add(entry.getStack());
+                for (SearchEntry entry : searchEntries) items.add(entry.getStack());
             }
         }
-        setResult(this.controller, itemStacks);
+        ThreadSafeHandler.handle(this);
     }
 
-    public static void setResult(ScrollController controller, List<ItemStack> stackList)
+    public void setResult()
     {
-        ThreadSafeHandler.handle.put(controller, stackList);
+        controller.result = items;
+        controller.lastUpdate = time;
     }
 
     public static void setItems()
     {
-        List<ItemStack> stacks = new ArrayList<ItemStack>();
-        for (Object anItemRegistry : Item.itemRegistry)
+        new Thread(new CacheItems()).start();
+    }
+
+    public ScrollController getScrollController()
+    {
+        return controller;
+    }
+
+    public long getTime()
+    {
+        return time;
+    }
+
+    public static class CacheItems implements Runnable
+    {
+        @Override
+        public void run()
         {
-            try
+            long time = System.currentTimeMillis();
+            List<ItemStack> stacks = new ArrayList<ItemStack>();
+            for (Object anItemRegistry : Item.itemRegistry)
             {
-                Item item = (Item)anItemRegistry;
-                item.getSubItems(item, item.getCreativeTab(), stacks);
-            } catch (Exception ignore)
-            {
-            }
-        }
-        for (ItemStack stack : stacks)
-        {
-            try
-            {
-                List tooltipList = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
-                List advTooltipList = stack.getTooltip(Minecraft.getMinecraft().thePlayer, true);
-                String searchString = "";
-                for (Object string : tooltipList)
+                try
                 {
-                    if (string != null)
-                        searchString += string + "\n";
-                }
-                String advSearchString = "";
-                for (Object string : advTooltipList)
+                    Item item = (Item)anItemRegistry;
+                    item.getSubItems(item, item.getCreativeTab(), stacks);
+                } catch (Exception ignore)
                 {
-                    if (string != null)
-                        advSearchString += string + "\n";
                 }
-                searchEntries.add(new SearchEntry(searchString, advSearchString, stack));
-            } catch (Throwable ignore)
-            {
             }
+            for (ItemStack stack : stacks)
+            {
+                try
+                {
+                    List tooltipList = stack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
+                    List advTooltipList = stack.getTooltip(Minecraft.getMinecraft().thePlayer, true);
+                    String searchString = "";
+                    for (Object string : tooltipList)
+                    {
+                        if (string != null)
+                            searchString += string + "\n";
+                    }
+                    String advSearchString = "";
+                    for (Object string : advTooltipList)
+                    {
+                        if (string != null)
+                            advSearchString += string + "\n";
+                    }
+                    searchEntries.add(new SearchEntry(searchString, advSearchString, stack));
+                } catch (Throwable ignore)
+                {
+                }
+            }
+            AdvancedSystemsManager.log.info("Search database generated in " + (System.currentTimeMillis() - time) + "ms");
         }
     }
 

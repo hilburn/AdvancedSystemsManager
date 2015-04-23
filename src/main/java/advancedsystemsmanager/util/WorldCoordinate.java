@@ -25,23 +25,20 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
     public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof WorldCoordinate)) return false;
 
         WorldCoordinate that = (WorldCoordinate)o;
 
-        if (x != that.x) return false;
-        if (y != that.y) return false;
-        if (z != that.z) return false;
+        return x == that.x && y == that.y && z == that.z;
 
-        return true;
     }
 
     @Override
     public int hashCode()
     {
-        int result = x;
-        result = 31 * result + y;
+        int result = 173 + x;
         result = 31 * result + z;
+        result = 31 * result + y;
         return result;
     }
 
@@ -68,7 +65,7 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
     @Override
     public int compareTo(WorldCoordinate o)
     {
-        return ((Integer)depth).compareTo(o.depth);
+        return depth == o.depth ? 0 : depth < o.depth ? -1 : 1;
     }
 
     public void setTileEntity(TileEntity tileEntity)

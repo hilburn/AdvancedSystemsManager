@@ -54,6 +54,7 @@ public abstract class ScrollController<T>
     public int startX = 5;
     public int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
     public boolean disabledScroll;
+    public long lastUpdate;
 
     public ScrollController(boolean hasSearchBox)
     {
@@ -364,6 +365,11 @@ public abstract class ScrollController<T>
     public void setDisabledScroll(boolean disabledScroll)
     {
         this.disabledScroll = disabledScroll;
+    }
+
+    public long getLastUpdate()
+    {
+        return lastUpdate;
     }
 
 

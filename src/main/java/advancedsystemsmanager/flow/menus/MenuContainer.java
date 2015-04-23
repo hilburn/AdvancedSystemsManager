@@ -2,7 +2,6 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.api.gui.IContainerSelection;
-import advancedsystemsmanager.flow.ContainerFilter;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -34,8 +33,6 @@ import java.util.List;
 
 public abstract class MenuContainer extends Menu
 {
-
-
     public static final int BACK_SRC_X = 46;
     public static final int BACK_SRC_Y = 52;
     public static final int BACK_SIZE_W = 9;
@@ -154,8 +151,6 @@ public abstract class MenuContainer extends Menu
 
                     iterator.remove();
                 }
-
-
                 return ret;
             }
 

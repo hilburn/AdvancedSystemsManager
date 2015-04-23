@@ -15,7 +15,6 @@ import java.util.EnumSet;
 
 public class ConnectionBlock implements IContainerSelection<GuiManager>
 {
-
     private TileEntity tileEntity;
     private EnumSet<ConnectionBlockType> types;
     private int id;

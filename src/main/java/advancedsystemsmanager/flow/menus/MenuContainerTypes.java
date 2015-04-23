@@ -174,7 +174,7 @@ public class MenuContainerTypes extends Menu
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
-        byte data = nbtTagCompound.getByte(NBT_CHECKED);
+        short data = nbtTagCompound.getShort(NBT_CHECKED);
         for (int i = 0; i < checked.length; i++)
         {
             checked[i] = ((data >> i) & 1) != 0;
@@ -184,7 +184,7 @@ public class MenuContainerTypes extends Menu
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        byte data = 0;
+        short data = 0;
         for (int i = 0; i < checked.length; i++)
         {
             if (checked[i])
@@ -192,7 +192,7 @@ public class MenuContainerTypes extends Menu
                 data |= 1 << i;
             }
         }
-        nbtTagCompound.setByte(NBT_CHECKED, data);
+        nbtTagCompound.setShort(NBT_CHECKED, data);
     }
 
     @Override
