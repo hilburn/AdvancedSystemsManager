@@ -10,8 +10,8 @@ import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +19,7 @@ import java.util.Set;
 public class Command implements ICommand
 {
     protected static final int BUTTON_SHEET_SIZE = 20;
-    public Constructor[] constructors;
+    public Constructor<? extends Menu>[] constructors;
     public int id;
     public ConnectionSet[] sets;
     public Localization name;
@@ -28,7 +28,7 @@ public class Command implements ICommand
 
     public Command(int id, CommandType commandType, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
     {
-        constructors = new Constructor[classes.length];
+        constructors = (Constructor<? extends Menu>[])Array.newInstance(Constructor.class, classes.length);
         int i = 0;
         for (Class<? extends Menu> menu : classes)
         {
@@ -61,20 +61,17 @@ public class Command implements ICommand
     @Override
     public List<Menu> getMenus(FlowComponent component)
     {
-        List<Menu> menus = new ArrayList<Menu>();
-        for (Constructor constructor : constructors)
+        for (Constructor<? extends Menu> constructor : constructors)
         {
-
             try
             {
-                Object obj = constructor.newInstance(this);
-                menus.add((Menu)obj);
+                component.getMenus().add(constructor.newInstance(component));
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
         }
-        return menus;
+        return component.getMenus();
     }
 
     @Override

@@ -603,12 +603,13 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public int getNextFreeID()
     {
-        return maxID++;
+        return items.size();
+        //return maxID++;
     }
 
     public boolean addNewComponent(FlowComponent component)
     {
-        return components.put(component.getId(), component) != null;
+        return false; //components.put(component.getId(), component) != null;
     }
 
     private boolean usingUnlimitedInventories;
