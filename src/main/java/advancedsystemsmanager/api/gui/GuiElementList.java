@@ -36,12 +36,13 @@ public class GuiElementList<Type extends IGuiElement<Gui>, Gui extends GuiScreen
     }
 
     @Override
-    public void onClick(int mouseX, int mouseY, int button)
+    public boolean onClick(int mouseX, int mouseY, int button)
     {
         for (Type type : this)
         {
-            type.onClick(mouseX, mouseY, button);
+            if (type.onClick(mouseX, mouseY, button)) return true;
         }
+        return false;
     }
 
     @Override

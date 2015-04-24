@@ -8,6 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICommand
@@ -16,7 +17,7 @@ public interface ICommand
 
     public ConnectionSet[] getSets();
 
-    Class<? extends Menu>[] getClasses();
+    List<Menu> getMenus(FlowComponent component);
 
     public String getName();
 

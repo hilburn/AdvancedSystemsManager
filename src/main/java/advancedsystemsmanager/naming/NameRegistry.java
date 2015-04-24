@@ -107,4 +107,9 @@ public class NameRegistry
     {
         MessageHandler.INSTANCE.sendTo(new FullDataSyncMessage(instance.nameMapping), player);
     }
+
+    public static void clear()
+    {
+        instance.nameMapping.clear();
+    }
 }

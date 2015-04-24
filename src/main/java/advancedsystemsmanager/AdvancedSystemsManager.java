@@ -121,7 +121,7 @@ public class AdvancedSystemsManager
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event)
     {
-        NameRegistry.setNameData(new HashMap<Integer, NameData>());
+        NameRegistry.clear();
         ModItemHelper.init();
         event.registerServerCommand(ParentCommand.instance);
         File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");

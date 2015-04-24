@@ -16,7 +16,7 @@ public interface IGuiElement<Gui extends GuiScreen>
     public boolean onKeyStroke(Gui gui, char character, int key);
 
     @SideOnly(Side.CLIENT)
-    public void onClick(int mouseX, int mouseY, int button);
+    public boolean onClick(int mouseX, int mouseY, int button);
 
     @SideOnly(Side.CLIENT)
     public boolean isVisible();

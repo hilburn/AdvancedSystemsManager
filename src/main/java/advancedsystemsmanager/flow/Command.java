@@ -10,12 +10,16 @@ import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class Command implements ICommand
 {
     protected static final int BUTTON_SHEET_SIZE = 20;
-    public Class<? extends Menu>[] classes;
+    public Constructor[] constructors;
     public int id;
     public ConnectionSet[] sets;
     public Localization name;
@@ -24,7 +28,17 @@ public class Command implements ICommand
 
     public Command(int id, CommandType commandType, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
     {
-        this.classes = classes;
+        constructors = new Constructor[classes.length];
+        int i = 0;
+        for (Class<? extends Menu> menu : classes)
+        {
+            try
+            {
+                constructors[i++] = menu.getConstructor(FlowComponent.class);
+            } catch (NoSuchMethodException ignored)
+            {
+            }
+        }
         this.sets = sets;
         this.name = name;
         this.longName = longName;
@@ -39,15 +53,28 @@ public class Command implements ICommand
     }
 
     @Override
-    public Class<? extends Menu>[] getClasses()
-    {
-        return classes;
-    }
-
-    @Override
     public ConnectionSet[] getSets()
     {
         return sets;
+    }
+
+    @Override
+    public List<Menu> getMenus(FlowComponent component)
+    {
+        List<Menu> menus = new ArrayList<Menu>();
+        for (Constructor constructor : constructors)
+        {
+
+            try
+            {
+                Object obj = constructor.newInstance(this);
+                menus.add((Menu)obj);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return menus;
     }
 
     @Override

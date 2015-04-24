@@ -2,7 +2,9 @@ package advancedsystemsmanager.flow;
 
 
 import advancedsystemsmanager.api.execution.ICommand;
+import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.flow.elements.*;
+import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
@@ -23,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
+public class FlowComponent implements INetworkReader, Comparable<FlowComponent>, IGuiElement<GuiManager>
 {
     public static final int COMPONENT_SRC_X = 0;
     public static final int COMPONENT_SRC_Y = 0;
@@ -107,21 +109,8 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>
         this.manager = manager;
         this.id = manager.getFlowItems().size();
 
-        menus = new ArrayList<Menu>();
-        for (Class<? extends Menu> componentMenuClass : type.getClasses())
-        {
-            try
-            {
-                Constructor<? extends Menu> constructor = componentMenuClass.getConstructor(FlowComponent.class);
-                Object obj = constructor.newInstance(this);
-
-
-                menus.add((Menu)obj);
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+        menus = type.getMenus(this);
+        menus.add(new MenuResult(this));
 
         openMenuId = -1;
         connections = new HashMap<Integer, Connection>();

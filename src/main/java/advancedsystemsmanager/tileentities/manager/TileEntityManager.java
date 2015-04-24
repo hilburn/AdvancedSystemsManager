@@ -52,6 +52,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public static final int BUTTON_INNER_SRC_X = 230;
     public static final int BUTTON_INNER_SRC_Y = 0;
     public List<FlowComponent> items;
+    public List<FlowComponent> triggers;
     private Connection currentlyConnecting;
     public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
@@ -68,6 +69,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         buttons = ManagerButtonRegistry.getButtons(this);
         removedIds = new ArrayList<Integer>();
         variables = new Variable[VariableColor.values().length];
+        items = new LinkedList<FlowComponent>();
         for (int i = 0; i < variables.length; i++)
         {
             variables[i] = new Variable(i);
