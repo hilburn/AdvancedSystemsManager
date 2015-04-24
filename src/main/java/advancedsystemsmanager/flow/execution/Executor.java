@@ -1,38 +1,48 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.buffers.MultiBufferElementMap;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Executor implements IBufferProvider
 {
-    private MultiBufferElementMap buffers;
+    private Map<String, IBuffer> buffers;
     public TileEntityManager manager;
     public List<Integer> usedCommands;
 
     @Override
-    public Set<IBufferElement> getBuffer(String buffer)
+    public <T extends IBuffer> T getBuffer(String buffer)
     {
-        return buffers.get(buffer);
+        return (T)buffers.get(buffer);
     }
+
+    @Override
+    public boolean containsBuffer(String key)
+    {
+        return buffers.containsKey(key);
+    }
+
+    @Override
+    public void setBuffer(String key, IBuffer buffer)
+    {
+        if (!buffers.containsKey(key))
+            buffers.put(key, buffer);
+    }
+
 
     public Executor(TileEntityManager manager)
     {
         this.manager = manager;
-        this.buffers = new MultiBufferElementMap();
+        this.buffers = new HashMap<String, IBuffer>();
         this.usedCommands = new ArrayList<Integer>();
     }
 
-    public Executor(TileEntityManager manager, MultiBufferElementMap buffers, List<Integer> usedCommands)
+    public Executor(TileEntityManager manager, HashMap<String, IBuffer> buffers, List<Integer> usedCommands)
     {
         this.manager = manager;
         this.buffers = buffers;

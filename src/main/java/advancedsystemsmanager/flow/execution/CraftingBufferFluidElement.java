@@ -183,7 +183,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     }
 
     @Override
-    public void reduceBufferAmount(int amount)
+    public int reduceBufferAmount(int amount)
     {
         this.justRemoved = true;
         if (this.overflowBuffer > 0)
@@ -196,16 +196,11 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         }
 
         this.isCrafting = true;
+        return amount;
     }
 
     @Override
-    public void reduceContainerAmount(int amount)
-    {
-
-    }
-
-    @Override
-    public ItemStack getValue()
+    public ItemStack getKey()
     {
         if (this.useAdvancedDetection())
         {
@@ -247,7 +242,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
             while (iterator.hasNext())
             {
                 IItemBufferSubElement itemBufferSubElement = (IItemBufferSubElement)iterator.next();
-                ItemStack itemstack = itemBufferSubElement.getValue();
+                ItemStack itemstack = itemBufferSubElement.getKey();
                 int subCount = Math.min(count, itemBufferSubElement.getSizeLeft());
 
                 for (int i = 0; i < 9; ++i)

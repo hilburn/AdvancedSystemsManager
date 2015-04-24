@@ -1,6 +1,7 @@
 package advancedsystemsmanager.flow.execution;
 
 
+import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -58,21 +59,15 @@ public class SlotStackInventoryHolder implements IItemBufferSubElement
     }
 
     @Override
-    public void reduceBufferAmount(int amount)
+    public int reduceBufferAmount(int amount)
     {
         itemStack.stackSize -= amount;
         sizeLeft -= amount;
+        return amount;
     }
 
     @Override
-    public void reduceContainerAmount(int amount)
-    {
-        getContainer().decrStackSize(getSlot(), amount);
-        onUpdate();
-    }
-
-    @Override
-    public ItemStack getValue()
+    public ItemStack getKey()
     {
         return itemStack;
     }

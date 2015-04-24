@@ -1,4 +1,4 @@
-package advancedsystemsmanager.flow.execution.buffers;
+package advancedsystemsmanager.flow.execution.buffers.maps;
 
 import gnu.trove.strategy.HashingStrategy;
 import net.minecraft.item.ItemStack;

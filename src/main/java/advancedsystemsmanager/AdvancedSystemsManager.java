@@ -1,11 +1,12 @@
 package advancedsystemsmanager;
 
 import advancedsystemsmanager.compatibility.ModCompat;
+import advancedsystemsmanager.flow.execution.Executor;
+import advancedsystemsmanager.flow.execution.buffers.buffers.Buffer;
 import advancedsystemsmanager.flow.setting.ModItemHelper;
 import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.gui.GuiHandler;
 import advancedsystemsmanager.naming.EventHandler;
-import advancedsystemsmanager.naming.NameData;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.FileHelper;
 import advancedsystemsmanager.network.MessageHandler;
@@ -35,7 +36,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-import java.util.HashMap;
 
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION_FULL)
 public class AdvancedSystemsManager
@@ -86,6 +86,11 @@ public class AdvancedSystemsManager
         registerer.scan(ItemRegistry.class);
 
         MessageHandler.init();
+
+        Executor test = new Executor(null);
+
+        Buffer buffer = test.getBuffer("items");
+        buffer = test.getBuffer("fluid");
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
 

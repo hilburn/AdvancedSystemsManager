@@ -1,8 +1,10 @@
 package advancedsystemsmanager.api.execution;
 
-import java.util.Set;
-
 public interface IBufferProvider
 {
-    Set<IBufferElement> getBuffer(String buffer);
+    <T extends IBuffer> T getBuffer(String key);
+
+    boolean containsBuffer(String key);
+
+    void setBuffer(String key, IBuffer buffer);
 }

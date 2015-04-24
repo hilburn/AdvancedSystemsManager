@@ -72,7 +72,7 @@ public class MenuItem extends MenuStuff
             }
 
             @Override
-            public boolean getValue() {
+            public boolean getKey() {
                 return getSelectedSetting().getFuzzyMode() == FuzzyMode.FUZZY;
             }
 

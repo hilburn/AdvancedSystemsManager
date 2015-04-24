@@ -1055,7 +1055,7 @@ public class CommandExecutor
         IItemBufferSubElement subElement;
         while ((subElement = itemBufferElement.getSubElement()) != null)
         {
-            ItemStack itemStack = subElement.getValue();
+            ItemStack itemStack = subElement.getKey();
             Setting setting = this.isItemValid(menuItem.getSettings(), itemStack);
             if (menuItem.useWhiteList() != (setting == null) || setting != null && setting.isLimitedByAmount())
             {

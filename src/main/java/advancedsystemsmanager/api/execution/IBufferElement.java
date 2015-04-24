@@ -1,14 +1,14 @@
 package advancedsystemsmanager.api.execution;
 
-public interface IBufferElement<Type extends IBufferSubElement<Type, Value, ?>, Value>
+public interface IBufferElement<SubElement extends IBufferSubElement<?, Key, ?>, Key>
 {
-    void addSubElement(Type type);
+    void addSubElement(IBufferSubElement<?, Key, ?> subElement);
 
     void prepareSubElements();
 
-    Type getSubElement();
+    SubElement getSubElement();
 
-    Value getKey();
+    Key getKey();
 
     void removeSubElement();
 
@@ -17,4 +17,6 @@ public interface IBufferElement<Type extends IBufferSubElement<Type, Value, ?>, 
     void decreaseSize(int moveCount, boolean fair);
 
     void releaseSubElements();
+
+    IBuffer<Key, ? extends IBufferElement<?, Key>, SubElement> getNewBuffer();
 }
