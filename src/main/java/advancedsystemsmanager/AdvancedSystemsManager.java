@@ -87,11 +87,6 @@ public class AdvancedSystemsManager
 
         MessageHandler.init();
 
-        Executor test = new Executor(null);
-
-        Buffer buffer = test.getBuffer("items");
-        buffer = test.getBuffer("fluid");
-
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
 
         FileHelper.setConfigDir(event.getModConfigurationDirectory());

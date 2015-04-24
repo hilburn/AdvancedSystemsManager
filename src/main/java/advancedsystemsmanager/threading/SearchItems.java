@@ -56,7 +56,8 @@ public class SearchItems implements Runnable
                 for (SearchEntry entry : searchEntries) items.add(entry.getStack());
             }
         }
-        ThreadSafeHandler.handle(this);
+        if (time > controller.getLastUpdate())
+            ThreadSafeHandler.handle(this);
     }
 
     public void setResult()

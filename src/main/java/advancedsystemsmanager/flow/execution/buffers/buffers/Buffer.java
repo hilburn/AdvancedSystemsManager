@@ -41,11 +41,11 @@ public class Buffer<Key> implements IBuffer<Key, IBufferElement<?, Key>, IBuffer
     }
 
     @Override
-    public boolean add(IBufferSubElement<?, Key, ?> subElement)
+    public boolean add(IBufferSubElement subElement)
     {
         if (!elements.containsKey(subElement.getKey()))
         {
-            elements.put(subElement.getKey(), subElement.getNewBufferElement());
+            elements.put((Key)subElement.getKey(), subElement.getNewBufferElement());
         }
         elements.get(subElement.getKey()).addSubElement(subElement);
         return true;

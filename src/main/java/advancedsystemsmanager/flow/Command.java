@@ -6,15 +6,12 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.reference.Textures;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Command implements ICommand
 {
@@ -117,7 +114,7 @@ public class Command implements ICommand
     }
 
     @Override
-    public Set<ConnectionOption> getActiveChildren(FlowComponent command)
+    public List<Connection> getActiveChildren(FlowComponent command)
     {
         return null;
     }

@@ -1,15 +1,14 @@
 package advancedsystemsmanager.api.execution;
 
+import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
-import java.util.Set;
 
 public interface ICommand
 {
@@ -34,7 +33,7 @@ public interface ICommand
 
     void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider);
 
-    Set<ConnectionOption> getActiveChildren(FlowComponent command);
+    List<Connection> getActiveChildren(FlowComponent command);
 
     public static enum CommandType
     {

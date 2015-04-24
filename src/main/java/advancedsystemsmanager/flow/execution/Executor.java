@@ -4,6 +4,8 @@ import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
@@ -55,17 +57,38 @@ public class Executor implements IBufferProvider
         {
             this.usedCommands.add(command.getId());
             command.getType().execute(command, connectionId, this);
-            this.executeChildCommands(command, command.getType().getActiveChildren(command));
+            this.executeChildCommands(command.getType().getActiveChildren(command));
         }
     }
 
-    private void executeChildCommands(FlowComponent command, Set<ConnectionOption> activeChildren)
+    private void executeChildCommands(List<Connection> connections)
+    {
+        for (Connection connection : connections)
+        {
+            this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
+        }
+    }
+
+    public void executeTriggerCommand(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
+    {
+        for (Variable variable : this.manager.getVariables())
+        {
+            if (variable.isValid() && (!variable.hasBeenExecuted() || ((MenuVariable)variable.getDeclaration().getMenus().get(0)).getVariableMode() == MenuVariable.VariableMode.LOCAL))
+            {
+                this.executeCommand(variable.getDeclaration(), 0);
+                variable.setExecuted(true);
+            }
+        }
+        this.executeChildCommands(component, validTriggerOutputs);
+    }
+
+    public void executeChildCommands(FlowComponent command, EnumSet<ConnectionOption> validTriggerOutputs)
     {
         for (int i = 0; i < command.getConnectionSet().getConnections().length; ++i)
         {
             Connection connection = command.getConnection(i);
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
-            if (connection != null && !option.isInput() && activeChildren.contains(option))
+            if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
                 this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
             }

@@ -18,5 +18,5 @@ public interface IBuffer<Key, Element extends IBufferElement<?, Key>, SubElement
 
     void remove(Key key, int amount, boolean fair);
 
-    boolean add(SubElement subElement);
+    boolean add(IBufferSubElement subElement);
 }

@@ -14,7 +14,7 @@ public class BufferElementMap<Key> extends TCustomHashMap<Key, IBufferElement<?,
 {
     private static final Map<String, HashingStrategy> hashes = new HashMap<String, HashingStrategy>();
 
-    public static void registerHash(String buffer, HashingStrategy<? extends IBufferElement> strategy)
+    public static void registerHash(String buffer, HashingStrategy strategy)
     {
         if (!hashes.containsKey(buffer))
             hashes.put(buffer, strategy);
@@ -27,9 +27,9 @@ public class BufferElementMap<Key> extends TCustomHashMap<Key, IBufferElement<?,
 
     static
     {
-        registerHash("item", new ItemHashingStrategy());
-        registerHash("highPriority", new ItemHashingStrategy());
-        registerHash("lowPriority", new ItemHashingStrategy());
+        registerHash("item", new ItemStackHashingStrategy());
+        registerHash("highPriority", new ItemStackHashingStrategy());
+        registerHash("lowPriority", new ItemStackHashingStrategy());
         registerHash("fluid", new FluidHashingStrategy());
     }
 }

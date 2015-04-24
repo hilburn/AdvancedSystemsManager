@@ -27,21 +27,19 @@ public class ThreadSafeHandler
 
     public static void handle(SearchItems search)
     {
-        if (search.getTime() > search.getScrollController().getLastUpdate())
+        SearchItems existing;
+        for (ListIterator<SearchItems> itr = handle.listIterator(); itr.hasNext(); )
         {
-            SearchItems existing;
-            for (ListIterator<SearchItems> itr = handle.listIterator(); itr.hasNext(); )
+            if ((existing = itr.next()).getScrollController() == search.getScrollController())
             {
-                if ((existing = itr.next()).getScrollController() == search.getScrollController())
+                if (existing.getTime() < search.getTime())
                 {
-                    if (existing.getTime() < search.getTime())
-                    {
-                        itr.remove();
-                        itr.add(search);
-                    }
-                    return;
+                    itr.remove();
+                    itr.add(search);
                 }
+                return;
             }
         }
+        handle.add(search);
     }
 }

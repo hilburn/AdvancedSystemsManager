@@ -95,7 +95,6 @@ public class CommandExecutor
                 this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
             }
         }
-
     }
 
     public void executeCommand(FlowComponent command, int connectionId)
@@ -470,7 +469,7 @@ public class CommandExecutor
         return true;
     }
 
-    public void getValidSlots(Menu menu, List<SlotInventoryHolder> inventories)
+    public static void getValidSlots(Menu menu, List<SlotInventoryHolder> inventories)
     {
         MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
 

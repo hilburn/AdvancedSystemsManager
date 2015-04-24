@@ -4,14 +4,11 @@ import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITileEntityInterface;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
+import advancedsystemsmanager.flow.execution.*;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
-import advancedsystemsmanager.flow.execution.CommandExecutor;
-import advancedsystemsmanager.flow.execution.TriggerHelper;
-import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
-import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
@@ -436,7 +433,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 break;
             }
         }
-        new CommandExecutor(this).executeTriggerCommand(component, validTriggerOutputs);
+        new Executor(this).executeTriggerCommand(component, validTriggerOutputs);
     }
 
 

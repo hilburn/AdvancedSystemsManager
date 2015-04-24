@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class MessageHandler implements IMessageHandler
 {
-    public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(Reference.ID);
+    public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(Reference.ID+"-Simple");
 
     public static void init()
     {

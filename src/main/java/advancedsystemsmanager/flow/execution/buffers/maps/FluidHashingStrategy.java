@@ -1,20 +1,20 @@
 package advancedsystemsmanager.flow.execution.buffers.maps;
 
-import advancedsystemsmanager.api.execution.IBufferElement;
 import gnu.trove.strategy.HashingStrategy;
 import net.minecraftforge.fluids.Fluid;
 
-public class FluidHashingStrategy implements HashingStrategy<IBufferElement<?, Fluid>>
+public class FluidHashingStrategy implements HashingStrategy<Fluid>
 {
+
     @Override
-    public int computeHashCode(IBufferElement<?, Fluid> object)
+    public int computeHashCode(Fluid object)
     {
-        return object.getKey().hashCode();
+        return object.hashCode();
     }
 
     @Override
-    public boolean equals(IBufferElement<?, Fluid> o1, IBufferElement<?, Fluid> o2)
+    public boolean equals(Fluid o1, Fluid o2)
     {
-        return o1.getKey() == o2.getKey();
+        return o1 == o2;
     }
 }
