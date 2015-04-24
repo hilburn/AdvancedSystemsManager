@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.helpers.AEHelper;
+import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.tileentities.TileEntityAENode;
 import appeng.api.storage.data.IAEFluidStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -42,7 +42,7 @@ public class AEFluidBufferElement extends StackTankHolder
     @Override
     public void reduceAmount(int val)
     {
-        AEHelper.extract(node.getNode(), fluid.copy().setStackSize(val), node);
+        node.helper.extract(fluid.copy().setStackSize(val));
     }
 
     @Override

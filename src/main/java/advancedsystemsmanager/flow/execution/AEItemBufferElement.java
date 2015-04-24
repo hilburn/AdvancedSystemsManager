@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.helpers.AEHelper;
+import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.TileEntityAENode;
 import appeng.api.storage.data.IAEItemStack;
@@ -59,7 +59,7 @@ public class AEItemBufferElement extends SlotStackInventoryHolder
 
     public void reduceAmount(int val)
     {
-        AEHelper.extract(inventory.getNode(), item.copy().setStackSize(val), inventory);
+        inventory.helper.extract(item.copy().setStackSize(val));
     }
 
     public SlotStackInventoryHolder getSplitElement(int elementAmount, int id, boolean fair)
