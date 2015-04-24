@@ -3,6 +3,7 @@ package advancedsystemsmanager.flow.execution.commands;
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.api.execution.IBufferSubElement;
+import advancedsystemsmanager.api.execution.IInternalInventory;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.buffers.Buffer;
@@ -16,6 +17,7 @@ import advancedsystemsmanager.util.ConnectionBlock;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,34 +50,40 @@ public class CommandItemInput extends CommandInput
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
-        List<IBufferSubElement> bufferSubElements = new ArrayList<IBufferSubElement>();
+        List<IBufferSubElement> subElements = new ArrayList<IBufferSubElement>();
         List<Integer> checkedSlots = new ArrayList<Integer>();
         for (ConnectionBlock block : blocks)
         {
-            IInventory inventory = (IInventory)block.getTileEntity();
-            int maxSize = inventory.getSizeInventory();
-            for (int i = 0; i < 6; i++)
+            TileEntity entity = block.getTileEntity();
+            if (entity instanceof IInternalInventory)
             {
-                if (target.activatedDirections[i])
+                subElements.addAll(((IInternalInventory)entity).getSubElements(settings));
+            }else
+            {
+                IInventory inventory = (IInventory)entity;
+                int maxSize = inventory.getSizeInventory();
+                for (int i = 0; i < 6; i++)
                 {
-                    int start = target.useRangeForDirections[i] ? target.getStart(i) : 0;
-                    int end = target.useRangeForDirections[i] ? target.getEnd(i) : maxSize;
+                    if (target.activatedDirections[i])
+                    {
+                        int start = target.useRangeForDirections[i] ? target.getStart(i) : 0;
+                        int end = target.useRangeForDirections[i] ? target.getEnd(i) : maxSize;
 
-                    int[] slots;
-                    if (inventory instanceof ISidedInventory)
-                    {
-                        slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
+                        int[] slots;
+                        if (inventory instanceof ISidedInventory)
+                        {
+                            slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
+                        } else
+                        {
+                            slots = new int[maxSize];
+                            for (int j = 0; j < maxSize; slots[j] = j++) ;
+                        }
+                        scanSlots(inventory, checkedSlots, slots, settings, start, end, subElements);
                     }
-                    else
-                    {
-                        slots = new int[maxSize];
-                        for (int j = 0; j < maxSize; slots[j] = j++);
-                    }
-                    scanSlots(inventory, checkedSlots, slots, settings, start, end, bufferSubElements);
                 }
             }
         }
-        return bufferSubElements;
+        return subElements;
     }
 
     private void scanSlots(IInventory inventory, List<Integer> checked, int[] toScan, MenuItem settings, int start, int end, List<IBufferSubElement> subElements)
