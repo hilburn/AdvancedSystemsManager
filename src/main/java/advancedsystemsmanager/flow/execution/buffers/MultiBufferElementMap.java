@@ -7,25 +7,25 @@ import com.google.common.collect.SetMultimap;
 
 import java.util.*;
 
-public class MultiBufferElementMap implements SetMultimap<Class<? extends IBufferElement>, IBufferElement>
+public class MultiBufferElementMap implements SetMultimap<String, IBufferElement>
 {
-    public Map<Class<? extends IBufferElement>, BufferElementSet> values = new HashMap<Class<? extends IBufferElement>, BufferElementSet>();
+    public Map<String, BufferElementSet> values = new HashMap<String, BufferElementSet>();
     
     @Override
-    public Set<IBufferElement> get(Class<? extends IBufferElement> key)
+    public Set<IBufferElement> get(String key)
     {
         if (!values.containsKey(key)) values.put(key, new BufferElementSet(key));
         return values.get(key);
     }
     
     @Override
-    public Set<Class<? extends IBufferElement>> keySet()
+    public Set<String> keySet()
     {
         return values.keySet();
     }
     
     @Override
-    public Multiset<Class<? extends IBufferElement>> keys()
+    public Multiset<String> keys()
     {
         return null;
     }
@@ -81,7 +81,7 @@ public class MultiBufferElementMap implements SetMultimap<Class<? extends IBuffe
     }
     
     @Override
-    public boolean put(Class<? extends IBufferElement> key, IBufferElement value)
+    public boolean put(String key, IBufferElement value)
     {
         get(key).add(value);
         return true;
@@ -94,7 +94,7 @@ public class MultiBufferElementMap implements SetMultimap<Class<? extends IBuffe
     }
     
     @Override
-    public boolean putAll(Class<? extends IBufferElement> key, Iterable<? extends IBufferElement> values)
+    public boolean putAll(String key, Iterable<? extends IBufferElement> values)
     {
         Iterator<? extends IBufferElement> itr = values.iterator();
         if (itr.hasNext())
@@ -108,25 +108,25 @@ public class MultiBufferElementMap implements SetMultimap<Class<? extends IBuffe
     }
     
     @Override
-    public boolean putAll(Multimap<? extends Class<? extends IBufferElement>, ? extends IBufferElement> multimap)
+    public boolean putAll(Multimap<? extends String, ? extends IBufferElement> multimap)
     {
         return false;
     }
     
     @Override
-    public Set<IBufferElement> replaceValues(Class<? extends IBufferElement> key, Iterable<? extends IBufferElement> values)
+    public Set<IBufferElement> replaceValues(String key, Iterable<? extends IBufferElement> values)
     {
         return null;
     }
     
     @Override
-    public Set<Map.Entry<Class<? extends IBufferElement>, IBufferElement>> entries()
+    public Set<Map.Entry<String, IBufferElement>> entries()
     {
         return null;
     }
     
     @Override
-    public Map<Class<? extends IBufferElement>, Collection<IBufferElement>> asMap()
+    public Map<String, Collection<IBufferElement>> asMap()
     {
         return null;
     }

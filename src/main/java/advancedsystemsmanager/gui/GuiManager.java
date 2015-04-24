@@ -199,7 +199,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         String ret = Localization.COMMANDS.toString() + ": " + manager.getFlowItems().size() + "  ";
 
         String path = "";
-        FlowComponent component = manager.getSelectedComponent();
+        FlowComponent component = manager.getSelectedGroup();
 
         if (component != null)
         {

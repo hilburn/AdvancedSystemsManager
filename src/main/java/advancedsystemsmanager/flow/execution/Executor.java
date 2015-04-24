@@ -20,9 +20,9 @@ public class Executor implements IBufferProvider
     public List<Integer> usedCommands;
 
     @Override
-    public Set<IBufferElement> getBuffer(Class<? extends IBufferElement> bufferClass)
+    public Set<IBufferElement> getBuffer(String buffer)
     {
-        return buffers.get(bufferClass);
+        return buffers.get(buffer);
     }
 
     public Executor(TileEntityManager manager)

@@ -94,7 +94,7 @@ public class AnimationController
         {
             manager.getZLevelRenderingList().add(0, flowComponent);
         }
-        manager.setSelectedComponent(null);
+        manager.setSelectedGroup(null);
     }
 
     public void addComponent(FlowComponent component, Map<Integer, Integer> ids, Map<Integer, List<FlowComponent>> groups)
@@ -175,15 +175,15 @@ public class AnimationController
                                 manager.getFlowItems().get(groupTracking.get(0).getId()).setOpen(false);
                             }
 
-                            if (manager.getSelectedComponent() != null && manager.getSelectedComponent().isVisible(groupTracking.get(0)))
+                            if (manager.getSelectedGroup() != null && manager.getSelectedGroup().isVisible(groupTracking.get(0)))
                             {
-                                manager.getFlowItems().get(manager.getSelectedComponent().getId()).setOpen(true);
-                                manager.getFlowItems().get(manager.getSelectedComponent().getId()).setOpenMenuId(0);
-                                moveToFront(manager.getSelectedComponent());
+                                manager.getFlowItems().get(manager.getSelectedGroup().getId()).setOpen(true);
+                                manager.getFlowItems().get(manager.getSelectedGroup().getId()).setOpenMenuId(0);
+                                moveToFront(manager.getSelectedGroup());
                             }
 
 
-                            manager.setSelectedComponent(groupTracking.remove(0));
+                            manager.setSelectedGroup(groupTracking.remove(0));
                             openNext = false;
                         }
                     } else
@@ -209,7 +209,7 @@ public class AnimationController
                         parents.add(temp);
                     }
 
-                    FlowComponent current = manager.getSelectedComponent();
+                    FlowComponent current = manager.getSelectedGroup();
                     groupTracking = new ArrayList<FlowComponent>();
                     int index;
                     while ((index = parents.indexOf(current)) == -1)
@@ -408,7 +408,7 @@ public class AnimationController
                                 groupNodes.put(id, null);
                                 target = target.getParent();
                                 blueprint = blueprints.get(target.getId());
-                                manager.setSelectedComponent(target.getParent());
+                                manager.setSelectedGroup(target.getParent());
                                 progress = Progress.CONNECT;
                                 target.setOpen(true);
                                 target.setOpenMenuId(0);

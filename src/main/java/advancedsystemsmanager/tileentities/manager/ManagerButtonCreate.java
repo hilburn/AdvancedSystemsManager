@@ -78,10 +78,10 @@ public class ManagerButtonCreate extends ManagerButton
     @Override
     public boolean onClick(DataWriter dw)
     {
-        if (manager.selectedComponent != null)
+        if (manager.selectedGroup != null)
         {
             dw.writeBoolean(true);
-            dw.writeComponentId(manager, manager.selectedComponent.getId());
+            dw.writeComponentId(manager, manager.selectedGroup.getId());
         } else
         {
             dw.writeBoolean(false);

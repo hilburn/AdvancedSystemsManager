@@ -53,7 +53,7 @@ public class MenuGroup extends Menu
     @Override
     public void onClick(int mX, int mY, int button)
     {
-        if (inBounds(mX, mY)) getParent().getManager().setSelectedComponent(getParent());
+        if (inBounds(mX, mY)) getParent().getManager().setSelectedGroup(getParent());
     }
 
     @Override

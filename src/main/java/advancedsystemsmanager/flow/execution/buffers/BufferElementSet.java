@@ -10,27 +10,24 @@ import java.util.Map;
 
 public class BufferElementSet extends TCustomHashSet<IBufferElement>
 {
-    private static final Map<Class<? extends IBufferElement>, HashingStrategy> hashes = new HashMap<Class<? extends IBufferElement>, HashingStrategy>();
+    private static final Map<String, HashingStrategy> hashes = new HashMap<String, HashingStrategy>();
 
-    public static void registerHash(Class<? extends IBufferElement> clazz, HashingStrategy<? extends IBufferElement> strategy)
+    public static void registerHash(String buffer, HashingStrategy<? extends IBufferElement> strategy)
     {
-        if (!hashes.containsKey(clazz))
-            hashes.put(clazz, strategy);
+        if (!hashes.containsKey(buffer))
+            hashes.put(buffer, strategy);
     }
 
-    public BufferElementSet(IBufferElement bufferElement)
+    public BufferElementSet(String buffer)
     {
-        super(hashes.get(bufferElement.getClass()));
-        this.add(bufferElement);
-    }
-
-    public BufferElementSet(Class<? extends IBufferElement> bufferClass)
-    {
-        super(hashes.get(bufferClass));
+        super(hashes.get(buffer));
     }
 
     static
     {
-
+        registerHash("item", new ItemHashingStrategy());
+        registerHash("highPriority", new ItemHashingStrategy());
+        registerHash("lowPriority", new ItemHashingStrategy());
+        registerHash("fluid", new FluidHashingStrategy());
     }
 }

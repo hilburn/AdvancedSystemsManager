@@ -4,5 +4,5 @@ import java.util.Set;
 
 public interface IBufferProvider
 {
-    Set<IBufferElement> getBuffer(Class<? extends IBufferElement> bufferClass);
+    Set<IBufferElement> getBuffer(String buffer);
 }

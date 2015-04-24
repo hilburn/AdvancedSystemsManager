@@ -83,14 +83,14 @@ public class ManagerButtonRegistry
                 }
 
                 //Client only
-                manager.selectedComponent = manager.selectedComponent.getParent();
+                manager.selectedGroup = manager.selectedGroup.getParent();
                 return false;
             }
 
             @Override
             public boolean isVisible()
             {
-                return manager.selectedComponent != null;
+                return manager.selectedGroup != null;
             }
 
             @Override

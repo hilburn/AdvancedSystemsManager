@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.lwjgl.opengl.GL11;
 
-import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class FlowComponent implements INetworkReader, Comparable<FlowComponent>, IGuiElement<GuiManager>
@@ -107,7 +106,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         this.connectionSet = type.getSets()[0];
         this.type = type;
         this.manager = manager;
-        this.id = manager.getFlowItems().size();
+        this.id = manager.getNextFreeID();
 
         menus = type.getMenus(this);
         menus.add(new MenuResult(this));
@@ -615,7 +614,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 if (!isLarge && type == CommandRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
                 {
-                    manager.setSelectedComponent(this);
+                    manager.setSelectedGroup(this);
                 } else
                 {
                     isLarge = !isLarge;
@@ -1916,7 +1915,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
     public boolean isVisible()
     {
-        return isVisible(getManager().getSelectedComponent());
+        return isVisible(getManager().getSelectedGroup());
     }
 
     public boolean isVisible(FlowComponent selectedComponent)

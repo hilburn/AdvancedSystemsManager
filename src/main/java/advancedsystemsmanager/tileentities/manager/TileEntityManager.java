@@ -29,6 +29,7 @@ import advancedsystemsmanager.util.ConnectionBlockType;
 import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -57,10 +58,12 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
     private List<FlowComponent> zLevelRenderingList;
+    private TIntObjectHashMap<FlowComponent> components;
     private Variable[] variables;
-    public FlowComponent selectedComponent;
+    public FlowComponent selectedGroup;
     @SideOnly(Side.CLIENT)
     public IInterfaceRenderer specialRenderer;
+    private int maxID;
 
     public TileEntityManager()
     {
@@ -93,9 +96,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             }
         }
 
-        if (selectedComponent != null && selectedComponent.getId() == idToRemove)
+        if (selectedGroup != null && selectedGroup.getId() == idToRemove)
         {
-            selectedComponent = null;
+            selectedGroup = null;
         }
 
         //do this afterwards so the new ids won't mess anything up
@@ -524,12 +527,12 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
         if (Settings.isAutoCloseGroup())
         {
-            selectedComponent = null;
+            selectedGroup = null;
         } else
         {
-            while (selectedComponent != null && !findNewSelectedComponent(selectedComponent.getId()))
+            while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
             {
-                selectedComponent = selectedComponent.getParent();
+                selectedGroup = selectedGroup.getParent();
             }
         }
     }
@@ -540,7 +543,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         {
             if (item.getId() == id)
             {
-                selectedComponent = item;
+                selectedGroup = item;
                 return true;
             }
         }
@@ -592,9 +595,20 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
 
         getFlowItems().add(flowComponent);
+        addNewComponent(flowComponent);
         getZLevelRenderingList().add(0, flowComponent);
 
         updateVariables();
+    }
+
+    public int getNextFreeID()
+    {
+        return maxID++;
+    }
+
+    public boolean addNewComponent(FlowComponent component)
+    {
+        return components.put(component.getId(), component) != null;
     }
 
     private boolean usingUnlimitedInventories;
@@ -716,14 +730,14 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    public FlowComponent getSelectedComponent()
+    public FlowComponent getSelectedGroup()
     {
-        return selectedComponent;
+        return selectedGroup;
     }
 
-    public void setSelectedComponent(FlowComponent selectedComponent)
+    public void setSelectedGroup(FlowComponent selectedGroup)
     {
-        this.selectedComponent = selectedComponent;
+        this.selectedGroup = selectedGroup;
     }
 
     private static final String NBT_TIMER = "Timer";
