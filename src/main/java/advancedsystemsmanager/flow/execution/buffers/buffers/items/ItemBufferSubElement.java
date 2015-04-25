@@ -86,6 +86,6 @@ public class ItemBufferSubElement implements IBufferSubElement<ItemBufferSubElem
     @Override
     public IBufferElement<?, ItemStack> getNewBufferElement()
     {
-        return new ItemBufferElement(this);
+        return new ItemBufferElement();
     }
 }

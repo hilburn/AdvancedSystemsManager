@@ -15,16 +15,17 @@ public class ItemBufferElement implements IBufferElement<IBufferSubElement<?, It
 {
     List<IBufferSubElement<?, ItemStack, ?>> subElements = new ArrayList<IBufferSubElement<?, ItemStack, ?>>();
     Iterator<IBufferSubElement<?, ItemStack, ?>> iterator;
-    
-    public ItemBufferElement(IBufferSubElement<?, ItemStack, ?> subElement)
+    IBuffer<ItemStack, ? extends IBufferElement<?, ItemStack>, IBufferSubElement<?, ItemStack, ?>> buffer;
+
+    public ItemBufferElement()
     {
-        addSubElement(subElement);
     }
     
     @Override
     public void addSubElement(IBufferSubElement<?, ItemStack, ?> subElement)
     {
         subElements.add(subElement);
+        getBuffer().addToOrderedList(subElement);
     }
 
     @Override
@@ -46,9 +47,10 @@ public class ItemBufferElement implements IBufferElement<IBufferSubElement<?, It
     }
 
     @Override
-    public void removeSubElement()
+    public void removeSubElement(IBufferSubElement subElement)
     {
-        iterator.remove();
+        subElements.remove(subElement);
+        getBuffer().remove(subElement);
     }
 
     @Override
@@ -64,10 +66,15 @@ public class ItemBufferElement implements IBufferElement<IBufferSubElement<?, It
     {
         int amountToRemove = fair? Math.min(moveCount/subElements.size(), 1) : moveCount;
         prepareSubElements();
+        IBufferSubElement subElement;
         while (moveCount > 0 && iterator.hasNext())
         {
-            int removed = iterator.next().reduceContainerAmount(amountToRemove);
-            if (removed < amountToRemove) iterator.remove();
+            int removed = (subElement = iterator.next()).reduceContainerAmount(amountToRemove);
+            if (removed < amountToRemove)
+            {
+                iterator.remove();
+                buffer.remove(subElement);
+            }
             moveCount -= removed;
 
         }
@@ -81,9 +88,16 @@ public class ItemBufferElement implements IBufferElement<IBufferSubElement<?, It
     }
 
     @Override
-    public IBuffer<ItemStack, ? extends IBufferElement<?, ItemStack>, IBufferSubElement<?, ItemStack, ?>> getNewBuffer()
+    public IBufferElement<IBufferSubElement<?, ItemStack, ?>, ItemStack> setBuffer(IBuffer<ItemStack, ? extends IBufferElement<?, ItemStack>, IBufferSubElement<?, ItemStack, ?>> buffer)
     {
-        return new Buffer<ItemStack>(new BufferElementMap<ItemStack>("items"));
+        this.buffer = buffer;
+        return this;
+    }
+
+    @Override
+    public IBuffer<ItemStack, ? extends IBufferElement<?, ItemStack>, IBufferSubElement<?, ItemStack, ?>> getBuffer()
+    {
+        return buffer == null? new Buffer<ItemStack>(new BufferElementMap<ItemStack>("items")) : buffer;
     }
     
     

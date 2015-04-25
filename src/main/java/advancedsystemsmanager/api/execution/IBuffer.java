@@ -1,5 +1,7 @@
 package advancedsystemsmanager.api.execution;
 
+import java.util.Iterator;
+
 public interface IBuffer<Key, Element extends IBufferElement<?, Key>, SubElement>
 {
     public static final String ITEM = "item";
@@ -18,5 +20,11 @@ public interface IBuffer<Key, Element extends IBufferElement<?, Key>, SubElement
 
     void remove(Key key, int amount, boolean fair);
 
+    void remove(IBufferSubElement subElement);
+
     boolean add(IBufferSubElement subElement);
+
+    void addToOrderedList(IBufferSubElement subElement);
+
+    Iterator<IBufferSubElement> getOrderedIterator();
 }

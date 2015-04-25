@@ -10,7 +10,7 @@ public interface IBufferElement<SubElement extends IBufferSubElement<?, Key, ?>,
 
     Key getKey();
 
-    void removeSubElement();
+    void removeSubElement(IBufferSubElement subElement);
 
     int retrieveCount(int moveCount);
 
@@ -18,5 +18,7 @@ public interface IBufferElement<SubElement extends IBufferSubElement<?, Key, ?>,
 
     void releaseSubElements();
 
-    IBuffer<Key, ? extends IBufferElement<?, Key>, SubElement> getNewBuffer();
+    IBufferElement<SubElement, Key> setBuffer(IBuffer<Key,? extends IBufferElement<?, Key>,SubElement> buffer);
+
+    IBuffer<Key, ? extends IBufferElement<?, Key>, SubElement> getBuffer();
 }

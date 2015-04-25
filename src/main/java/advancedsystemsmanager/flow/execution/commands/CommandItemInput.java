@@ -105,6 +105,4 @@ public class CommandItemInput extends CommandInput
         for (Setting setting : settings) if (setting.isValid() && ((ItemSetting)setting).isEqualForCommandExecutor(stack)) return whitelist;
         return !whitelist;
     }
-
-
 }
