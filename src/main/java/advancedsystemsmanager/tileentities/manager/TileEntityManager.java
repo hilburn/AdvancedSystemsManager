@@ -604,7 +604,8 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public int getNextFreeID()
     {
-        return maxID++;
+        while (components.containsKey(++maxID) || maxID < 0) if (maxID < 0) maxID = 0;
+        return maxID;
     }
 
     public boolean addNewComponent(FlowComponent component)
