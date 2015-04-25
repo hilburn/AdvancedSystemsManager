@@ -23,12 +23,12 @@ import java.util.Iterator;
 public class AEHelper
 {
     IActionHost host;
-    
+
     public AEHelper(IActionHost host)
     {
         this.host = host;
     }
-    
+
     /**
      * Get the full {@link IGrid}
      *

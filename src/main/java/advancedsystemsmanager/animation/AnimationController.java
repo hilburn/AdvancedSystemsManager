@@ -233,8 +233,7 @@ public class AnimationController
                 }
                 break;
             case PLACE:
-                manager.getFlowItems().add(target = new FlowComponent(manager, 50, 50, blueprint.getType()));
-                target.setId(blueprint.getId());
+                manager.getFlowItems().add(target = new FlowComponent(manager, 50, 50, blueprint.getId(), blueprint.getType()));
                 if (blueprint.getParent() != null)
                 {
                     target.setParent(manager.getFlowItem(blueprint.getParent().getId()));
