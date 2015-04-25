@@ -41,9 +41,9 @@ public class PacketEventHandler
             }
         } else
         {
-            int x = dr.readData(DataBitHelper.WORLD_COORDINATE);
-            int y = dr.readData(DataBitHelper.WORLD_COORDINATE);
-            int z = dr.readData(DataBitHelper.WORLD_COORDINATE);
+            int x = dr.readData(DataBitHelper.XZ_COORDINATE);
+            int y = dr.readData(DataBitHelper.Y_COORDINATE);
+            int z = dr.readData(DataBitHelper.XZ_COORDINATE);
 
             TileEntity te = player.worldObj.getTileEntity(x, y, z);
             if (te != null && te instanceof IPacketBlock)
@@ -76,9 +76,9 @@ public class PacketEventHandler
             }
         } else
         {
-            int x = dr.readData(DataBitHelper.WORLD_COORDINATE);
-            int y = dr.readData(DataBitHelper.WORLD_COORDINATE);
-            int z = dr.readData(DataBitHelper.WORLD_COORDINATE);
+            int x = dr.readData(DataBitHelper.XZ_COORDINATE);
+            int y = dr.readData(DataBitHelper.Y_COORDINATE);
+            int z = dr.readData(DataBitHelper.XZ_COORDINATE);
 
             TileEntity te = player.worldObj.getTileEntity(x, y, z);
             if (te != null && te instanceof IPacketBlock)

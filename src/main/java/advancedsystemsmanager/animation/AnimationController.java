@@ -88,7 +88,7 @@ public class AnimationController
         }
         items = new ArrayList<FlowComponent>(blueprints);
 
-        manager.getFlowItems().clear();
+        manager.components.clear();
         manager.getZLevelRenderingList().clear();
         for (FlowComponent flowComponent : manager.getFlowItems())
         {

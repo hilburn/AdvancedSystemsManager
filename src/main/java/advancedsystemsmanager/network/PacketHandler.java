@@ -259,9 +259,9 @@ public class PacketHandler
 
             DataWriter dw = new DataWriter();
             dw.writeBoolean(false); //no container
-            dw.writeData(te.xCoord, DataBitHelper.WORLD_COORDINATE);
-            dw.writeData(te.yCoord, DataBitHelper.WORLD_COORDINATE);
-            dw.writeData(te.zCoord, DataBitHelper.WORLD_COORDINATE);
+            dw.writeData(te.xCoord, DataBitHelper.XZ_COORDINATE);
+            dw.writeData(te.yCoord, DataBitHelper.Y_COORDINATE);
+            dw.writeData(te.zCoord, DataBitHelper.XZ_COORDINATE);
             int length = block.infoBitLength(onServer);
             if (length != 0)
             {
