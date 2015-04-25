@@ -3,7 +3,7 @@ package advancedsystemsmanager.flow.execution.commands;
 import advancedsystemsmanager.api.execution.*;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.buffers.Buffer;
-import advancedsystemsmanager.flow.execution.buffers.buffers.items.ItemBufferSubElement;
+import advancedsystemsmanager.flow.execution.buffers.buffers.ItemBufferElement;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
@@ -48,22 +48,21 @@ public class CommandItemInput extends CommandInput<ItemStack>
     }
 
     @Override
-    protected List<IBufferSubElement<ItemStack>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
+    protected List<IBufferElement<ItemStack>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
-        List<IBufferSubElement<ItemStack>> subElements = new ArrayList<IBufferSubElement<ItemStack>>();
-        List<Integer> checkedSlots = new ArrayList<Integer>();
+        List<IBufferElement<ItemStack>> subElements = new ArrayList<IBufferElement<ItemStack>>();
         for (ConnectionBlock block : blocks)
         {
             TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalInventory)
             {
-                List<IBufferSubElement<ItemStack>> newSubElements = ((IInternalInventory)entity).getSubElements(id, settings);
-                subElements.addAll(newSubElements);
+                subElements.addAll(((IInternalInventory)entity).getSubElements(id, settings));
             }else
             {
                 IInventory inventory = (IInventory)entity;
+                List<Integer> checkedSlots = new ArrayList<Integer>();
                 int maxSize = inventory.getSizeInventory();
                 for (int i = 0; i < 6; i++)
                 {
@@ -78,8 +77,8 @@ public class CommandItemInput extends CommandInput<ItemStack>
                             slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
                         } else
                         {
-                            slots = new int[maxSize];
-                            for (int j = 0; j < maxSize; slots[j] = j++) ;
+                            slots = new int[end-start];
+                            for (int j = 0; j < slots.length; slots[j + start] = j++) ;
                         }
                         scanSlots(id, inventory, checkedSlots, slots, settings, start, end, subElements);
                     }
@@ -89,7 +88,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
         return subElements;
     }
 
-    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, MenuItem settings, int start, int end, List<IBufferSubElement<ItemStack>> subElements)
+    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, MenuItem settings, int start, int end, List<IBufferElement<ItemStack>> subElements)
     {
         for (int slot : toScan)
         {
@@ -98,12 +97,12 @@ public class CommandItemInput extends CommandInput<ItemStack>
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
             if (isItemValid(settings.settings, stack, settings.isFirstRadioButtonSelected()))
-                subElements.add(new ItemBufferSubElement(id, inventory, slot));
+                subElements.add(new ItemBufferElement(id, inventory, slot));
             checked.add(slot);
         }
     }
 
-    private boolean isItemValid(List<Setting> settings, ItemStack stack, boolean whitelist)
+    private static boolean isItemValid(List<Setting> settings, ItemStack stack, boolean whitelist)
     {
         for (Setting setting : settings) if (setting.isValid() && ((ItemSetting)setting).isEqualForCommandExecutor(stack)) return whitelist;
         return !whitelist;

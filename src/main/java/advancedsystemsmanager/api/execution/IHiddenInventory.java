@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface IHiddenInventory
 {
-    int getInsertable(ItemStack stack);
+    int getAmountToInsert(ItemStack stack);
 
     void insertItemStack(ItemStack stack);
 

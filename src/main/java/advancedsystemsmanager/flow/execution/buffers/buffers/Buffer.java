@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.execution.buffers.buffers;
 
 import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferSubElement;
+import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.Key;
 import com.google.common.collect.LinkedListMultimap;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Buffer<Type> implements IBuffer<Type>
 {
-    private LinkedListMultimap<Key<Type>, IBufferSubElement<Type>> multiMap = LinkedListMultimap.create();
+    private LinkedListMultimap<Key<Type>, IBufferElement<Type>> multiMap = LinkedListMultimap.create();
 
 
     @Override
@@ -20,7 +20,7 @@ public class Buffer<Type> implements IBuffer<Type>
     }
 
     @Override
-    public List<IBufferSubElement<Type>> get(Type type)
+    public List<IBufferElement<Type>> get(Type type)
     {
         return multiMap.get(getKey(type));
     }
@@ -29,7 +29,7 @@ public class Buffer<Type> implements IBuffer<Type>
     public int getAccessibleCount(Type type)
     {
         int amount = 0;
-        for (IBufferSubElement<Type> subElement : multiMap.get(getKey(type))) amount += subElement.getSizeLeft();
+        for (IBufferElement<Type> subElement : multiMap.get(getKey(type))) amount += subElement.getSizeLeft();
         return amount;
     }
 
@@ -41,10 +41,10 @@ public class Buffer<Type> implements IBuffer<Type>
             remove(multiMap.get(key), amount, fair);
     }
 
-    public void remove(List<IBufferSubElement<Type>> subElements, int amount, boolean fair)
+    public void remove(List<IBufferElement<Type>> subElements, int amount, boolean fair)
     {
         int amountToRemove = fair? Math.min(amount/subElements.size(), 1) : amount;
-        Iterator<IBufferSubElement<Type>> iterator = subElements.iterator();
+        Iterator<IBufferElement<Type>> iterator = subElements.iterator();
         while (amount > 0 && iterator.hasNext())
         {
             int removed = iterator.next().reduceBufferAmount(amountToRemove);
@@ -63,7 +63,7 @@ public class Buffer<Type> implements IBuffer<Type>
     }
 
     @Override
-    public boolean add(IBufferSubElement<Type> subElement)
+    public boolean add(IBufferElement<Type> subElement)
     {
         return multiMap.put(subElement.getKey(), subElement);
     }

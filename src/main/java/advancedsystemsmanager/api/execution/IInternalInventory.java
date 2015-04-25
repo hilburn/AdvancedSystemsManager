@@ -11,11 +11,11 @@ import java.util.Map;
 
 public interface IInternalInventory
 {
-    int getInsertable(ItemStack stack);
+    int getAmountToInsert(ItemStack stack);
 
     void insertItemStack(ItemStack stack);
 
-    <Type> List<IBufferSubElement<Type>> getSubElements(int id, MenuItem menuItem);
+    List<IBufferElement<ItemStack>> getSubElements(int id, MenuItem menuItem);
 
     void isItemValid(Collection<Setting> settings, Map<Integer, ConditionSettingChecker> conditionSettingCheckerMap);
 }

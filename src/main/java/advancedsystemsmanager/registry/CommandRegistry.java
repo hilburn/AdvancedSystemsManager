@@ -117,6 +117,6 @@ public class CommandRegistry
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuSigns.class, MenuSignText.class));
         registerCommand(new CommandItemInput());
-//        registerCommand(new CommandFluidInput());
+        registerCommand(new CommandFluidInput());
     }
 }

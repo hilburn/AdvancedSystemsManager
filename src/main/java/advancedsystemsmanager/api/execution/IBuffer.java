@@ -1,6 +1,5 @@
 package advancedsystemsmanager.api.execution;
 
-import java.util.Iterator;
 import java.util.List;
 
 public interface IBuffer<Type>
@@ -17,7 +16,7 @@ public interface IBuffer<Type>
 
     //IBufferElement<Type> get(Type type);
 
-    List<IBufferSubElement<Type>> get(Type type);
+    List<IBufferElement<Type>> get(Type type);
 
     int getAccessibleCount(Type type);
 
@@ -25,7 +24,7 @@ public interface IBuffer<Type>
 
 //    void remove(IBufferSubElement<Type> subElement);
 
-    boolean add(IBufferSubElement<Type> subElement);
+    boolean add(IBufferElement<Type> subElement);
 
 //    void addToOrderedList(IBufferSubElement<Type> subElement);
 //

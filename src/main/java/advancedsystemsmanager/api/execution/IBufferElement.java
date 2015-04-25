@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.execution;
 
-public interface IBufferSubElement<Type>
+public interface IBufferElement<Type>
 {
     void remove();
 
@@ -12,7 +12,7 @@ public interface IBufferSubElement<Type>
 
     Key<Type> getKey();
 
-    IBufferSubElement<Type> getSplitElement(int elementAmount, int id, boolean fair);
+    IBufferElement<Type> getSplitElement(int elementAmount, int id, boolean fair);
 
 //    IBufferElement<Type> getNewBufferElement();
 

@@ -1078,7 +1078,7 @@ public class CommandExecutor
                 if (inventoryHolder.getTile() instanceof IHiddenInventory)
                 {
                     IHiddenInventory hidden = (IHiddenInventory)inventoryHolder.getTile();
-                    int moveCount = Math.min(hidden.getInsertable(itemStack), itemStack.stackSize);
+                    int moveCount = Math.min(hidden.getAmountToInsert(itemStack), itemStack.stackSize);
                     if (moveCount > 0)
                     {
                         moveCount = Math.min(subElement.getSizeLeft(), moveCount);

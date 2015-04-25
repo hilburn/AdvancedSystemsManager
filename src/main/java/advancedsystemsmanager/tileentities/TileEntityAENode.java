@@ -248,7 +248,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     }
 
     @Override
-    public int getInsertable(ItemStack stack)
+    public int getAmountToInsert(ItemStack stack)
     {
         ItemStack insertable = helper.getInsertable(stack);
         return insertable == null ? 0 : insertable.stackSize;
