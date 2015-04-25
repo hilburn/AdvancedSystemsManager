@@ -1,106 +1,70 @@
 package advancedsystemsmanager.flow.execution.buffers.buffers;
 
 import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.IBufferSubElement;
+import advancedsystemsmanager.api.execution.Key;
+import com.google.common.collect.LinkedListMultimap;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-public class Buffer<Key> implements IBuffer<Key, IBufferElement<?, Key>, IBufferSubElement<?, Key, ?>>
+public class Buffer<Type> implements IBuffer<Type>
 {
-    private Map<Key, IBufferElement<?, Key>> elements;
-    private List<IBufferSubElement> subElements;
+    private LinkedListMultimap<Key<Type>, IBufferSubElement<Type>> multiMap = LinkedListMultimap.create();
 
-    public Buffer(Map<Key, IBufferElement<?, Key>> map)
+
+    @Override
+    public boolean contains(Type type)
     {
-        this.elements = map;
-        this.subElements = new ArrayList<IBufferSubElement>();
+        return multiMap.containsKey(getKey(type));
     }
 
     @Override
-    public boolean contains(Key key)
+    public List<IBufferSubElement<Type>> get(Type type)
     {
-        return elements.containsKey(key);
+        return multiMap.get(getKey(type));
     }
 
     @Override
-    public IBufferElement<?, Key> get(Key key)
+    public int getAccessibleCount(Type type)
     {
-        return elements.get(key);
+        int amount = 0;
+        for (IBufferSubElement<Type> subElement : multiMap.get(getKey(type))) amount += subElement.getSizeLeft();
+        return amount;
     }
 
     @Override
-    public int getAccessibleCount(Key key)
+    public void remove(Type type, int amount, boolean fair)
     {
-        return elements.containsKey(key) ? elements.get(key).retrieveCount(Integer.MAX_VALUE) : 0;
+        Key<Type> key = getKey(type);
+        if (multiMap.containsKey(key))
+            remove(multiMap.get(key), amount, fair);
     }
 
-    @Override
-    public void remove(Key key, int amount, boolean fair)
+    public void remove(List<IBufferSubElement<Type>> subElements, int amount, boolean fair)
     {
-        if (elements.containsKey(key))
-            elements.get(key).decreaseSize(amount, fair);
-    }
-
-    @Override
-    public boolean add(IBufferSubElement subElement)
-    {
-        if (!elements.containsKey(subElement.getKey()))
+        int amountToRemove = fair? Math.min(amount/subElements.size(), 1) : amount;
+        Iterator<IBufferSubElement<Type>> iterator = subElements.iterator();
+        while (amount > 0 && iterator.hasNext())
         {
-            IBufferElement element = subElement.getNewBufferElement();
-            element.setBuffer(this);
-            element.addSubElement(subElement);
-            elements.put((Key)subElement.getKey(), element);
+            int removed = iterator.next().reduceBufferAmount(amountToRemove);
+            if (removed < amountToRemove)
+            {
+                iterator.remove();
+            }
+            amount -= removed;
         }
-        else
-        {
-            elements.get(subElement.getKey()).addSubElement(subElement);
-        }
-        return true;
+        if (amount > 0 && subElements.size() > 0) remove(subElements, amount, fair);
+    }
+
+    public Key<Type> getKey(Type key)
+    {
+        return new Key<Type>(key);
     }
 
     @Override
-    public void addToOrderedList(IBufferSubElement subElement)
+    public boolean add(IBufferSubElement<Type> subElement)
     {
-        subElements.add(subElement);
-    }
-
-    @Override
-    public Iterator<IBufferSubElement> getOrderedIterator()
-    {
-        return new OrderedIterator();
-    }
-
-    public void remove(IBufferSubElement subElement)
-    {
-        subElements.remove(subElement);
-    }
-
-    public class OrderedIterator implements Iterator<IBufferSubElement>
-    {
-        IBufferSubElement value;
-        Iterator<IBufferSubElement> itr = subElements.iterator();
-        @Override
-        public boolean hasNext()
-        {
-            return itr.hasNext();
-        }
-
-        @Override
-        public IBufferSubElement next()
-        {
-            value = itr.next();
-            return value;
-        }
-
-        @Override
-        public void remove()
-        {
-            itr.remove();
-            elements.get(value.getKey()).removeSubElement(value);
-        }
+        return multiMap.put(subElement.getKey(), subElement);
     }
 }

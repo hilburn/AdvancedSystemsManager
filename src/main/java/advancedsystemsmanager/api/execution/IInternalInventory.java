@@ -15,7 +15,7 @@ public interface IInternalInventory
 
     void insertItemStack(ItemStack stack);
 
-    List<IBufferSubElement> getSubElements(MenuItem menuItem);
+    <Type> List<IBufferSubElement<Type>> getSubElements(int id, MenuItem menuItem);
 
     void isItemValid(Collection<Setting> settings, Map<Integer, ConditionSettingChecker> conditionSettingCheckerMap);
 }

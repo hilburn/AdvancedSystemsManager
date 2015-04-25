@@ -1,14 +1,9 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferProvider;
-import advancedsystemsmanager.api.execution.IBufferSubElement;
-import advancedsystemsmanager.api.execution.IInternalInventory;
-import advancedsystemsmanager.flow.Connection;
+import advancedsystemsmanager.api.execution.*;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.buffers.items.ItemBufferSubElement;
-import advancedsystemsmanager.flow.execution.buffers.maps.BufferElementMap;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
@@ -22,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandItemInput extends CommandInput
+public class CommandItemInput extends CommandInput<ItemStack>
 {
     public CommandItemInput()
     {
@@ -42,22 +37,30 @@ public class CommandItemInput extends CommandInput
     @Override
     protected IBuffer getNewBuffer()
     {
-        return new Buffer<ItemStack>(new BufferElementMap<ItemStack>(bufferKey));
+        return new Buffer<ItemStack>()
+        {
+            @Override
+            public Key<ItemStack> getKey(ItemStack key)
+            {
+                return new Key.ItemKey(key);
+            }
+        };
     }
 
     @Override
-    protected List<IBufferSubElement> getBufferSubElements(List<ConnectionBlock> blocks, List<Menu> menus)
+    protected List<IBufferSubElement<ItemStack>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
-        List<IBufferSubElement> subElements = new ArrayList<IBufferSubElement>();
+        List<IBufferSubElement<ItemStack>> subElements = new ArrayList<IBufferSubElement<ItemStack>>();
         List<Integer> checkedSlots = new ArrayList<Integer>();
         for (ConnectionBlock block : blocks)
         {
             TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalInventory)
             {
-                subElements.addAll(((IInternalInventory)entity).getSubElements(settings));
+                List<IBufferSubElement<ItemStack>> newSubElements = ((IInternalInventory)entity).getSubElements(id, settings);
+                subElements.addAll(newSubElements);
             }else
             {
                 IInventory inventory = (IInventory)entity;
@@ -78,7 +81,7 @@ public class CommandItemInput extends CommandInput
                             slots = new int[maxSize];
                             for (int j = 0; j < maxSize; slots[j] = j++) ;
                         }
-                        scanSlots(inventory, checkedSlots, slots, settings, start, end, subElements);
+                        scanSlots(id, inventory, checkedSlots, slots, settings, start, end, subElements);
                     }
                 }
             }
@@ -86,7 +89,7 @@ public class CommandItemInput extends CommandInput
         return subElements;
     }
 
-    private void scanSlots(IInventory inventory, List<Integer> checked, int[] toScan, MenuItem settings, int start, int end, List<IBufferSubElement> subElements)
+    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, MenuItem settings, int start, int end, List<IBufferSubElement<ItemStack>> subElements)
     {
         for (int slot : toScan)
         {
@@ -95,7 +98,7 @@ public class CommandItemInput extends CommandInput
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
             if (isItemValid(settings.settings, stack, settings.isFirstRadioButtonSelected()))
-                subElements.add(new ItemBufferSubElement(inventory, slot));
+                subElements.add(new ItemBufferSubElement(id, inventory, slot));
             checked.add(slot);
         }
     }

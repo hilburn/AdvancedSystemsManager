@@ -1,8 +1,9 @@
 package advancedsystemsmanager.api.execution;
 
 import java.util.Iterator;
+import java.util.List;
 
-public interface IBuffer<Key, Element extends IBufferElement<?, Key>, SubElement>
+public interface IBuffer<Type>
 {
     public static final String ITEM = "item";
     public static final String CRAFT_HIGH = "craftHigh";
@@ -12,19 +13,21 @@ public interface IBuffer<Key, Element extends IBufferElement<?, Key>, SubElement
     public static final String GAS = "gas";
     public static final String ESSENTIA = "essentia";
 
-    boolean contains(Key key);
+    boolean contains(Type type);
 
-    Element get(Key key);
+    //IBufferElement<Type> get(Type type);
 
-    int getAccessibleCount(Key key);
+    List<IBufferSubElement<Type>> get(Type type);
 
-    void remove(Key key, int amount, boolean fair);
+    int getAccessibleCount(Type type);
 
-    void remove(IBufferSubElement subElement);
+    void remove(Type type, int amount, boolean fair);
 
-    boolean add(IBufferSubElement subElement);
+//    void remove(IBufferSubElement<Type> subElement);
 
-    void addToOrderedList(IBufferSubElement subElement);
+    boolean add(IBufferSubElement<Type> subElement);
 
-    Iterator<IBufferSubElement> getOrderedIterator();
+//    void addToOrderedList(IBufferSubElement<Type> subElement);
+//
+//    Iterator<IBufferSubElement<Type>> getOrderedIterator();
 }

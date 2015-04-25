@@ -7,10 +7,11 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.util.ConnectionBlock;
+import net.minecraftforge.fluids.Fluid;
 
 import java.util.List;
 
-public class CommandFluidInput extends CommandInput
+public class CommandFluidInput extends CommandInput<Fluid>
 {
     public CommandFluidInput()
     {
@@ -40,7 +41,7 @@ public class CommandFluidInput extends CommandInput
     }
 
     @Override
-    protected List<IBufferSubElement> getBufferSubElements(List<ConnectionBlock> blocks, List<Menu> menus)
+    protected List<IBufferSubElement<Fluid>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
     {
         return null;
     }

@@ -1,18 +1,19 @@
 package advancedsystemsmanager.flow.execution.buffers.buffers.items;
 
-import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.IBufferSubElement;
+import advancedsystemsmanager.api.execution.Key;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class ItemBufferSubElement implements IBufferSubElement<ItemBufferSubElement, ItemStack, IInventory>
+public class ItemBufferSubElement implements IBufferSubElement<ItemStack>
 {
     protected ItemStack stack;
     protected IInventory inventory;
     protected int slot;
     protected int amount;
+    int id;
 
-    public ItemBufferSubElement(IInventory inventory, int slot)
+    public ItemBufferSubElement(int id, IInventory inventory, int slot)
     {
         this.inventory = inventory;
         this.stack = inventory.getStackInSlot(slot);
@@ -23,7 +24,6 @@ public class ItemBufferSubElement implements IBufferSubElement<ItemBufferSubElem
     @Override
     public void remove()
     {
-
     }
 
     @Override
@@ -48,27 +48,15 @@ public class ItemBufferSubElement implements IBufferSubElement<ItemBufferSubElem
     }
 
     @Override
-    public int reduceContainerAmount(int amount)
+    public Key<ItemStack> getKey()
     {
-        return reduceBufferAmount(Math.min(getSizeLeft(), amount));
-    }
-
-    @Override
-    public ItemStack getKey()
-    {
-        return stack;
-    }
-
-    @Override
-    public IInventory getContainer()
-    {
-        return inventory;
+        return new Key.ItemKey(stack);
     }
 
     @Override
     public ItemBufferSubElement getSplitElement(int elementAmount, int id, boolean fair)
     {
-        ItemBufferSubElement element = new ItemBufferSubElement(this.inventory, this.slot);
+        ItemBufferSubElement element = new ItemBufferSubElement(this.id, this.inventory, this.slot);
         int oldAmount = getSizeLeft();
         int amount = oldAmount / elementAmount;
         if (!fair)
@@ -84,8 +72,14 @@ public class ItemBufferSubElement implements IBufferSubElement<ItemBufferSubElem
     }
 
     @Override
-    public IBufferElement<?, ItemStack> getNewBufferElement()
+    public int getCommandID()
     {
-        return new ItemBufferElement();
+        return this.id;
     }
+
+//    @Override
+//    public IBufferElement<ItemStack> getNewBufferElement()
+//    {
+//        return new ItemBufferElement();
+//    }
 }
