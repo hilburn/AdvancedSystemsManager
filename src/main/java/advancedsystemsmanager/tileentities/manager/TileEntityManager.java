@@ -52,13 +52,13 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public static final int BUTTON_SRC_Y = 0;
     public static final int BUTTON_INNER_SRC_X = 230;
     public static final int BUTTON_INNER_SRC_Y = 0;
-    public List<FlowComponent> items;
+    private static final String NBT_MAX_ID = "maxID";
     public List<FlowComponent> triggers;
     private Connection currentlyConnecting;
     public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
     private List<FlowComponent> zLevelRenderingList;
-    private TIntObjectHashMap<FlowComponent> components;
+    public TIntObjectHashMap<FlowComponent> components;
     private Variable[] variables;
     public FlowComponent selectedGroup;
     @SideOnly(Side.CLIENT)
@@ -67,12 +67,11 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public TileEntityManager()
     {
-        items = new ArrayList<FlowComponent>();
         zLevelRenderingList = new ArrayList<FlowComponent>();
         buttons = ManagerButtonRegistry.getButtons(this);
         removedIds = new ArrayList<Integer>();
         variables = new Variable[VariableColor.values().length];
-        items = new LinkedList<FlowComponent>();
+        components = new TIntObjectHashMap<FlowComponent>();
         for (int i = 0; i < variables.length; i++)
         {
             variables[i] = new Variable(i);
@@ -81,20 +80,21 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     private List<Integer> removedIds;
 
-    public void removeFlowComponent(int idToRemove, List<FlowComponent> items)
+    public void removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
-        for (int i = items.size() - 1; i >= 0; i--)
-        {
-            FlowComponent component = items.get(i);
-            if (i == idToRemove)
-            {
-                component.setParent(null); //unlink it
-                items.remove(i);
-            } else
-            {
-                component.updateConnectionIdsAtRemoval(idToRemove);
-            }
-        }
+//        for (int i = items.size() - 1; i >= 0; i--)
+//        {
+//            FlowComponent component = items.get(i);
+//            if (i == idToRemove)
+//            {
+//                component.setParent(null); //unlink it
+//                items.remove(i);
+//            } else
+//            {
+//                component.updateConnectionIdsAtRemoval(idToRemove);
+//            }
+//        }
+        componentMap.remove(idToRemove);
 
         if (selectedGroup != null && selectedGroup.getId() == idToRemove)
         {
@@ -102,15 +102,15 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
 
         //do this afterwards so the new ids won't mess anything up
-        for (int i = idToRemove; i < items.size(); i++)
-        {
-            items.get(i).decreaseId();
-        }
+//        for (int i = idToRemove; i < items.size(); i++)
+//        {
+//            items.get(i).decreaseId();
+//        }
     }
 
     public void removeFlowComponent(int idToRemove)
     {
-        removeFlowComponent(idToRemove, items);
+        removeFlowComponent(idToRemove, components);
         if (!worldObj.isRemote)
         {
             removedIds.add(idToRemove);
@@ -129,9 +129,14 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
 
-    public List<FlowComponent> getFlowItems()
+    public Collection<FlowComponent> getFlowItems()
     {
-        return items;
+        return components.valueCollection();
+    }
+
+    public FlowComponent getFlowItem(int i)
+    {
+        return components.get(i);
     }
 
     public List<FlowComponent> getZLevelRenderingList()
@@ -245,7 +250,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 updateInventorySelection(oldCoordinates);
             } else
             {
-                for (FlowComponent item : items)
+                for (FlowComponent item : getFlowItems())
                 {
                     item.setInventoryListDirty(true);
                 }
@@ -288,7 +293,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     private void updateInventorySelection(WorldCoordinate[] oldCoordinates)
     {
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             for (Menu menu : item.getMenus())
             {
@@ -377,9 +382,8 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             {
                 timer = 0;
 
-                for (FlowComponent item : items)
+                for (FlowComponent item : getFlowItems())
                 {
-
                     if (item.getType().getCommandType() == CommandType.TRIGGER)
                     {
                         MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
@@ -405,8 +409,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                         }
                     }
                 }
-
-
             } else
             {
                 timer++;
@@ -442,7 +444,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void triggerRedstone(TileEntityInput inputTrigger)
     {
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
             {
@@ -453,7 +455,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void triggerChat()
     {
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
             {
@@ -514,13 +516,13 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         updateInventories();
         int flowControlCount = dr.readComponentId();
-        getFlowItems().clear();
+        components.clear();
         getZLevelRenderingList().clear();
         for (int i = 0; i < flowControlCount; i++)
         {
             readAllComponentData(dr);
         }
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             item.linkParentAfterLoad();
         }
@@ -539,7 +541,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     private boolean findNewSelectedComponent(int id)
     {
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             if (item.getId() == id)
             {
@@ -555,9 +557,10 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         int x = dr.readData(DataBitHelper.FLOW_CONTROL_X);
         int y = dr.readData(DataBitHelper.FLOW_CONTROL_Y);
-        int id = dr.readData(DataBitHelper.FLOW_CONTROL_TYPE_ID);
+        int type = dr.readData(DataBitHelper.FLOW_CONTROL_TYPE_ID);
+        int id = dr.readComponentId();
 
-        FlowComponent flowComponent = new FlowComponent(this, x, y, CommandRegistry.getCommand(id));
+        FlowComponent flowComponent = new FlowComponent(this, x, y, id, CommandRegistry.getCommand(type));
         flowComponent.setComponentName(dr.readString(DataBitHelper.NAME_LENGTH));
 
         boolean hasParent = dr.readBoolean();
@@ -593,30 +596,27 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             }
         }
 
-
-        getFlowItems().add(flowComponent);
-        addNewComponent(flowComponent);
         getZLevelRenderingList().add(0, flowComponent);
-
+        addNewComponent(flowComponent);
+        flowComponent.linkParentAfterLoad();
         updateVariables();
     }
 
     public int getNextFreeID()
     {
-        return items.size();
-        //return maxID++;
+        return maxID++;
     }
 
     public boolean addNewComponent(FlowComponent component)
     {
-        return false; //components.put(component.getId(), component) != null;
+        return components.put(component.getId(), component) != null;
     }
 
     private boolean usingUnlimitedInventories;
 
-    private boolean isUsingUnlimitedStuff()
+    public boolean isUsingUnlimitedStuff()
     {
-        return items.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
+        return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
     }
 
     @Override
@@ -644,7 +644,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         if (isNew)
         {
             readAllComponentData(dr);
-            items.get(items.size() - 1).linkParentAfterLoad();
         } else
         {
             boolean isSpecificComponent = dr.readBoolean();
@@ -667,7 +666,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @Override
     public void writeAllData(DataWriter dw)
     {
-        dw.writeComponentId(this, getFlowItems().size());
+        dw.writeComponentId(this, components.size());
         for (FlowComponent flowComponent : getFlowItems())
         {
             PacketHandler.writeAllComponentData(dw, flowComponent);
@@ -678,21 +677,19 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
 
         int componentId = dr.readComponentId();
-        if (componentId >= 0 && componentId < jam.getFlowItems().size())
-        {
-            FlowComponent component = jam.getFlowItems().get(componentId);
 
-            if (dr.readBoolean())
+        FlowComponent component = jam.getFlowItem(componentId);
+
+        if (dr.readBoolean())
+        {
+            int menuId = dr.readData(DataBitHelper.FLOW_CONTROL_MENU_COUNT);
+            if (menuId >= 0 && menuId < component.getMenus().size())
             {
-                int menuId = dr.readData(DataBitHelper.FLOW_CONTROL_MENU_COUNT);
-                if (menuId >= 0 && menuId < component.getMenus().size())
-                {
-                    return component.getMenus().get(menuId);
-                }
-            } else
-            {
-                return component;
+                return component.getMenus().get(menuId);
             }
+        } else
+        {
+            return component;
         }
 
         return null;
@@ -710,7 +707,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             variable.setDeclaration(null);
         }
 
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
             {
@@ -722,7 +719,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void triggerBUD(TileEntityBUD tileEntityBUD)
     {
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
             {
@@ -764,16 +761,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void readContentFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         timer = nbtTagCompound.getByte(NBT_TIMER);
-
+        maxID = nbtTagCompound.getInteger(NBT_MAX_ID);
         NBTTagList components = nbtTagCompound.getTagList(NBT_COMPONENTS, 10);
         for (int i = 0; i < components.tagCount(); i++)
         {
             NBTTagCompound component = components.getCompoundTagAt(i);
-
-            items.add(FlowComponent.readFromNBT(this, component, 12, pickup));
+            FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, 12, pickup);
+            this.components.put(flowComponent.getId(), flowComponent);
         }
 
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             item.linkParentAfterLoad();
         }
@@ -790,9 +787,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         nbtTagCompound.setByte(NBT_TIMER, (byte)timer);
-
+        nbtTagCompound.setInteger(NBT_MAX_ID, maxID);
         NBTTagList components = new NBTTagList();
-        for (FlowComponent item : items)
+        for (FlowComponent item : getFlowItems())
         {
             NBTTagCompound component = new NBTTagCompound();
             item.writeToNBT(component, pickup);
@@ -810,5 +807,4 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
         nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
     }
-
 }

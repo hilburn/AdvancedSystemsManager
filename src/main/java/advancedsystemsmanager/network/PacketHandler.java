@@ -180,6 +180,7 @@ public class PacketHandler
         dw.writeData(flowComponent.getX(), DataBitHelper.FLOW_CONTROL_X);
         dw.writeData(flowComponent.getY(), DataBitHelper.FLOW_CONTROL_Y);
         dw.writeData(flowComponent.getType().getId(), DataBitHelper.FLOW_CONTROL_TYPE_ID);
+        dw.writeComponentId(flowComponent.manager, flowComponent.getId());
         dw.writeString(flowComponent.getComponentName(), DataBitHelper.NAME_LENGTH);
         if (flowComponent.getParent() != null)
         {

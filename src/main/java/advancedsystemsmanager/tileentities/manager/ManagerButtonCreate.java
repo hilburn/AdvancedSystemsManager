@@ -32,7 +32,7 @@ public class ManagerButtonCreate extends ManagerButton
             boolean hasParent = dr.readBoolean();
             if (hasParent)
             {
-                component.setParent(manager.items.get(dr.readComponentId()));
+                component.setParent(manager.getFlowItem(dr.readComponentId()));
             }
 
             boolean autoSide = dr.readBoolean();
@@ -71,7 +71,7 @@ public class ManagerButtonCreate extends ManagerButton
                 }
             }
 
-            manager.getFlowItems().add(component);
+            manager.addNewComponent(component);
         }
     }
 

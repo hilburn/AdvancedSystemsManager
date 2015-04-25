@@ -98,15 +98,21 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public static final int TEXT_SPACE = 135;
     public static final int TEXT_SPACE_SHORT = 65;
     public static final int TEXT_MAX_LENGTH = 31;
+    private static final String NBT_ID = "id";
 
     public FlowComponent(TileEntityManager manager, int x, int y, ICommand type)
+    {
+        this(manager, x, y, manager.getNextFreeID(), type);
+    }
+
+    public FlowComponent(TileEntityManager manager, int x, int y, int id, ICommand type)
     {
         this.x = x;
         this.y = y;
         this.connectionSet = type.getSets()[0];
         this.type = type;
         this.manager = manager;
-        this.id = manager.getNextFreeID();
+        this.id = id;
 
         menus = new ArrayList<Menu>();
         menus = type.getMenus(this);
@@ -325,9 +331,9 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             if (connectedConnection != null)
             {
                 hasConnection = true;
-                if (id < connectedConnection.getComponentId() && connectedConnection.getComponentId() < manager.getFlowItems().size())
+                if (id < connectedConnection.getComponentId())
                 {
-                    int[] otherLocation = manager.getFlowItems().get(connectedConnection.getComponentId()).getConnectionLocationFromId(connectedConnection.getConnectionId());
+                    int[] otherLocation = manager.getFlowItem(connectedConnection.getComponentId()).getConnectionLocationFromId(connectedConnection.getConnectionId());
                     if (otherLocation == null)
                     {
                         continue;
@@ -678,8 +684,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
                 if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
                 {
-
-
                     Connection current = manager.getCurrentlyConnecting();
                     if (button == 1 && current == null)
                     {
@@ -693,7 +697,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                             if (selected.getComponentId() < id)
                             {
                                 connectionId = selected.getConnectionId();
-                                component = manager.getFlowItems().get(selected.getComponentId());
+                                component = manager.getFlowItem(selected.getComponentId());
                                 selected = component.getConnection(selected.getConnectionId());
                                 reversed = true;
                             }
@@ -718,7 +722,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                             manager.setCurrentlyConnecting(null);
                         } else if (current.getComponentId() != id)
                         {
-                            FlowComponent connectTo = manager.getFlowItems().get(current.getComponentId());
+                            FlowComponent connectTo = manager.getFlowItem(current.getComponentId());
                             ConnectionOption connectToOption = connectTo.connectionSet.getConnections()[current.getConnectionId()];
 
 
@@ -821,11 +825,11 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
                 if (c != null)
                 {
-                    if (c.getComponentId() >= 0 && c.getComponentId() < manager.getFlowItems().size())
+                    if (c.getComponentId() >= 0)
                     {
                         List<Integer> usedComponentsCopy = new ArrayList<Integer>(usedComponents);
 
-                        if (checkForLoops(usedComponentsCopy, manager.getFlowItems().get(c.getComponentId()), connectionId, connection))
+                        if (checkForLoops(usedComponentsCopy, manager.getFlowItem(c.getComponentId()), connectionId, connection))
                         {
                             return true;
                         }
@@ -871,9 +875,9 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         Connection connection = connections.get(id);
 
         addConnection(id, null);
-        if (connection.getComponentId() >= 0 && connection.getComponentId() < getManager().getFlowItems().size())
+        if (connection.getComponentId() >= 0)
         {
-            manager.getFlowItems().get(connection.getComponentId()).addConnection(connection.getConnectionId(), null);
+            manager.getFlowItem(connection.getComponentId()).addConnection(connection.getConnectionId(), null);
         }
     }
 
@@ -1017,7 +1021,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
                 int startX = location[0] + location[3] / 2;
                 int startY = location[1] + location[4] / 2;
-                int[] otherLocation = getManager().getFlowItems().get(connection.getComponentId()).getConnectionLocationFromId(connection.getConnectionId());
+                int[] otherLocation = getManager().getFlowItem(connection.getComponentId()).getConnectionLocationFromId(connection.getConnectionId());
                 if (otherLocation == null)
                 {
                     return;
@@ -1251,7 +1255,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                 {
                     if (dr.readBoolean())
                     {
-                        setParent(getManager().getFlowItems().get(dr.readComponentId()));
+                        setParent(getManager().getFlowItem(dr.readComponentId()));
                     } else
                     {
                         setParent(null);
@@ -1360,8 +1364,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
     public FlowComponent copy()
     {
-        FlowComponent copy = new FlowComponent(manager, x, y, type);
-        copy.id = id;
+        FlowComponent copy = new FlowComponent(manager, x, y, id, type);
         copy.name = name;
 
         for (int i = 0; i < menus.size(); i++)
@@ -1450,7 +1453,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                 setParent(null);
             } else
             {
-                setParent(getManager().getFlowItems().get(newData.parent.getId()));
+                setParent(getManager().getFlowItem(newData.parent.getId()));
             }
 
             DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
@@ -1636,8 +1639,8 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             int x = nbtTagCompound.getShort(NBT_POS_X);
             int y = nbtTagCompound.getShort(NBT_POS_Y);
             int typeId = nbtTagCompound.getByte(NBT_TYPE);
-
-            component = new FlowComponent(jam, x, y, CommandRegistry.getCommand(typeId));
+            int id = nbtTagCompound.getByte(NBT_ID);
+            component = new FlowComponent(jam, x, y, id, CommandRegistry.getCommand(typeId));
             component.isLoading = true;
 
             if (nbtTagCompound.hasKey(NBT_NAME))
@@ -1762,7 +1765,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     {
         if (parentLoadId != -1)
         {
-            setParent(getManager().getFlowItems().get(parentLoadId));
+            setParent(getManager().getFlowItem(parentLoadId));
         } else
         {
             setParent(null);
@@ -1774,6 +1777,8 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         nbtTagCompound.setShort(NBT_POS_X, (short)x);
         nbtTagCompound.setShort(NBT_POS_Y, (short)y);
         nbtTagCompound.setByte(NBT_TYPE, (byte)type.getId());
+        nbtTagCompound.setInteger(NBT_ID, id);
+
         if (name != null)
         {
             nbtTagCompound.setString(NBT_NAME, name);

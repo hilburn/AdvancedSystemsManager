@@ -7,7 +7,7 @@ import java.util.*;
 
 public class CopyHelper
 {
-    public static Collection<FlowComponent> copyConnectionsWithChildren(List<FlowComponent> existing, FlowComponent toCopy, boolean limitless)
+    public static Collection<FlowComponent> copyConnectionsWithChildren(Collection<FlowComponent> existing, FlowComponent toCopy, boolean limitless)
     {
         Map<FlowComponent, FlowComponent> added = new LinkedHashMap<FlowComponent, FlowComponent>();
         copyConnectionsWithChildren(added, existing, toCopy, toCopy.getParent(), true);
@@ -24,7 +24,7 @@ public class CopyHelper
         return added.values();
     }
 
-    private static void copyConnectionsWithChildren(Map<FlowComponent, FlowComponent> added, List<FlowComponent> existing, FlowComponent toCopy, FlowComponent newParent, boolean reset)
+    private static void copyConnectionsWithChildren(Map<FlowComponent, FlowComponent> added, Collection<FlowComponent> existing, FlowComponent toCopy, FlowComponent newParent, boolean reset)
     {
         FlowComponent newComponent = toCopy.copy();
         newComponent.clearConnections();

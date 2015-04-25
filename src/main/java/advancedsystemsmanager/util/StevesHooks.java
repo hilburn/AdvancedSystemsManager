@@ -48,17 +48,17 @@ public class StevesHooks
     {
         for (int id : getIdsToRemove(idToRemove, manager.getFlowItems()))
         {
-            manager.removeFlowComponent(id, manager.getFlowItems());
+            manager.removeFlowComponent(id, manager.components);
             if (!manager.getWorldObj().isRemote)
             {
                 manager.getRemovedIds().add(id);
             } else
             {
-                for (int i = 0; i < manager.getZLevelRenderingList().size(); ++i)
+                for (Iterator<FlowComponent> itr = manager.getZLevelRenderingList().iterator(); itr.hasNext();)
                 {
-                    if ((manager.getZLevelRenderingList().get(i)).getId() == id)
+                    if (itr.next().getId() == id)
                     {
-                        manager.getZLevelRenderingList().remove(i);
+                        itr.remove();
                         break;
                     }
                 }
@@ -67,7 +67,7 @@ public class StevesHooks
         }
     }
 
-    public static List<Integer> getIdsToRemove(int idToRemove, List<FlowComponent> items)
+    public static List<Integer> getIdsToRemove(int idToRemove, Collection<FlowComponent> items)
     {
         List<Integer> ids = new ArrayList<Integer>();
         getIdsToRemove(ids, idToRemove, items);
@@ -75,8 +75,8 @@ public class StevesHooks
         Collections.reverse(ids);
         return ids;
     }
-    
-    private static void getIdsToRemove(List<Integer> ids, int idToRemove, List<FlowComponent> items)
+
+    private static void getIdsToRemove(List<Integer> ids, int idToRemove, Collection<FlowComponent> items)
     {
         for (FlowComponent component : items)
         {

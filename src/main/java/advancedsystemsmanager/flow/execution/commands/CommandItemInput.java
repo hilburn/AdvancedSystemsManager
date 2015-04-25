@@ -2,8 +2,8 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.*;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.buffers.buffers.Buffer;
-import advancedsystemsmanager.flow.execution.buffers.buffers.ItemBufferElement;
+import advancedsystemsmanager.flow.execution.buffers.Buffer;
+import advancedsystemsmanager.flow.execution.buffers.elements.ItemBufferElement;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;

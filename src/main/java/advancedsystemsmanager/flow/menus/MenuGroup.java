@@ -127,7 +127,7 @@ public class MenuGroup extends Menu
         if (!getParent().getManager().getWorldObj().isRemote)
         {
             int id = dr.readComponentId();
-            FlowComponent component = getParent().getManager().getFlowItems().get(id);
+            FlowComponent component = getParent().getManager().getFlowItem(id);
             boolean moveCluster = dr.readBoolean();
 
             moveComponents(component, getParent(), moveCluster);
@@ -174,7 +174,7 @@ public class MenuGroup extends Menu
                 Connection connection = component.getConnection(i);
                 if (connection != null)
                 {
-                    findCluster(components, component.getManager().getFlowItems().get(connection.getComponentId()), parent);
+                    findCluster(components, component.getManager().getFlowItem(connection.getComponentId()), parent);
                 }
             }
         }

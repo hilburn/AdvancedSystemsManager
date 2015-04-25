@@ -21,7 +21,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 @SideOnly(Side.CLIENT)
@@ -107,10 +109,8 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
         int zLevel = Z_LEVEL_COMPONENT_START;
         int openCount = 0;
-        for (int i = 0; i < manager.getZLevelRenderingList().size(); i++)
+        for (FlowComponent itemBase : manager.getZLevelRenderingList())
         {
-            FlowComponent itemBase = manager.getZLevelRenderingList().get(i);
-
             if (itemBase.isVisible())
             {
                 if (itemBase.isOpen() && openCount == Z_LEVEL_OPEN_MAXIMUM)
@@ -238,12 +238,13 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             return;
         }
 
-        for (int i = 0; i < manager.getZLevelRenderingList().size(); i++)
+
+        for (ListIterator<FlowComponent> itr = manager.getZLevelRenderingList().listIterator(); itr.hasNext();)
         {
-            FlowComponent itemBase = manager.getZLevelRenderingList().get(i);
+            FlowComponent itemBase = itr.next();
             if (itemBase.isVisible() && itemBase.onClick(x, y, button))
             {
-                manager.getZLevelRenderingList().remove(i);
+                itr.remove();
                 manager.getZLevelRenderingList().add(0, itemBase);
                 break;
             }

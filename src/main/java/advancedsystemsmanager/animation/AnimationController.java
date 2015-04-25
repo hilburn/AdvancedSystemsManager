@@ -162,8 +162,8 @@ public class AnimationController
                             }
                             if (groupTracking.get(0) != null && groupTracking.get(0).isVisible())
                             {
-                                manager.getFlowItems().get(groupTracking.get(0).getId()).setOpen(true);
-                                manager.getFlowItems().get(groupTracking.get(0).getId()).setOpenMenuId(0);
+                                manager.getFlowItem(groupTracking.get(0).getId()).setOpen(true);
+                                manager.getFlowItem(groupTracking.get(0).getId()).setOpenMenuId(0);
                                 moveToFront(groupTracking.get(0));
                             }
 
@@ -172,13 +172,13 @@ public class AnimationController
                         {
                             if (groupTracking.get(0) != null)
                             {
-                                manager.getFlowItems().get(groupTracking.get(0).getId()).setOpen(false);
+                                manager.getFlowItem(groupTracking.get(0).getId()).setOpen(false);
                             }
 
                             if (manager.getSelectedGroup() != null && manager.getSelectedGroup().isVisible(groupTracking.get(0)))
                             {
-                                manager.getFlowItems().get(manager.getSelectedGroup().getId()).setOpen(true);
-                                manager.getFlowItems().get(manager.getSelectedGroup().getId()).setOpenMenuId(0);
+                                manager.getFlowItem(manager.getSelectedGroup().getId()).setOpen(true);
+                                manager.getFlowItem(manager.getSelectedGroup().getId()).setOpenMenuId(0);
                                 moveToFront(manager.getSelectedGroup());
                             }
 
@@ -237,7 +237,7 @@ public class AnimationController
                 target.setId(blueprint.getId());
                 if (blueprint.getParent() != null)
                 {
-                    target.setParent(manager.getFlowItems().get(blueprint.getParent().getId()));
+                    target.setParent(manager.getFlowItem(blueprint.getParent().getId()));
                 }
                 manager.getZLevelRenderingList().add(0, target);
                 virtualId = target.getId();
@@ -360,7 +360,7 @@ public class AnimationController
                             int connectionId = manager.getCurrentlyConnecting().getConnectionId();
                             Connection connection = blueprint.getConnection(connectionId).copy();
                             target.setConnection(connectionId, connection);
-                            manager.getFlowItems().get(connection.getComponentId()).setConnection(connection.getConnectionId(), manager.getCurrentlyConnecting());
+                            manager.getFlowItem(connection.getComponentId()).setConnection(connection.getConnectionId(), manager.getCurrentlyConnecting());
                             manager.setCurrentlyConnecting(null);
                             delay = 0.25F + distance / MOVE_SPEED_CONNECTION;
                             return true;
@@ -387,7 +387,7 @@ public class AnimationController
                                         manager.setCurrentlyConnecting(new Connection(target.getId(), i));
                                         target.setOverrideX(location[0] + location[3] / 2);
                                         target.setOverrideY(location[1] + location[4] / 2);
-                                        int[] targetConnectionLocation = manager.getFlowItems().get(connection.getComponentId()).getConnectionLocationFromId(connection.getConnectionId());
+                                        int[] targetConnectionLocation = manager.getFlowItem(connection.getComponentId()).getConnectionLocationFromId(connection.getConnectionId());
                                         targetConnectionX = targetConnectionLocation[0] + targetConnectionLocation[3] / 2;
                                         targetConnectionY = targetConnectionLocation[1] + targetConnectionLocation[4] / 2;
                                         return true;
@@ -487,7 +487,7 @@ public class AnimationController
                         {
                             boolean reverse = target.getId() >= target.getConnection(i).getComponentId();
                             FlowComponent other = blueprints.get(target.getConnection(i).getComponentId());
-                            FlowComponent otherTarget = manager.getFlowItems().get(target.getConnection(i).getComponentId());
+                            FlowComponent otherTarget = manager.getFlowItem(target.getConnection(i).getComponentId());
                             Connection connection = reverse ? other.getConnection(target.getConnection(i).getConnectionId()) : blueprint.getConnection(i);
                             Connection targetConnection = reverse ? otherTarget.getConnection(target.getConnection(i).getConnectionId()) : target.getConnection(i);
                             if (targetConnection.getNodes().isEmpty() && !connection.getNodes().isEmpty())
@@ -543,7 +543,7 @@ public class AnimationController
 
     public void moveToFront(FlowComponent c)
     {
-        FlowComponent component = manager.getFlowItems().get(c.getId());
+        FlowComponent component = manager.getFlowItem(c.getId());
         manager.getZLevelRenderingList().remove(c);
         manager.getZLevelRenderingList().add(0, component);
     }

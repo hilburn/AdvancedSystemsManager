@@ -53,7 +53,7 @@ public class Executor implements IBufferProvider
 
     public void executeCommand(FlowComponent command, int connectionId)
     {
-        if (!usedCommands.contains(command.getId()))
+        if (command != null && !usedCommands.contains(command.getId()))
         {
             this.usedCommands.add(command.getId());
             command.getType().execute(command, connectionId, this);
@@ -65,7 +65,7 @@ public class Executor implements IBufferProvider
     {
         for (Connection connection : connections)
         {
-            this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
+            this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
         }
     }
 
@@ -90,7 +90,7 @@ public class Executor implements IBufferProvider
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
+                this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
             }
         }
     }

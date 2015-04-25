@@ -5,6 +5,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.WorldCoordinate;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -42,20 +43,20 @@ public class ContainerManager extends ContainerBase
             {
                 int idToRemove = manager.getRemovedIds().get(oldIdIndexToRemove);
                 oldIdIndexToRemove++;
-                manager.removeFlowComponent(idToRemove, oldComponents);
+                manager.removeFlowComponent(idToRemove);
                 PacketHandler.sendRemovalPacket(this, idToRemove);
             }
 
 
-            for (int i = 0; i < manager.getFlowItems().size(); i++)
+            for (FlowComponent component : manager.getFlowItems())
             {
-                if (i >= oldComponents.size())
+                if (!oldComponents.containsKey(component.getId()))
                 {
-                    PacketHandler.sendNewFlowComponent(this, manager.getFlowItems().get(i));
-                    oldComponents.add(manager.getFlowItems().get(i).copy());
+                    PacketHandler.sendNewFlowComponent(this, component);
+                    oldComponents.put(component.getId(), component.copy());
                 } else
                 {
-                    oldComponents.get(i).refreshData(this, manager.getFlowItems().get(i));
+                    oldComponents.get(component.getId()).refreshData(this, component);
                 }
             }
 
@@ -93,10 +94,10 @@ public class ContainerManager extends ContainerBase
         super.addCraftingToCrafters(player);
 
         PacketHandler.sendAllData(this, player, manager);
-        oldComponents = new ArrayList<FlowComponent>();
+        oldComponents = new TIntObjectHashMap<FlowComponent>();
         for (FlowComponent component : manager.getFlowItems())
         {
-            oldComponents.add(component.copy());
+            oldComponents.put(component.getId(), component.copy());
         }
         manager.updateInventories();
         oldInventories = new ArrayList<WorldCoordinate>();
@@ -108,7 +109,7 @@ public class ContainerManager extends ContainerBase
     }
 
 
-    private List<FlowComponent> oldComponents;
+    private TIntObjectHashMap<FlowComponent> oldComponents;
     private List<WorldCoordinate> oldInventories;
     private int oldIdIndexToRemove;
 

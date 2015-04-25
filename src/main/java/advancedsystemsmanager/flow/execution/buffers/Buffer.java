@@ -1,4 +1,4 @@
-package advancedsystemsmanager.flow.execution.buffers.buffers;
+package advancedsystemsmanager.flow.execution.buffers;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;

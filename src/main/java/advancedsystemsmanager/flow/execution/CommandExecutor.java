@@ -92,7 +92,7 @@ public class CommandExecutor
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                this.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
+                this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
             }
         }
     }
@@ -246,7 +246,7 @@ public class CommandExecutor
                                     Connection var30 = parent.getConnection(parent.getConnectionSet().getInputCount() + var28);
                                     if (var30 != null)
                                     {
-                                        this.executeCommand(this.manager.getFlowItems().get(var30.getComponentId()), var30.getConnectionId());
+                                        this.executeCommand(this.manager.getFlowItem(var30.getComponentId()), var30.getConnectionId());
                                     }
 
                                     return;
@@ -1454,7 +1454,7 @@ public class CommandExecutor
                     }
 
                     CommandExecutor var20 = new CommandExecutor(this.manager, itemBufferSplit, new ArrayList<CraftingBufferFluidElement>(this.craftingBufferHigh), new ArrayList<CraftingBufferFluidElement>(this.craftingBufferLow), liquidBufferSplit, rfBuffer, var17);
-                    var20.executeCommand(this.manager.getFlowItems().get(connection.getComponentId()), connection.getConnectionId());
+                    var20.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
                     ++var14;
                 }
             }

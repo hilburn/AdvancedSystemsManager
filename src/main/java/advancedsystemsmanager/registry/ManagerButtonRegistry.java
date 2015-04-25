@@ -58,7 +58,7 @@ public class ManagerButtonRegistry
             public void onClick(DataReader dr)
             {
                 int id = dr.readComponentId();
-                FlowComponent component = manager.getFlowItems().get(id);
+                FlowComponent component = manager.getFlowItem(id);
                 boolean moveCluster = dr.readBoolean();
                 if (component.getParent() != null)
                 {
