@@ -2,6 +2,7 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.execution.*;
@@ -36,6 +37,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
+
+import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
 public class TileEntityManager extends TileEntity implements ITileEntityInterface
 {
@@ -377,7 +380,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 for (FlowComponent item : items)
                 {
 
-                    if (item.getType() == CommandRegistry.TRIGGER)
+                    if (item.getType().getCommandType() == CommandType.TRIGGER)
                     {
                         MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
                         int interval = componentMenuInterval.getInterval();
@@ -441,7 +444,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == CommandRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
+            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
             {
                 redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
             }
@@ -452,7 +455,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == CommandRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
+            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
             {
                 activateTrigger(item, EnumSet.allOf(ConnectionOption.class));
             }
@@ -721,7 +724,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         for (FlowComponent item : items)
         {
-            if (item.getType() == CommandRegistry.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
+            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
             {
                 budTrigger.triggerBUD(item, tileEntityBUD);
             }

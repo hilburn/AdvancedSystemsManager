@@ -33,7 +33,7 @@ public class Key<Type>
     @Override
     public String toString()
     {
-        return "[Key:" + key.toString() + "]";
+        return "[Key :" + key.toString() + "]";
     }
 
     public static class ItemKey extends Key<ItemStack>

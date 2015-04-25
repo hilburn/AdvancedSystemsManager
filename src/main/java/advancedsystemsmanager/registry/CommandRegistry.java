@@ -5,6 +5,7 @@ import advancedsystemsmanager.flow.Command;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.execution.commands.CommandFluidInput;
 import advancedsystemsmanager.flow.execution.commands.CommandItemInput;
+import advancedsystemsmanager.flow.execution.commands.CommandTrigger;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.helpers.StevesEnum;
@@ -65,9 +66,9 @@ public class CommandRegistry
 
     static
     {
-        registerCommand(TRIGGER = new Command(0, CommandType.TRIGGER, Localization.TRIGGER_SHORT, Localization.TRIGGER_LONG,
-                new ConnectionSet[]{ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD, StevesEnum.DELAYED},
-                MenuReceivers.class, MenuBUDs.class, MenuInterval.class, MenuRedstoneSidesTrigger.class, MenuRedstoneStrength.class, MenuUpdateBlock.class, MenuDelayed.class));
+//        registerCommand(TRIGGER = new Command(0, CommandType.TRIGGER, Localization.TRIGGER_SHORT, Localization.TRIGGER_LONG,
+//                new ConnectionSet[]{ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD, StevesEnum.DELAYED},
+//                MenuReceivers.class, MenuBUDs.class, MenuInterval.class, MenuRedstoneSidesTrigger.class, MenuRedstoneStrength.class, MenuUpdateBlock.class, MenuDelayed.class));
 //        registerCommand(INPUT = new Command(1, CommandType.INPUT, Localization.INPUT_SHORT, Localization.INPUT_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuInventory.class, MenuTargetInventory.class, MenuItem.class));
@@ -116,6 +117,7 @@ public class CommandRegistry
 //        registerCommand(SIGN = new Command(16, CommandType.MISC, Localization.SIGN_SHORT, Localization.SIGN_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuSigns.class, MenuSignText.class));
+        registerCommand(TRIGGER = new CommandTrigger());
         registerCommand(new CommandItemInput());
         registerCommand(new CommandFluidInput());
     }

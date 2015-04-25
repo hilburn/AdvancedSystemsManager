@@ -36,7 +36,7 @@ public abstract class CommandBase implements ICommand
     protected CommandType type;
     protected EnumSet<ConnectionOption> outputs = EnumSet.allOf(ConnectionOption.class);
 
-    protected CommandBase(int id, String name, String longName, CommandType type, ConnectionSet... connectionSets)
+    public CommandBase(int id, String name, String longName, CommandType type, ConnectionSet... connectionSets)
     {
         this.id = id;
         this.name = name;
