@@ -71,14 +71,17 @@ public class ItemRemoteAccessor extends ItemBase
     {
         if (stack.hasTagCompound())
         {
-            int x = stack.getTagCompound().getInteger(X);
-            int y = stack.getTagCompound().getInteger(Y);
-            int z = stack.getTagCompound().getInteger(Z);
-            list.add("Linked to Manager at:");
-            list.add("x: " + x + " y: " + y + " z: " + z);
             if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != stack.getTagCompound().getByte("World"))
             {
                 list.add("§cWrong Dimension");
+            }
+            else
+            {
+                int x = stack.getTagCompound().getInteger(X);
+                int y = stack.getTagCompound().getInteger(Y);
+                int z = stack.getTagCompound().getInteger(Z);
+                list.add("Linked to Manager at:");
+                list.add("x: " + x + " y: " + y + " z: " + z);
             }
         }
     }
