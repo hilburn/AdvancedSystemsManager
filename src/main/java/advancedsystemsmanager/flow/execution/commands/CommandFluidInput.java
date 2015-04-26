@@ -29,13 +29,11 @@ public class CommandFluidInput extends CommandInput<Fluid>
     }
 
     @Override
-    public List<Menu> getMenus(FlowComponent component)
+    public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        List<Menu> menus = component.getMenus();
         menus.add(new MenuTank(component));
         menus.add(new MenuTargetTank(component));
         menus.add(new MenuLiquid(component));
-        return menus;
     }
 
     @Override
@@ -49,6 +47,7 @@ public class CommandFluidInput extends CommandInput<Fluid>
     {
         MenuTargetTank target = (MenuTargetTank)menus.get(1);
         MenuLiquid settings = (MenuLiquid)menus.get(2);
+        List<Setting<Fluid>> validSettings = getValidSettings(settings.getSettings());
         List<IBufferElement<Fluid>> subElements = new ArrayList<IBufferElement<Fluid>>();
         for (ConnectionBlock block : blocks)
         {
@@ -80,18 +79,11 @@ public class CommandFluidInput extends CommandInput<Fluid>
                 }
                 for (Map.Entry<ForgeDirection, FluidTankInfo> entry : tankInfoMap.entrySet())
                 {
-                    if (isFluidValid(settings.settings, entry.getValue().fluid, settings.isFirstRadioButtonSelected()))
+                    if (isValid(validSettings, entry.getValue().fluid.getFluid(), settings.isFirstRadioButtonSelected()))
                         subElements.add(new FluidBufferElement(id, tank, entry.getKey(), entry.getValue().fluid.amount, entry.getValue().fluid.getFluid()));
                 }
             }
         }
         return subElements;
-    }
-
-    private static boolean isFluidValid(List<Setting> settings, FluidStack fluid, boolean whitelist)
-    {
-        for (Setting setting : settings)
-            if (setting.isValid() && ((LiquidSetting)setting).fluid == fluid.getFluid()) return whitelist;
-        return !whitelist;
     }
 }

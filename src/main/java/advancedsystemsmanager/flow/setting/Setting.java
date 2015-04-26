@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.List;
 
 
-public abstract class Setting
+public abstract class Setting<Type>
 {
     public int id;
 
@@ -70,6 +70,8 @@ public abstract class Setting
     public abstract boolean isContentEqual(Setting otherSetting);
 
     public abstract void setContent(Object obj);
+
+    public abstract boolean isContentEqual(Type check);
 
     public boolean isAmountSpecific()
     {

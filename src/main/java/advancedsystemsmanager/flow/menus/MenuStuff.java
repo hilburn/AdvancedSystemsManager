@@ -21,7 +21,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MenuStuff extends Menu
+public abstract class MenuStuff<Type> extends Menu
 {
 
 
@@ -30,15 +30,15 @@ public abstract class MenuStuff extends Menu
         super(parent);
 
 
-        settings = new ArrayList<Setting>();
-        externalSettings = new ArrayList<Setting>();
+        settings = new ArrayList<Setting<Type>>();
+        externalSettings = new ArrayList<Setting<Type>>();
         for (int i = 0; i < getSettingCount(); i++)
         {
             try
             {
                 Constructor<? extends Setting> constructor = settingClass.getConstructor(int.class);
                 Object obj = constructor.newInstance(i);
-                Setting setting = (Setting)obj;
+                Setting<Type> setting = (Setting<Type>)obj;
                 settings.add(setting);
                 externalSettings.add(setting);
             } catch (Exception ex)
@@ -128,10 +128,10 @@ public abstract class MenuStuff extends Menu
             }
         };
 
-        scrollControllerSelected = new ScrollController<Setting>(false)
+        scrollControllerSelected = new ScrollController<Setting<Type>>(false)
         {
             @Override
-            public List<Setting> updateSearch(String search, boolean all)
+            public List<Setting<Type>> updateSearch(String search, boolean all)
             {
                 return settings;
             }
@@ -262,9 +262,9 @@ public abstract class MenuStuff extends Menu
     public static final int DELETE_TEXT_Y = 3;
 
     public ScrollController scrollControllerSearch;
-    public ScrollController<Setting> scrollControllerSelected;
-    public List<Setting> settings;
-    public List<Setting> externalSettings;
+    public ScrollController<Setting<Type>> scrollControllerSelected;
+    public List<Setting<Type>> settings;
+    public List<Setting<Type>> externalSettings;
     public Setting selectedSetting;
     public boolean editSetting;
     public TextBoxNumberList numberTextBoxes;
@@ -488,12 +488,13 @@ public abstract class MenuStuff extends Menu
     @Override
     public void copyFrom(Menu menu)
     {
-        MenuStuff menuItem = (MenuStuff)menu;
+        MenuStuff<Type> menuItem = (MenuStuff<Type>)menu;
 
         setFirstRadioButtonSelected(menuItem.isFirstRadioButtonSelected());
 
         for (int i = 0; i < settings.size(); i++)
         {
+
             if (!menuItem.settings.get(i).isValid())
             {
                 settings.get(i).clear();
@@ -525,7 +526,7 @@ public abstract class MenuStuff extends Menu
         for (int i = 0; i < settings.size(); i++)
         {
             Setting setting = settings.get(i);
-            Setting newSetting = ((MenuStuff)newData).settings.get(i);
+            Setting newSetting = ((MenuStuff<Type>)newData).settings.get(i);
 
             if (!newSetting.isValid() && setting.isValid())
             {
@@ -678,7 +679,7 @@ public abstract class MenuStuff extends Menu
 
     public abstract void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting);
 
-    public List<Setting> getSettings()
+    public List<Setting<Type>> getSettings()
     {
         return externalSettings;
     }

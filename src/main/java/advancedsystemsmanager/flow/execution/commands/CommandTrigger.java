@@ -17,9 +17,8 @@ public class CommandTrigger extends CommandBase
     }
 
     @Override
-    public List<Menu> getMenus(FlowComponent component)
+    public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        List<Menu> menus = component.getMenus();
         menus.add(new MenuReceivers(component));
         menus.add(new MenuBUDs(component));
         menus.add(new MenuInterval(component));
@@ -27,7 +26,6 @@ public class CommandTrigger extends CommandBase
         menus.add(new MenuRedstoneStrength(component));
         menus.add(new MenuUpdateBlock(component));
         menus.add(new MenuDelayed(component));
-        return menus;
     }
 
     @Override

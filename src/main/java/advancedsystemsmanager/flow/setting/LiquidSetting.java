@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LiquidSetting extends Setting
+public class LiquidSetting extends Setting<Fluid>
 {
     public Fluid fluid;
     public int amount;
@@ -128,6 +128,12 @@ public class LiquidSetting extends Setting
     {
         fluid = (Fluid)obj;
         setDefaultAmount();
+    }
+
+    @Override
+    public boolean isContentEqual(Fluid check)
+    {
+        return fluid == check;
     }
 
     public int getLiquidId()

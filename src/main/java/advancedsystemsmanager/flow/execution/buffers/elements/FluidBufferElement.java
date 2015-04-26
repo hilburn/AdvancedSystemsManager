@@ -40,7 +40,11 @@ public class FluidBufferElement extends BufferElementBase<Fluid>
         {
             for (FluidTankInfo tankInfo : tankInfos)
             {
-                if (tankInfo.fluid.getFluid() == content && tankInfo.fluid.amount < result) result = tankInfo.fluid.amount;
+                if (tankInfo.fluid != null && tankInfo.fluid.getFluid() == content && tankInfo.fluid.amount < result)
+                {
+                    result = tankInfo.fluid.amount;
+                    break;
+                }
             }
         }
         return result;

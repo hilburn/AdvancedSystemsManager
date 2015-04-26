@@ -56,19 +56,18 @@ public class Command implements ICommand
     }
 
     @Override
-    public List<Menu> getMenus(FlowComponent component)
+    public void getMenus(FlowComponent component, List<Menu> menus)
     {
         for (Constructor<? extends Menu> constructor : constructors)
         {
             try
             {
-                component.getMenus().add(constructor.newInstance(component));
+                menus.add(constructor.newInstance(component));
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
         }
-        return component.getMenus();
     }
 
     @Override

@@ -11,7 +11,7 @@ import advancedsystemsmanager.util.ConnectionBlock;
 
 import java.util.List;
 
-public abstract class CommandInput<Type> extends CommandBase
+public abstract class CommandInput<Type> extends CommandBase<Type>
 {
     protected String bufferKey;
 

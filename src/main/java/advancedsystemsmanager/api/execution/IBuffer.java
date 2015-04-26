@@ -1,12 +1,14 @@
 package advancedsystemsmanager.api.execution;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public interface IBuffer<Type>
 {
     public static final String ITEM = "item";
     public static final String CRAFT_HIGH = "craftHigh";
-    public static final String CAFT_LOW = "craftLow";
+    public static final String CRAFT_LOW = "craftLow";
     public static final String FLUID = "fluid";
     public static final String RF = "rf";
     public static final String GAS = "gas";
@@ -25,6 +27,10 @@ public interface IBuffer<Type>
 //    void remove(IBufferSubElement<Type> subElement);
 
     boolean add(IBufferElement<Type> subElement);
+
+    Iterator<Map.Entry<Key<Type>, IBufferElement<Type>>> getOrderedIterator();
+
+    Iterator<Key<Type>> getKeyIterator();
 
 //    void addToOrderedList(IBufferSubElement<Type> subElement);
 //

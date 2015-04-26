@@ -4,6 +4,7 @@ import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.flow.Command;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.execution.commands.CommandFluidInput;
+import advancedsystemsmanager.flow.execution.commands.CommandFluidOutput;
 import advancedsystemsmanager.flow.execution.commands.CommandItemInput;
 import advancedsystemsmanager.flow.execution.commands.CommandTrigger;
 import advancedsystemsmanager.flow.menus.*;
@@ -120,5 +121,6 @@ public class CommandRegistry
         registerCommand(TRIGGER = new CommandTrigger());
         registerCommand(new CommandItemInput());
         registerCommand(new CommandFluidInput());
+        registerCommand(new CommandFluidOutput());
     }
 }

@@ -7,6 +7,7 @@ import com.google.common.collect.LinkedListMultimap;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class Buffer<Type> implements IBuffer<Type>
 {
@@ -66,5 +67,17 @@ public class Buffer<Type> implements IBuffer<Type>
     public boolean add(IBufferElement<Type> subElement)
     {
         return multiMap.put(subElement.getKey(), subElement);
+    }
+
+    @Override
+    public Iterator<Map.Entry<Key<Type>, IBufferElement<Type>>> getOrderedIterator()
+    {
+        return multiMap.entries().iterator();
+    }
+
+    @Override
+    public Iterator<Key<Type>> getKeyIterator()
+    {
+        return multiMap.keySet().iterator();
     }
 }

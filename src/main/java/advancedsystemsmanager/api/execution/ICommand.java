@@ -16,7 +16,7 @@ public interface ICommand
 
     public ConnectionSet[] getSets();
 
-    List<Menu> getMenus(FlowComponent component);
+    void getMenus(FlowComponent component, List<Menu> menus);
 
     public String getName();
 

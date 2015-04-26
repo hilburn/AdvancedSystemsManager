@@ -115,7 +115,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         this.id = id;
 
         menus = new ArrayList<Menu>();
-        menus = type.getMenus(this);
+        type.getMenus(this, menus);
         menus.add(new MenuResult(this));
 
         openMenuId = -1;

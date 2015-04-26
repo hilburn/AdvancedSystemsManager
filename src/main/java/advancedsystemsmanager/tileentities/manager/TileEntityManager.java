@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
+import advancedsystemsmanager.api.IJsonWritable;
 import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITileEntityInterface;
 import advancedsystemsmanager.api.gui.IManagerButton;
@@ -24,6 +25,7 @@ import advancedsystemsmanager.tileentities.TileEntityInput;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.ConnectionBlockType;
 import advancedsystemsmanager.util.WorldCoordinate;
+import com.google.gson.JsonObject;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -63,6 +65,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @SideOnly(Side.CLIENT)
     public IInterfaceRenderer specialRenderer;
     private int maxID;
+    private int triggerOffset;
 
     public TileEntityManager()
     {
@@ -75,6 +78,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         {
             variables[i] = new Variable(i);
         }
+        this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
     private List<Integer> removedIds;
@@ -377,10 +381,8 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         if (!worldObj.isRemote)
         {
 
-            if (timer >= 20)
+            if (timer++ % 20 == triggerOffset)
             {
-                timer = 0;
-
                 for (FlowComponent item : getFlowItems())
                 {
                     if (item.getType().getCommandType() == CommandType.TRIGGER)
@@ -408,9 +410,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                         }
                     }
                 }
-            } else
-            {
-                timer++;
             }
         }
     }
@@ -786,7 +785,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setByte(NBT_TIMER, (byte)timer);
+        nbtTagCompound.setByte(NBT_TIMER, (byte)(timer % 20));
         nbtTagCompound.setInteger(NBT_MAX_ID, maxID);
         NBTTagList components = new NBTTagList();
         for (FlowComponent item : getFlowItems())
@@ -806,5 +805,25 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             variablesTag.appendTag(variableTag);
         }
         nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
+    }
+
+    public String getUniqueComponentName(FlowComponent component)
+    {
+        String name = getComponentName(component);
+        int modifier = 0;
+        for (int i : components.keys())
+        {
+            FlowComponent other = components.get(i);
+            if (getComponentName(other).equals(name)) modifier++;
+        }
+        if (modifier>0) name += " ["+modifier+"]";
+        return name;
+    }
+
+    public String getComponentName(FlowComponent component)
+    {
+        String name = component.getComponentName();
+        if (name == null) name = component.getType().getName();
+        return name;
     }
 }

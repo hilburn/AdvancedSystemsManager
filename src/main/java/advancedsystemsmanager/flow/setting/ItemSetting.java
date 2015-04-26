@@ -15,7 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemSetting extends Setting
+public class ItemSetting extends Setting<ItemStack>
 {
     public FuzzyMode fuzzyMode;
     public ItemStack item;
@@ -157,6 +157,12 @@ public class ItemSetting extends Setting
     public void setContent(Object obj)
     {
         item = ((ItemStack)obj).copy();
+    }
+
+    @Override
+    public boolean isContentEqual(ItemStack check)
+    {
+        return isEqualForCommandExecutor(check);
     }
 
     public void setItem(ItemStack item)

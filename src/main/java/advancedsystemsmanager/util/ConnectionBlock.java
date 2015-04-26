@@ -1,11 +1,15 @@
 package advancedsystemsmanager.util;
 
+import advancedsystemsmanager.api.IJsonWritable;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.EnumSet;
 
-public class ConnectionBlock implements IContainerSelection<GuiManager>
+public class ConnectionBlock implements IContainerSelection<GuiManager>, IJsonWritable
 {
     private TileEntity tileEntity;
     private EnumSet<ConnectionBlockType> types;
@@ -141,5 +145,14 @@ public class ConnectionBlock implements IContainerSelection<GuiManager>
     public boolean isPartOfVariable(Variable variable)
     {
         return variable.isValid() && ((MenuContainer)variable.getDeclaration().getMenus().get(2)).getSelectedInventories().contains(id);
+    }
+
+    @Override
+    public JsonObject writeToJson()
+    {
+        JsonObject object = new JsonObject();
+        object.add("Position", new JsonPrimitive(tileEntity.xCoord +", "+tileEntity.yCoord+", "+tileEntity.zCoord));
+        object.add("Name", new JsonPrimitive(new GuiManager(null, null).getBlockName(tileEntity)));
+        return object;
     }
 }

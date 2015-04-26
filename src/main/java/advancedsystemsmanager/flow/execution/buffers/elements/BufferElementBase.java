@@ -25,4 +25,10 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
     {
         return new Key<Type>(content);
     }
+
+    @Override
+    public Type getContent()
+    {
+        return content;
+    }
 }

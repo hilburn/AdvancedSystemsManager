@@ -5,19 +5,24 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuContainer;
+import advancedsystemsmanager.flow.setting.ItemSetting;
+import advancedsystemsmanager.flow.setting.LiquidSetting;
+import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public abstract class CommandBase implements ICommand
+public abstract class CommandBase<Type> implements ICommand
 {
     protected static final int BUTTON_SHEET_SIZE = 20;
     protected static final int TRIGGER = 0;
@@ -114,5 +119,19 @@ public abstract class CommandBase implements ICommand
         List<ConnectionBlock> result = new ArrayList<ConnectionBlock>();
         for (ConnectionBlock block: manager.getConnectedInventories()) if (container.selectedInventories.contains(block.getId())) result.add(block);
         return result;
+    }
+
+    public List<Setting<Type>> getValidSettings(List<Setting<Type>> oldSettings)
+    {
+        List<Setting<Type>> result = new ArrayList<Setting<Type>>();
+        for (Setting<Type> setting : oldSettings) if (setting.isValid()) result.add(setting);
+        return result;
+    }
+
+    public boolean isValid(List<Setting<Type>> settings, Type fluid, boolean whitelist)
+    {
+        for (Setting<Type> setting : settings)
+            if (setting.isValid() && setting.isContentEqual(fluid)) return whitelist;
+        return !whitelist;
     }
 }

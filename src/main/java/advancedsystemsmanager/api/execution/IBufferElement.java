@@ -12,6 +12,8 @@ public interface IBufferElement<Type>
 
     Key<Type> getKey();
 
+    Type getContent();
+
     IBufferElement<Type> getSplitElement(int elementAmount, int id, boolean fair);
 
 //    IBufferElement<Type> getNewBufferElement();
