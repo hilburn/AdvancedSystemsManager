@@ -28,7 +28,8 @@ tile.system_cable_ae.name=Energistics Connector
 
 item.system_duplicator.name=System Duplicator
 item.system_labeler.name=Machine Labeler
-item.remote_access.name=Remote Interface
+item.system_remote_access.name=Remote Interface
+item.system_remote_access_advanced.name=Advanced Remote Interface
 
 # ======================================
 #			COMPONENT TYPES
