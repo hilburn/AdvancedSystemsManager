@@ -1,6 +1,7 @@
 package advancedsystemsmanager.flow.execution.buffers.elements;
 
 import advancedsystemsmanager.api.execution.Key;
+import advancedsystemsmanager.flow.setting.Setting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -8,6 +9,13 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
 {
     protected IInventory inventory;
     protected int slot;
+
+    public ItemBufferElement(int id, IInventory inventory, int slot, Setting<ItemStack> setting, boolean whitelist)
+    {
+        this(id, inventory, slot);
+        this.setting = setting;
+        this.whitelist = whitelist;
+    }
 
     public ItemBufferElement(int id, IInventory inventory, int slot)
     {
@@ -32,7 +40,7 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
     @Override
     public int getSizeLeft()
     {
-        return Math.min(content.stackSize, amount);
+        return getMaxWithSetting(Math.min(content.stackSize, amount));
     }
 
     @Override

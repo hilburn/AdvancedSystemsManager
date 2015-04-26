@@ -79,8 +79,10 @@ public class CommandFluidInput extends CommandInput<Fluid>
                 }
                 for (Map.Entry<ForgeDirection, FluidTankInfo> entry : tankInfoMap.entrySet())
                 {
-                    if (isValid(validSettings, entry.getValue().fluid.getFluid(), settings.isFirstRadioButtonSelected()))
-                        subElements.add(new FluidBufferElement(id, tank, entry.getKey(), entry.getValue().fluid.amount, entry.getValue().fluid.getFluid()));
+                    Setting<Fluid> setting = isValid(validSettings, entry.getValue().fluid.getFluid());
+                    boolean whitelist = settings.isFirstRadioButtonSelected();
+                    if (setting == null && whitelist) continue;
+                    subElements.add(new FluidBufferElement(id, tank, entry.getKey(), entry.getValue().fluid.amount, entry.getValue().fluid.getFluid(), setting, whitelist));
                 }
             }
         }

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.flow.execution.buffers.elements;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.flow.setting.Setting;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,6 +12,13 @@ public class FluidBufferElement extends BufferElementBase<Fluid>
 {
     protected IFluidHandler tank;
     protected ForgeDirection direction;
+
+    public FluidBufferElement(int id, IFluidHandler tank, ForgeDirection direction, int amount, Fluid fluid, Setting<Fluid> setting, boolean whitelist)
+    {
+        this(id, tank, direction, amount, fluid);
+        this.setting = setting;
+        this.whitelist = whitelist;
+    }
 
     public FluidBufferElement(int id, IFluidHandler tank, ForgeDirection direction, int amount, Fluid fluid)
     {
@@ -34,20 +42,8 @@ public class FluidBufferElement extends BufferElementBase<Fluid>
     @Override
     public int getSizeLeft()
     {
-        int result = amount;
-        FluidTankInfo[] tankInfos = tank.getTankInfo(direction);
-        if (tankInfos != null)
-        {
-            for (FluidTankInfo tankInfo : tankInfos)
-            {
-                if (tankInfo.fluid != null && tankInfo.fluid.getFluid() == content && tankInfo.fluid.amount < result)
-                {
-                    result = tankInfo.fluid.amount;
-                    break;
-                }
-            }
-        }
-        return result;
+        FluidStack stack = tank.drain(direction, new FluidStack(content, amount), false);
+        return stack == null ? 0 : getMaxWithSetting(stack.amount);
     }
 
     @Override

@@ -128,10 +128,10 @@ public abstract class CommandBase<Type> implements ICommand
         return result;
     }
 
-    public boolean isValid(List<Setting<Type>> settings, Type fluid, boolean whitelist)
+    public Setting<Type> isValid(List<Setting<Type>> settings, Type check)
     {
         for (Setting<Type> setting : settings)
-            if (setting.isValid() && setting.isContentEqual(fluid)) return whitelist;
-        return !whitelist;
+            if (setting.isContentEqual(check)) return setting;
+        return null;
     }
 }
