@@ -10,6 +10,7 @@ import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.settings.Settings;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.fluids.Fluid;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class MenuLiquid extends MenuStuff<Fluid>
 {
-    public MenuLiquid(FlowComponent parent)
+    public MenuLiquid(FlowComponent parent, boolean whitelist)
     {
         super(parent, LiquidSetting.class);
 
@@ -54,6 +55,13 @@ public class MenuLiquid extends MenuStuff<Fluid>
                 sendAmountData();
             }
         });
+        setFirstRadioButtonSelected(whitelist);
+    }
+
+    public MenuLiquid(FlowComponent parent)
+    {
+        this(parent, true);
+        //this(parent, !Settings.isAutoBlacklist());
     }
 
 

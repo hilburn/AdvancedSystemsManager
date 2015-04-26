@@ -28,7 +28,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
     protected void outputFromBuffer(FlowComponent component, IBuffer<Fluid> buffer)
     {
         MenuLiquid menuLiquid = (MenuLiquid)component.menus.get(2);
-        List<Setting> validSettings = getValidSettings(menuLiquid.settings);
+        List<Setting<Fluid>> validSettings = getValidSettings(menuLiquid.getSettings());
         List<Integer> validSides = new ArrayList<Integer>();
         for (int i = 0; i< ((MenuTargetTank)component.getMenus().get(1)).activatedDirections.length; i++) if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
         for (ConnectionBlock block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
@@ -39,7 +39,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
             {
                 IBufferElement<Fluid> fluidBufferElement = iterator.next().getValue();
                 FluidStack fluidStack = new FluidStack(fluidBufferElement.getContent(), 0);
-                if (isFluidValid(validSettings, fluidStack, menuLiquid.isFirstRadioButtonSelected()))
+                if (isValid(validSettings, fluidBufferElement.getContent(), menuLiquid.isFirstRadioButtonSelected()))
                 {
                     for (int side : validSides)
                     {
@@ -71,6 +71,6 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
     {
         menus.add(new MenuTank(component));
         menus.add(new MenuTargetTank(component));
-        menus.add(new MenuLiquidOutput(component));
+        menus.add(new MenuLiquid(component, false));
     }
 }

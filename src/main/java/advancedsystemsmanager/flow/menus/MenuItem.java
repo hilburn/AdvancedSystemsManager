@@ -12,6 +12,7 @@ import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,13 +23,13 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuItem extends MenuStuff
+public class MenuItem extends MenuStuff<ItemStack>
 {
 
 
-    public MenuItem(FlowComponent parent, Class<? extends Setting> settingClass)
+    public MenuItem(FlowComponent parent, boolean whitelist)
     {
-        super(parent, settingClass);
+        super(parent, ItemSetting.class);
 
         if (settings.get(0).isAmountSpecific())
         {
@@ -65,6 +66,8 @@ public class MenuItem extends MenuStuff
             }
         });
 
+        setFirstRadioButtonSelected(whitelist);
+
         /*checkBoxes.addCheckBox(new CheckBox("Is detection fuzzy?", 5, 40) {
             @Override
             public void setValue(boolean val) {
@@ -85,7 +88,8 @@ public class MenuItem extends MenuStuff
 
     public MenuItem(FlowComponent parent)
     {
-        this(parent, ItemSetting.class);
+        this(parent, true);
+        //this(parent, !Settings.isAutoBlacklist());
     }
 
     public static final int DMG_VAL_TEXT_X = 15;
