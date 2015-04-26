@@ -1,7 +1,6 @@
 package advancedsystemsmanager.blocks;
 
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -22,7 +21,7 @@ public class BlockCableSign extends BlockClusterElement
 {
     public BlockCableSign()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_SIGN);
+        super(Names.CABLE_SIGN, 1);
     }
 
     @Override
@@ -32,15 +31,11 @@ public class BlockCableSign extends BlockClusterElement
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon frontIcon;
-
-
-    @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
+        super.registerBlockIcons(register);
         blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
-        frontIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_sign");
     }
 
     @SideOnly(Side.CLIENT)
@@ -60,7 +55,7 @@ public class BlockCableSign extends BlockClusterElement
     @SideOnly(Side.CLIENT)
     private IIcon getIconFromSideAndMeta(int side, int meta)
     {
-        return side == meta ? frontIcon : blockIcon;
+        return side == meta ? icons[0] : blockIcon;
     }
 
 

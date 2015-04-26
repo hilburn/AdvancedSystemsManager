@@ -50,7 +50,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
-        List<Setting> validSettings = getValidSettings(settings.settings);
+        List<Setting<ItemStack>> validSettings = getValidSettings(settings.settings);
         List<IBufferElement<ItemStack>> subElements = new ArrayList<IBufferElement<ItemStack>>();
         for (ConnectionBlock block : blocks)
         {
@@ -87,7 +87,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
         return subElements;
     }
 
-    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, List<Setting> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements)
+    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements)
     {
         for (int slot : toScan)
         {
@@ -95,7 +95,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
             if (slot > end) return;
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
-            if (isItemValid(settings, stack, whitelist))
+            if (isValid(settings, stack, whitelist))
                 subElements.add(new ItemBufferElement(id, inventory, slot));
             checked.add(slot);
         }

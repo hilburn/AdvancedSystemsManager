@@ -21,6 +21,11 @@ public abstract class BlockCamouflageBase extends BlockClusterElement
         super(name);
     }
 
+    public BlockCamouflageBase(String name, int extraIcons)
+    {
+        super(name, extraIcons);
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z)

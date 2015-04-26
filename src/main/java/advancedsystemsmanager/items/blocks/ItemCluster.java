@@ -66,6 +66,6 @@ public class ItemCluster extends ItemBlock
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        return "tile." + AdvancedSystemsManager.UNLOCALIZED_START + (BlockRegistry.blockCableCluster.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_CLUSTER_UNLOCALIZED_NAME : Names.CABLE_CLUSTER_UNLOCALIZED_NAME);
+        return "tile." + (BlockRegistry.blockCableCluster.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_CLUSTER : Names.CABLE_CLUSTER);
     }
 }

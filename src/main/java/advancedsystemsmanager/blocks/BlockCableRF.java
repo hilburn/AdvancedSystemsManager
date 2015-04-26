@@ -13,26 +13,15 @@ import net.minecraft.world.World;
 
 public class BlockCableRF extends BlockClusterElement
 {
-    private IIcon[] icons;
-
     public BlockCableRF()
     {
-        super(Names.CABLE_RF);
+        super(Names.CABLE_RF, 4);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEntityRFNode();
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister registry)
-    {
-        icons = new IIcon[4];
-        for (int i = 0; i < 4; i++)
-            icons[i] = registry.registerIcon(Reference.ID + ":" + Names.CABLE_RF + "_" + i);
     }
 
     @Override

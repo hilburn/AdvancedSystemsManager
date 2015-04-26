@@ -19,10 +19,4 @@ public class BlockCableAE extends BlockClusterElement
     {
         return new TileEntityAENode();
     }
-
-    @Override
-    public void registerBlockIcons(IIconRegister ir)
-    {
-        this.blockIcon = ir.registerIcon(Reference.ID + ":" + Names.CABLE_AE);
-    }
 }

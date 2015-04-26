@@ -1,6 +1,5 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
@@ -40,10 +39,11 @@ public abstract class BlockCableDirectionAdvanced extends BlockClusterElement
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        activeIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(false));
-        advancedActiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true));
-        inactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(false));
-        advancedInactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(true));
+        icons = new IIcon[4];
+        icons[0] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(false));
+        icons[1] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(false));
+        icons[2] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(true));
+        icons[3] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true));
     }
 
     protected abstract String getFrontTextureName(boolean isAdvanced);
@@ -70,7 +70,8 @@ public abstract class BlockCableDirectionAdvanced extends BlockClusterElement
     @SideOnly(Side.CLIENT)
     private IIcon getIconFromSideAndMeta(int side, int meta)
     {
-        return side == (getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length) ? isAdvanced(meta) ? advancedActiveIcon : activeIcon : isAdvanced(meta) ? advancedInactiveIcon : inactiveIcon;
+        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
+        //return side == (getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length) ? isAdvanced(meta) ? advancedActiveIcon : activeIcon : isAdvanced(meta) ? advancedInactiveIcon : inactiveIcon;
     }
 
     @Override

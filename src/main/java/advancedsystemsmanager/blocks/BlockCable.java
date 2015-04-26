@@ -1,17 +1,11 @@
 package advancedsystemsmanager.blocks;
 
-
-import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.api.ICable;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.WorldCoordinate;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -20,22 +14,11 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class BlockCable extends Block
+public class BlockCable extends BlockBase implements ICable
 {
     public BlockCable()
     {
-        super(Material.iron);
-        setCreativeTab(AdvancedSystemsManager.creativeTab);
-        setStepSound(soundTypeMetal);
-        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE);
-        setHardness(0.4F);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister register)
-    {
-        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable");
+        super(Names.CABLE, 0.4F);
     }
 
     @Override
@@ -110,12 +93,16 @@ public class BlockCable extends Block
             }
 
         }
-
-
     }
 
     public boolean isCable(Block block, int meta)
     {
-        return block == BlockRegistry.blockCable || (block == BlockRegistry.blockCableCluster && BlockRegistry.blockCableCluster.isAdvanced(meta));
+        return block instanceof ICable && ((ICable)block).isCable(meta);
+    }
+
+    @Override
+    public boolean isCable(int meta)
+    {
+        return true;
     }
 }

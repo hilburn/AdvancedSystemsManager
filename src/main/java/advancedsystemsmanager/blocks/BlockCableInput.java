@@ -1,6 +1,5 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -18,20 +17,13 @@ public class BlockCableInput extends BlockClusterElement
 {
     public BlockCableInput()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_INPUT);
+        super(Names.CABLE_INPUT);
     }
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEntityInput();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister register)
-    {
-        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_input");
     }
 
     @Override

@@ -27,14 +27,11 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemLabeler extends Item
+public class ItemLabeler extends ItemBase
 {
     public ItemLabeler()
     {
-        this.setCreativeTab(AdvancedSystemsManager.creativeTab);
-        this.setUnlocalizedName(Names.LABELER);
-        this.setTextureName(Reference.ID.toLowerCase() + ":" + Names.LABELER);
-        this.setMaxStackSize(1);
+        super(Names.LABELER);
     }
 
     @Override

@@ -26,10 +26,41 @@ import java.util.List;
 public class MenuItem extends MenuStuff<ItemStack>
 {
 
+    public static final int DMG_VAL_TEXT_X = 15;
+    public static final int DMG_VAL_TEXT_Y = 55;
+
+    public static final int ARROW_SRC_X = 18;
+    public static final int ARROW_SRC_Y = 20;
+    public static final int ARROW_WIDTH = 6;
+    public static final int ARROW_HEIGHT = 10;
+    public static final int ARROW_X_LEFT = 5;
+    public static final int ARROW_X_RIGHT = 109;
+    public static final int ARROW_Y = 37;
+    public static final int ARROW_TEXT_Y = 40;
+
+
+    public TextBoxNumber damageValueTextBox;
+    public TextBoxNumber amountTextBox;
 
     public MenuItem(FlowComponent parent, boolean whitelist)
     {
-        super(parent, ItemSetting.class);
+        this(parent, ItemSetting.class, whitelist);
+    }
+
+    public MenuItem(FlowComponent parent, Class<? extends Setting> clazz)
+    {
+        this(parent, clazz, true);
+    }
+
+    public MenuItem(FlowComponent parent)
+    {
+        this(parent, true);
+        //this(parent, !Settings.isAutoBlacklist());
+    }
+
+    public MenuItem(FlowComponent parent, Class<? extends Setting> clazz, boolean whitelist)
+    {
+        super(parent, clazz);
 
         if (settings.get(0).isAmountSpecific())
         {
@@ -85,28 +116,6 @@ public class MenuItem extends MenuStuff<ItemStack>
             }
         });*/
     }
-
-    public MenuItem(FlowComponent parent)
-    {
-        this(parent, true);
-        //this(parent, !Settings.isAutoBlacklist());
-    }
-
-    public static final int DMG_VAL_TEXT_X = 15;
-    public static final int DMG_VAL_TEXT_Y = 55;
-
-    public static final int ARROW_SRC_X = 18;
-    public static final int ARROW_SRC_Y = 20;
-    public static final int ARROW_WIDTH = 6;
-    public static final int ARROW_HEIGHT = 10;
-    public static final int ARROW_X_LEFT = 5;
-    public static final int ARROW_X_RIGHT = 109;
-    public static final int ARROW_Y = 37;
-    public static final int ARROW_TEXT_Y = 40;
-
-
-    public TextBoxNumber damageValueTextBox;
-    public TextBoxNumber amountTextBox;
 
     public ItemSetting getSelectedSetting()
     {

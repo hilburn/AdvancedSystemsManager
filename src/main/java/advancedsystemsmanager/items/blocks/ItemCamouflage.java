@@ -1,6 +1,5 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import net.minecraft.block.Block;
@@ -21,7 +20,7 @@ public class ItemCamouflage extends ItemBlock
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        return "tile." + AdvancedSystemsManager.UNLOCALIZED_START + TileEntityCamouflage.CamouflageType.values()[BlockRegistry.blockCableCamouflage.getId(item.getItemDamage())].getUnlocalized();
+        return "tile." + TileEntityCamouflage.CamouflageType.values()[BlockRegistry.blockCableCamouflage.getId(item.getItemDamage())].getUnlocalized();
     }
 
 }

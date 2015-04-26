@@ -1,7 +1,6 @@
 package advancedsystemsmanager.blocks;
 
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityBreaker;
@@ -24,7 +23,7 @@ public class BlockCableBreaker extends BlockClusterElement
 {
     public BlockCableBreaker()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_BREAKER);
+        super(Names.CABLE_BREAKER, 3);
     }
 
     @Override
@@ -33,29 +32,20 @@ public class BlockCableBreaker extends BlockClusterElement
         return new TileEntityBreaker();
     }
 
-    @SideOnly(Side.CLIENT)
-    private IIcon doubleIIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon frontIIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIIcon;
-
 
     @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
+        super.registerBlockIcons(register);
         blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
-        doubleIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker");
-        frontIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker_front");
-        sideIIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_breaker_direction");
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(int side, int meta)
     {
-        return side == 3 ? doubleIIcon : blockIcon;
+        return side == 3 ? icons[0] : blockIcon;
     }
 
     @SideOnly(Side.CLIENT)
@@ -72,13 +62,13 @@ public class BlockCableBreaker extends BlockClusterElement
 
             if (side == meta && side == direction)
             {
-                return doubleIIcon;
+                return icons[0];
             } else if (side == meta)
             {
-                return frontIIcon;
+                return icons[1];
             } else if (side == direction)
             {
-                return sideIIcon;
+                return icons[2];
             }
         }
 

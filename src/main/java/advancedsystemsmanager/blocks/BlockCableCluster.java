@@ -1,6 +1,6 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.api.ICable;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
@@ -28,32 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class BlockCableCluster extends BlockCamouflageBase
+public class BlockCableCluster extends BlockCamouflageBase implements ICable
 {
     public BlockCableCluster()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_CLUSTER);
+        super(Names.CABLE_CLUSTER, 4);
         setHardness(2F);
-    }
-
-
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon frontIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIconAdv;
-    @SideOnly(Side.CLIENT)
-    private IIcon frontIconAdv;
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister register)
-    {
-        sideIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster");
-        frontIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_front");
-        sideIconAdv = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_adv");
-        frontIconAdv = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_cluster_adv_front");
     }
 
     @SideOnly(Side.CLIENT)
@@ -72,16 +52,16 @@ public class BlockCableCluster extends BlockCamouflageBase
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta)
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
     {
-        ItemStack itemStack = getItemStack(world, x, y, z, oldMeta);
+        ItemStack itemStack = getItemStack(world, x, y, z, meta);
 
         if (itemStack != null)
         {
             dropBlockAsItem(world, x, y, z, itemStack);
         }
 
-        super.breakBlock(world, x, y, z, oldBlock, oldMeta);
+        super.breakBlock(world, x, y, z, block, meta);
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
@@ -130,7 +110,8 @@ public class BlockCableCluster extends BlockCamouflageBase
     @SideOnly(Side.CLIENT)
     private IIcon getIconFromSideAndMeta(int side, int meta)
     {
-        return side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? isAdvanced(meta) ? frontIconAdv : frontIcon : isAdvanced(meta) ? sideIconAdv : sideIcon;
+        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
+        //return side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? isAdvanced(meta) ? frontIconAdv : frontIcon : isAdvanced(meta) ? sideIconAdv : sideIcon;
     }
 
     @Override
@@ -275,4 +256,9 @@ public class BlockCableCluster extends BlockCamouflageBase
         return getAdvancedMeta(meta);
     }
 
+    @Override
+    public boolean isCable(int meta)
+    {
+        return isAdvanced(meta);
+    }
 }

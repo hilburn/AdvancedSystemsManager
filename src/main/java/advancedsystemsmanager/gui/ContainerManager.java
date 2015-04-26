@@ -2,6 +2,7 @@ package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.WorldCoordinate;
@@ -29,7 +30,7 @@ public class ContainerManager extends ContainerBase
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return entityplayer.getDistanceSq(manager.xCoord, manager.yCoord, manager.zCoord) <= 64;
+        return entityplayer.getDistanceSq(manager.xCoord, manager.yCoord, manager.zCoord) <= 64 || (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor);
     }
 
     @Override

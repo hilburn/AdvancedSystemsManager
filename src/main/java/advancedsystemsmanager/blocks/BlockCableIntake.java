@@ -1,7 +1,6 @@
 package advancedsystemsmanager.blocks;
 
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityIntake;
@@ -14,7 +13,7 @@ public class BlockCableIntake extends BlockCableDirectionAdvanced
 
     public BlockCableIntake()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_INTAKE);
+        super(Names.CABLE_INTAKE);
     }
 
     @Override
@@ -27,13 +26,13 @@ public class BlockCableIntake extends BlockCableDirectionAdvanced
     @Override
     protected String getFrontTextureName(boolean isAdvanced)
     {
-        return isAdvanced ? "cable_intake_out_instant" : "cable_intake_out";
+        return isAdvanced ? "cable_intake_3" : "cable_intake_1";
     }
 
     @Override
     protected String getSideTextureName(boolean isAdvanced)
     {
-        return isAdvanced ? "cable_intake_instant" : "cable_intake";
+        return isAdvanced ? "cable_intake_2" : "cable_intake";
     }
 
     @Override

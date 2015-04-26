@@ -751,17 +751,17 @@ public class CommandExecutor
                         {
                             slot = itr.next();
 
-                            for (Setting setting1 : menuItem.getSettings())
-                            {
-                                setting = setting1;
-                                ItemStack item = ((ItemSetting)setting).getItem();
-                                if (item != null)
-                                {
-                                    item = item.copy();
-                                    item.stackSize = setting.isLimitedByAmount() ? setting.getAmount() : setting.getDefaultAmount();
-                                    this.addItemToBuffer(menuItem, inventory, setting, item, slot);
-                                }
-                            }
+//                            for (Setting setting1 : menuItem.getSettings())
+//                            {
+//                                setting = setting1;
+//                                ItemStack item = ((ItemSetting)setting).getItem();
+//                                if (item != null)
+//                                {
+//                                    item = item.copy();
+//                                    item.stackSize = setting.isLimitedByAmount() ? setting.getAmount() : setting.getDefaultAmount();
+//                                    this.addItemToBuffer(menuItem, inventory, setting, item, slot);
+//                                }
+//                            }
                         }
                     }
                 } else
@@ -884,15 +884,15 @@ public class CommandExecutor
                     {
                         itr.next();
 
-                        for (Setting setting : menuItem.getSettings())
-                        {
-                            Fluid fluid = ((LiquidSetting)setting).getFluid();
-                            if (fluid != null)
-                            {
-                                FluidStack stack = new FluidStack(fluid, setting.isLimitedByAmount() ? setting.getAmount() : setting.getDefaultAmount());
-                                this.addLiquidToBuffer(menuItem, tank, setting, stack, 0);
-                            }
-                        }
+//                        for (Setting setting : menuItem.getSettings())
+//                        {
+//                            Fluid fluid = ((LiquidSetting)setting).getFluid();
+//                            if (fluid != null)
+//                            {
+//                                FluidStack stack = new FluidStack(fluid, setting.isLimitedByAmount() ? setting.getAmount() : setting.getDefaultAmount());
+//                                this.addLiquidToBuffer(menuItem, tank, setting, stack, 0);
+//                            }
+//                        }
                     }
                 }
             } else
@@ -1006,13 +1006,13 @@ public class CommandExecutor
         {
             int fluidId = fluidStack.fluidID;
 
-            for (Setting setting : menuItem.getSettings())
-            {
-                if (setting.isValid() && ((LiquidSetting)setting).getLiquidId() == fluidId)
-                {
-                    return setting;
-                }
-            }
+//            for (Setting setting : menuItem.getSettings())
+//            {
+//                if (setting.isValid() && ((LiquidSetting)setting).getLiquidId() == fluidId)
+//                {
+//                    return setting;
+//                }
+//            }
         }
         return null;
     }
@@ -1376,23 +1376,23 @@ public class CommandExecutor
         MenuStuff menuItem = (MenuStuff)menu;
         IConditionStuffMenu menuCondition = (IConditionStuffMenu)menu;
 
-        for (Setting setting : menuItem.getSettings())
-        {
-            if (setting.isValid())
-            {
-                ConditionSettingChecker conditionSettingChecker = conditionSettingCheckerMap.get(setting.getId());
-                if (conditionSettingChecker != null && conditionSettingChecker.isTrue())
-                {
-                    if (!menuCondition.requiresAll())
-                    {
-                        return true;
-                    }
-                } else if (menuCondition.requiresAll())
-                {
-                    return false;
-                }
-            }
-        }
+//        for (Setting setting : menuItem.getSettings())
+//        {
+//            if (setting.isValid())
+//            {
+//                ConditionSettingChecker conditionSettingChecker = conditionSettingCheckerMap.get(setting.getId());
+//                if (conditionSettingChecker != null && conditionSettingChecker.isTrue())
+//                {
+//                    if (!menuCondition.requiresAll())
+//                    {
+//                        return true;
+//                    }
+//                } else if (menuCondition.requiresAll())
+//                {
+//                    return false;
+//                }
+//            }
+//        }
         return menuCondition.requiresAll();
     }
 

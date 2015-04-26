@@ -26,7 +26,7 @@ public class BlockManager extends BlockContainer
     {
         super(Material.iron);
 
-        setBlockName(AdvancedSystemsManager.UNLOCALIZED_START + Names.MANAGER);
+        setBlockName(Names.MANAGER);
         setStepSound(soundTypeMetal);
         setCreativeTab(AdvancedSystemsManager.creativeTab);
         setHardness(2F);

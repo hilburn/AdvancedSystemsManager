@@ -47,7 +47,7 @@ public class BlockRegistry
     public static BlockCableBUD blockCableBUD;
     @Register(tileEntity = TileEntityBreaker.class, name = Names.CABLE_BREAKER)
     public static BlockCableBreaker blockCableBreaker;
-    @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.CABLE_CAMOUFLAGE, SBRH = RenderCamouflage.class)
+    @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.CABLE_CAMO, SBRH = RenderCamouflage.class)
     public static BlockCableCamouflages blockCableCamouflage;
     @Register(tileEntity = TileEntitySignUpdater.class, name = Names.CABLE_SIGN)
     public static BlockCableSign blockCableSign;

@@ -2,6 +2,7 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.items.ItemDuplicator;
 import advancedsystemsmanager.items.ItemLabeler;
+import advancedsystemsmanager.items.ItemRemoteAccessor;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.common.registry.GameRegistry;
 import hilburnlib.registry.Register;
@@ -21,6 +22,9 @@ public class ItemRegistry
     @Register(name = Names.LABELER)
     public static ItemLabeler labeler;
     public static ItemStack defaultLabeler;
+
+    @Register(name = Names.REMOTE_ACCESS)
+    public static ItemRemoteAccessor remoteAccessor;
 
     public static void registerRecipes()
     {

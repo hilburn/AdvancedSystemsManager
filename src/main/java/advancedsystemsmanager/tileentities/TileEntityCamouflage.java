@@ -4,6 +4,7 @@ import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
 import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
@@ -103,9 +104,9 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public enum CamouflageType
     {
-        NORMAL("BlockCableCamouflage", "cable_camo", false, false),
-        INSIDE("BlockCableInsideCamouflage", "cable_camo_inside", true, false),
-        SHAPE("BlockCableShapeCamouflage", "cable_camo_shape", true, true);
+        NORMAL(Names.CABLE_CAMO, "cable_camo", false, false),
+        INSIDE(Names.CABLE_CAMO_INSIDE, "cable_camo_inside", true, false),
+        SHAPE(Names.CABLE_CAMO_SHAPE, "cable_camo_shape", true, true);
 
         private String unlocalized;
         private String icon;

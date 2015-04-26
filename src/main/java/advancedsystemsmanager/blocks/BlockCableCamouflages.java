@@ -1,6 +1,5 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
@@ -24,7 +23,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
 
     public BlockCableCamouflages()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_CAMOUFLAGE);
+        super(Names.CABLE_CAMO);
     }
 
     @Override
@@ -32,9 +31,6 @@ public class BlockCableCamouflages extends BlockCamouflageBase
     {
         return new TileEntityCamouflage();
     }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
 
     @SideOnly(Side.CLIENT)
     @Override

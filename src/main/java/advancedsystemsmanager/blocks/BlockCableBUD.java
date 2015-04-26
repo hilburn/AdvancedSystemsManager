@@ -24,13 +24,6 @@ public class BlockCableBUD extends BlockClusterElement
         return new TileEntityBUD();
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister register)
-    {
-        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_bud");
-    }
-
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {

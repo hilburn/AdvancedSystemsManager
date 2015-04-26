@@ -1,6 +1,5 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import net.minecraft.block.Block;
@@ -22,7 +21,7 @@ public class ItemRelay extends ItemBlock
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        return "tile." + AdvancedSystemsManager.UNLOCALIZED_START + (BlockRegistry.blockCableRelay.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_RELAY_UNLOCALIZED_NAME : Names.CABLE_RELAY_UNLOCALIZED_NAME);
+        return "tile." + (BlockRegistry.blockCableRelay.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_RELAY : Names.CABLE_RELAY);
     }
 
 }

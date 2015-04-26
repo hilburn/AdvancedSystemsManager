@@ -2,25 +2,33 @@
 #				BLOCKS
 # ======================================
 
-tile.asm.BlockMachineManager.name=Machine Inventory Manager
-tile.asm.BlockCable.name=Inventory Cable
-tile.asm.BlockCableRelay.name=Inventory Relay
-tile.asm.BlockAdvancedCableRelay.name=Advanced Inventory Relay
-tile.asm.BlockCableOutput.name=Redstone Emitter
-tile.asm.BlockCableInput.name=Redstone Receiver
-tile.asm.BlockCableCreative.name=Creative Supplier
-tile.asm.BlockCableIntake.name=Item Valve
-tile.asm.BlockInstantCableIntake.name=Rapid Item Valve
-tile.asm.BlockCableBUD.name=Block Detector
-tile.asm.BlockCableBreaker.name=Block Gate
-tile.asm.BlockCableCluster.name=Cable Cluster
-tile.asm.BlockAdvancedCableCluster.name=Advanced Cable Cluster
-tile.asm.BlockCableCamouflage.name=Cable Camouflage
-tile.asm.BlockCableInsideCamouflage.name=Double Sided Cable Camouflage
-tile.asm.BlockCableShapeCamouflage.name=Transforming Cable Camouflage
-tile.asm.BlockCableSign.name=Sign Updater
-tile.cable_rf.name=RF Node
-tile.cable_ae.name=Energistics Connector
+tile.system_manager.name=Machine Inventory Manager
+tile.system_cable.name=Inventory Cable
+tile.system_cable_relay.name=Inventory Relay
+tile.system_cable_relay_advanced.name=Advanced Inventory Relay
+tile.system_cable_output.name=Redstone Emitter
+tile.system_cable_input.name=Redstone Receiver
+tile.system_cable_creative.name=Creative Supplier
+tile.system_cable_intake.name=Item Valve
+tile.system_cable_intake_instant.name=Rapid Item Valve
+tile.system_cable_bud.name=Block Detector
+tile.system_cable_breaker.name=Block Gate
+tile.system_cable_cluster.name=Cable Cluster
+tile.system_cable_cluster_advanced.name=Advanced Cable Cluster
+tile.system_cable_camo.name=Cable Camouflage
+tile.system_cable_camo_inside.name=Double Sided Cable Camouflage
+tile.system_cable_camo_shape.name=Transforming Cable Camouflage
+tile.system_cable_sign.name=Sign Updater
+tile.system_cable_rf.name=RF Node
+tile.system_cable_ae.name=Energistics Connector
+
+# ======================================
+#				ITEMS
+# ======================================
+
+item.system_duplicator.name=System Duplicator
+item.system_labeler.name=Machine Labeler
+item.remote_access.name=Remote Interface
 
 # ======================================
 #			COMPONENT TYPES
@@ -408,13 +416,7 @@ gui.asm.PermissionDenied=No access
 #				OTHER
 # ======================================
 
-itemGroup.asm=Advanced Factory Manager
-
-
-
-#Item Localization
-item.duplicator.name=Manager Duplicator
-item.labeler.name=Factory Labeler
+itemGroup.asm=Advanced System Manager
 
 
 gui.asm.RfInputLong=RF Input

@@ -17,7 +17,7 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced
 {
     public BlockCableRelay()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_RELAY);
+        super(Names.CABLE_RELAY);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced
     @Override
     protected String getFrontTextureName(boolean isAdvanced)
     {
-        return isAdvanced ? "cable_relay_advanced" : "cable_relay";
+        return isAdvanced ? "cable_relay_1" : "cable_relay";
     }
 
     @Override

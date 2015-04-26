@@ -1,7 +1,6 @@
 package advancedsystemsmanager.blocks;
 
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -19,7 +18,7 @@ public class BlockCableOutput extends BlockClusterElement
 {
     public BlockCableOutput()
     {
-        super(AdvancedSystemsManager.UNLOCALIZED_START + Names.CABLE_OUTPUT);
+        super(Names.CABLE_OUTPUT, 2);
     }
 
     @Override
@@ -29,26 +28,18 @@ public class BlockCableOutput extends BlockClusterElement
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon inactiveIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon weakIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon strongIcon;
-
-    @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister register)
     {
-        strongIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_output_strong");
-        weakIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_output_weak");
-        inactiveIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
+        super.registerBlockIcons(register);
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
     }
 
 
     @Override
     public IIcon getIcon(int side, int meta)
     {
-        return weakIcon;
+        return icons[0];
     }
 
     @Override
@@ -57,9 +48,9 @@ public class BlockCableOutput extends BlockClusterElement
         TileEntityOutput te = getTileEntity(world, x, y, z);
         if (te != null && te.getStrengthFromSide(side) > 0)
         {
-            return te.hasStrongSignalAtSide(side) ? strongIcon : weakIcon;
+            return te.hasStrongSignalAtSide(side) ? icons[1] : icons[0];
         }
-        return inactiveIcon;
+        return blockIcon;
     }
 
 

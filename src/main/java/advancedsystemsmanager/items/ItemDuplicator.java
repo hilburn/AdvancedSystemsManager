@@ -1,11 +1,8 @@
 package advancedsystemsmanager.items;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -14,14 +11,11 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemDuplicator extends Item
+public class ItemDuplicator extends ItemBase
 {
     public ItemDuplicator()
     {
-        this.setCreativeTab(AdvancedSystemsManager.creativeTab);
-        this.setUnlocalizedName(Names.DUPLICATOR);
-        this.setTextureName(Reference.ID.toLowerCase() + ":" + Names.DUPLICATOR);
-        this.setMaxStackSize(1);
+        super(Names.DUPLICATOR);
     }
 
     @Override
@@ -42,7 +36,6 @@ public class ItemDuplicator extends Item
                 list.add("Data stored from Manager at:");
                 list.add("x: " + x + " y: " + y + " z: " + z);
             }
-
         }
     }
 
