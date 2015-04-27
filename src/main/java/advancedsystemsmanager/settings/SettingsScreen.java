@@ -11,6 +11,7 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +45,34 @@ public class SettingsScreen implements IInterfaceRenderer
     private static final int START_Y = 20;
     private static final int MAX_Y = 250;
 
-    private abstract class CheckBoxSetting extends CheckBox
+    private class CheckBoxSetting extends CheckBox
     {
-        private CheckBoxSetting(Localization name)
+        private String key;
+        private String name;
+        private CheckBoxSetting(String name)
         {
-            super(name, getXAndGenerateY(name), currentY);
-
+            super(null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
+            key = "gui.asm.Settings." + name;
+            this.name = name;
             setTextWidth(CHECK_BOX_WIDTH);
+        }
+
+        @Override
+        public boolean getValue()
+        {
+            return Settings.getSetting(name);
+        }
+
+        @Override
+        public void setValue(boolean val)
+        {
+            Settings.setSetting(name, val);
+        }
+
+        @Override
+        public String getName()
+        {
+            return StatCollector.translateToLocal(key);
         }
 
         @Override
@@ -59,11 +81,9 @@ public class SettingsScreen implements IInterfaceRenderer
         }
     }
 
-    private int getXAndGenerateY(Localization name)
+    private int getXAndGenerateY(String str)
     {
         currentY += offsetY;
-
-        String str = name.toString();
 
         List<String> lines = cachedGui.getLinesFromText(str, CHECK_BOX_WIDTH);
         int height = (int)((lines.size() + 1) * cachedGui.getFontHeight() * 0.7F);
@@ -94,147 +114,18 @@ public class SettingsScreen implements IInterfaceRenderer
         currentX = START_X;
         currentY = START_Y;
         offsetY = 0;
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.CLOSE_GROUP_LABEL)
+
+        for (String setting : Settings.settingsRegistry.keySet())
         {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setAutoCloseGroup(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isAutoCloseGroup();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.OPEN_MENU_LARGE_HIT_BOX)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setLargeOpenHitBox(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isLargeOpenHitBox();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.OPEN_MENU_LARGE_HIT_BOX_MENU)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setLargeOpenHitBoxMenu(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isLargeOpenHitBoxMenu();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.OPEN_GROUP_QUICK)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setQuickGroupOpen(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isQuickGroupOpen();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.SHOW_COMMAND_TYPE)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setCommandTypes(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isCommandTypes();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.AUTO_SIDE)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setAutoSide(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isAutoSide();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.AUTO_BLACK_LIST)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setAutoBlacklist(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isAutoBlacklist();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.ENLARGE_INTERFACES)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setEnlargeInterfaces(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isEnlargeInterfaces();
-            }
-        });
-
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.AUTO_MOVE_FIRST)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                Settings.setPriorityMoveFirst(val);
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return Settings.isPriorityMoveFirst();
-            }
-        });
+            checkBoxes.addCheckBox(new CheckBoxSetting(setting));
+        }
 
 
         currentX = START_SETTINGS_X;
         currentY = START_Y;
         offsetY = 0;
 
-        checkBoxes.addCheckBox(new CheckBoxSetting(Localization.LIMITLESS)
+        checkBoxes.addCheckBox(new CheckBoxSetting("limitless")
         {
             @Override
             public void setValue(boolean val)

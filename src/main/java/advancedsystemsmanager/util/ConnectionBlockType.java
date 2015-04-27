@@ -1,6 +1,8 @@
 package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.IRedstoneNode;
+import advancedsystemsmanager.api.execution.IInternalInventory;
+import advancedsystemsmanager.api.execution.IInternalTank;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.tileentities.*;
 import net.minecraft.inventory.IInventory;
@@ -9,8 +11,22 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public enum ConnectionBlockType
 {
-    INVENTORY(Localization.TYPE_INVENTORY, IInventory.class, false),
-    TANK(Localization.TYPE_TANK, IFluidHandler.class, false),
+    INVENTORY(Localization.TYPE_INVENTORY, IInventory.class, false)
+            {
+                @Override
+                public boolean isInstance(TileEntity tileEntity)
+                {
+                    return super.isInstance(tileEntity) || tileEntity instanceof IInternalInventory;
+                }
+            },
+    TANK(Localization.TYPE_TANK, IFluidHandler.class, false)
+            {
+                @Override
+                public boolean isInstance(TileEntity tileEntity)
+                {
+                    return super.isInstance(tileEntity) || tileEntity instanceof IInternalTank;
+                }
+            },
     EMITTER(Localization.TYPE_EMITTER, TileEntityOutput.class, false),
     RECEIVER(Localization.TYPE_RECEIVER, TileEntityInput.class, false),
     NODE(Localization.TYPE_NODE, IRedstoneNode.class, true),

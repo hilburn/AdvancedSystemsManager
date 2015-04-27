@@ -84,7 +84,7 @@ public class ConnectionBlock implements IContainerSelection<GuiManager>, IJsonWr
     @Override
     public String getDescription(GuiManager gui)
     {
-        String str = gui.getBlockName(tileEntity);
+        String str = StevesHooks.fixToolTip(gui.getBlockName(tileEntity), tileEntity);
 
         str += getVariableTag(gui);
 

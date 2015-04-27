@@ -14,6 +14,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.util.StevesHooks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -140,7 +141,7 @@ public abstract class MenuContainer extends Menu
                         if (noFilter)
                         {
                             continue;
-                        } else if (all || block.getName(cachedInterface).toLowerCase().contains(search))
+                        } else if (all || StevesHooks.containerAdvancedSearch(block, search) || block.getName(cachedInterface).toLowerCase().contains(search))
                         {
                             if (filter.matches(getParent().getManager(), selectedInventories, block))
                             {

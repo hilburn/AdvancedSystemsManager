@@ -1,6 +1,6 @@
 package advancedsystemsmanager.settings;
 
-
+import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.FileHelper;
@@ -9,21 +9,42 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public final class Settings
 {
 
-    private static final String NAME = "StevesFactoryManagerInside";
-    private static final int VERSION = 1;
-    private static boolean autoCloseGroup;
-    private static boolean largeOpenHitBox;
-    private static boolean largeOpenHitBoxMenu;
-    private static boolean quickGroupOpen;
-    private static boolean commandTypes;
-    private static boolean autoSide;
-    private static boolean autoBlacklist;
-    private static boolean enlargeInterfaces;
-    private static boolean priorityMoveFirst;
+    private static final String NAME = "AdvancedSystemsManagerSettings";
+    public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
+
+    static
+    {
+        registerSetting("autoCloseGroup", false);
+        registerSetting("largeOpenHitBox", true);
+        registerSetting("largeOpenHitBoxMenu", true);
+        registerSetting("quickGroupOpen", false);
+        registerSetting("commandTypes", false);
+        registerSetting("autoSide", true);
+        registerSetting("autoBlacklist", true);
+        registerSetting("enlargeInterfaces", false);
+    }
+
+    public static void registerSetting(String name, boolean value)
+    {
+        if (!settingsRegistry.containsKey(name)) settingsRegistry.put(name, value);
+    }
+
+    public static void setSetting(String name, boolean value)
+    {
+        settingsRegistry.put(name, value);
+        save();
+    }
+
+    public static boolean getSetting(String name)
+    {
+        return settingsRegistry.get(name);
+    }
 
     @SideOnly(Side.CLIENT)
     public static void openMenu(TileEntityManager manager)
@@ -39,19 +60,9 @@ public final class Settings
         {
             try
             {
-                int version = dr.readByte();
-
-                autoCloseGroup = dr.readBoolean();
-                largeOpenHitBox = dr.readBoolean();
-                largeOpenHitBoxMenu = dr.readBoolean();
-                quickGroupOpen = dr.readBoolean();
-                commandTypes = dr.readBoolean();
-                autoSide = dr.readBoolean();
-                autoBlacklist = dr.readBoolean();
-                enlargeInterfaces = dr.readBoolean();
-                if (version >= 1)
+                for (Map.Entry<String, Boolean>  entry : settingsRegistry.entrySet())
                 {
-                    priorityMoveFirst = dr.readBoolean();
+                    entry.setValue(dr.readBoolean());
                 }
             } catch (Exception ignored)
             {
@@ -68,14 +79,7 @@ public final class Settings
 
     private static void loadDefault()
     {
-        autoCloseGroup = false;
-        largeOpenHitBox = false;
-        largeOpenHitBoxMenu = false;
-        quickGroupOpen = false;
-        commandTypes = false;
-        autoSide = false;
-        autoBlacklist = false;
-        enlargeInterfaces = false;
+        settingsRegistry = new LinkedHashMap<String, Boolean>(Config.managerSettings);
     }
 
     private static void save()
@@ -84,17 +88,10 @@ public final class Settings
 
         if (dw != null)
         {
-            dw.writeByte(VERSION);
-
-            dw.writeBoolean(autoCloseGroup);
-            dw.writeBoolean(largeOpenHitBox);
-            dw.writeBoolean(largeOpenHitBoxMenu);
-            dw.writeBoolean(quickGroupOpen);
-            dw.writeBoolean(commandTypes);
-            dw.writeBoolean(autoSide);
-            dw.writeBoolean(autoBlacklist);
-            dw.writeBoolean(enlargeInterfaces);
-            dw.writeBoolean(priorityMoveFirst);
+            for (Map.Entry<String, Boolean>  entry : settingsRegistry.entrySet())
+            {
+                dw.writeBoolean(entry.getValue());
+            }
 
             FileHelper.close(dw);
         }
@@ -102,79 +99,47 @@ public final class Settings
 
     public static boolean isAutoCloseGroup()
     {
-        return autoCloseGroup;
-    }
-
-    public static void setAutoCloseGroup(boolean autoCloseGroup)
-    {
-        Settings.autoCloseGroup = autoCloseGroup;
-        save();
+        return settingsRegistry.get("autoCloseGroup");
     }
 
     public static boolean isLargeOpenHitBox()
     {
-        return largeOpenHitBox;
-    }
-
-    public static void setLargeOpenHitBox(boolean largeOpenHitBox)
-    {
-        Settings.largeOpenHitBox = largeOpenHitBox;
-        save();
+        return settingsRegistry.get("largeOpenHitBox");
     }
 
     public static boolean isLargeOpenHitBoxMenu()
     {
-        return largeOpenHitBoxMenu;
-    }
-
-    public static void setLargeOpenHitBoxMenu(boolean largeOpenHitBoxMenu)
-    {
-        Settings.largeOpenHitBoxMenu = largeOpenHitBoxMenu;
-        save();
+        return settingsRegistry.get("largeOpenHitBoxMenu");
     }
 
     public static boolean isQuickGroupOpen()
     {
-        return quickGroupOpen;
-    }
-
-    public static void setQuickGroupOpen(boolean quickGroupOpen)
-    {
-        Settings.quickGroupOpen = quickGroupOpen;
-        save();
+        return settingsRegistry.get("quickGroupOpen");
     }
 
     public static boolean isCommandTypes()
     {
-        return commandTypes;
-    }
-
-    public static void setCommandTypes(boolean commandTypes)
-    {
-        Settings.commandTypes = commandTypes;
-        save();
+        return settingsRegistry.get("commandTypes");
     }
 
     public static boolean isAutoSide()
     {
-        return autoSide;
-    }
-
-    public static void setAutoSide(boolean autoSide)
-    {
-        Settings.autoSide = autoSide;
-        save();
+        return settingsRegistry.get("autoSide");
     }
 
     public static boolean isAutoBlacklist()
     {
-        return autoBlacklist;
+        return settingsRegistry.get("autoBlacklist");
     }
 
-    public static void setAutoBlacklist(boolean autoBlacklist)
+    public static boolean isEnlargeInterfaces()
     {
-        Settings.autoBlacklist = autoBlacklist;
-        save();
+        return settingsRegistry.get("enlargeInterfaces");
+    }
+
+    public static boolean isPriorityMoveFirst()
+    {
+        return settingsRegistry.get("priorityMoveFirst");
     }
 
     public static boolean isLimitless(TileEntityManager manager)
@@ -201,27 +166,6 @@ public final class Settings
             }
             manager.getWorldObj().setBlockMetadataWithNotify(manager.xCoord, manager.yCoord, manager.zCoord, meta, 3);
         }
-    }
-
-    public static boolean isEnlargeInterfaces()
-    {
-        return enlargeInterfaces;
-    }
-
-    public static void setEnlargeInterfaces(boolean enlargeInterfaces)
-    {
-        Settings.enlargeInterfaces = enlargeInterfaces;
-        save();
-    }
-
-    public static boolean isPriorityMoveFirst()
-    {
-        return priorityMoveFirst;
-    }
-
-    public static void setPriorityMoveFirst(boolean priorityMoveFirst)
-    {
-        Settings.priorityMoveFirst = priorityMoveFirst;
     }
 
     private Settings()

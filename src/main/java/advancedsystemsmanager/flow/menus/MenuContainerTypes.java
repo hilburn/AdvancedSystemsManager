@@ -145,10 +145,7 @@ public class MenuContainerTypes extends Menu
     {
         MenuContainerTypes menuTypes = (MenuContainerTypes)menu;
 
-        for (int i = 0; i < checked.length; i++)
-        {
-            checked[i] = menuTypes.checked[i];
-        }
+        System.arraycopy(menuTypes.checked, 0, checked, 0, checked.length);
     }
 
     @Override

@@ -39,25 +39,25 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
             {
                 IBufferElement<Fluid> fluidBufferElement = iterator.next().getValue();
                 FluidStack fluidStack = new FluidStack(fluidBufferElement.getContent(), 0);
-                if (isValid(validSettings, fluidBufferElement.getContent(), menuLiquid.isFirstRadioButtonSelected()))
+                Setting<Fluid> setting = isValid(validSettings, fluidBufferElement.getContent());
+                boolean whitelist = menuLiquid.isFirstRadioButtonSelected();
+                if (setting == null && whitelist) continue;
+                for (int side : validSides)
                 {
-                    for (int side : validSides)
+                    FluidStack temp = fluidStack.copy();
+                    temp.amount = fluidBufferElement.getSizeLeft();
+                    int amount = tank.fill(ForgeDirection.VALID_DIRECTIONS[side], temp, false);
+                    if (amount > 0)
                     {
-                        FluidStack temp = fluidStack.copy();
-                        temp.amount = fluidBufferElement.getSizeLeft();
-                        int amount = tank.fill(ForgeDirection.VALID_DIRECTIONS[side], temp, false);
-                        if (amount > 0)
+                        temp.amount = amount;
+                        temp.amount = fluidBufferElement.reduceBufferAmount(amount);
+                        if (temp.amount > 0)
                         {
-                            temp.amount = amount;
-                            temp.amount = fluidBufferElement.reduceBufferAmount(amount);
-                            if (temp.amount > 0)
+                            tank.fill(ForgeDirection.VALID_DIRECTIONS[side], temp, true);
+                            if (fluidBufferElement.getSizeLeft() == 0)
                             {
-                                tank.fill(ForgeDirection.VALID_DIRECTIONS[side], temp, true);
-                                if (fluidBufferElement.getSizeLeft() == 0)
-                                {
-                                    fluidBufferElement.remove();
-                                    break;
-                                }
+                                fluidBufferElement.remove();
+                                break;
                             }
                         }
                     }

@@ -24,6 +24,7 @@ import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityInput;
 import advancedsystemsmanager.util.ConnectionBlock;
 import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.WorldCoordinate;
 import com.google.gson.JsonObject;
 import cpw.mods.fml.relauncher.Side;
@@ -380,7 +381,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         justSentServerComponentRemovalPacket = false;
         if (!worldObj.isRemote)
         {
-
+            StevesHooks.tickTriggers(this);
             if (timer++ % 20 == triggerOffset)
             {
                 for (FlowComponent item : getFlowItems())
