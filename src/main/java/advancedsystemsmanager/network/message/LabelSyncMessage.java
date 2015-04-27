@@ -43,16 +43,7 @@ public class LabelSyncMessage implements IMessage, IMessageHandler<LabelSyncMess
     @Override
     public IMessage onMessage(LabelSyncMessage message, MessageContext ctx)
     {
-        EntityPlayer player = null;
-        for (WorldServer world : FMLCommonHandler.instance().getMinecraftServerInstance().worldServers)
-        {
-            Entity entity = world.getEntityByID(message.id);
-            if (entity instanceof EntityPlayer)
-            {
-                player = (EntityPlayer)entity;
-                break;
-            }
-        }
+        EntityPlayer player = ctx.getServerHandler().playerEntity;
         if (player != null)
         {
             player.inventory.setInventorySlotContents(player.inventory.currentItem, message.stack);

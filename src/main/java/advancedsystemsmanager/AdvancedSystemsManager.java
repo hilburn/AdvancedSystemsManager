@@ -57,7 +57,7 @@ public class AdvancedSystemsManager
 
     public static CreativeTabs creativeTab;
 
-    static Registerer registerer = new Registerer(log);
+    static Registerer registerer;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -80,6 +80,7 @@ public class AdvancedSystemsManager
             }
         };
 
+        registerer = new Registerer(log, PROXY);
         registerer.scan(BlockRegistry.class);
         registerer.scan(ItemRegistry.class);
 
