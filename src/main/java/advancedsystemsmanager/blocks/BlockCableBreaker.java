@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableBreaker extends BlockClusterElement
+public class BlockCableBreaker extends BlockTileBase
 {
     public BlockCableBreaker()
     {

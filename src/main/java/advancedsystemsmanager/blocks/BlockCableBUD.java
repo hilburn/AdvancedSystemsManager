@@ -1,17 +1,13 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockCableBUD extends BlockClusterElement
+public class BlockCableBUD extends BlockTileBase
 {
     public BlockCableBUD()
     {

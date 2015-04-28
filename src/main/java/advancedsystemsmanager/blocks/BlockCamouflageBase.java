@@ -13,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public abstract class BlockCamouflageBase extends BlockClusterElement
+public abstract class BlockCamouflageBase extends BlockTileBase
 {
     public static int RENDER_ID;
     public BlockCamouflageBase(String name)

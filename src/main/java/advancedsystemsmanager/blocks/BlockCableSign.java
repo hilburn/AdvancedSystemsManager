@@ -17,7 +17,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableSign extends BlockClusterElement
+public class BlockCableSign extends BlockTileBase
 {
     public BlockCableSign()
     {

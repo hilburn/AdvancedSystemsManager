@@ -1,19 +1,15 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityInput;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public class BlockCableInput extends BlockClusterElement
+public class BlockCableInput extends BlockTileBase
 {
     public BlockCableInput()
     {

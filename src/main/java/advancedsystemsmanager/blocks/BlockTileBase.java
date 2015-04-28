@@ -5,15 +5,21 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public abstract class BlockClusterElement extends BlockBase implements ITileEntityProvider
+public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider
 {
-    protected BlockClusterElement(String name)
+    protected BlockTileBase(String name)
     {
         super(name);
         this.isBlockContainer = true;
     }
 
-    protected BlockClusterElement(String name, int extraIcons)
+    protected BlockTileBase(String name, float hardness)
+    {
+        super(name, hardness);
+        this.isBlockContainer = true;
+    }
+
+    protected BlockTileBase(String name, int extraIcons)
     {
         super(name, extraIcons);
         this.isBlockContainer = true;

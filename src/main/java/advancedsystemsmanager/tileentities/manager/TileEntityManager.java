@@ -86,18 +86,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
-//        for (int i = items.size() - 1; i >= 0; i--)
-//        {
-//            FlowComponent component = items.get(i);
-//            if (i == idToRemove)
-//            {
-//                component.setParent(null); //unlink it
-//                items.remove(i);
-//            } else
-//            {
-//                component.updateConnectionIdsAtRemoval(idToRemove);
-//            }
-//        }
+
         componentMap.remove(idToRemove);
 
         if (selectedGroup != null && selectedGroup.getId() == idToRemove)
@@ -105,6 +94,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             selectedGroup = null;
         }
 
+        for (FlowComponent component : componentMap.valueCollection()) component.updateConnectionIdsAtRemoval(idToRemove);
         //do this afterwards so the new ids won't mess anything up
 //        for (int i = idToRemove; i < items.size(); i++)
 //        {

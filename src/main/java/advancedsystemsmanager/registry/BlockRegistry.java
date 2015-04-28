@@ -1,10 +1,7 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.blocks.*;
-import advancedsystemsmanager.items.blocks.ItemCamouflage;
-import advancedsystemsmanager.items.blocks.ItemCluster;
-import advancedsystemsmanager.items.blocks.ItemIntake;
-import advancedsystemsmanager.items.blocks.ItemRelay;
+import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
 import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
@@ -24,7 +21,7 @@ import net.minecraft.item.ItemStack;
 public class BlockRegistry
 {
 //    Manager
-    @Register(tileEntity = TileEntityManager.class, name = Names.MANAGER)
+    @Register(tileEntity = TileEntityManager.class, itemBlock = ItemManager.class, name = Names.MANAGER)
     public static BlockManager blockManager;
 
     @Register(name = Names.CABLE)

@@ -41,7 +41,7 @@ public class ItemDuplicator extends ItemBase
 
     public static boolean validateNBT(ItemStack stack)
     {
-        if (stack.hasTagCompound() && (stack.getTagCompound().getString("id").equals("TileEntityMachineManagerName") || stack.getTagCompound().getString("id").equals("TileEntityRFManager")))
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ManagerContents"))
             return true;
         stack.setTagCompound(null);
         return false;
@@ -55,14 +55,18 @@ public class ItemDuplicator extends ItemBase
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TileEntityManager)
             {
-                if (stack.hasTagCompound() && validateNBT(stack))
+                if (stack.hasTagCompound())
                 {
-                    te.readFromNBT(correctNBT((TileEntityManager)te, stack.getTagCompound()));
+                    ((TileEntityManager)te).readContentFromNBT(stack.getTagCompound(),false);
                     stack.setTagCompound(null);
                 } else
                 {
                     NBTTagCompound tagCompound = new NBTTagCompound();
-                    te.writeToNBT(tagCompound);
+                    ((TileEntityManager)te).writeContentToNBT(tagCompound, false);
+                    tagCompound.setBoolean("ManagerContents", true);
+                    tagCompound.setInteger("x", x);
+                    tagCompound.setInteger("y", y);
+                    tagCompound.setInteger("z", z);
                     tagCompound.setTag("ench", new NBTTagList());
                     stack.setTagCompound(tagCompound);
                 }
@@ -71,44 +75,5 @@ public class ItemDuplicator extends ItemBase
         }
         validateNBT(stack);
         return false;
-    }
-
-    private static NBTTagCompound correctNBT(TileEntityManager manager, NBTTagCompound tagCompound)
-    {
-        tagCompound.setInteger("x", manager.xCoord);
-        tagCompound.setInteger("y", manager.yCoord);
-        tagCompound.setInteger("z", manager.zCoord);
-        int currentFlow = manager.getFlowItems().size();
-        if (currentFlow > 0)
-        {
-            byte version = tagCompound.getByte("ProtocolVersion");
-            NBTTagList components = tagCompound.getTagList("Components", 10);
-            NBTTagList newComponents = new NBTTagList();
-            for (int variablesTag = 0; variablesTag < components.tagCount(); ++variablesTag)
-            {
-                NBTTagCompound flowComponent = components.getCompoundTagAt(variablesTag);
-                NBTTagList connections = flowComponent.getTagList("Connection", 10);
-                NBTTagList newConnections = new NBTTagList();
-                for (int i = 0; i < connections.tagCount(); ++i)
-                {
-                    NBTTagCompound connection = connections.getCompoundTagAt(i);
-                    if (connection.hasKey("ConnectionComponent"))
-                    {
-                        if (version < 9)
-                        {
-                            connection.setByte("ConnectionComponent", (byte)(connection.getByte("ConnectionComponent") + currentFlow));
-                        } else
-                        {
-                            connection.setShort("ConnectionComponent", (short)(connection.getShort("ConnectionComponent") + currentFlow));
-                        }
-                    }
-                    newConnections.appendTag(connection);
-                }
-                flowComponent.setTag("Connection", newConnections);
-                newComponents.appendTag(flowComponent);
-            }
-            tagCompound.setTag("Components", newComponents);
-        }
-        return tagCompound;
     }
 }

@@ -15,21 +15,17 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class BlockManager extends BlockContainer
+public class BlockManager extends BlockTileBase
 {
     public BlockManager()
     {
-        super(Material.iron);
-
-        setBlockName(Names.MANAGER);
-        setStepSound(soundTypeMetal);
-        setCreativeTab(AdvancedSystemsManager.creativeTab);
-        setHardness(2F);
+        super(Names.MANAGER, 2F);
     }
 
 
@@ -120,7 +116,21 @@ public class BlockManager extends BlockContainer
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
-        return super.getPickBlock(target, world, x, y, z, player);
+        ItemStack result = new ItemStack(this, 1, world.getBlockMetadata(x,y,z));
+        result.setTagCompound(getTagCompound(world, x, y, z));
+        return result;
+    }
+
+    public static NBTTagCompound getTagCompound(World world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TileEntityManager)
+        {
+            NBTTagCompound result = new NBTTagCompound();
+            ((TileEntityManager)te).writeContentToNBT(result, false);
+            return result;
+        }
+        return null;
     }
 
 

@@ -1570,11 +1570,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         return isDragging;
     }
 
-    public void decreaseId()
-    {
-        id--;
-    }
-
     public void updateConnectionIdsAtRemoval(int idToRemove)
     {
         for (int i = 0; i < connectionSet.getConnections().length; i++)
@@ -1585,9 +1580,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                 if (connection.getComponentId() == idToRemove)
                 {
                     connections.remove(i);
-                } else if (connection.getComponentId() > idToRemove)
-                {
-                    connection.setComponentId(connection.getComponentId() - 1);
                 }
             }
         }

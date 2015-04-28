@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 
 
-public abstract class BlockCableDirectionAdvanced extends BlockClusterElement
+public abstract class BlockCableDirectionAdvanced extends BlockTileBase
 {
     public BlockCableDirectionAdvanced(String name)
     {
