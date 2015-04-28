@@ -5,12 +5,11 @@ import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import advancedsystemsmanager.util.ItemUtils;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +19,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BlockManager extends BlockTileBase
 {
@@ -112,11 +114,22 @@ public class BlockManager extends BlockTileBase
         }
     }
 
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
+
+    @Override
+    public int damageDropped(int meta)
+    {
+        return meta & 1;
+    }
 
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
-        ItemStack result = new ItemStack(this, 1, world.getBlockMetadata(x,y,z));
+        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x,y,z)));
         result.setTagCompound(getTagCompound(world, x, y, z));
         return result;
     }
@@ -139,5 +152,4 @@ public class BlockManager extends BlockTileBase
     {
         super.onBlockPlacedBy(world, x, y, z, entity, itemStack);
     }
-
 }

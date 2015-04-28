@@ -13,6 +13,7 @@ public class ItemManager extends ItemBlock
     public ItemManager(Block block)
     {
         super(block);
+        setHasSubtypes(true);
     }
 
     @Override

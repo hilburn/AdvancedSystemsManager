@@ -1,6 +1,5 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
@@ -16,8 +15,6 @@ import java.util.List;
 
 public class ItemCluster extends ItemBlock
 {
-
-
     public ItemCluster(Block block)
     {
         super(block);

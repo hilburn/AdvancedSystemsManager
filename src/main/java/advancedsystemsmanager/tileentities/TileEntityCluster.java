@@ -12,6 +12,7 @@ import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
@@ -72,7 +73,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         {
             ClusterRegistry block = ClusterRegistry.getRegistryList().get(type);
             registryList.add(block);
-            TileEntityClusterElement element = (TileEntityClusterElement)block.getBlock().createNewTileEntity(getWorldObj(), 0);
+            TileEntityClusterElement element = (TileEntityClusterElement)((ITileEntityProvider)block.getBlock()).createNewTileEntity(getWorldObj(), 0);
             elements.add(element);
             if (element instanceof ITileEntityInterface)
             {

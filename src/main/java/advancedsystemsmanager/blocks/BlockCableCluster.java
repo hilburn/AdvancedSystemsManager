@@ -12,8 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -51,23 +53,23 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         return getIconFromSideAndMeta(side, blockMeta);
     }
 
-    @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-    {
-        ItemStack itemStack = getItemStack(world, x, y, z, meta);
-
-        if (itemStack != null)
-        {
-            dropBlockAsItem(world, x, y, z, itemStack);
-        }
-
-        super.breakBlock(world, x, y, z, block, meta);
-
-        if (isAdvanced(world.getBlockMetadata(x, y, z)))
-        {
-            BlockRegistry.blockCable.updateInventories(world, x, y, z);
-        }
-    }
+//    @Override
+//    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+//    {
+//        ItemStack itemStack = getItemStack(world, x, y, z, meta);
+//
+//        if (itemStack != null)
+//        {
+//            dropBlockAsItem(world, x, y, z, itemStack);
+//        }
+//
+//        super.breakBlock(world, x, y, z, block, meta);
+//
+//        if (isAdvanced(meta))
+//        {
+//            BlockRegistry.blockCable.updateInventories(world, x, y, z);
+//        }
+//    }
 
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
@@ -100,11 +102,24 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         return null;
     }
 
+    @Override
+    public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
+    {
+        if (!player.capabilities.isCreativeMode)
+        {
+            harvesters.set(player);
+            dropBlockAsItem(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
+            harvesters.set(null);
+            world.setBlock(x, y, z, Blocks.air, 0, 7);
+        }
+    }
 
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-        return new ArrayList<ItemStack>(); //TODO Drop items here, not sure how to though since the TE is gone. please help
+        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+        drops.add(getItemStack(world, x, y, z, metadata));
+        return drops;
     }
 
     @SideOnly(Side.CLIENT)

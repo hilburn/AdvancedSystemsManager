@@ -84,6 +84,8 @@ public class AdvancedSystemsManager
         registerer.scan(BlockRegistry.class);
         registerer.scan(ItemRegistry.class);
 
+        BlockRegistry.registerClusters();
+
         MessageHandler.init();
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);

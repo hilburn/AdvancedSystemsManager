@@ -14,7 +14,7 @@ public enum ModCompat
     OPENCOMPUTERS(Mods.OPENCOMPUTERS, "OpenComputers"),
     JABBA(Mods.JABBA, "JABBA", new JabbaCompat()),
     WAILA(Mods.WAILA, "Waila", new WailaCompat()),
-    RF(Mods.RF_API, "RF API", new RFCompat());
+    RF(Mods.COFH_ENERGY, "RF API", new RFCompat());
 
     private final String modId;
     private final String modName;

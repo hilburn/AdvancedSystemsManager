@@ -27,15 +27,6 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
     }
 
     @SideOnly(Side.CLIENT)
-    private IIcon activeIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon advancedActiveIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon inactiveIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon advancedInactiveIcon;
-
-    @SideOnly(Side.CLIENT)
     @Override
     public void registerBlockIcons(IIconRegister register)
     {

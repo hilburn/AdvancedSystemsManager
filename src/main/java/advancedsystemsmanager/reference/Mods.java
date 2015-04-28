@@ -25,6 +25,8 @@ public class Mods
     public static final String COMPUTERCRAFT = "ComputerCraft";
     public static final String COMPUTERCRAFT_TURTLE = "CCTurtle";
     public static final String COFHCORE = "CoFHCore";
+    public static final String COFH_ENERGY = "CoFHAPI|energy";
+    public static final String COFH_BLOCK = "CoFH|block";
     public static final String CRYSTALWING = "CrystalWing";
     public static final String DIRECTIONHUD = "DirectionHUD";
     public static final String DENSEORES = "denseores";
@@ -65,7 +67,6 @@ public class Mods
     public static final String RAILCRAFT = "Railcraft";
     public static final String ROUTERREBORN = "RouterReborn";
     public static final String REACTORCRAFT = "ReactorCraft";
-    public static final String RF_API = "CoFHAPI|energy";
     public static final String ROTARYRAFT = "RotaryCraft";
     public static final String SGCRAFT = "SGCraft";
     public static final String STARTINGINVENTORY = "StartingInventory";

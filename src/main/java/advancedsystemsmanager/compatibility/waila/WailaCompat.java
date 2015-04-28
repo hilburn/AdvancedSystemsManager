@@ -3,7 +3,6 @@ package advancedsystemsmanager.compatibility.waila;
 import advancedsystemsmanager.blocks.BlockCableOutput;
 import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.compatibility.CompatBase;
-import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
@@ -34,9 +33,6 @@ public class WailaCompat extends CompatBase
     @Override
     protected void init()
     {
-        if (Config.wailaIntegration)
-        {
-            FMLInterModComms.sendMessage("Waila", "register", "advancedfactorymanager.compatibility.waila.WailaCompat.callbackRegister");
-        }
+        FMLInterModComms.sendMessage("Waila", "register", "advancedsystemsmanager.compatibility.waila.WailaCompat.callbackRegister");
     }
 }

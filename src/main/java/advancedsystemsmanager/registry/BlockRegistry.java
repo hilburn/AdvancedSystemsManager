@@ -52,8 +52,25 @@ public class BlockRegistry
 //    Mod Cluster Elements
     @Register(tileEntity = TileEntityAENode.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
     public static BlockCableAE cableAENode;
-    @Register(tileEntity = TileEntityRFNode.class, name = Names.CABLE_RF, dependency = Mods.RF_API)
+    @Register(tileEntity = TileEntityRFNode.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
     public static BlockCableRF cableRFNode;
+
+    public static void registerClusters()
+    {
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 8)));
+        ClusterRegistry.register(TileEntityOutput.class, blockCableOutput);
+        ClusterRegistry.register(TileEntityInput.class, blockCableInput);
+        ClusterRegistry.register(TileEntityCreative.class, blockCableCreative);
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 8)));
+        ClusterRegistry.register(TileEntityBUD.class, blockCableBUD);
+        ClusterRegistry.register(TileEntityBreaker.class, blockCableBreaker);
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 1)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 2)));
+        ClusterRegistry.register(TileEntitySignUpdater.class, blockCableSign);
+    }
 
     public static void registerRecipes()
     {
@@ -173,7 +190,6 @@ public class BlockRegistry
 
         GameRegistry.addRecipe(new ClusterUpgradeRecipe());
         GameRegistry.addRecipe(new ClusterRecipe());
-
         ClusterUncraftingRecipe uncrafting = new ClusterUncraftingRecipe();
         GameRegistry.addRecipe(uncrafting);
         FMLCommonHandler.instance().bus().register(uncrafting);
