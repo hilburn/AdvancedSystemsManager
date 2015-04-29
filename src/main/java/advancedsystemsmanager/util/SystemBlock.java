@@ -1,54 +1,58 @@
 package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.IJsonWritable;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
-import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 
-import java.util.EnumSet;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ConnectionBlock implements IContainerSelection<GuiManager>, IJsonWritable
+public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritable
 {
     private TileEntity tileEntity;
-    private EnumSet<ConnectionBlockType> types;
+    private Set<ISystemType> types;
     private int id;
     private int cableDistance;
 
-    public ConnectionBlock(TileEntity tileEntity, int cableDistance)
+    public SystemBlock(TileEntity tileEntity, int cableDistance)
     {
         this.tileEntity = tileEntity;
-        types = EnumSet.noneOf(ConnectionBlockType.class);
+        types = new HashSet<ISystemType>();
         this.cableDistance = cableDistance;
     }
 
-    public void addType(ConnectionBlockType type)
+    public void addType(ISystemType type)
     {
         types.add(type);
     }
 
-    public static boolean isOfType(EnumSet<ConnectionBlockType> types, ConnectionBlockType type)
+    public static boolean isOfType(Set<ISystemType> types, ISystemType type)
     {
-        return type == null || types.contains(type) || (type == ConnectionBlockType.NODE && (types.contains(ConnectionBlockType.RECEIVER) || types.contains(ConnectionBlockType.EMITTER)));
+        return type == null || types.contains(type) || (type == SystemTypeRegistry.NODE && (types.contains(SystemTypeRegistry.RECEIVER) || types.contains(SystemTypeRegistry.EMITTER)));
     }
 
-    public boolean isOfType(ConnectionBlockType type)
+    public boolean isOfType(ISystemType type)
     {
         return isOfType(this.types, type);
     }
 
-    public boolean isOfAnyType(EnumSet<ConnectionBlockType> types)
+    public boolean isOfAnyType(Collection<ISystemType> types)
     {
-        for (ConnectionBlockType type : types)
+        for (ISystemType type : types)
         {
             if (isOfType(type))
             {
@@ -88,10 +92,10 @@ public class ConnectionBlock implements IContainerSelection<GuiManager>, IJsonWr
 
         str += getVariableTag(gui);
 
-        str += "\n" + Localization.X + ": " + tileEntity.xCoord + " " + Localization.Y + ": " + tileEntity.yCoord + " " + Localization.Z + ": " + tileEntity.zCoord;
+        str += "\n" + StatCollector.translateToLocalFormatted(Names.LOCATION, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
         int distance = getDistance(gui.getManager());
-        str += "\n" + distance + " " + (distance > 1 ? Localization.BLOCKS_AWAY : Localization.BLOCK_AWAY);
-        str += "\n" + cableDistance + " " + (cableDistance > 1 ? Localization.CABLES_AWAY : Localization.CABLE_AWAY);
+        str += "\n" + StatCollector.translateToLocalFormatted(distance > 1 ? Names.BLOCKS_AWAY : Names.BLOCK_AWAY, distance);
+        str += "\n" + StatCollector.translateToLocalFormatted(cableDistance > 1 ? Names.CABLES_AWAY : Names.CABLE_AWAY, cableDistance);
 
         return str;
     }

@@ -7,8 +7,8 @@ import advancedsystemsmanager.flow.menus.MenuCrafting;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.FuzzyMode;
 import advancedsystemsmanager.flow.setting.Setting;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ConnectionBlockType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -96,7 +96,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public void disposeOfExtraItem(ItemStack itemStack)
     {
         TileEntityManager manager = this.craftingMenu.getParent().getManager();
-        List<SlotInventoryHolder> inventories = CommandExecutor.getContainers(manager, this.scrapMenu, ConnectionBlockType.INVENTORY);
+        List<SlotInventoryHolder> inventories = CommandExecutor.getContainers(manager, this.scrapMenu, SystemTypeRegistry.INVENTORY);
 
         for (SlotInventoryHolder inventoryHolder : inventories)
         {

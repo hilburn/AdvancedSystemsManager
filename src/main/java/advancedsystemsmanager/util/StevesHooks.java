@@ -1,8 +1,13 @@
 package advancedsystemsmanager.util;
 
+import advancedsystemsmanager.api.execution.IHiddenInventory;
+import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.elements.ScrollController;
-import advancedsystemsmanager.flow.menus.MenuItem;
+import advancedsystemsmanager.flow.menus.MenuTriggered;
+import advancedsystemsmanager.naming.BlockCoord;
+import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -16,15 +21,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-import advancedsystemsmanager.api.execution.IHiddenInventory;
-import advancedsystemsmanager.api.execution.IHiddenTank;
-import advancedsystemsmanager.flow.menus.MenuTriggered;
-import advancedsystemsmanager.naming.BlockCoord;
-import advancedsystemsmanager.naming.NameRegistry;
-import advancedsystemsmanager.reference.Null;
-import advancedsystemsmanager.threading.SearchItems;
-import advancedsystemsmanager.util.ConnectionBlock;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -127,7 +123,7 @@ public class StevesHooks
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
-    public static boolean containerAdvancedSearch(ConnectionBlock block, String search)
+    public static boolean containerAdvancedSearch(SystemBlock block, String search)
     {
         TileEntity tileEntity = block.getTileEntity();
         String toSearch = getLabel(tileEntity);

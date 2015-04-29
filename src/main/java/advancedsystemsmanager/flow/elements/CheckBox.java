@@ -1,15 +1,12 @@
 package advancedsystemsmanager.flow.elements;
 
-
-import advancedsystemsmanager.helpers.Localization;
-
 public abstract class CheckBox
 {
     public int x, y;
-    public Localization name;
+    public String name;
     public int textWidth;
 
-    public CheckBox(Localization name, int x, int y)
+    public CheckBox(String name, int x, int y)
     {
         this.x = x;
         this.y = y;
@@ -36,7 +33,7 @@ public abstract class CheckBox
 
     public String getName()
     {
-        return name == null ? null : name.toString();
+        return name;
     }
 
     public boolean isVisible()

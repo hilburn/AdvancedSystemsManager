@@ -1,11 +1,14 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.helpers.StevesEnum;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.helpers.StevesEnum;
+import advancedsystemsmanager.reference.Names;
 
-import java.util.EnumSet;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MenuRFStorage extends MenuContainer
 {
@@ -16,7 +19,7 @@ public class MenuRFStorage extends MenuContainer
 
     public String getName()
     {
-        return StevesEnum.TYPE_RF.toString();
+        return Names.TYPE_RF;
     }
 
     @Override
@@ -24,14 +27,14 @@ public class MenuRFStorage extends MenuContainer
     {
         if (this.selectedInventories.isEmpty() && this.isVisible())
         {
-            errors.add(StevesEnum.NO_RF_ERROR.toString());
+            errors.add(Names.NO_RF_ERROR);
         }
     }
 
     @Override
-    public EnumSet<ConnectionBlockType> getValidTypes()
+    public Set<ISystemType> getValidTypes()
     {
-        return EnumSet.of(StevesEnum.RF_PROVIDER, StevesEnum.RF_RECEIVER);
+        return new HashSet<ISystemType>(Arrays.asList(StevesEnum.RF_PROVIDER, StevesEnum.RF_RECEIVER));
     }
 
     public void initRadioButtons()

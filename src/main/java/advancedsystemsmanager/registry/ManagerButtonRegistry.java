@@ -5,9 +5,9 @@ import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuGroup;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
 import advancedsystemsmanager.tileentities.manager.ManagerButton;
@@ -36,7 +36,7 @@ public class ManagerButtonRegistry
     public static void getButtons(TileEntityManager manager, List<IManagerButton> buttons)
     {
         for (IManagerButtonProvider provider : buttonProviders) buttons.addAll(provider.getButtons(manager));
-        buttons.add(new ManagerButton(manager, Localization.PREFERENCES.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
+        buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
         {
             @Override
             public void onClick(DataReader dr)
@@ -52,7 +52,7 @@ public class ManagerButtonRegistry
             }
         });
 
-        buttons.add(new ManagerButton(manager, Localization.EXIT_GROUP.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 3)
+        buttons.add(new ManagerButton(manager, Names.EXIT_GROUP, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 3)
         {
             @Override
             public void onClick(DataReader dr)
@@ -113,7 +113,7 @@ public class ManagerButtonRegistry
                 {
                     if (item.isBeingMoved())
                     {
-                        return Localization.EXIT_GROUP_DROP.toString();
+                        return Names.EXIT_GROUP_DROP;
                     }
                 }
                 return super.getMouseOver();

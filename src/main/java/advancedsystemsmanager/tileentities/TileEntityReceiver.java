@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.IRedstoneNode;
+import advancedsystemsmanager.api.IRedstoneReceiver;
 import advancedsystemsmanager.api.ISystemListener;
 import advancedsystemsmanager.api.ITriggerNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -14,7 +14,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class TileEntityInput extends TileEntityClusterElement implements IRedstoneNode, ISystemListener, ITriggerNode
+public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode
 {
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();
     private int[] oldPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];

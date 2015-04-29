@@ -2,10 +2,10 @@ package advancedsystemsmanager.settings;
 
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
+import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
@@ -28,7 +28,7 @@ public class SettingsScreen implements IInterfaceRenderer
         this.manager = manager;
 
         buttons = new ArrayList<Button>();
-        buttons.add(new Button(493, 5, Localization.GO_BACK, 231, 12 * CommandRegistry.getComponents().size() + 1)
+        buttons.add(new Button(493, 5, Names.GO_BACK, 231, 12 * CommandRegistry.getComponents().size() + 1)
         {
             @Override
             protected void onClick()
@@ -72,7 +72,7 @@ public class SettingsScreen implements IInterfaceRenderer
         @Override
         public String getName()
         {
-            return StatCollector.translateToLocal(key);
+            return key;
         }
 
         @Override
@@ -100,7 +100,7 @@ public class SettingsScreen implements IInterfaceRenderer
 
     private CheckBoxList checkBoxes;
     private String cachedString;
-    private Localization localization = Localization.CLOSE_GROUP_LABEL;
+    private String localization = Names.CLOSE_GROUP_LABEL;
     private int currentX;
     private int currentY;
     private int offsetY;
@@ -109,7 +109,7 @@ public class SettingsScreen implements IInterfaceRenderer
     private void addCheckboxes(GuiManager gui)
     {
         cachedGui = gui;
-        cachedString = localization.toString();
+        cachedString = StatCollector.translateToLocal(localization);
         checkBoxes = new CheckBoxList();
         currentX = START_X;
         currentY = START_Y;
@@ -150,15 +150,15 @@ public class SettingsScreen implements IInterfaceRenderer
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        if (cachedString == null || !localization.toString().equals(cachedString))
+        if (cachedString == null || !StatCollector.translateToLocal(localization).equals(cachedString))
         {
             addCheckboxes(gui);
         }
 
-        gui.drawString(Localization.PREFERENCES.toString(), START_X - 2, 6, 0x404040);
+        gui.drawString(Names.PREFERENCES, START_X - 2, 6, 0x404040);
         if (Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode)
         {
-            gui.drawString(Localization.SETTINGS.toString(), START_SETTINGS_X - 2, 6, 0x404040);
+            gui.drawString(Names.SETTINGS, START_SETTINGS_X - 2, 6, 0x404040);
         }
         checkBoxes.draw(gui, mX, mY);
         for (Button button : buttons)
@@ -224,11 +224,11 @@ public class SettingsScreen implements IInterfaceRenderer
     {
         private int x;
         private int y;
-        private Localization name;
+        private String name;
         private int srcX;
         private int srcY;
 
-        private Button(int x, int y, Localization name, int srcX, int srcY)
+        private Button(int x, int y, String name, int srcX, int srcY)
         {
             this.x = x;
             this.y = y;
@@ -254,7 +254,7 @@ public class SettingsScreen implements IInterfaceRenderer
         {
             if (inBounds(mX, mY))
             {
-                gui.drawMouseOver(name.toString(), mX, mY);
+                gui.drawMouseOver(name, mX, mY);
             }
         }
 

@@ -1,13 +1,13 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.CraftingDummy;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.setting.Setting;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -51,7 +51,7 @@ public class MenuCrafting extends MenuItem
     @Override
     public String getName()
     {
-        return Localization.CRAFTING_MENU.toString();
+        return Names.CRAFTING_MENU;
     }
 
 

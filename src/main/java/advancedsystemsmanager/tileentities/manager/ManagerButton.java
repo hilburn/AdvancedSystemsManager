@@ -1,9 +1,9 @@
 package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.gui.IManagerButton;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.reference.Textures;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public abstract class ManagerButton implements IManagerButton
 {
@@ -40,7 +40,7 @@ public abstract class ManagerButton implements IManagerButton
     @Override
     public String getMouseOver()
     {
-        return hoverText;
+        return StatCollector.translateToLocal(hoverText);
     }
 
     @Override

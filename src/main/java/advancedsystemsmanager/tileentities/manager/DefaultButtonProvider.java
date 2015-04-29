@@ -5,10 +5,9 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CopyHelper;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.settings.Settings;
 
@@ -27,7 +26,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         {
             buttons.add(new ManagerButtonCreate(manager, type));
         }
-        buttons.add(new ManagerButton(manager, Localization.DELETE_COMMAND.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
+        buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
             public void onClick(DataReader dr)
@@ -57,7 +56,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 return true;
             }
         });
-        buttons.add(new ManagerButton(manager, StevesEnum.COPY_COMMAND.toString(), 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
+        buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
         {
             @Override
             public void onClick(DataReader dataReader)
@@ -100,7 +99,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             @Override
             public String getMouseOver()
             {
-                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Localization.MAXIMUM_COMPONENT_ERROR.toString() : super.getMouseOver();
+                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Names.MAXIMUM_COMPONENT_ERROR : super.getMouseOver();
             }
         });
         return buttons;

@@ -1,20 +1,15 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.elements.CheckBox;
-import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +22,7 @@ public class MenuPulse extends Menu
         super(parent);
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Localization.DO_EMIT_PULSE, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.DO_EMIT_PULSE, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -98,14 +93,14 @@ public class MenuPulse extends Menu
 
     public enum PULSE_OPTIONS
     {
-        EXTEND_OLD(Localization.EXTEND_OLD),
-        KEEP_ALL(Localization.KEEP_ALL),
-        KEEP_OLD(Localization.KEEP_OLD),
-        KEEP_NEW(Localization.KEEP_NEW);
+        EXTEND_OLD(Names.EXTEND_OLD),
+        KEEP_ALL(Names.KEEP_ALL),
+        KEEP_OLD(Names.KEEP_OLD),
+        KEEP_NEW(Names.KEEP_NEW);
 
-        public Localization name;
+        public String name;
 
-        PULSE_OPTIONS(Localization name)
+        PULSE_OPTIONS(String name)
         {
             this.name = name;
         }
@@ -116,7 +111,7 @@ public class MenuPulse extends Menu
             return name.toString();
         }
 
-        public Localization getName()
+        public String getName()
         {
             return name;
         }
@@ -144,7 +139,7 @@ public class MenuPulse extends Menu
     @Override
     public String getName()
     {
-        return Localization.PULSE_MENU.toString();
+        return Names.PULSE_MENU;
     }
 
     @SideOnly(Side.CLIENT)
@@ -157,8 +152,8 @@ public class MenuPulse extends Menu
             radioButtons.draw(gui, mX, mY);
             textBoxes.draw(gui, mX, mY);
 
-            gui.drawCenteredString(Localization.SECONDS.toString(), secondsTextBox.getX(), secondsTextBox.getY() - 7, 0.7F, secondsTextBox.getWidth(), 0x404040);
-            gui.drawCenteredString(Localization.TICKS.toString(), ticksTextBox.getX(), ticksTextBox.getY() - 7, 0.7F, ticksTextBox.getWidth(), 0x404040);
+            gui.drawCenteredString(Names.SECONDS, secondsTextBox.getX(), secondsTextBox.getY() - 7, 0.7F, secondsTextBox.getWidth(), 0x404040);
+            gui.drawCenteredString(Names.TICKS, ticksTextBox.getX(), ticksTextBox.getY() - 7, 0.7F, ticksTextBox.getWidth(), 0x404040);
         }
     }
 

@@ -1,12 +1,14 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.*;
+import advancedsystemsmanager.api.execution.IBuffer;
+import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IInternalTank;
+import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.*;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.util.SystemBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -21,7 +23,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
 {
     public CommandFluidOutput()
     {
-        super(6, Localization.LIQUID_OUTPUT_SHORT.toString(), Localization.LIQUID_OUTPUT_LONG.toString(), IBuffer.FLUID);
+        super(6, Names.LIQUID_OUTPUT, IBuffer.FLUID);
     }
 
     @Override
@@ -31,7 +33,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
         List<Setting<Fluid>> validSettings = getValidSettings(menuLiquid.getSettings());
         List<Integer> validSides = new ArrayList<Integer>();
         for (int i = 0; i< ((MenuTargetTank)component.getMenus().get(1)).activatedDirections.length; i++) if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
-        for (ConnectionBlock block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
+        for (SystemBlock block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
         {
             IFluidHandler tank = block.getTileEntity() instanceof IInternalTank ? ((IInternalTank)block.getTileEntity()).getTank() : (IFluidHandler)block.getTileEntity();
             Iterator<Map.Entry<Key<Fluid>,IBufferElement<Fluid>>> iterator = buffer.getOrderedIterator();

@@ -2,11 +2,11 @@ package advancedsystemsmanager.flow.execution;
 
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneStrength;
-import advancedsystemsmanager.tileentities.TileEntityInput;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
+import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
@@ -18,7 +18,7 @@ public class TriggerHelperRedstone extends TriggerHelper
 
     public TriggerHelperRedstone(int sidesId, int strengthId)
     {
-        super(true, 0, sidesId, ConnectionBlockType.RECEIVER);
+        super(true, 0, sidesId, SystemTypeRegistry.RECEIVER);
 
         this.strengthId = strengthId;
     }
@@ -45,7 +45,7 @@ public class TriggerHelperRedstone extends TriggerHelper
         }
     }
 
-    public void onRedstoneTrigger(FlowComponent item, TileEntityInput inputTrigger)
+    public void onRedstoneTrigger(FlowComponent item, TileEntityReceiver inputTrigger)
     {
         List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
 
@@ -58,7 +58,7 @@ public class TriggerHelperRedstone extends TriggerHelper
             {
                 for (SlotInventoryHolder receiver : receivers)
                 {
-                    TileEntityInput input = receiver.getReceiver();
+                    TileEntityReceiver input = receiver.getReceiver();
 
                     for (int i = 0; i < newPower.length; i++)
                     {
@@ -76,7 +76,7 @@ public class TriggerHelperRedstone extends TriggerHelper
                 }
             } else
             {
-                TileEntityInput trigger = (componentMenuContainer.getOption() == 0 || (componentMenuContainer.getOption() == 1 && canUseMergedDetection)) ? inputTrigger : null;
+                TileEntityReceiver trigger = (componentMenuContainer.getOption() == 0 || (componentMenuContainer.getOption() == 1 && canUseMergedDetection)) ? inputTrigger : null;
                 if (isPulseReceived(item, receivers, trigger, true))
                 {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_HIGH));

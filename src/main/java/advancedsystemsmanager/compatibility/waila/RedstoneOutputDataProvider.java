@@ -1,7 +1,8 @@
 package advancedsystemsmanager.compatibility.waila;
 
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.tileentities.TileEntityOutput;
+import advancedsystemsmanager.helpers.LocalizationHelper;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.tileentities.TileEntityEmitter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -34,7 +36,7 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
-        TileEntityOutput emitter = (TileEntityOutput)iWailaDataAccessor.getTileEntity();
+        TileEntityEmitter emitter = (TileEntityEmitter)iWailaDataAccessor.getTileEntity();
 
         if (isShiftDown())
         {
@@ -49,13 +51,13 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
         return list;
     }
 
-    private String getEmitterSide(TileEntityOutput emitter, int side, boolean full)
+    private String getEmitterSide(TileEntityEmitter emitter, int side, boolean full)
     {
-        String str = (emitter.hasStrongSignalAtSide(side) ? Localization.STRONG_POWER.toString() : Localization.WEAK_POWER.toString()) + ": " + emitter.getStrengthFromSide(side) + " ";
+        String str = StatCollector.translateToLocal(emitter.hasStrongSignalAtSide(side) ? Names.STRONG_POWER : Names.WEAK_POWER) + ": " + emitter.getStrengthFromSide(side) + " ";
 
         if (full)
         {
-            str = Localization.getForgeDirectionLocalization(side) + " " + str;
+            str = StatCollector.translateToLocal(LocalizationHelper.getDirectionString(side)) + " " + str;
         }
 
         return str;

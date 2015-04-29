@@ -1,9 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -11,13 +10,13 @@ public class MenuInventory extends MenuContainer
 {
     public MenuInventory(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.INVENTORY);
+        super(parent, SystemTypeRegistry.INVENTORY);
     }
 
     @Override
     public String getName()
     {
-        return Localization.INVENTORY_MENU.toString();
+        return Names.INVENTORY_MENU;
     }
 
     @Override
@@ -25,7 +24,7 @@ public class MenuInventory extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_INVENTORY_ERROR.toString());
+            errors.add(Names.NO_INVENTORY_ERROR);
         }
     }
 }

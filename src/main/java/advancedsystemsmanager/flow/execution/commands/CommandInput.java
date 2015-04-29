@@ -1,13 +1,13 @@
 package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.util.SystemBlock;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
 {
     protected String bufferKey;
 
-    public CommandInput(int id, String name, String longName, String key)
+    public CommandInput(int id, String name, String key)
     {
-        super(id, name, longName, CommandType.INPUT, ConnectionSet.STANDARD);
+        super(id, name, CommandType.INPUT, ConnectionSet.STANDARD);
         this.bufferKey = key;
     }
 
@@ -31,7 +31,7 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
 
     protected abstract IBuffer getNewBuffer();
 
-    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus);
+    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus);
 
     protected void addToBuffer(List<IBufferElement<Type>> subElements, IBuffer<Type> buffer)
     {

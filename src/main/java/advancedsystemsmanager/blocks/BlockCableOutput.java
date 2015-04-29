@@ -4,7 +4,7 @@ package advancedsystemsmanager.blocks;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityOutput;
+import advancedsystemsmanager.tileentities.TileEntityEmitter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -24,7 +24,7 @@ public class BlockCableOutput extends BlockTileBase
     @Override
     public TileEntity createNewTileEntity(World world, int var2)
     {
-        return new TileEntityOutput();
+        return new TileEntityEmitter();
     }
 
     @SideOnly(Side.CLIENT)
@@ -45,7 +45,7 @@ public class BlockCableOutput extends BlockTileBase
     @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityOutput te = getTileEntity(world, x, y, z);
+        TileEntityEmitter te = getTileEntity(world, x, y, z);
         if (te != null && te.getStrengthFromSide(side) > 0)
         {
             return te.hasStrongSignalAtSide(side) ? icons[1] : icons[0];
@@ -57,7 +57,7 @@ public class BlockCableOutput extends BlockTileBase
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityOutput te = getTileEntity(world, x, y, z);
+        TileEntityEmitter te = getTileEntity(world, x, y, z);
         if (te != null)
         {
             return te.getStrengthFromOppositeSide(side);
@@ -68,7 +68,7 @@ public class BlockCableOutput extends BlockTileBase
     @Override
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityOutput te = getTileEntity(world, x, y, z);
+        TileEntityEmitter te = getTileEntity(world, x, y, z);
         if (te != null && te.hasStrongSignalAtOppositeSide(side))
         {
             return te.getStrengthFromOppositeSide(side);
@@ -77,9 +77,9 @@ public class BlockCableOutput extends BlockTileBase
         return 0;
     }
 
-    private TileEntityOutput getTileEntity(IBlockAccess world, int x, int y, int z)
+    private TileEntityEmitter getTileEntity(IBlockAccess world, int x, int y, int z)
     {
-        return TileEntityCluster.getTileEntity(TileEntityOutput.class, world, x, y, z);
+        return TileEntityCluster.getTileEntity(TileEntityEmitter.class, world, x, y, z);
     }
 
     @Override

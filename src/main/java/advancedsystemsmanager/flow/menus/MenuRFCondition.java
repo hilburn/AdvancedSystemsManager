@@ -1,16 +1,16 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.WideNumberBox;
-import advancedsystemsmanager.flow.elements.WideNumberBoxList;
-import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.WideNumberBox;
+import advancedsystemsmanager.flow.elements.WideNumberBoxList;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +27,7 @@ public class MenuRFCondition extends Menu
     public MenuRFCondition(FlowComponent parent)
     {
         super(parent);
-        this.checkBoxes.addCheckBox(new CheckBox(StevesEnum.BELOW, 5, 50)
+        this.checkBoxes.addCheckBox(new CheckBox(Names.BELOW, 5, 50)
         {
             public void setValue(boolean val)
             {
@@ -58,13 +58,13 @@ public class MenuRFCondition extends Menu
 
     public String getName()
     {
-        return StevesEnum.RF_CONDITION_MENU.toString();
+        return Names.RF_CONDITION_MENU;
     }
 
     @SideOnly(Side.CLIENT)
     public void draw(GuiManager gui, int mX, int mY)
     {
-        gui.drawSplitString(StevesEnum.RF_CONDITION_INFO.toString(), 5, 5, 110, 0.7F, 4210752);
+        gui.drawSplitString(Names.RF_CONDITION_INFO, 5, 5, 110, 0.7F, 4210752);
         this.checkBoxes.draw(gui, mX, mY);
         this.textBoxes.draw(gui, mX, mY);
     }
@@ -198,6 +198,6 @@ public class MenuRFCondition extends Menu
 
     public void addErrors(List<String> errors)
     {
-        if (textBox.getNumber() == 0 && triggerBelow) errors.add(StevesEnum.RF_CONDITION_ERROR.toString());
+        if (textBox.getNumber() == 0 && triggerBelow) errors.add(Names.RF_CONDITION_ERROR);
     }
 }

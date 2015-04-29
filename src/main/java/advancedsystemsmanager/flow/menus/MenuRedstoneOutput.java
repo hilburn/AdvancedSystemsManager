@@ -1,18 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -81,23 +81,23 @@ public class MenuRedstoneOutput extends Menu
 
     public static enum Settings
     {
-        FIXED(Localization.FIXED),
-        TOGGLE(Localization.TOGGLE),
-        MAX(Localization.MAX),
-        MIN(Localization.MIN),
-        INCREASE(Localization.INCREASE),
-        DECREASE(Localization.DECREASE),
-        FORWARD(Localization.FORWARD),
-        BACKWARD(Localization.BACKWARD);
+        FIXED(Names.FIXED),
+        TOGGLE(Names.TOGGLE),
+        MAX(Names.MAX),
+        MIN(Names.MIN),
+        INCREASE(Names.INCREASE),
+        DECREASE(Names.DECREASE),
+        FORWARD(Names.FORWARD),
+        BACKWARD(Names.BACKWARD);
 
-        public Localization name;
+        public String name;
 
-        Settings(Localization name)
+        Settings(String name)
         {
             this.name = name;
         }
 
-        public Localization getName()
+        public String getName()
         {
             return name;
         }
@@ -105,10 +105,8 @@ public class MenuRedstoneOutput extends Menu
         @Override
         public String toString()
         {
-            return name.toString();
+            return name;
         }
-
-
     }
 
     public static final int RADIO_BUTTON_X = 5;
@@ -125,7 +123,7 @@ public class MenuRedstoneOutput extends Menu
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_OUTPUT_MENU.toString();
+        return Names.REDSTONE_OUTPUT_MENU;
     }
 
     @SideOnly(Side.CLIENT)
@@ -134,11 +132,11 @@ public class MenuRedstoneOutput extends Menu
     {
         if (useStrengthSetting())
         {
-            gui.drawString(Localization.REDSTONE_STRENGTH.toString(), TEXT_X, TEXT_Y, 0.7F, 0x404040);
+            gui.drawString(Names.REDSTONE_STRENGTH, TEXT_X, TEXT_Y, 0.7F, 0x404040);
             textBoxes.draw(gui, mX, mY);
         } else
         {
-            gui.drawString(Localization.DIGITAL_TOGGLE.toString(), TEXT_X, TEXT_Y, 0.7F, 0x404040);
+            gui.drawString(Names.DIGITAL_TOGGLE, TEXT_X, TEXT_Y, 0.7F, 0x404040);
         }
         radioButtons.draw(gui, mX, mY);
     }

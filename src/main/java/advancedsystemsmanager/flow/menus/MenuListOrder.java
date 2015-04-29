@@ -1,19 +1,14 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.elements.CheckBox;
-import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,11 +37,11 @@ public class MenuListOrder extends Menu
             int x = RADIO_BUTTON_X;
             int y = RADIO_BUTTON_Y + i * RADIO_SPACING_Y;
 
-            radioButtons.add(new RadioButton(x, y, LoopOrder.values()[i].getName()));
+            radioButtons.add(new RadioButton(x, y, LoopOrder.values()[i].toString()));
         }
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Localization.USE_ALL, CHECK_BOX_X, CHECK_BOX_AMOUNT_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.USE_ALL, CHECK_BOX_X, CHECK_BOX_AMOUNT_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -67,7 +62,7 @@ public class MenuListOrder extends Menu
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.REVERSED, CHECK_BOX_X, CHECK_BOX_REVERSE_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.REVERSED, CHECK_BOX_X, CHECK_BOX_REVERSE_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -118,7 +113,7 @@ public class MenuListOrder extends Menu
     @Override
     public String getName()
     {
-        return Localization.LOOP_ORDER_MENU.toString();
+        return Names.LOOP_ORDER_MENU;
     }
 
     public static final int RADIO_BUTTON_X = 5;
@@ -341,8 +336,8 @@ public class MenuListOrder extends Menu
 
     public enum LoopOrder
     {
-        NORMAL(Localization.ORDER_STANDARD, null),
-        CABLE(Localization.ORDER_CABLE, new Comparator<Integer>()
+        NORMAL(Names.ORDER_STANDARD, null),
+        CABLE(Names.ORDER_CABLE, new Comparator<Integer>()
         {
             @Override
             public int compare(Integer o1, Integer o2)
@@ -350,13 +345,13 @@ public class MenuListOrder extends Menu
                 return o1 < o2 ? -1 : 1;
             }
         }),
-        RANDOM(Localization.ORDER_RANDOM, null);
+        RANDOM(Names.ORDER_RANDOM, null);
 
-        public Localization name;
+        public String name;
         public Comparator<Integer> comparator;
         public Comparator<Integer> reversedComparator;
 
-        LoopOrder(Localization name, final Comparator<Integer> comparator)
+        LoopOrder(String name, final Comparator<Integer> comparator)
         {
             this.name = name;
             this.comparator = comparator;
@@ -376,12 +371,6 @@ public class MenuListOrder extends Menu
 
         @Override
         public String toString()
-        {
-            return name.toString();
-        }
-
-
-        public Localization getName()
         {
             return name;
         }

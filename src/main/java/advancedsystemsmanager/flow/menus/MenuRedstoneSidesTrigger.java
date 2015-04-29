@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButton;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
     @Override
     public void initRadioButtons()
     {
-        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Localization.REQUIRES_ALL));
-        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Localization.IF_ANY));
+        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.REQUIRES_ALL));
+        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.IF_ANY));
     }
 
     @Override
@@ -27,10 +27,10 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
     {
         if (isBUD())
         {
-            return Localization.UPDATE_SIDES_INFO.toString();
+            return Names.UPDATE_SIDES_INFO;
         } else
         {
-            return Localization.REDSTONE_SIDES_INFO.toString();
+            return Names.REDSTONE_SIDES_INFO;
         }
     }
 
@@ -48,7 +48,7 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
     @Override
     public String getName()
     {
-        return isBUD() ? Localization.UPDATE_SIDES_MENU.toString() : Localization.REDSTONE_SIDES_MENU_TRIGGER.toString();
+        return isBUD() ? Names.UPDATE_SIDES_MENU: Names.REDSTONE_SIDES_MENU_TRIGGER;
     }
 
     public boolean isBUD()
@@ -61,7 +61,7 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
     {
         if (isVisible() && selection == 0)
         {
-            errors.add(Localization.NO_SIDES_ERROR.toString());
+            errors.add(Names.NO_SIDES_ERROR);
         }
     }
 }

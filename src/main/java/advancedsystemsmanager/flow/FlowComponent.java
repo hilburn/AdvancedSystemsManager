@@ -3,12 +3,12 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
-import advancedsystemsmanager.flow.elements.*;
+import advancedsystemsmanager.flow.elements.TextBoxLogic;
+import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
-import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
@@ -20,6 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -574,7 +575,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                     {
                         str += "\n\n";
                     }
-                    str += errors.get(i);
+                    str += StatCollector.translateToLocal(errors.get(i));
                 }
                 gui.drawMouseOver(str, mX, mY);
             }

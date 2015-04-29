@@ -1,17 +1,17 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.TextBoxLogic;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.TextBoxLogic;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +64,7 @@ public class MenuSignText extends Menu
             textBoxes[i].setMult(0.6F);
             textBoxes[i].setTextAndCursor("");
 
-            checkBoxes.addCheckBox(new CheckBox(Localization.UPDATE_LINE, CHECK_BOX_X, CHECK_BOX_Y + TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING)
+            checkBoxes.addCheckBox(new CheckBox(Names.UPDATE_LINE, CHECK_BOX_X, CHECK_BOX_Y + TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING)
             {
                 @Override
                 public void setValue(boolean val)
@@ -123,7 +123,7 @@ public class MenuSignText extends Menu
     @Override
     public String getName()
     {
-        return Localization.SIGN_TEXT.toString();
+        return Names.SIGN_TEXT;
     }
 
     @SideOnly(Side.CLIENT)

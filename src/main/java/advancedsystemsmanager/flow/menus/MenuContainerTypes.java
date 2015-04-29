@@ -1,24 +1,26 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MenuContainerTypes extends Menu
 {
@@ -26,8 +28,8 @@ public class MenuContainerTypes extends Menu
     {
         super(parent);
 
-        types = new ArrayList<ConnectionBlockType>();
-        for (ConnectionBlockType connectionBlockType : ConnectionBlockType.values())
+        types = new ArrayList<ISystemType>();
+        for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
             if (!connectionBlockType.isGroup())
             {
@@ -76,7 +78,7 @@ public class MenuContainerTypes extends Menu
     @Override
     public String getName()
     {
-        return Localization.CONTAINER_TYPE_MENU.toString();
+        return Names.CONTAINER_TYPE_MENU;
     }
 
     public static final int CHECK_BOX_X = 5;
@@ -85,7 +87,7 @@ public class MenuContainerTypes extends Menu
     public static final int CHECK_BOX_SPACING_Y = 12;
 
 
-    public List<ConnectionBlockType> types;
+    public List<ISystemType> types;
     public boolean[] checked;
     public CheckBoxList checkBoxes;
 
@@ -204,14 +206,14 @@ public class MenuContainerTypes extends Menu
         return checked;
     }
 
-    public List<ConnectionBlockType> getTypes()
+    public List<ISystemType> getTypes()
     {
         return types;
     }
 
-    public EnumSet<ConnectionBlockType> getValidTypes()
+    public Set<ISystemType> getValidTypes()
     {
-        EnumSet<ConnectionBlockType> types = EnumSet.noneOf(ConnectionBlockType.class);
+        Set<ISystemType> types = new HashSet<ISystemType>();
         for (int i = 0; i < getTypes().size(); i++)
         {
             if (getChecked()[i])

@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ public class MenuSigns extends MenuContainer
 {
     public MenuSigns(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.SIGN);
+        super(parent, SystemTypeRegistry.SIGN);
     }
 
     @Override
     public String getName()
     {
-        return Localization.SIGNS.toString();
+        return Names.SIGNS;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MenuSigns extends MenuContainer
     {
         if (selectedInventories.isEmpty() && isVisible())
         {
-            errors.add(Localization.NO_SIGNS_ERROR.toString());
+            errors.add(Names.NO_SIGNS_ERROR);
         }
     }
 

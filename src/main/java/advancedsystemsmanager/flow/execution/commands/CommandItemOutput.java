@@ -4,15 +4,16 @@ import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.reference.Names;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 public class CommandItemOutput extends CommandOutput<ItemStack>
 {
-    public CommandItemOutput(int id, String name, String longName, String bufferKey)
+    public CommandItemOutput()
     {
-        super(id, name, longName, bufferKey);
+        super(ITEM_INPUT, Names.ITEM_INPUT, null);
     }
 
     @Override

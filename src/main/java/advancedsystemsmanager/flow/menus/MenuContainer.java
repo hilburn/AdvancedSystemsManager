@@ -1,20 +1,21 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.*;
+import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ConnectionBlock;
-import advancedsystemsmanager.util.ConnectionBlockType;
 import advancedsystemsmanager.util.StevesHooks;
+import advancedsystemsmanager.util.SystemBlock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,14 +24,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public abstract class MenuContainer extends Menu
 {
@@ -67,7 +66,7 @@ public abstract class MenuContainer extends Menu
     public List<IContainerSelection> inventories;
     public RadioButtonList radioButtonsMulti;
     public ScrollController<IContainerSelection> scrollController;
-    public ConnectionBlockType validType;
+    public ISystemType validType;
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
     public List<Button> buttons;
@@ -76,12 +75,12 @@ public abstract class MenuContainer extends Menu
     public boolean clientUpdate; //ugly quick way to fix client/server issue
 
 
-    public EnumSet<ConnectionBlockType> getValidTypes()
+    public Set<ISystemType> getValidTypes()
     {
-        return EnumSet.of(validType);
+        return new HashSet<ISystemType>(Arrays.asList(validType));
     }
 
-    public MenuContainer(FlowComponent parent, ConnectionBlockType validType)
+    public MenuContainer(FlowComponent parent, ISystemType validType)
     {
         super(parent);
         this.validType = validType;
@@ -137,7 +136,7 @@ public abstract class MenuContainer extends Menu
                         continue;
                     } else if (!element.isVariable())
                     {
-                        ConnectionBlock block = (ConnectionBlock)element;
+                        SystemBlock block = (SystemBlock)element;
                         if (noFilter)
                         {
                             continue;
@@ -202,7 +201,7 @@ public abstract class MenuContainer extends Menu
                 List<String> lockedSuffix;
 
                 @SideOnly(Side.CLIENT)
-                public ToolTip(GuiManager gui, ConnectionBlock block)
+                public ToolTip(GuiManager gui, SystemBlock block)
                 {
                     items = new ItemStack[ForgeDirection.VALID_DIRECTIONS.length];
                     itemTexts = new List[ForgeDirection.VALID_DIRECTIONS.length];
@@ -226,8 +225,8 @@ public abstract class MenuContainer extends Menu
                         {
                             text.add(gui.getItemName(item));
                         }
-                        String side = Localization.getForgeDirectionLocalization(direction.ordinal()).toString();
-                        text.add(Color.YELLOW + side);
+                        String side = LocalizationHelper.getDirectionString(direction.ordinal());
+                        text.add(Color.YELLOW + StatCollector.translateToLocal(side));
 
                         TileEntity te = world.getTileEntity(targetX, targetY, targetZ);
                         if (te instanceof TileEntitySign)
@@ -247,12 +246,12 @@ public abstract class MenuContainer extends Menu
 
                     prefix = getMouseOverForContainer(block, selectedInventories);
                     prefix.add("");
-                    prefix.add(Color.LIGHT_BLUE + Localization.TOOLTIP_ADJACENT.toString());
+                    prefix.add(Color.LIGHT_BLUE + StatCollector.translateToLocal(Names.TOOLTIP_ADJACENT));
 
                     suffix = new ArrayList<String>();
-                    suffix.add(Color.GRAY + Localization.TOOLTIP_LOCK.toString());
+                    suffix.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_LOCK));
 
-                    lockedSuffix = gui.getLinesFromText(Localization.TOOLTIP_UNLOCK.toString(), getMinWidth(gui));
+                    lockedSuffix = gui.getLinesFromText(StatCollector.translateToLocal(Names.TOOLTIP_UNLOCK), getMinWidth(gui));
                     for (int i = 0; i < lockedSuffix.size(); i++)
                     {
                         lockedSuffix.set(i, Color.GRAY + lockedSuffix.get(i));
@@ -390,7 +389,7 @@ public abstract class MenuContainer extends Menu
                     if (cachedTooltip == null || cachedId != iContainerSelection.getId())
                     {
                         cachedContainer = iContainerSelection;
-                        cachedTooltip = new ToolTip(gui, (ConnectionBlock)iContainerSelection);
+                        cachedTooltip = new ToolTip(gui, (SystemBlock)iContainerSelection);
                         cachedId = iContainerSelection.getId();
                     }
                     keepCache = true;
@@ -407,7 +406,7 @@ public abstract class MenuContainer extends Menu
                         }
 
                         lines.add("");
-                        lines.add(Color.GRAY + Localization.TOOLTIP_EXTRA_INFO.toString());
+                        lines.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_EXTRA_INFO));
                     }
 
                     gui.drawMouseOver(lines, mX, mY);
@@ -416,16 +415,16 @@ public abstract class MenuContainer extends Menu
         };
 
         buttons = new ArrayList<Button>();
-        buttons.add(new PageButton(Localization.FILTER_SHORT, Page.MAIN, Localization.FILTER_LONG, Page.FILTER, false, 102, 21));
-        buttons.add(new PageButton(Localization.MULTI_SHORT, Page.MAIN, Localization.MULTI_LONG, Page.MULTI, false, 111, 21));
+        buttons.add(new PageButton(Names.FILTER_SHORT, Page.MAIN, Page.FILTER, false, 102, 21));
+        buttons.add(new PageButton(Names.MULTI_SHORT, Page.MAIN, Page.MULTI, false, 111, 21));
 
         MenuContainer.Page[] subFilterPages = {MenuContainer.Page.POSITION, MenuContainer.Page.DISTANCE, MenuContainer.Page.SELECTION, MenuContainer.Page.VARIABLE};
 
         for (int i = 0; i < subFilterPages.length; i++)
         {
-            buttons.add(new MenuContainer.PageButton(Localization.SUB_MENU_SHORT, MenuContainer.Page.FILTER, Localization.SUB_MENU_LONG, subFilterPages[i], true, FILTER_BUTTON_X, CHECK_BOX_FILTER_Y + CHECK_BOX_FILTER_SPACING * i + FILTER_BUTTON_Y));
+            buttons.add(new MenuContainer.PageButton(Names.SUB_MENU_SHORT, MenuContainer.Page.FILTER, subFilterPages[i], true, FILTER_BUTTON_X, CHECK_BOX_FILTER_Y + CHECK_BOX_FILTER_SPACING * i + FILTER_BUTTON_Y));
         }
-        buttons.add(new MenuContainer.Button(Localization.CLEAR_SHORT, MenuContainer.Page.FILTER, Localization.CLEAR_LONG, true, FILTER_RESET_BUTTON_X, CHECK_BOX_FILTER_INVERT_Y)
+        buttons.add(new MenuContainer.Button(Names.CLEAR_SHORT, MenuContainer.Page.FILTER, true, FILTER_RESET_BUTTON_X, CHECK_BOX_FILTER_INVERT_Y)
         {
             @Override
             void onClick()
@@ -434,7 +433,7 @@ public abstract class MenuContainer extends Menu
             }
         });
 
-        buttons.add(new Button(Localization.SELECT_ALL_SHORT, Page.MAIN, Localization.SELECT_ALL_LONG, false, 102, 51)
+        buttons.add(new Button(Names.SELECT_ALL_SHORT, Page.MAIN, false, 102, 51)
         {
             @Override
             void onClick()
@@ -449,7 +448,7 @@ public abstract class MenuContainer extends Menu
             }
         });
 
-        buttons.add(new Button(Localization.SELECT_NONE_SHORT, Page.MAIN, Localization.SELECT_NONE_LONG, false, 111, 51)
+        buttons.add(new Button(Names.SELECT_NONE_SHORT, Page.MAIN, false, 111, 51)
         {
             @Override
             void onClick()
@@ -464,7 +463,7 @@ public abstract class MenuContainer extends Menu
             }
         });
 
-        buttons.add(new Button(Localization.SELECT_INVERT_SHORT, Page.MAIN, Localization.SELECT_INVERT_LONG, false, 102, 60)
+        buttons.add(new Button(Names.SELECT_INVERT_SHORT, Page.MAIN, false, 102, 60)
         {
             @Override
             void onClick()
@@ -476,7 +475,7 @@ public abstract class MenuContainer extends Menu
             }
         });
 
-        buttons.add(new Button(Localization.SELECT_VARIABLE_SHORT, Page.MAIN, Localization.SELECT_VARIABLE_LONG, false, 111, 60)
+        buttons.add(new Button(Names.SELECT_VARIABLE_SHORT, Page.MAIN, false, 111, 60)
         {
             @Override
             void onClick()
@@ -521,7 +520,7 @@ public abstract class MenuContainer extends Menu
             }
             if (selected.contains(iContainerSelection.getId()))
             {
-                ret.add(Color.GREEN + Localization.SELECTED.toString());
+                ret.add(Color.GREEN + StatCollector.translateToLocal(Names.SELECTED));
             }
         }
         return ret;
@@ -530,8 +529,8 @@ public abstract class MenuContainer extends Menu
 
     public void initRadioButtons()
     {
-        radioButtonsMulti.add(new RadioButtonInventory(0, Localization.RUN_SHARED_ONCE));
-        radioButtonsMulti.add(new RadioButtonInventory(1, Localization.RUN_ONE_PER_TARGET));
+        radioButtonsMulti.add(new RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
+        radioButtonsMulti.add(new RadioButtonInventory(1, Names.RUN_ONE_PER_TARGET));
     }
 
     public Page getCurrentPage()
@@ -547,7 +546,7 @@ public abstract class MenuContainer extends Menu
     public class RadioButtonInventory extends RadioButton
     {
 
-        public RadioButtonInventory(int id, Localization text)
+        public RadioButtonInventory(int id, String text)
         {
             super(RADIO_BUTTON_MULTI_X, RADIO_BUTTON_MULTI_Y + id * RADIO_BUTTON_SPACING, text);
         }
@@ -568,15 +567,15 @@ public abstract class MenuContainer extends Menu
 
         } else if (currentPage == Page.MULTI)
         {
-            gui.drawCenteredString(selectedInventories.size() + " " + Localization.SELECTED_CONTAINERS.toString(), TEXT_MULTI_MARGIN_X, TEXT_MULTI_Y, 0.9F, MENU_WIDTH - TEXT_MULTI_MARGIN_X * 2, 0x404040);
+            gui.drawCenteredString(selectedInventories.size() + " " + StatCollector.translateToLocal(Names.SELECTED_CONTAINERS), TEXT_MULTI_MARGIN_X, TEXT_MULTI_Y, 0.9F, MENU_WIDTH - TEXT_MULTI_MARGIN_X * 2, 0x404040);
             String error = null;
 
             if (radioButtonsMulti.size() == 0)
             {
-                error = Localization.NO_MULTI_SETTING.toString();
+                error = Names.NO_MULTI_SETTING;
             } else if (!hasMultipleInventories())
             {
-                error = Localization.SINGLE_SELECTED.toString();
+                error = Names.SINGLE_SELECTED;
             }
 
             if (error != null)
@@ -589,7 +588,7 @@ public abstract class MenuContainer extends Menu
             }
         } else if (currentPage == Page.POSITION)
         {
-            gui.drawString(Localization.RELATIVE_COORDINATES.toString(), 5, 60, 0.5F, 0x404040);
+            gui.drawString(Names.RELATIVE_COORDINATES, 5, 60, 0.5F, 0x404040);
         } else if (currentPage == Page.SELECTION)
         {
             filter.radioButtonsSelection.draw(gui, mX, mY);
@@ -666,11 +665,11 @@ public abstract class MenuContainer extends Menu
         {
             if (CollisionHelper.inBounds(5, 60, MENU_WIDTH - 20, 5, mX, mY))
             {
-                String str = Localization.ABSOLUTE_RANGES.toString() + ":";
+                String str = StatCollector.translateToLocal(Names.ABSOLUTE_RANGES)+ ":";
 
-                str += "\n" + Localization.X.toString() + " (" + (filter.lowerRange[0].getNumber() + getParent().getManager().xCoord) + ", " + (filter.higherRange[0].getNumber() + getParent().getManager().xCoord) + ")";
-                str += "\n" + Localization.Y.toString() + " (" + (filter.lowerRange[1].getNumber() + getParent().getManager().yCoord) + ", " + (filter.higherRange[1].getNumber() + getParent().getManager().yCoord) + ")";
-                str += "\n" + Localization.Z.toString() + " (" + (filter.lowerRange[2].getNumber() + getParent().getManager().zCoord) + ", " + (filter.higherRange[2].getNumber() + getParent().getManager().zCoord) + ")";
+                str += "\n" + StatCollector.translateToLocal(Names.X) + " (" + (filter.lowerRange[0].getNumber() + getParent().getManager().xCoord) + ", " + (filter.higherRange[0].getNumber() + getParent().getManager().xCoord) + ")";
+                str += "\n" + StatCollector.translateToLocal(Names.Y) + " (" + (filter.lowerRange[1].getNumber() + getParent().getManager().yCoord) + ", " + (filter.higherRange[1].getNumber() + getParent().getManager().yCoord) + ")";
+                str += "\n" + StatCollector.translateToLocal(Names.Z) + " (" + (filter.lowerRange[2].getNumber() + getParent().getManager().zCoord) + ", " + (filter.higherRange[2].getNumber() + getParent().getManager().zCoord) + ")";
 
                 gui.drawMouseOver(str, mX, mY);
             }
@@ -683,7 +682,7 @@ public abstract class MenuContainer extends Menu
 
         if (currentPage.parent != null && inBackBounds(mX, mY))
         {
-            gui.drawMouseOver(Localization.GO_BACK.toString(), mX, mY);
+            gui.drawMouseOver(StatCollector.translateToLocal(Names.GO_BACK), mX, mY);
         }
     }
 
@@ -958,8 +957,8 @@ public abstract class MenuContainer extends Menu
 
     public List<IContainerSelection> getInventories(TileEntityManager manager)
     {
-        EnumSet<ConnectionBlockType> validTypes = getValidTypes();
-        List<ConnectionBlock> tempInventories = manager.getConnectedInventories();
+        Set<ISystemType> validTypes = getValidTypes();
+        List<SystemBlock> tempInventories = manager.getConnectedInventories();
         List<IContainerSelection> ret = new ArrayList<IContainerSelection>();
         filterVariables.clear();
 
@@ -973,7 +972,7 @@ public abstract class MenuContainer extends Menu
             }
         }
 
-        for (ConnectionBlock tempInventory : tempInventories)
+        for (SystemBlock tempInventory : tempInventories)
         {
             if (tempInventory.isOfAnyType(validTypes))
             {
@@ -992,15 +991,15 @@ public abstract class MenuContainer extends Menu
         return ret;
     }
 
-    public boolean isVariableAllowed(EnumSet<ConnectionBlockType> validTypes, int i)
+    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
     {
         Variable variable = getParent().getManager().getVariables()[i];
         if (variable.isValid())
         {
-            EnumSet<ConnectionBlockType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
-            for (ConnectionBlockType type : validTypes)
+            Set<ISystemType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
+            for (ISystemType type : validTypes)
             {
-                if (ConnectionBlock.isOfType(variableValidTypes, type))
+                if (SystemBlock.isOfType(variableValidTypes, type))
                 {
                     return true;
                 }
@@ -1031,8 +1030,8 @@ public abstract class MenuContainer extends Menu
     public abstract class Button
     {
         int x, y;
-        Localization label;
-        Localization description;
+        String label;
+        String description;
         Page page;
 
 
@@ -1042,13 +1041,13 @@ public abstract class MenuContainer extends Menu
         public final int srcY;
 
 
-        public Button(Localization label, Page page, Localization description, boolean wide, int x, int y)
+        public Button(String label, Page page, boolean wide, int x, int y)
         {
             this.x = x;
             this.y = y;
             this.page = page;
             this.label = label;
-            this.description = description;
+            this.description = label + "Long";
 
             if (wide)
             {
@@ -1076,7 +1075,7 @@ public abstract class MenuContainer extends Menu
             if (isVisible())
             {
                 gui.drawTexture(x, y, srcX, srcY + (inBounds(mX, mY) ? height : 0), width, height);
-                gui.drawCenteredString(label.toString(), x + 1, y + 2, 0.7F, width - 2, 0x404040);
+                gui.drawCenteredString(label, x + 1, y + 2, 0.7F, width - 2, 0x404040);
             }
         }
 
@@ -1085,7 +1084,7 @@ public abstract class MenuContainer extends Menu
         {
             if (inBounds(mX, mY))
             {
-                gui.drawMouseOver(description.toString(), mX, mY);
+                gui.drawMouseOver(description, mX, mY);
             }
         }
 
@@ -1099,9 +1098,9 @@ public abstract class MenuContainer extends Menu
     {
         public Page targetPage;
 
-        public PageButton(Localization label, Page page, Localization description, Page targetPage, boolean wide, int x, int y)
+        public PageButton(String label, Page page, Page targetPage, boolean wide, int x, int y)
         {
-            super(label, page, description, wide, x, y);
+            super(label, page, wide, x, y);
             this.targetPage = targetPage;
         }
 

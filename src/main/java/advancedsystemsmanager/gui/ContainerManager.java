@@ -4,7 +4,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.WorldCoordinate;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.entity.player.EntityPlayer;
@@ -80,7 +80,7 @@ public class ContainerManager extends ContainerBase
             if (hasInventoriesChanged)
             {
                 oldInventories.clear();
-                for (ConnectionBlock connection : manager.getConnectedInventories())
+                for (SystemBlock connection : manager.getConnectedInventories())
                 {
                     oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
                 }
@@ -102,7 +102,7 @@ public class ContainerManager extends ContainerBase
         }
         manager.updateInventories();
         oldInventories = new ArrayList<WorldCoordinate>();
-        for (ConnectionBlock connection : manager.getConnectedInventories())
+        for (SystemBlock connection : manager.getConnectedInventories())
         {
             oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
         }

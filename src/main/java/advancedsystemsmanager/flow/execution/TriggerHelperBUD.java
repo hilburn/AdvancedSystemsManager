@@ -1,11 +1,11 @@
 package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuUpdateBlock;
+import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
-import advancedsystemsmanager.util.ConnectionBlockType;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -17,7 +17,7 @@ public class TriggerHelperBUD extends TriggerHelper
 
     public TriggerHelperBUD()
     {
-        super(false, 1, 3, ConnectionBlockType.BUD);
+        super(false, 1, 3, SystemTypeRegistry.BUD);
     }
 
     @Override

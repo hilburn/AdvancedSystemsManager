@@ -1,14 +1,14 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,8 +31,8 @@ public class MenuCraftingPriority extends Menu
         };
 
 
-        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Localization.PRIORITY_MOVE_FIRST));
-        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + RADIO_MARGIN, Localization.PRIORITY_CRAFT_FIRST));
+        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Names.PRIORITY_MOVE_FIRST));
+        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + RADIO_MARGIN, Names.PRIORITY_CRAFT_FIRST));
     }
 
     public static final int RADIO_X = 5;

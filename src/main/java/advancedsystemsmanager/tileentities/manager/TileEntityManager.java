@@ -1,32 +1,36 @@
 package advancedsystemsmanager.tileentities.manager;
 
-import advancedsystemsmanager.api.IJsonWritable;
 import advancedsystemsmanager.api.ISystemListener;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.ITileEntityInterface;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
-import advancedsystemsmanager.flow.execution.*;
-import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
-import advancedsystemsmanager.flow.menus.*;
+import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.flow.elements.VariableColor;
+import advancedsystemsmanager.flow.execution.Executor;
+import advancedsystemsmanager.flow.execution.TriggerHelper;
+import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
+import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuContainer;
+import advancedsystemsmanager.flow.menus.MenuInterval;
+import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
-import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
-import advancedsystemsmanager.tileentities.TileEntityInput;
-import advancedsystemsmanager.util.ConnectionBlock;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
+import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.WorldCoordinate;
-import com.google.gson.JsonObject;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -138,9 +142,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return zLevelRenderingList;
     }
 
-    List<ConnectionBlock> inventories = new ArrayList<ConnectionBlock>();
+    List<SystemBlock> inventories = new ArrayList<SystemBlock>();
 
-    public List<ConnectionBlock> getConnectedInventories()
+    public List<SystemBlock> getConnectedInventories()
     {
         return inventories;
     }
@@ -223,7 +227,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 if (oldCoordinate.getTileEntity() instanceof ISystemListener)
                 {
                     boolean found = false;
-                    for (ConnectionBlock inventory : inventories)
+                    for (SystemBlock inventory : inventories)
                     {
                         if (oldCoordinate.getX() == inventory.getTileEntity().xCoord && oldCoordinate.getY() == inventory.getTileEntity().yCoord && oldCoordinate.getZ() == inventory.getTileEntity().zCoord)
                         {
@@ -257,10 +261,10 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     private void addInventory(TileEntity te, WorldCoordinate target)
     {
-        ConnectionBlock connection = new ConnectionBlock(te, target.getDepth());
+        SystemBlock connection = new SystemBlock(te, target.getDepth());
         boolean isValidConnection = false;
 
-        for (ConnectionBlockType connectionBlockType : ConnectionBlockType.values())
+        for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
             if (connectionBlockType.isInstance(connection.getTileEntity()))
             {
@@ -419,7 +423,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void activateTrigger(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
     {
         updateFirst();
-        for (ConnectionBlock inventory : inventories)
+        for (SystemBlock inventory : inventories)
         {
             if (inventory.getTileEntity().isInvalid())
             {
@@ -431,7 +435,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
 
-    public void triggerRedstone(TileEntityInput inputTrigger)
+    public void triggerRedstone(TileEntityReceiver inputTrigger)
     {
         for (FlowComponent item : getFlowItems())
         {

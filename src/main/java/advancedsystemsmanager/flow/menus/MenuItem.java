@@ -1,18 +1,17 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.FuzzyMode;
 import advancedsystemsmanager.flow.setting.ItemSetting;
+import advancedsystemsmanager.flow.setting.Setting;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -125,7 +124,7 @@ public class MenuItem extends MenuStuff<ItemStack>
     @Override
     public String getName()
     {
-        return Localization.ITEM_MENU.toString();
+        return Names.ITEM_MENU;
     }
 
     @SideOnly(Side.CLIENT)
@@ -134,7 +133,7 @@ public class MenuItem extends MenuStuff<ItemStack>
     {
         if (damageValueTextBox.isVisible())
         {
-            gui.drawString(Localization.DAMAGE_VALUE.toString(), DMG_VAL_TEXT_X, DMG_VAL_TEXT_Y, 0.7F, 0x404040);
+            gui.drawString(Names.DAMAGE_VALUE, DMG_VAL_TEXT_X, DMG_VAL_TEXT_Y, 0.7F, 0x404040);
         }
 
         for (int i = 0; i < 2; i++)

@@ -1,15 +1,12 @@
 package advancedsystemsmanager.flow.elements;
 
-
-import advancedsystemsmanager.helpers.Localization;
-
 public class RadioButton
 {
     public int x;
     public int y;
-    public Localization text;
+    public String text;
 
-    public RadioButton(int x, int y, Localization text)
+    public RadioButton(int x, int y, String text)
     {
         this.x = x;
         this.y = y;
@@ -28,7 +25,7 @@ public class RadioButton
 
     public String getText()
     {
-        return text.toString();
+        return text;
     }
 
     public boolean isVisible()

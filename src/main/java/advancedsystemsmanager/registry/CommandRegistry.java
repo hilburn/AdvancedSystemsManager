@@ -1,21 +1,15 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.flow.Command;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.execution.commands.CommandFluidInput;
 import advancedsystemsmanager.flow.execution.commands.CommandFluidOutput;
 import advancedsystemsmanager.flow.execution.commands.CommandItemInput;
 import advancedsystemsmanager.flow.execution.commands.CommandTrigger;
-import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.helpers.StevesEnum;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
 @SuppressWarnings("unchecked")
 public class CommandRegistry

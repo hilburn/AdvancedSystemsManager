@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.reference.Names;
 
 public class MenuRedstoneSidesNodes extends MenuRedstoneSidesTrigger
 {
@@ -15,7 +15,7 @@ public class MenuRedstoneSidesNodes extends MenuRedstoneSidesTrigger
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_SIDES_MENU.toString();
+        return Names.REDSTONE_SIDES_MENU;
     }
 
     @Override

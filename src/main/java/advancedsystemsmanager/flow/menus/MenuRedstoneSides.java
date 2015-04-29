@@ -1,17 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -71,7 +72,7 @@ public abstract class MenuRedstoneSides extends Menu
 
         public CheckBoxSide(int id)
         {
-            super(Localization.getForgeDirectionLocalization(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
+            super(LocalizationHelper.getDirectionString(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
 
             this.id = id;
         }
@@ -267,7 +268,7 @@ public abstract class MenuRedstoneSides extends Menu
     {
         if (isVisible() && selection == 0)
         {
-            errors.add(Localization.NO_REDSTONE_SIDES_ERROR.toString());
+            errors.add(Names.NO_REDSTONE_SIDES_ERROR);
         }
     }
 }

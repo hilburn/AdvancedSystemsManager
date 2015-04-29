@@ -1,9 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -11,13 +10,13 @@ public class MenuEmitters extends MenuContainer
 {
     public MenuEmitters(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.EMITTER);
+        super(parent, SystemTypeRegistry.EMITTER);
     }
 
     @Override
     public String getName()
     {
-        return Localization.EMITTER_MENU.toString();
+        return Names.EMITTER_MENU;
     }
 
     @Override
@@ -25,7 +24,7 @@ public class MenuEmitters extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_EMITTER_ERROR.toString());
+            errors.add(Names.NO_EMITTER_ERROR);
         }
     }
 

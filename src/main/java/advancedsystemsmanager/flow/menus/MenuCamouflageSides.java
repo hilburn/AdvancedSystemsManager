@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.reference.Names;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class MenuCamouflageSides extends MenuRedstoneSides
     @Override
     public String getMessage()
     {
-        return Localization.CAMOUFLAGE_SIDES_INFO.toString();
+        return Names.CAMOUFLAGE_SIDES_INFO;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MenuCamouflageSides extends MenuRedstoneSides
     @Override
     public String getName()
     {
-        return Localization.CAMOUFLAGE_SIDES_NAME.toString();
+        return Names.CAMOUFLAGE_SIDES_NAME;
     }
 
 
@@ -43,7 +43,7 @@ public class MenuCamouflageSides extends MenuRedstoneSides
     {
         if (isVisible() && selection == 0)
         {
-            errors.add(Localization.NO_SIDES_ERROR.toString());
+            errors.add(Names.NO_SIDES_ERROR);
         }
     }
 

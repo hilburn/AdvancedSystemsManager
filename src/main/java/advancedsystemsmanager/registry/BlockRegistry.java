@@ -1,7 +1,10 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.blocks.*;
-import advancedsystemsmanager.items.blocks.*;
+import advancedsystemsmanager.items.blocks.ItemAdvanced;
+import advancedsystemsmanager.items.blocks.ItemCamouflage;
+import advancedsystemsmanager.items.blocks.ItemCluster;
+import advancedsystemsmanager.items.blocks.ItemManager;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
 import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
@@ -32,9 +35,9 @@ public class BlockRegistry
     public static BlockCableCluster blockCableCluster;
     @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_RELAY)
     public static BlockCableRelay blockCableRelay;
-    @Register(tileEntity = TileEntityOutput.class, name = Names.CABLE_OUTPUT)
+    @Register(tileEntity = TileEntityEmitter.class, name = Names.CABLE_OUTPUT)
     public static BlockCableOutput blockCableOutput;
-    @Register(tileEntity = TileEntityInput.class, name = Names.CABLE_INPUT)
+    @Register(tileEntity = TileEntityReceiver.class, name = Names.CABLE_INPUT)
     public static BlockCableInput blockCableInput;
     @Register(tileEntity = TileEntityCreative.class, name = Names.CABLE_CREATIVE)
     public static BlockCableCreative blockCableCreative;
@@ -59,8 +62,8 @@ public class BlockRegistry
     {
         ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 0)));
         ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 8)));
-        ClusterRegistry.register(TileEntityOutput.class, blockCableOutput);
-        ClusterRegistry.register(TileEntityInput.class, blockCableInput);
+        ClusterRegistry.register(TileEntityEmitter.class, blockCableOutput);
+        ClusterRegistry.register(TileEntityReceiver.class, blockCableInput);
         ClusterRegistry.register(TileEntityCreative.class, blockCableCreative);
         ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 0)));
         ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 8)));

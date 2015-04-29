@@ -1,11 +1,10 @@
 package advancedsystemsmanager.flow.setting;
 
-
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.menus.MenuItem;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.reference.Names;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,18 +36,18 @@ public class ItemSetting extends Setting<ItemStack>
 
         if (item == null)
         {
-            ret.add(Localization.NO_ITEM_SELECTED.toString());
+            ret.add(Names.NO_ITEM_SELECTED);
         } else
         {
             ret.add(MenuItem.getDisplayName(item));
         }
 
         ret.add("");
-        ret.add(Localization.CHANGE_ITEM.toString());
+        ret.add(Names.CHANGE_ITEM);
         if (item != null)
         {
-            ret.add(Localization.EDIT_SETTING.toString());
-            ret.add(Localization.FULL_DESCRIPTION.toString());
+            ret.add(Names.EDIT_SETTING);
+            ret.add(Names.FULL_DESCRIPTION);
         }
 
         return ret;

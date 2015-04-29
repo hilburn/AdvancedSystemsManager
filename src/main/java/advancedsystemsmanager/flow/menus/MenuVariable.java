@@ -1,21 +1,16 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.elements.VariableDisplay;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.elements.CheckBox;
-import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,7 +69,7 @@ public class MenuVariable extends Menu
             final VariableMode mode = VariableMode.values()[i];
             int id = mode.declaration ? declarationCount++ : modificationCount++;
 
-            radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + id * RADIO_BUTTON_SPACING, mode.getName())
+            radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + id * RADIO_BUTTON_SPACING, mode.toString())
             {
                 @Override
                 public boolean isVisible()
@@ -112,7 +107,7 @@ public class MenuVariable extends Menu
         };
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Localization.GLOBAL_VALUE_SET, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.GLOBAL_VALUE_SET, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -146,7 +141,7 @@ public class MenuVariable extends Menu
     @Override
     public String getName()
     {
-        return Localization.VARIABLE_MENU.toString();
+        return Names.VARIABLE_MENU;
     }
 
 
@@ -329,24 +324,19 @@ public class MenuVariable extends Menu
 
     public enum VariableMode
     {
-        GLOBAL(Localization.GLOBAL, true),
-        LOCAL(Localization.LOCAL, true),
-        ADD(Localization.ADD, false),
-        REMOVE(Localization.REMOVE, false),
-        SET(Localization.SET, false);
+        GLOBAL(Names.GLOBAL, true),
+        LOCAL(Names.LOCAL, true),
+        ADD(Names.ADD, false),
+        REMOVE(Names.REMOVE, false),
+        SET(Names.SET, false);
 
         public boolean declaration;
-        public Localization name;
+        public String name;
 
-        VariableMode(Localization name, boolean declaration)
+        VariableMode(String name, boolean declaration)
         {
             this.name = name;
             this.declaration = declaration;
-        }
-
-        public Localization getName()
-        {
-            return name;
         }
 
         @Override
@@ -378,10 +368,10 @@ public class MenuVariable extends Menu
         Variable variable = getParent().getManager().getVariables()[selectedVariable];
         if (!variable.isValid())
         {
-            errors.add(Localization.NOT_DECLARED_ERROR.toString());
+            errors.add(Names.NOT_DECLARED_ERROR);
         } else if (isDeclaration() && variable.getDeclaration().getId() != getParent().getId())
         {
-            errors.add(Localization.ALREADY_DECLARED_ERROR.toString());
+            errors.add(Names.ALREADY_DECLARED_ERROR);
         }
     }
 }

@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButton;
+import advancedsystemsmanager.reference.Names;
 
 public class MenuRedstoneSidesEmitter extends MenuRedstoneSides
 {
@@ -15,14 +15,14 @@ public class MenuRedstoneSidesEmitter extends MenuRedstoneSides
     @Override
     public void initRadioButtons()
     {
-        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Localization.STRONG_POWER));
-        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Localization.WEAK_POWER));
+        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.STRONG_POWER));
+        radioButtonList.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.WEAK_POWER));
     }
 
     @Override
     public String getMessage()
     {
-        return Localization.REDSTONE_EMITTER_SIDES_INFO.toString();
+        return Names.REDSTONE_EMITTER_SIDES_INFO;
     }
 
     public boolean useStrongSignal()
@@ -33,6 +33,6 @@ public class MenuRedstoneSidesEmitter extends MenuRedstoneSides
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_EMITTER_SIDES_MENU.toString();
+        return Names.REDSTONE_EMITTER_SIDES_MENU;
     }
 }

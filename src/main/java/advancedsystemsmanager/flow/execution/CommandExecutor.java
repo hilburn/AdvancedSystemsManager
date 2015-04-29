@@ -1,27 +1,28 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.api.*;
+import advancedsystemsmanager.api.IConditionStuffMenu;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.execution.IHiddenInventory;
 import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.api.execution.IItemBufferElement;
 import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.elements.*;
+import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.menus.MenuListOrder.LoopOrder;
 import advancedsystemsmanager.flow.menus.MenuVariable.VariableMode;
 import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
-import advancedsystemsmanager.util.ConnectionBlock;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import advancedsystemsmanager.util.SystemBlock;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -30,7 +31,6 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -331,17 +331,17 @@ public class CommandExecutor
 
     public List<SlotInventoryHolder> getEmitters(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.EMITTER);
+        return getContainers(this.manager, menu, SystemTypeRegistry.EMITTER);
     }
 
     public List<SlotInventoryHolder> getInventories(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.INVENTORY);
+        return getContainers(this.manager, menu, SystemTypeRegistry.INVENTORY);
     }
 
     public List<SlotInventoryHolder> getTanks(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.TANK);
+        return getContainers(this.manager, menu, SystemTypeRegistry.TANK);
     }
 
     public List<SlotInventoryHolder> getRFInput(Menu menu)
@@ -361,17 +361,17 @@ public class CommandExecutor
 
     public List<SlotInventoryHolder> getNodes(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.NODE);
+        return getContainers(this.manager, menu, SystemTypeRegistry.NODE);
     }
 
     public List<SlotInventoryHolder> getCamouflage(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.CAMOUFLAGE);
+        return getContainers(this.manager, menu, SystemTypeRegistry.CAMOUFLAGE);
     }
 
     public List<SlotInventoryHolder> getSign(Menu menu)
     {
-        return getContainers(this.manager, menu, ConnectionBlockType.SIGN);
+        return getContainers(this.manager, menu, SystemTypeRegistry.SIGN);
     }
 
     public List<SlotInventoryHolder> getTiles(Menu menu)
@@ -379,7 +379,7 @@ public class CommandExecutor
         return getContainers(this.manager, menu, null);
     }
 
-    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ConnectionBlockType type)
+    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ISystemType type)
     {
         if (!(menu instanceof MenuContainer)) return null;
         MenuContainer menuContainer = (MenuContainer)menu;
@@ -389,7 +389,7 @@ public class CommandExecutor
         } else
         {
             ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
-            List<ConnectionBlock> inventories = manager.getConnectedInventories();
+            List<SystemBlock> inventories = manager.getConnectedInventories();
             Variable[] variables = manager.getVariables();
 
             int i;
@@ -425,7 +425,7 @@ public class CommandExecutor
             for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
             {
                 int var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
-                addContainer(inventories, ret, var14, menuContainer, type, EnumSet.allOf(ConnectionBlockType.class));
+                addContainer(inventories, ret, var14, menuContainer, type, SystemTypeRegistry.getTypes());
             }
 
             if (ret.isEmpty())
@@ -438,11 +438,11 @@ public class CommandExecutor
         }
     }
 
-    public static void addContainer(List<ConnectionBlock> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ConnectionBlockType requestType, EnumSet<ConnectionBlockType> variableType)
+    public static void addContainer(List<SystemBlock> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
     {
         if (selected >= 0 && selected < inventories.size())
         {
-            ConnectionBlock connection = inventories.get(selected);
+            SystemBlock connection = inventories.get(selected);
             if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
             {
                 ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
@@ -1491,8 +1491,8 @@ public class CommandExecutor
                 idList = this.applyOrder(idList, menuOrder);
             }
 
-            List<ConnectionBlock> inventories1 = this.manager.getConnectedInventories();
-            EnumSet<ConnectionBlockType> validTypes1 = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
+            List<SystemBlock> inventories1 = this.manager.getConnectedInventories();
+            Set<ISystemType> validTypes1 = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
 
             for (int id : idList)
             {
@@ -1514,15 +1514,15 @@ public class CommandExecutor
         if (list.isValid() && element.isValid())
         {
             List<Integer> selection = this.applyOrder(list.getContainers(), orderMenu);
-            EnumSet<ConnectionBlockType> validTypes = typesMenu.getValidTypes();
+            Set<ISystemType> validTypes = typesMenu.getValidTypes();
             validTypes.addAll(((MenuContainerTypes)element.getDeclaration().getMenus().get(1)).getValidTypes());
-            List<ConnectionBlock> inventories = this.manager.getConnectedInventories();
+            List<SystemBlock> inventories = this.manager.getConnectedInventories();
 
             for (int selected : selection)
             {
                 if (selected >= 0 && selected < inventories.size())
                 {
-                    ConnectionBlock inventory = inventories.get(selected);
+                    SystemBlock inventory = inventories.get(selected);
                     if (inventory.isOfAnyType(validTypes))
                     {
                         element.clearContainers();

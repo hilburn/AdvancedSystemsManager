@@ -2,13 +2,13 @@ package advancedsystemsmanager.flow.execution;
 
 
 import advancedsystemsmanager.api.IRedstoneNode;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.ITriggerNode;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSides;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesTrigger;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.registry.ConnectionOption;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
@@ -22,9 +22,9 @@ public abstract class TriggerHelper
     public boolean canUseMergedDetection;
     public int containerId;
     public int sidesId;
-    public ConnectionBlockType blockType;
+    public ISystemType blockType;
 
-    public TriggerHelper(boolean canUseMergedDetection, int containerId, int sidesId, ConnectionBlockType blockType)
+    public TriggerHelper(boolean canUseMergedDetection, int containerId, int sidesId, ISystemType blockType)
     {
         this.canUseMergedDetection = canUseMergedDetection;
         this.containerId = containerId;

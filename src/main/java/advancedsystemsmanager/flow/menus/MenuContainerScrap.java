@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,13 +14,13 @@ public class MenuContainerScrap extends MenuContainer
 {
     public MenuContainerScrap(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.INVENTORY);
+        super(parent, SystemTypeRegistry.INVENTORY);
     }
 
     @Override
     public String getName()
     {
-        return Localization.OVERFLOW_MENU.toString();
+        return Names.OVERFLOW_MENU;
     }
 
     public static final int MENU_WIDTH = 120;
@@ -35,7 +35,7 @@ public class MenuContainerScrap extends MenuContainer
 
         if (scrollController.getResult().isEmpty())
         {
-            gui.drawSplitString(Localization.OVERFLOW_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2 - 20, 0.7F, 0x404040);
+            gui.drawSplitString(Names.OVERFLOW_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2 - 20, 0.7F, 0x404040);
         }
     }
 
@@ -44,7 +44,7 @@ public class MenuContainerScrap extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_OVERFLOW_ERROR.toString());
+            errors.add(Names.NO_OVERFLOW_ERROR);
         }
     }
 

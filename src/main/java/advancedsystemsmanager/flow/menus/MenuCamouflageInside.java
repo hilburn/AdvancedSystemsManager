@@ -1,15 +1,15 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,13 +49,13 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     @Override
     public String getWarningText()
     {
-        return Localization.INSIDE_WARNING.toString();
+        return Names.INSIDE_WARNING;
     }
 
     @Override
     public String getName()
     {
-        return Localization.INSIDE_MENU.toString();
+        return Names.INSIDE_MENU;
     }
 
     @SideOnly(Side.CLIENT)
@@ -146,16 +146,16 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
 
     public enum InsideSetType
     {
-        ONLY_OUTSIDE(Localization.CAMOUFLAGE_ONLY_OUTSIDE),
-        ONLY_INSIDE(Localization.CAMOUFLAGE_ONLY_INSIDE),
-        OPPOSITE(Localization.CAMOUFLAGE_OPPOSITE_INSIDE),
-        SAME(Localization.CAMOUFLAGE_SAME_INSIDE),
-        NOTHING(Localization.CAMOUFLAGE_NO_UPDATE);
+        ONLY_OUTSIDE(Names.CAMOUFLAGE_ONLY_OUTSIDE),
+        ONLY_INSIDE(Names.CAMOUFLAGE_ONLY_INSIDE),
+        OPPOSITE(Names.CAMOUFLAGE_OPPOSITE_INSIDE),
+        SAME(Names.CAMOUFLAGE_SAME_INSIDE),
+        NOTHING(Names.CAMOUFLAGE_NO_UPDATE);
 
 
-        public Localization name;
+        public String name;
 
-        InsideSetType(Localization name)
+        InsideSetType(String name)
         {
             this.name = name;
         }

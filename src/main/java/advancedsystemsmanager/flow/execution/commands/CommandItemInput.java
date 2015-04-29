@@ -1,14 +1,19 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.*;
+import advancedsystemsmanager.api.execution.IBuffer;
+import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IInternalInventory;
+import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.ItemBufferElement;
-import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.flow.setting.ItemSetting;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuInventory;
+import advancedsystemsmanager.flow.menus.MenuItem;
+import advancedsystemsmanager.flow.menus.MenuTargetInventory;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.util.SystemBlock;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -21,7 +26,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
 {
     public CommandItemInput()
     {
-        super(ITEM_INPUT, Localization.INPUT_SHORT.toString(), Localization.INPUT_LONG.toString(), IBuffer.ITEM);
+        super(ITEM_INPUT, Names.ITEM_INPUT, IBuffer.ITEM);
     }
 
     @Override
@@ -46,13 +51,13 @@ public class CommandItemInput extends CommandInput<ItemStack>
     }
 
     @Override
-    protected List<IBufferElement<ItemStack>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
+    protected List<IBufferElement<ItemStack>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus)
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
         List<Setting<ItemStack>> validSettings = getValidSettings(settings.settings);
         List<IBufferElement<ItemStack>> subElements = new ArrayList<IBufferElement<ItemStack>>();
-        for (ConnectionBlock block : blocks)
+        for (SystemBlock block : blocks)
         {
             TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalInventory)

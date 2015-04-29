@@ -1,10 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
-
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -12,13 +11,13 @@ public class MenuBUDs extends MenuContainer
 {
     public MenuBUDs(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.BUD);
+        super(parent, SystemTypeRegistry.BUD);
     }
 
     @Override
     public String getName()
     {
-        return Localization.DETECTOR_MENU.toString();
+        return Names.DETECTOR_MENU;
     }
 
     @Override
@@ -30,8 +29,8 @@ public class MenuBUDs extends MenuContainer
     @Override
     public void initRadioButtons()
     {
-        radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(0, Localization.REQUIRE_ALL_TARGETS));
-        radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(1, Localization.REQUIRE_ONE_TARGET));
+        radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(0, Names.REQUIRE_ALL_TARGETS));
+        radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(1, Names.REQUIRE_ONE_TARGET));
     }
 
     @Override
@@ -39,7 +38,7 @@ public class MenuBUDs extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_DETECTOR_ERROR.toString());
+            errors.add(Names.NO_DETECTOR_ERROR);
         }
     }
 }

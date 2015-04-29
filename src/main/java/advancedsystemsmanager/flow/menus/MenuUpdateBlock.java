@@ -2,17 +2,18 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.CheckBox;
+import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,7 +40,7 @@ public class MenuUpdateBlock extends MenuItem
         scrollControllerSelected.setX(ID_START_X + ID_TEXT_BOX + 10);
 
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.USE_ID, ID_START_X, ID_START_Y + CHECKBOX_OFFSET)
+        checkBoxes.addCheckBox(new CheckBox(Names.USE_ID, ID_START_X, ID_START_Y + CHECKBOX_OFFSET)
         {
             @Override
             public void setValue(boolean val)
@@ -77,7 +78,7 @@ public class MenuUpdateBlock extends MenuItem
             }
         });*/
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.INVERT, ID_START_X + META_INVERTED_OFFSET, ID_START_Y + CHECKBOX_OFFSET)
+        checkBoxes.addCheckBox(new CheckBox(Names.INVERT, ID_START_X + META_INVERTED_OFFSET, ID_START_Y + CHECKBOX_OFFSET)
         {
             @Override
             public void setValue(boolean val)
@@ -182,7 +183,7 @@ public class MenuUpdateBlock extends MenuItem
                 }
             });
 
-            checkBoxes.addCheckBox(new CheckBox(Localization.INVERT, META_START_X + META_INVERTED_OFFSET, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
+            checkBoxes.addCheckBox(new CheckBox(Names.INVERT, META_START_X + META_INVERTED_OFFSET, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
             {
                 @Override
                 public void setValue(boolean val)
@@ -303,7 +304,7 @@ public class MenuUpdateBlock extends MenuItem
     @Override
     public String getName()
     {
-        return Localization.UPDATE_BLOCK_MENU.toString();
+        return Names.UPDATE_BLOCK_MENU;
     }
 
     @SideOnly(Side.CLIENT)
@@ -314,7 +315,7 @@ public class MenuUpdateBlock extends MenuItem
         {
             textBoxes.draw(gui, mX, mY);
             checkBoxes.draw(gui, mX, mY);
-            gui.drawString(Localization.META.toString(), META_TEXT_X, META_TEXT_Y, 0.7F, 0x404040);
+            gui.drawString(Names.META, META_TEXT_X, META_TEXT_Y, 0.7F, 0x404040);
             if (useId)
             {
                 super.draw(gui, mX, mY);

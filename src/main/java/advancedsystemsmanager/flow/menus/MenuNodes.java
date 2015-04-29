@@ -1,9 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class MenuNodes extends MenuContainer
 {
     public MenuNodes(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.NODE);
+        super(parent, SystemTypeRegistry.NODE);
 
         radioButtonsMulti.setSelectedOption(2);
     }
@@ -19,7 +18,7 @@ public class MenuNodes extends MenuContainer
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_NODE_MENU.toString();
+        return Names.REDSTONE_NODE_MENU;
     }
 
     @Override
@@ -27,15 +26,15 @@ public class MenuNodes extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_NODE_ERROR.toString());
+            errors.add(Names.NO_NODE_ERROR);
         }
     }
 
     @Override
     public void initRadioButtons()
     {
-        radioButtonsMulti.add(new RadioButtonInventory(0, Localization.RUN_SHARED_ONCE));
-        radioButtonsMulti.add(new RadioButtonInventory(1, Localization.REQUIRE_ALL_TARGETS));
-        radioButtonsMulti.add(new RadioButtonInventory(2, Localization.REQUIRE_ONE_TARGET));
+        radioButtonsMulti.add(new RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
+        radioButtonsMulti.add(new RadioButtonInventory(1, Names.REQUIRE_ALL_TARGETS));
+        radioButtonsMulti.add(new RadioButtonInventory(2, Names.REQUIRE_ONE_TARGET));
     }
 }

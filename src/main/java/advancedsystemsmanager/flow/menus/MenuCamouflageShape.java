@@ -1,17 +1,17 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.TextBoxNumber;
+import advancedsystemsmanager.flow.elements.TextBoxNumberList;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +25,7 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
 
         checkBoxes = new CheckBoxList();
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.CAMOUFLAGE_BOUNDS_USE, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_BOUNDS_USE, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -46,7 +46,7 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.CAMOUFLAGE_COLLISION_USE, CHECK_BOX_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_COLLISION_USE, CHECK_BOX_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -73,7 +73,7 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.CAMOUFLAGE_COLLISION_FULL, CHECK_BOX_X + CHECK_BOX_SPACING_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_COLLISION_FULL, CHECK_BOX_X + CHECK_BOX_SPACING_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -202,16 +202,16 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
     @Override
     public String getWarningText()
     {
-        return Localization.BOUNDS_WARNING.toString();
+        return Names.BOUNDS_WARNING;
     }
 
     @Override
     public String getName()
     {
-        return Localization.BOUNDS_MENU.toString();
+        return Names.BOUNDS_MENU;
     }
 
-    public Localization[] coordinates = {Localization.X, Localization.Y, Localization.Z};
+    public String[] coordinates = {Names.X, Names.Y, Names.Z};
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -225,8 +225,8 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             textBoxes.draw(gui, mX, mY);
             for (int i = 0; i < coordinates.length; i++)
             {
-                gui.drawString(coordinates[i].toString(), TEXT_X, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
-                gui.drawString(Localization.TO.toString(), TEXT_X_TO, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
+                gui.drawString(coordinates[i], TEXT_X, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
+                gui.drawString(Names.TO, TEXT_X_TO, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
             }
         }
     }

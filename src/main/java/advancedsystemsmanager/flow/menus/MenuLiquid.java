@@ -1,16 +1,15 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.LiquidSetting;
+import advancedsystemsmanager.flow.setting.Setting;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.fluids.Fluid;
@@ -80,8 +79,8 @@ public class MenuLiquid extends MenuStuff<Fluid>
     {
         if (selectedSetting.isLimitedByAmount())
         {
-            gui.drawCenteredString(Localization.BUCKETS.toString(), amountTextBoxBuckets.getX(), amountTextBoxBuckets.getY() - 7, 0.7F, amountTextBoxBuckets.getWidth(), 0x404040);
-            gui.drawCenteredString(Localization.MILLI_BUCKETS.toString(), amountTextBoxMilli.getX(), amountTextBoxMilli.getY() - 7, 0.55F, amountTextBoxMilli.getWidth(), 0x404040);
+            gui.drawCenteredString(Names.BUCKETS, amountTextBoxBuckets.getX(), amountTextBoxBuckets.getY() - 7, 0.7F, amountTextBoxBuckets.getWidth(), 0x404040);
+            gui.drawCenteredString(Names.MILLI_BUCKETS, amountTextBoxMilli.getX(), amountTextBoxMilli.getY() - 7, 0.55F, amountTextBoxMilli.getWidth(), 0x404040);
         }
     }
 
@@ -159,7 +158,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
     @Override
     public String getName()
     {
-        return Localization.LIQUIDS_MENU.toString();
+        return Names.LIQUIDS_MENU;
     }
 
     public LiquidSetting getSelectedSetting()

@@ -1,18 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButton;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,12 +35,12 @@ public class MenuSplit extends Menu
             }
         };
 
-        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Localization.SEQUENTIAL));
-        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + SPACING_Y, Localization.SPLIT));
+        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Names.SEQUENTIAL));
+        radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + SPACING_Y, Names.SPLIT));
 
         checkBoxes = new CheckBoxList();
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -61,7 +61,7 @@ public class MenuSplit extends Menu
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Localization.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -96,7 +96,7 @@ public class MenuSplit extends Menu
     @Override
     public String getName()
     {
-        return Localization.SPLIT_MENU.toString();
+        return Names.SPLIT_MENU;
     }
 
     @SideOnly(Side.CLIENT)

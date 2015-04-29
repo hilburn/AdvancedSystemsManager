@@ -6,6 +6,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class Variable implements IContainerSelection<GuiManager>
     {
         if (getDeclaration() == null || getDeclaration().getComponentName() == null)
         {
-            return color.toString();
+            return StatCollector.translateToLocal(color.toString());
         } else
         {
             return getDeclaration().getComponentName();

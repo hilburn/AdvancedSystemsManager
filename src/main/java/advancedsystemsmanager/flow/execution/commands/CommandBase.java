@@ -5,18 +5,13 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ConnectionBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import advancedsystemsmanager.util.SystemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -41,11 +36,11 @@ public abstract class CommandBase<Type> implements ICommand
     protected CommandType type;
     protected EnumSet<ConnectionOption> outputs = EnumSet.allOf(ConnectionOption.class);
 
-    public CommandBase(int id, String name, String longName, CommandType type, ConnectionSet... connectionSets)
+    public CommandBase(int id, String name, CommandType type, ConnectionSet... connectionSets)
     {
         this.id = id;
         this.name = name;
-        this.longName = longName;
+        this.longName = name + "Long";
         this.connectionSets = connectionSets;
         this.type = type;
     }
@@ -114,10 +109,10 @@ public abstract class CommandBase<Type> implements ICommand
         return connections;
     }
 
-    public List<ConnectionBlock> getContainers(TileEntityManager manager, MenuContainer container)
+    public List<SystemBlock> getContainers(TileEntityManager manager, MenuContainer container)
     {
-        List<ConnectionBlock> result = new ArrayList<ConnectionBlock>();
-        for (ConnectionBlock block: manager.getConnectedInventories()) if (container.selectedInventories.contains(block.getId())) result.add(block);
+        List<SystemBlock> result = new ArrayList<SystemBlock>();
+        for (SystemBlock block: manager.getConnectedInventories()) if (container.selectedInventories.contains(block.getId())) result.add(block);
         return result;
     }
 

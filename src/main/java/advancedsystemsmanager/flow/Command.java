@@ -4,7 +4,6 @@ import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.registry.ConnectionSet;
 import net.minecraft.util.ResourceLocation;
@@ -19,11 +18,11 @@ public class Command implements ICommand
     public Constructor<? extends Menu>[] constructors;
     public int id;
     public ConnectionSet[] sets;
-    public Localization name;
-    public Localization longName;
+    public String name;
+    public String longName;
     private CommandType commandType;
 
-    public Command(int id, CommandType commandType, Localization name, Localization longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
+    public Command(int id, CommandType commandType, String name, String longName, ConnectionSet[] sets, Class<? extends Menu>... classes)
     {
         constructors = (Constructor<? extends Menu>[])Array.newInstance(Constructor.class, classes.length);
         int i = 0;

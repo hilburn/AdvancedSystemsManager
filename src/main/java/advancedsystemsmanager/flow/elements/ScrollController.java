@@ -2,9 +2,9 @@ package advancedsystemsmanager.flow.elements;
 
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -218,7 +218,7 @@ public abstract class ScrollController<T>
 
             if (textBox.getText().length() > 0 || result.size() > 0)
             {
-                gui.drawString(Localization.ITEMS_FOUND.toString() + " " + result.size(), AMOUNT_TEXT_X, AMOUNT_TEXT_Y, 0.7F, 0x404040);
+                gui.drawString(Names.ITEMS_FOUND + " " + result.size(), AMOUNT_TEXT_X, AMOUNT_TEXT_Y, 0.7F, 0x404040);
             }
         }
 

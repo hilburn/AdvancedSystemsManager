@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 
 public class MenuListOrderVariable extends MenuListOrder
 {
@@ -21,6 +21,6 @@ public class MenuListOrderVariable extends MenuListOrder
     @Override
     public String getName()
     {
-        return Localization.VALUE_ORDER_MENU.toString();
+        return Names.VALUE_ORDER_MENU;
     }
 }

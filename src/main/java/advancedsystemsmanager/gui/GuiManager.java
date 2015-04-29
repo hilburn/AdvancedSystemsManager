@@ -3,9 +3,9 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.animation.AnimationController;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
@@ -16,12 +16,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -196,7 +196,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     private String getInfo()
     {
-        String ret = Localization.COMMANDS.toString() + ": " + manager.getFlowItems().size() + "  ";
+        String ret = StatCollector.translateToLocalFormatted(Names.COMMANDS, manager.getFlowItems().size());
 
         String path = "";
         FlowComponent component = manager.getSelectedGroup();

@@ -1,14 +1,14 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -30,13 +30,13 @@ public class MenuGroup extends Menu
     @Override
     public String getName()
     {
-        return Localization.GROUP_MENU.toString();
+        return Names.GROUP_MENU;
     }
 
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        gui.drawSplitString(Localization.GROUP_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 1F, 0x404040);
+        gui.drawSplitString(Names.GROUP_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 1F, 0x404040);
     }
 
     @Override

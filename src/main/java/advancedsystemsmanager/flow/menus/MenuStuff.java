@@ -4,14 +4,14 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,7 +67,7 @@ public abstract class MenuStuff<Type> extends Menu
         checkBoxes = new CheckBoxList();
         if (settings.get(0).isAmountSpecific())
         {
-            checkBoxes.addCheckBox(new CheckBox(Localization.SPECIFY_AMOUNT, 5, 25)
+            checkBoxes.addCheckBox(new CheckBox(Names.SPECIFY_AMOUNT, 5, 25)
             {
                 @Override
                 public void setValue(boolean val)
@@ -209,8 +209,8 @@ public abstract class MenuStuff<Type> extends Menu
 
     public void initRadioButtons()
     {
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Localization.WHITE_LIST));
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Localization.BLACK_LIST));
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.WHITE_LIST));
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.BLACK_LIST));
     }
 
     public static final int RADIO_BUTTON_X_LEFT = 5;
@@ -303,7 +303,7 @@ public abstract class MenuStuff<Type> extends Menu
 
             int srcDeleteY = inDeleteBounds(mX, mY) ? 1 : 0;
             gui.drawTexture(DELETE_X, DELETE_Y, DELETE_SRC_X, DELETE_SRC_Y + srcDeleteY * DELETE_SIZE_H, DELETE_SIZE_W, DELETE_SIZE_H);
-            gui.drawCenteredString(Localization.DELETE.toString(), DELETE_X, DELETE_Y + DELETE_TEXT_Y, 0.7F, DELETE_SIZE_W, 0xBB4040);
+            gui.drawCenteredString(Names.DELETE, DELETE_X, DELETE_Y + DELETE_TEXT_Y, 0.7F, DELETE_SIZE_W, 0xBB4040);
         } else
         {
             if (!isSearching())
@@ -351,7 +351,7 @@ public abstract class MenuStuff<Type> extends Menu
                 scrollControllerSelected.drawMouseOver(gui, selectedSetting, mX, mY);
             } else if (inDeleteBounds(mX, mY))
             {
-                gui.drawMouseOver(Localization.DELETE_ITEM_SELECTION.toString(), mX, mY);
+                gui.drawMouseOver(Names.DELETE_ITEM_SELECTION, mX, mY);
             }
         } else if (isListVisible())
         {
@@ -361,7 +361,7 @@ public abstract class MenuStuff<Type> extends Menu
 
         if (selectedSetting != null && inBackBounds(mX, mY))
         {
-            gui.drawMouseOver(isEditing() ? Localization.GO_BACK.toString() : Localization.CANCEL.toString(), mX, mY);
+            gui.drawMouseOver(isEditing() ? Names.GO_BACK : Names.CANCEL, mX, mY);
         }
     }
 
@@ -799,7 +799,7 @@ public abstract class MenuStuff<Type> extends Menu
                     return;
                 }
             }
-            errors.add(Localization.EMPTY_WHITE_LIST_ERROR.toString());
+            errors.add(Names.EMPTY_WHITE_LIST_ERROR);
         }
     }
 

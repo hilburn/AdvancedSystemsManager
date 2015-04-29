@@ -1,16 +1,14 @@
 package advancedsystemsmanager.flow.elements;
 
-
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.helpers.CollisionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class VariableDisplay
 {
 
-    public Localization name;
+    public String name;
     public int x;
     public int y;
 
@@ -27,7 +25,7 @@ public abstract class VariableDisplay
     public static final int TEXT_X = -40;
     public static final int TEXT_Y = 5;
 
-    public VariableDisplay(Localization name, int x, int y)
+    public VariableDisplay(String name, int x, int y)
     {
         this.name = name;
         this.x = x;
@@ -39,7 +37,7 @@ public abstract class VariableDisplay
     {
         if (name != null)
         {
-            gui.drawString(name.toString(), x + TEXT_X, y + TEXT_Y, 0x404040);
+            gui.drawString(name, x + TEXT_X, y + TEXT_Y, 0x404040);
         }
 
         gui.getManager().getVariables()[getValue()].draw(gui, x + VARIABLE_X, y);

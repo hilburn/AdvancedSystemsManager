@@ -1,18 +1,21 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.*;
+import advancedsystemsmanager.api.execution.IBuffer;
+import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IInternalTank;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.FluidBufferElement;
-import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.flow.setting.LiquidSetting;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuLiquid;
+import advancedsystemsmanager.flow.menus.MenuTank;
+import advancedsystemsmanager.flow.menus.MenuTargetTank;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.util.SystemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -25,7 +28,7 @@ public class CommandFluidInput extends CommandInput<Fluid>
 {
     public CommandFluidInput()
     {
-        super(FLUID_INPUT, Localization.LIQUID_INPUT_SHORT.toString(), Localization.LIQUID_INPUT_LONG.toString(), IBuffer.FLUID);
+        super(FLUID_INPUT, Names.LIQUID_INPUT, IBuffer.FLUID);
     }
 
     @Override
@@ -43,13 +46,13 @@ public class CommandFluidInput extends CommandInput<Fluid>
     }
 
     @Override
-    protected List<IBufferElement<Fluid>> getBufferSubElements(int id, List<ConnectionBlock> blocks, List<Menu> menus)
+    protected List<IBufferElement<Fluid>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus)
     {
         MenuTargetTank target = (MenuTargetTank)menus.get(1);
         MenuLiquid settings = (MenuLiquid)menus.get(2);
         List<Setting<Fluid>> validSettings = getValidSettings(settings.getSettings());
         List<IBufferElement<Fluid>> subElements = new ArrayList<IBufferElement<Fluid>>();
-        for (ConnectionBlock block : blocks)
+        for (SystemBlock block : blocks)
         {
             TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalTank)

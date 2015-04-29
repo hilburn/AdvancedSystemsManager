@@ -1,17 +1,17 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +50,7 @@ public class MenuInterval extends Menu
     @Override
     public String getName()
     {
-        return Localization.INTERVAL_MENU.toString();
+        return Names.INTERVAL_MENU;
     }
 
     public TextBoxNumberList textBoxes;
@@ -60,8 +60,8 @@ public class MenuInterval extends Menu
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        gui.drawSplitString(Localization.INTERVAL_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 0.7F, 0x404040);
-        gui.drawString(Localization.SECOND.toString(), TEXT_SECONDS_X, TEXT_SECOND_Y, 0.7F, 0x404040);
+        gui.drawSplitString(Names.INTERVAL_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 0.7F, 0x404040);
+        gui.drawString(Names.SECOND, TEXT_SECONDS_X, TEXT_SECOND_Y, 0.7F, 0x404040);
         textBoxes.draw(gui, mX, mY);
     }
 
@@ -75,7 +75,7 @@ public class MenuInterval extends Menu
     @Override
     public boolean isVisible()
     {
-        return getParent().getConnectionSet() != StevesEnum.DELAYED;
+        return getParent().getConnectionSet() != ConnectionSet.DELAYED;
     }
 
     @Override

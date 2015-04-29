@@ -1,21 +1,20 @@
 package advancedsystemsmanager.flow.setting;
 
-
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.reference.Names;
 
 public enum FuzzyMode
 {
-    PRECISE(Localization.DETECTION_PRECISE, true),
-    NBT_FUZZY(Localization.DETECTION_NBT_FUZZY, true),
-    FUZZY(Localization.DETECTION_FUZZY, false),
-    ORE_DICTIONARY(Localization.DETECTION_ORE_DICTIONARY, true),
-    MOD_GROUPING(Localization.MOD_GROUPING, false),
-    ALL(Localization.ALL_ITEMS, false);
+    PRECISE(Names.DETECTION_PRECISE, true),
+    NBT_FUZZY(Names.DETECTION_NBT_FUZZY, true),
+    FUZZY(Names.DETECTION_FUZZY, false),
+    ORE_DICTIONARY(Names.DETECTION_ORE_DICTIONARY, true),
+    MOD_GROUPING(Names.MOD_GROUPING, false),
+    ALL(Names.ALL_ITEMS, false);
 
-    public Localization text;
+    public String text;
     public boolean useMeta;
 
-    FuzzyMode(Localization text, boolean useMeta)
+    FuzzyMode(String text, boolean useMeta)
     {
         this.text = text;
         this.useMeta = useMeta;
@@ -24,7 +23,7 @@ public enum FuzzyMode
     @Override
     public String toString()
     {
-        return text.toString();
+        return text;
     }
 
 

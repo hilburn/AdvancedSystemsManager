@@ -1,11 +1,12 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.reference.Names;
 
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MenuVariableContainers extends MenuContainer
@@ -24,11 +25,11 @@ public class MenuVariableContainers extends MenuContainer
     @Override
     public String getName()
     {
-        return Localization.VARIABLE_CONTAINERS_MENU.toString();
+        return Names.VARIABLE_CONTAINERS_MENU;
     }
 
     @Override
-    public EnumSet<ConnectionBlockType> getValidTypes()
+    public Set<ISystemType> getValidTypes()
     {
         MenuContainerTypes componentMenuContainerTypes = ((MenuContainerTypes)getParent().getMenus().get(1));
 
@@ -44,13 +45,13 @@ public class MenuVariableContainers extends MenuContainer
                 return ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
             } else
             {
-                return EnumSet.noneOf(ConnectionBlockType.class);
+                return new HashSet<ISystemType>();
             }
         }
     }
 
     @Override
-    public boolean isVariableAllowed(EnumSet<ConnectionBlockType> validTypes, int i)
+    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
     {
         return super.isVariableAllowed(validTypes, i) && i != ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
     }

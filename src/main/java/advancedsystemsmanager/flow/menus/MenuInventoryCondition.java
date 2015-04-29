@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.reference.Names;
 
 public class MenuInventoryCondition extends MenuInventory
 {
@@ -14,8 +14,8 @@ public class MenuInventoryCondition extends MenuInventory
     @Override
     public void initRadioButtons()
     {
-        radioButtonsMulti.add(new RadioButtonInventory(0, Localization.RUN_SHARED_ONCE));
-        radioButtonsMulti.add(new RadioButtonInventory(1, Localization.REQUIRE_ALL_TARGETS));
-        radioButtonsMulti.add(new RadioButtonInventory(2, Localization.REQUIRE_ONE_TARGET));
+        radioButtonsMulti.add(new RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
+        radioButtonsMulti.add(new RadioButtonInventory(1, Names.REQUIRE_ALL_TARGETS));
+        radioButtonsMulti.add(new RadioButtonInventory(2, Names.REQUIRE_ONE_TARGET));
     }
 }

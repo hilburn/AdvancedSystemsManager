@@ -40,9 +40,9 @@ public class SlotInventoryHolder
         return (IFluidHandler)inventory;
     }
 
-    public TileEntityOutput getEmitter()
+    public TileEntityEmitter getEmitter()
     {
-        return (TileEntityOutput)inventory;
+        return (TileEntityEmitter)inventory;
     }
 
     public IRedstoneNode getNode()
@@ -50,9 +50,9 @@ public class SlotInventoryHolder
         return (IRedstoneNode)inventory;
     }
 
-    public TileEntityInput getReceiver()
+    public TileEntityReceiver getReceiver()
     {
-        return (TileEntityInput)inventory;
+        return (TileEntityReceiver)inventory;
     }
 
     public TileEntityBUD getBUD()

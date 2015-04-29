@@ -1,15 +1,16 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -55,13 +56,13 @@ public abstract class MenuTarget extends Menu
         @Override
         public String getLabel()
         {
-            return isActive(selectedDirectionId) ? Localization.DEACTIVATE.toString() : Localization.ACTIVATE.toString();
+            return isActive(selectedDirectionId) ? Names.DEACTIVATE : Names.ACTIVATE;
         }
 
         @Override
         public String getMouseOverText()
         {
-            return isActive(selectedDirectionId) ? Localization.DEACTIVATE_LONG.toString() : Localization.ACTIVATE_LONG.toString();
+            return isActive(selectedDirectionId) ? Names.DEACTIVATE_LONG : Names.ACTIVATE_LONG;
         }
 
         @Override
@@ -78,7 +79,7 @@ public abstract class MenuTarget extends Menu
     @Override
     public String getName()
     {
-        return Localization.TARGET_MENU.toString();
+        return Names.TARGET_MENU;
     }
 
 
@@ -109,7 +110,7 @@ public abstract class MenuTarget extends Menu
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
             int color = selectedDirectionId != -1 && selectedDirectionId != i ? 0x70404040 : 0x404040;
-            gui.drawString(Localization.getForgeDirectionLocalization(i).toString(), x + DIRECTION_TEXT_X, y + DIRECTION_TEXT_Y, color);
+            gui.drawString(LocalizationHelper.getDirectionString(i), x + DIRECTION_TEXT_X, y + DIRECTION_TEXT_Y, color);
             GL11.glPopMatrix();
         }
 
@@ -467,7 +468,7 @@ public abstract class MenuTarget extends Menu
             }
         }
 
-        errors.add(Localization.NO_DIRECTION_ERROR.toString());
+        errors.add(Names.NO_DIRECTION_ERROR);
     }
 
     public void setActive(int side)

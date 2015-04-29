@@ -6,11 +6,12 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.menus.MenuTarget;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public class ManagerButtonCreate extends ManagerButton
 {
@@ -102,10 +103,11 @@ public class ManagerButtonCreate extends ManagerButton
     {
         if (!Settings.isLimitless(manager) && manager.getFlowItems().size() == TileEntityManager.MAX_COMPONENT_AMOUNT)
         {
-            return Localization.MAXIMUM_COMPONENT_ERROR.toString();
+            return Names.MAXIMUM_COMPONENT_ERROR;
         } else
         {
-            return Localization.CREATE_COMMAND.toString() + " " + super.getMouseOver();
+            //TODO: hmmmm
+            return StatCollector.translateToLocal(Names.CREATE_COMMAND) + " " + super.getMouseOver();
         }
     }
 

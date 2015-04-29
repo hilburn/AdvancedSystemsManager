@@ -22,7 +22,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileEntityOutput extends TileEntityClusterElement implements IPacketBlock, IRedstoneNode
+public class TileEntityEmitter extends TileEntityClusterElement implements IPacketBlock, IRedstoneNode
 {
 
     private int[] strengths;
@@ -31,7 +31,7 @@ public class TileEntityOutput extends TileEntityClusterElement implements IPacke
     private int[] updatedStrength;
     private boolean[] updatedStrong;
 
-    public TileEntityOutput()
+    public TileEntityEmitter()
     {
 
         strengths = new int[ForgeDirection.VALID_DIRECTIONS.length];

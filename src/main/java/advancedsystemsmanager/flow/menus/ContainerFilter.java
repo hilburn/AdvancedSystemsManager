@@ -2,11 +2,10 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ConnectionBlock;
+import advancedsystemsmanager.util.SystemBlock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,14 +66,14 @@ public class ContainerFilter
         filterVariableSelection = new ArrayList<Integer>();
 
         MenuContainer.Page[] subFilterPages = {MenuContainer.Page.POSITION, MenuContainer.Page.DISTANCE, MenuContainer.Page.SELECTION, MenuContainer.Page.VARIABLE};
-        Localization[] subFilterLabels = {Localization.FILTER_POSITION_LABEL, Localization.FILTER_DISTANCE_LABEL, Localization.FILTER_SELECTION_LABEL, Localization.FILTER_VARIABLE_LABEL};
+        String[] subFilterLabels = {Names.FILTER_POSITION_LABEL, Names.FILTER_DISTANCE_LABEL, Names.FILTER_SELECTION_LABEL, Names.FILTER_VARIABLE_LABEL};
         useSubFilter = new CheckBox[subFilterLabels.length];
 
         for (int i = 0; i < subFilterPages.length; i++)
         {
             checkBoxes.addCheckBox(useSubFilter[i] = new CheckBoxPage(subFilterLabels[i], MenuContainer.Page.FILTER, CHECK_BOX_X, CHECK_BOX_FILTER_Y + CHECK_BOX_FILTER_SPACING * i));
         }
-        checkBoxes.addCheckBox(invertFilterMatch = new CheckBoxPage(Localization.INVERT, MenuContainer.Page.FILTER, CHECK_BOX_X, CHECK_BOX_FILTER_INVERT_Y));
+        checkBoxes.addCheckBox(invertFilterMatch = new CheckBoxPage(Names.INVERT, MenuContainer.Page.FILTER, CHECK_BOX_X, CHECK_BOX_FILTER_INVERT_Y));
 
         useRange = new CheckBox[5];
         lowerRange = new TextBoxPage[useRange.length];
@@ -83,7 +82,7 @@ public class ContainerFilter
 
 
         textBoxes = new TextBoxNumberList();
-        Localization[] xyz = {Localization.X, Localization.Y, Localization.Z};
+        String[] xyz = {Names.X, Names.Y, Names.Z};
         for (int i = 0; i < xyz.length; i++)
         {
             int y = CHECK_BOX_POSITION_Y + CHECK_BOX_POSITION_SPACING * i;
@@ -91,10 +90,10 @@ public class ContainerFilter
             checkBoxes.addCheckBox(useRange[i] = new CheckBoxPage(xyz[i], MenuContainer.Page.POSITION, CHECK_BOX_X, y));
             textBoxes.addTextBox(lowerRange[i] = new TextBoxPage(MenuContainer.Page.POSITION, TEXT_BOX_POSITION_X_1, y + TEXT_BOX_Y_OFFSET, true, -128));
             textBoxes.addTextBox(higherRange[i] = new TextBoxPage(MenuContainer.Page.POSITION, TEXT_BOX_POSITION_X_2, y + TEXT_BOX_Y_OFFSET, true, 128));
-            checkBoxes.addCheckBox(invertRange[i] = new CheckBoxPage(Localization.INVERT, MenuContainer.Page.POSITION, CHECK_BOX_POSITION_INVERT_X, y));
+            checkBoxes.addCheckBox(invertRange[i] = new CheckBoxPage(Names.INVERT, MenuContainer.Page.POSITION, CHECK_BOX_POSITION_INVERT_X, y));
         }
 
-        Localization[] distance = {Localization.CABLE_DISTANCE, Localization.DISTANCE};
+        String[] distance = {Names.CABLE_DISTANCE, Names.DISTANCE};
 
         for (int i = 0; i < distance.length; i++)
         {
@@ -106,7 +105,7 @@ public class ContainerFilter
 
             textBoxes.addTextBox(lowerRange[i + 3] = new TextBoxPage(MenuContainer.Page.DISTANCE, TEXT_BOX_DISTANCE_X_1, y + TEXT_BOX_Y_OFFSET, false, 0));
             textBoxes.addTextBox(higherRange[i + 3] = new TextBoxPage(MenuContainer.Page.DISTANCE, TEXT_BOX_DISTANCE_X_2, y + TEXT_BOX_Y_OFFSET, false, 128));
-            checkBoxes.addCheckBox(invertRange[i + 3] = new CheckBoxPage(Localization.INVERT, MenuContainer.Page.DISTANCE, CHECK_BOX_DISTANCE_INVERT_X, y));
+            checkBoxes.addCheckBox(invertRange[i + 3] = new CheckBoxPage(Names.INVERT, MenuContainer.Page.DISTANCE, CHECK_BOX_DISTANCE_INVERT_X, y));
         }
 
         radioButtonsSelection = new RadioButtonList()
@@ -117,7 +116,7 @@ public class ContainerFilter
                 setSelectedOption(selectedOption);
             }
         };
-        Localization[] selection = {Localization.ONLY_SELECTED, Localization.HIDE_SELECTED};
+        String[] selection = {Names.ONLY_SELECTED, Names.HIDE_SELECTED};
         for (int i = 0; i < selection.length; i++)
         {
             radioButtonsSelection.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING * i, selection[i]));
@@ -172,12 +171,12 @@ public class ContainerFilter
             }
         };
 
-        Localization[] varOptions = {Localization.USE_UNUSED, Localization.USE_FILTER};
+        String[] varOptions = {Names.USE_UNUSED, Names.USE_FILTER};
         for (int i = 0; i < varOptions.length; i++)
         {
             radioButtonVariable.add(new RadioButton(RADIO_BUTTON_X + RADIO_BUTTON_SPACING_X * i, RADIO_BUTTON_Y_VARIABLE, varOptions[i]));
         }
-        checkBoxes.addCheckBox(variableInvert = new CheckBoxPage(Localization.INVERT, MenuContainer.Page.VARIABLE, CHECK_BOX_X, CHECK_BOX_INVERT_VARIABLE_Y)
+        checkBoxes.addCheckBox(variableInvert = new CheckBoxPage(Names.INVERT, MenuContainer.Page.VARIABLE, CHECK_BOX_X, CHECK_BOX_INVERT_VARIABLE_Y)
         {
             @Override
             public boolean isVisible()
@@ -192,7 +191,7 @@ public class ContainerFilter
         return radioButtonVariable.getSelectedOption() == 1;
     }
 
-    public boolean matches(TileEntityManager manager, List<Integer> selectedInventories, ConnectionBlock block)
+    public boolean matches(TileEntityManager manager, List<Integer> selectedInventories, SystemBlock block)
     {
         boolean filterMatch = true;
 
@@ -338,7 +337,7 @@ public class ContainerFilter
         public boolean checked; //this checkbox is only used on the client side so we don't have to anything special with the values
         public MenuContainer.Page page;
 
-        public CheckBoxPage(Localization name, MenuContainer.Page page, int x, int y)
+        public CheckBoxPage(String name, MenuContainer.Page page, int x, int y)
         {
             super(name, x, y);
             this.page = page;

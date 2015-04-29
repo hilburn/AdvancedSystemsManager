@@ -1,7 +1,6 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.reference.Mods;
-import advancedsystemsmanager.util.ItemUtils;
 import cofh.api.block.IDismantleable;
 import cpw.mods.fml.common.Optional;
 import net.minecraft.block.Block;
@@ -12,7 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @Optional.Interface(iface = "cofh.api.block.IDismantleable", modid = Mods.COFH_BLOCK)
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider, IDismantleable

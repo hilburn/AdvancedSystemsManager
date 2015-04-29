@@ -1,18 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -84,7 +84,7 @@ public class MenuResult extends Menu
     @Override
     public String getName()
     {
-        return Localization.CONNECTIONS_MENU.toString();
+        return Names.CONNECTIONS_MENU;
     }
 
     @SideOnly(Side.CLIENT)

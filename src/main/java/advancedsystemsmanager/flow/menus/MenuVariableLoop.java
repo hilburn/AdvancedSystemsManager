@@ -1,16 +1,16 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.elements.VariableDisplay;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +23,7 @@ public class MenuVariableLoop extends Menu
     {
         super(parent);
 
-        listDisplay = new VariableDisplay(Localization.VARIABLE_LIST, DISPLAY_X, DISPLAY_Y_TOP)
+        listDisplay = new VariableDisplay(Names.VARIABLE_LIST, DISPLAY_X, DISPLAY_Y_TOP)
         {
             @Override
             public int getValue()
@@ -44,7 +44,7 @@ public class MenuVariableLoop extends Menu
             }
         };
 
-        elementDisplay = new VariableDisplay(Localization.VARIABLE_ELEMENT, DISPLAY_X, DISPLAY_Y_BOT)
+        elementDisplay = new VariableDisplay(Names.VARIABLE_ELEMENT, DISPLAY_X, DISPLAY_Y_BOT)
         {
             @Override
             public int getValue()
@@ -72,7 +72,7 @@ public class MenuVariableLoop extends Menu
     @Override
     public String getName()
     {
-        return Localization.LOOP_VARIABLE_MENU.toString();
+        return Names.LOOP_VARIABLE_MENU;
     }
 
     public static final int DISPLAY_X = 45;
@@ -223,12 +223,12 @@ public class MenuVariableLoop extends Menu
     {
         if (!getListVariable().isValid())
         {
-            errors.add(Localization.LIST_NOT_DECLARED.toString());
+            errors.add(Names.LIST_NOT_DECLARED);
         }
 
         if (!getElementVariable().isValid())
         {
-            errors.add(Localization.ELEMENT_NOT_DECLARED.toString());
+            errors.add(Names.ELEMENT_NOT_DECLARED);
         }
     }
 }

@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.util.ConnectionBlockType;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -11,13 +11,13 @@ public class MenuCamouflage extends MenuContainer
 {
     public MenuCamouflage(FlowComponent parent)
     {
-        super(parent, ConnectionBlockType.CAMOUFLAGE);
+        super(parent, SystemTypeRegistry.CAMOUFLAGE);
     }
 
     @Override
     public String getName()
     {
-        return Localization.CAMOUFLAGE_BLOCK_MENU.toString();
+        return Names.CAMOUFLAGE_BLOCK_MENU;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MenuCamouflage extends MenuContainer
     {
         if (selectedInventories.isEmpty())
         {
-            errors.add(Localization.NO_CAMOUFLAGE_BLOCKS_ERROR.toString());
+            errors.add(Names.NO_CAMOUFLAGE_BLOCKS_ERROR);
         }
     }
 }
