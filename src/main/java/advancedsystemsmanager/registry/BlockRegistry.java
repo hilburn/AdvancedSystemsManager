@@ -30,7 +30,7 @@ public class BlockRegistry
 //    Cluster Elements
     @Register(tileEntity = TileEntityCluster.class, itemBlock = ItemCluster.class, name = Names.CABLE_CLUSTER)
     public static BlockCableCluster blockCableCluster;
-    @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemRelay.class, name = Names.CABLE_RELAY)
+    @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_RELAY)
     public static BlockCableRelay blockCableRelay;
     @Register(tileEntity = TileEntityOutput.class, name = Names.CABLE_OUTPUT)
     public static BlockCableOutput blockCableOutput;
@@ -38,7 +38,7 @@ public class BlockRegistry
     public static BlockCableInput blockCableInput;
     @Register(tileEntity = TileEntityCreative.class, name = Names.CABLE_CREATIVE)
     public static BlockCableCreative blockCableCreative;
-    @Register(tileEntity = TileEntityIntake.class, itemBlock = ItemIntake.class, name = Names.CABLE_INTAKE)
+    @Register(tileEntity = TileEntityIntake.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_INTAKE)
     public static BlockCableIntake blockCableIntake;
     @Register(tileEntity = TileEntityBUD.class, name = Names.CABLE_BUD)
     public static BlockCableBUD blockCableBUD;

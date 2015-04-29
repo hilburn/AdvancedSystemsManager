@@ -39,7 +39,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
         icons = new IIcon[TileEntityCamouflage.CamouflageType.values().length];
         for (int i = 0; i < icons.length; i++)
         {
-            icons[i] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon());
+            icons[i] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon().replace("system_",""));
         }
     }
 
@@ -65,11 +65,6 @@ public class BlockCableCamouflages extends BlockCamouflageBase
         {
             list.add(new ItemStack(block, 1, i));
         }
-    }
-
-    public int getId(int meta)
-    {
-        return meta % TileEntityCamouflage.CamouflageType.values().length;
     }
 
     @Override

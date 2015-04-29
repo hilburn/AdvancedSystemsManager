@@ -1,26 +1,19 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-
-public class ItemCamouflage extends ItemBlock
+public class ItemCamouflage extends ItemAdvanced
 {
-
     public ItemCamouflage(Block block)
     {
         super(block);
-        setHasSubtypes(true);
-        setMaxDamage(0);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack item)
     {
-        return "tile." + TileEntityCamouflage.CamouflageType.values()[BlockRegistry.blockCableCamouflage.getId(item.getItemDamage())].getUnlocalized();
+        return field_150939_a.getUnlocalizedName() + TileEntityCamouflage.CamouflageType.getByID(item.getItemDamage()).getUnlocalized();
     }
-
 }

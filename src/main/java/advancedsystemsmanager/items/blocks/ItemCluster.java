@@ -1,25 +1,20 @@
 package advancedsystemsmanager.items.blocks;
 
 import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemCluster extends ItemBlock
+public class ItemCluster extends ItemAdvanced
 {
     public ItemCluster(Block block)
     {
         super(block);
-        setHasSubtypes(true);
-        setMaxDamage(0);
     }
 
     public static final String NBT_CABLE = "Cable";
@@ -58,11 +53,5 @@ public class ItemCluster extends ItemBlock
         {
             list.add(Localization.EMPTY_CLUSTER.toString());
         }
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack item)
-    {
-        return "tile." + (BlockRegistry.blockCableCluster.isAdvanced(item.getItemDamage()) ? Names.CABLE_ADVANCED_CLUSTER : Names.CABLE_CLUSTER);
     }
 }

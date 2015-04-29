@@ -104,19 +104,19 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public enum CamouflageType
     {
-        NORMAL(Names.CABLE_CAMO, "cable_camo", false, false),
-        INSIDE(Names.CABLE_CAMO_INSIDE, "cable_camo_inside", true, false),
-        SHAPE(Names.CABLE_CAMO_SHAPE, "cable_camo_shape", true, true);
+        NORMAL("", false, false),
+        INSIDE("_inside", true, false),
+        SHAPE("_shape", true, true);
 
         private String unlocalized;
         private String icon;
         private boolean useDouble;
         private boolean useShape;
 
-        private CamouflageType(String unlocalized, String icon, boolean useDouble, boolean useShape)
+        private CamouflageType(String tag, boolean useDouble, boolean useShape)
         {
-            this.unlocalized = unlocalized;
-            this.icon = icon;
+            this.unlocalized = tag;
+            this.icon = Names.CABLE_CAMO + tag;
             this.useDouble = useDouble;
             this.useShape = useShape;
         }
@@ -140,11 +140,16 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         {
             return useShape;
         }
+
+        public static CamouflageType getByID(int id)
+        {
+            return values()[id % values().length];
+        }
     }
 
     public CamouflageType getCamouflageType()
     {
-        return CamouflageType.values()[BlockRegistry.blockCableCamouflage.getId(getBlockMetadata())];
+        return CamouflageType.getByID(getBlockMetadata());
     }
 
     public void setBlockBounds(BlockCamouflageBase blockCamouflageBase)
