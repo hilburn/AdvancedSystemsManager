@@ -38,8 +38,6 @@ import java.io.File;
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION_FULL)
 public class AdvancedSystemsManager
 {
-    public static final String UNLOCALIZED_START = "asm.";
-
     public static FMLEventChannel packetHandler;
 
     @SidedProxy(clientSide = "advancedsystemsmanager.proxy.ClientProxy", serverSide = "advancedsystemsmanager.proxy.CommonProxy")
