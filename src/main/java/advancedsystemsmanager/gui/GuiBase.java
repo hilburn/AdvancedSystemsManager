@@ -1,7 +1,6 @@
 package advancedsystemsmanager.gui;
 
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.settings.Settings;
@@ -14,17 +13,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -105,7 +99,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
+        fontRendererObj.drawString(StatCollector.translateToLocal(str), (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -116,7 +110,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawSplitString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
+        fontRendererObj.drawSplitString(StatCollector.translateToLocal(str), (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -466,7 +460,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawCenteredString(String str, int x, int y, float mult, int width, int color)
     {
-        drawString(str, x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
+        drawString(StatCollector.translateToLocal(str), x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
     }
 
     public void drawCursor(int x, int y, int z, int color)

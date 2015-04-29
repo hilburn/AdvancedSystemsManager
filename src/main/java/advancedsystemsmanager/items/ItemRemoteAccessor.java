@@ -2,7 +2,6 @@ package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;

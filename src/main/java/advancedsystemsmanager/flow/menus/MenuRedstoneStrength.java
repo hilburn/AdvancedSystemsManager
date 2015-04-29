@@ -1,18 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.TextBoxNumber;
+import advancedsystemsmanager.flow.elements.TextBoxNumberList;
+import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +27,7 @@ public class MenuRedstoneStrength extends Menu
         super(parent);
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Localization.INVERT_SELECTION, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(Names.INVERT_SELECTION, CHECK_BOX_X, CHECK_BOX_Y)
         {
 
             @Override
@@ -107,15 +107,15 @@ public class MenuRedstoneStrength extends Menu
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_STRENGTH_MENU.toString();
+        return Names.REDSTONE_STRENGTH_MENU;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        gui.drawSplitString(Localization.REDSTONE_STRENGTH_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - 2 * TEXT_MARGIN_X, 0.7F, 0x404040);
-        gui.drawString(Localization.THROUGH.toString(), TEXT_BOX_TEXT_X, TEXT_BOX_TEXT_Y, 0.7F, 0x404040);
+        gui.drawSplitString(Names.REDSTONE_STRENGTH_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - 2 * TEXT_MARGIN_X, 0.7F, 0x404040);
+        gui.drawString(Names.THROUGH, TEXT_BOX_TEXT_X, TEXT_BOX_TEXT_Y, 0.7F, 0x404040);
 
         checkBoxes.draw(gui, mX, mY);
         textBoxes.draw(gui, mX, mY);
@@ -297,10 +297,10 @@ public class MenuRedstoneStrength extends Menu
     {
         if (getLow() > getHigh())
         {
-            errors.add(Localization.INVALID_REDSTONE_RANGE_ERROR.toString());
+            errors.add(Names.INVALID_REDSTONE_RANGE_ERROR);
         } else if (getLow() == 0 && getHigh() == 15)
         {
-            errors.add(Localization.REDUNDANT_REDSTONE_RANGE_ERROR.toString());
+            errors.add(Names.REDUNDANT_REDSTONE_RANGE_ERROR);
         }
     }
 }

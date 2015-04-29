@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import static advancedsystemsmanager.reference.Textures.BUTTONS;
-import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_SIZE;
 import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_ICON_SIZE;
+import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_SIZE;
+import static advancedsystemsmanager.reference.Textures.BUTTONS;
 
 public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement<GuiManager>
 {

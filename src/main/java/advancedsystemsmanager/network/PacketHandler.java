@@ -1,10 +1,10 @@
 package advancedsystemsmanager.network;
 
 import advancedsystemsmanager.api.ITileEntityInterface;
-import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
+import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.gui.ContainerBase;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

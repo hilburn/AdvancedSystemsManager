@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.registry.ConnectionSet;
 
 public class MenuContainerTypesVariable extends MenuContainerTypes
 {

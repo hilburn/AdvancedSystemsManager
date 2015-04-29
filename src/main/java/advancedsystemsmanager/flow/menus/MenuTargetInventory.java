@@ -1,18 +1,20 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
@@ -62,13 +64,13 @@ public class MenuTargetInventory extends MenuTarget
             @Override
             public String getLabel()
             {
-                return useAdvancedSetting(selectedDirectionId) ? Localization.ALL_SLOTS.toString() : Localization.ID_RANGE.toString();
+                return useAdvancedSetting(selectedDirectionId) ? Names.ALL_SLOTS : Names.ID_RANGE;
             }
 
             @Override
             public String getMouseOverText()
             {
-                return useAdvancedSetting(selectedDirectionId) ? Localization.ALL_SLOTS_LONG.toString() : Localization.ID_RANGE_LONG.toString();
+                return useAdvancedSetting(selectedDirectionId) ? Names.ALL_SLOTS_LONG : Names.ID_RANGE_LONG;
             }
 
             @Override
@@ -201,7 +203,7 @@ public class MenuTargetInventory extends MenuTarget
         {
             if (isActive(i) && getStart(i) > getEnd(i))
             {
-                errors.add(Localization.getForgeDirectionLocalization(i).toString() + " " + Localization.INVALID_RANGE.toString());
+                errors.add(StatCollector.translateToLocal(LocalizationHelper.getDirectionString(i)) + " " + StatCollector.translateToLocal(Names.INVALID_RANGE));
             }
         }
 

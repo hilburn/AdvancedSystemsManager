@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import net.minecraft.nbt.NBTTagCompound;

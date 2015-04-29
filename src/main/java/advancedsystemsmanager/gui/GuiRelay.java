@@ -1,10 +1,10 @@
 package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
 import advancedsystemsmanager.util.UserPermission;
 import advancedsystemsmanager.util.Utils;
@@ -30,7 +30,7 @@ public class GuiRelay extends GuiBase
 
         this.relay = relay;
 
-        buttons.add(new Button(Localization.GIVE_PERMISSION, BUTTON_X_LEFT, BUTTON_Y_DOWN)
+        buttons.add(new Button(Names.GIVE_PERMISSION, BUTTON_X_LEFT, BUTTON_Y_DOWN)
         {
             @Override
             public boolean isVisible()
@@ -55,7 +55,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.REVOKE_PERMISSION, BUTTON_X_RIGHT, BUTTON_Y_DOWN)
+        buttons.add(new Button(Names.REVOKE_PERMISSION, BUTTON_X_RIGHT, BUTTON_Y_DOWN)
         {
             @Override
             public boolean isVisible()
@@ -76,7 +76,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.ACTIVATE_USER, BUTTON_X_LEFT, BUTTON_Y_TOP)
+        buttons.add(new Button(Names.ACTIVATE_USER, BUTTON_X_LEFT, BUTTON_Y_TOP)
         {
             @Override
             public boolean isVisible()
@@ -99,7 +99,7 @@ public class GuiRelay extends GuiBase
         });
 
 
-        buttons.add(new Button(Localization.DEACTIVATE_USER, BUTTON_X_RIGHT, BUTTON_Y_TOP)
+        buttons.add(new Button(Names.DEACTIVATE_USER, BUTTON_X_RIGHT, BUTTON_Y_TOP)
         {
             @Override
             public boolean isVisible()
@@ -121,7 +121,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.DELETE_USER, BUTTON_X_MIDDLE, BUTTON_Y_BOT)
+        buttons.add(new Button(Names.DELETE_USER, BUTTON_X_MIDDLE, BUTTON_Y_BOT)
         {
             @Override
             public boolean isVisible()
@@ -143,7 +143,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.MAKE_EDITOR, BUTTON_X_LEFT, BUTTON_Y_MIDDLE)
+        buttons.add(new Button(Names.MAKE_EDITOR, BUTTON_X_LEFT, BUTTON_Y_MIDDLE)
         {
             @Override
             public boolean isVisible()
@@ -165,7 +165,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.REMOVE_EDITOR, BUTTON_X_RIGHT, BUTTON_Y_MIDDLE)
+        buttons.add(new Button(Names.REMOVE_EDITOR, BUTTON_X_RIGHT, BUTTON_Y_MIDDLE)
         {
             @Override
             public boolean isVisible()
@@ -187,7 +187,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.SHOW_LIST_TO_ALL, BUTTON_X_LEFT, BUTTON_Y_FURTHER_DOWN)
+        buttons.add(new Button(Names.SHOW_LIST_TO_ALL, BUTTON_X_LEFT, BUTTON_Y_FURTHER_DOWN)
         {
             @Override
             public boolean isVisible()
@@ -209,7 +209,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.SHOW_TO_EDITORS, BUTTON_X_RIGHT, BUTTON_Y_FURTHER_DOWN)
+        buttons.add(new Button(Names.SHOW_TO_EDITORS, BUTTON_X_RIGHT, BUTTON_Y_FURTHER_DOWN)
         {
             @Override
             public boolean isVisible()
@@ -231,7 +231,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.ENABLE_CREATIVE_MODE, BUTTON_X_LEFT, BUTTON_Y_FAR_BOT)
+        buttons.add(new Button(Names.ENABLE_CREATIVE_MODE, BUTTON_X_LEFT, BUTTON_Y_FAR_BOT)
         {
             @Override
             public boolean isVisible()
@@ -253,7 +253,7 @@ public class GuiRelay extends GuiBase
             }
         });
 
-        buttons.add(new Button(Localization.DISABLE_CREATIVE_MODE, BUTTON_X_RIGHT, BUTTON_Y_FAR_BOT)
+        buttons.add(new Button(Names.DISABLE_CREATIVE_MODE, BUTTON_X_RIGHT, BUTTON_Y_FAR_BOT)
         {
             @Override
             public boolean isVisible()
@@ -397,7 +397,7 @@ public class GuiRelay extends GuiBase
 
             if (getPageCount() > 1)
             {
-                drawCenteredString(Localization.PAGE.toString() + " " + (currentPage + 1) + " " + Localization.OF.toString() + " " + getPageCount(), LIST_POS_X, PAGE_Y, 0.6F, LIST_MENU_WIDTH, 0x404040);
+                drawCenteredString(Names.PAGE + " " + (currentPage + 1) + " " + Names.OF + " " + getPageCount(), LIST_POS_X, PAGE_Y, 0.6F, LIST_MENU_WIDTH, 0x404040);
 
                 for (int i = 0; i < 2; i++)
                 {
@@ -411,7 +411,7 @@ public class GuiRelay extends GuiBase
             }
         } else
         {
-            drawCenteredString(Localization.NO_ACCESS.toString(), LIST_POS_X, LIST_POS_Y + NO_ACCESS_TEXT_Y, 1F, LIST_MENU_WIDTH, 0x804040);
+            drawCenteredString(Names.NO_ACCESS, LIST_POS_X, LIST_POS_Y + NO_ACCESS_TEXT_Y, 1F, LIST_MENU_WIDTH, 0x804040);
         }
 
         UserPermission info = relay.doesListRequireOp() && !isOp(player, true) ? player : selected;
@@ -431,10 +431,10 @@ public class GuiRelay extends GuiBase
 
             if (isOp(player, true))
             {
-                str = Localization.EDITOR_DESCRIPTION_SHORT.toString();
+                str = Names.EDITOR_DESCRIPTION_SHORT;
             } else
             {
-                str = Localization.USER_DESCRIPTION_SHORT.toString();
+                str = Names.USER_DESCRIPTION_SHORT;
             }
 
             drawSplitString(str, INFO_BOX_POS_X + INFO_BOX_FULL_TEXT_X, INFO_BOX_POS_Y + INFO_BOX_FULL_TEXT_Y, INFO_BOX_FULL_TEXT_W, 0.7F, 0x404040);
@@ -447,7 +447,7 @@ public class GuiRelay extends GuiBase
                 int textureId = button.isEnabled() ? CollisionHelper.inBounds(button.x, button.y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY) ? 2 : 1 : 0;
 
                 drawTexture(button.x, button.y, 0, ySize + LIST_MENU_HEIGHT * 2 + INFO_SIZE + BUTTON_HEIGHT * textureId, BUTTON_WIDTH, BUTTON_HEIGHT);
-                drawCenteredString(button.name.toString(), button.x, button.y + BUTTON_TEXT_Y, 0.4F, BUTTON_WIDTH, button.isEnabled() ? 0x404040 : 0x808080);
+                drawCenteredString(button.name, button.x, button.y + BUTTON_TEXT_Y, 0.4F, BUTTON_WIDTH, button.isEnabled() ? 0x404040 : 0x808080);
             }
         }
 
@@ -455,10 +455,10 @@ public class GuiRelay extends GuiBase
         String message = null;
         if (getSelectedPermission() == -1)
         {
-            message = Localization.USER_DESCRIPTION_LONG.toString();
+            message = Names.USER_DESCRIPTION_LONG;
         } else if (isOp(getUserPermission(), true))
         {
-            message = Localization.EDITOR_DESCRIPTION_LONG.toString();
+            message = Names.EDITOR_DESCRIPTION_LONG;
         }
 
         if (message != null)
@@ -497,7 +497,7 @@ public class GuiRelay extends GuiBase
 
     private void drawInfoBoxString(int id, UserPermission permission, int x, int y)
     {
-        String str = id == 0 ? isOwner(permission, false) ? Localization.PERMISSION_OWNER.toString() : isOp(permission, false) ? Localization.PERMISSION_EDITOR.toString() : Localization.PERMISSION_USER.toString() : relay.isCreativeMode() ? permission.isActive() ? Localization.PERMISSION_RESTRICTED.toString() : Localization.PERMISSION_CREATIVE.toString() : permission.isActive() ? Localization.PERMISSION_INVENTORY.toString() : Localization.PERMISSION_DENIED.toString();
+        String str = id == 0 ? isOwner(permission, false) ? Names.PERMISSION_OWNER : isOp(permission, false) ? Names.PERMISSION_EDITOR : Names.PERMISSION_USER : relay.isCreativeMode() ? permission.isActive() ? Names.PERMISSION_RESTRICTED : Names.PERMISSION_CREATIVE : permission.isActive() ? Names.PERMISSION_INVENTORY : Names.PERMISSION_DENIED;
 
         drawString(str, x, y, 0.7F, 0x404040);
     }
@@ -616,10 +616,10 @@ public class GuiRelay extends GuiBase
 
     private abstract class Button
     {
-        private Localization name;
+        private String name;
         private int x, y;
 
-        protected Button(Localization name, int x, int y)
+        protected Button(String name, int x, int y)
         {
             this.name = name;
             this.x = x;

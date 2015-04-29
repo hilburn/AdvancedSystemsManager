@@ -1,12 +1,11 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.ISystemListener;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuRF;
 import advancedsystemsmanager.flow.menus.MenuRFInput;
 import advancedsystemsmanager.flow.menus.MenuTargetRF;
-import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.RFNodeUpdateMessage;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

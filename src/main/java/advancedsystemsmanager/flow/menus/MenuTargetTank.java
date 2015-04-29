@@ -1,16 +1,16 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,8 +34,8 @@ public class MenuTargetTank extends MenuTarget
             }
         };
 
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y, Localization.EMPTY_TANK));
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING, Localization.FILLED_TANK));
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y, Names.EMPTY_TANK));
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING, Names.FILLED_TANK));
     }
 
     public static final int RADIO_BUTTON_X = 36;
@@ -53,13 +53,13 @@ public class MenuTargetTank extends MenuTarget
             @Override
             public String getLabel()
             {
-                return useAdvancedSetting(selectedDirectionId) ? Localization.ADVANCED_MODE.toString() : Localization.SIMPLE_MODE.toString();
+                return useAdvancedSetting(selectedDirectionId) ? Names.ADVANCED_MODE : Names.SIMPLE_MODE;
             }
 
             @Override
             public String getMouseOverText()
             {
-                return useAdvancedSetting(selectedDirectionId) ? Localization.SIMPLE_MODE_LONG.toString() : Localization.ADVANCED_MODE_LONG.toString();
+                return useAdvancedSetting(selectedDirectionId) ? Names.ADVANCED_MODE_LONG : Names.SIMPLE_MODE_LONG;
             }
 
             @Override

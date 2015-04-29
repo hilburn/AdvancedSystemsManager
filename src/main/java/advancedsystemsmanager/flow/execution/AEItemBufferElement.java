@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.execution;
 
-import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.TileEntityAENode;
 import appeng.api.storage.data.IAEItemStack;

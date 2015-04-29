@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.setting.Setting;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class FluidBufferElement extends BufferElementBase<Fluid>

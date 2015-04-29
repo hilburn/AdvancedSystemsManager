@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

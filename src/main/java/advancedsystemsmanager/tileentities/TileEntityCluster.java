@@ -2,7 +2,6 @@ package advancedsystemsmanager.tileentities;
 
 
 import advancedsystemsmanager.api.ITileEntityInterface;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.ClusterRegistry;

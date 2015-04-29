@@ -2,12 +2,12 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.execution.IHiddenInventory;
 import advancedsystemsmanager.api.execution.IHiddenTank;
+import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.*;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import appeng.api.AEApi;

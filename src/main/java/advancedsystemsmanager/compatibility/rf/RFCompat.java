@@ -1,10 +1,6 @@
 package advancedsystemsmanager.compatibility.rf;
 
-import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.compatibility.CompatBase;
-import advancedsystemsmanager.flow.menus.*;
-import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.registry.ConnectionSet;
 
 public class RFCompat extends CompatBase
 {

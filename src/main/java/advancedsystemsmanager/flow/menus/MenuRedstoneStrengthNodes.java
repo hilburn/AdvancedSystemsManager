@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
-import advancedsystemsmanager.helpers.Localization;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.reference.Names;
 
 public class MenuRedstoneStrengthNodes extends MenuRedstoneStrength
 {
@@ -14,7 +14,7 @@ public class MenuRedstoneStrengthNodes extends MenuRedstoneStrength
     @Override
     public String getName()
     {
-        return Localization.REDSTONE_STRENGTH_MENU_CONDITION.toString();
+        return Names.REDSTONE_STRENGTH_MENU_CONDITION;
     }
 
     @Override

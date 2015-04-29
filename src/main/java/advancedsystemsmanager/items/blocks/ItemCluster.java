@@ -1,11 +1,12 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.helpers.Localization;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class ItemCluster extends ItemAdvanced
             }
         } else
         {
-            list.add(Localization.EMPTY_CLUSTER.toString());
+            list.add(StatCollector.translateToLocal(Names.EMPTY_CLUSTER));
         }
     }
 }

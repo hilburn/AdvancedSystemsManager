@@ -1,7 +1,6 @@
 package advancedsystemsmanager.flow.execution;
 
 
-import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

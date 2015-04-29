@@ -2,7 +2,7 @@ package advancedsystemsmanager.api.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class GuiElementList<Type extends IGuiElement<Gui>, Gui extends GuiScreen> extends ArrayList<Type> implements IGuiElement<Gui>
 {

@@ -5,7 +5,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 
 @SideOnly(Side.CLIENT)
 public class ThreadSafeHandler

@@ -1,14 +1,14 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.registry.ConnectionOption;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.util.StevesHooks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -1,16 +1,18 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.registry.ConnectionOption;
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.StevesHooks;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -74,8 +76,8 @@ public class MenuDelayed extends MenuTriggered
                 PacketHandler.sendDataToServer(dw);
             }
         };
-        buttonList.add(new RadioButton(TEXT_MARGIN_X, TEXT_BOX_Y + 20, StevesEnum.DELAY_RESTART));
-        buttonList.add(new RadioButton(TEXT_MARGIN_X * 5 + intervalSeconds.getWidth(), TEXT_BOX_Y + 20, StevesEnum.DELAY_IGNORE));
+        buttonList.add(new RadioButton(TEXT_MARGIN_X, TEXT_BOX_Y + 20, Names.DELAY_RESTART));
+        buttonList.add(new RadioButton(TEXT_MARGIN_X * 5 + intervalSeconds.getWidth(), TEXT_BOX_Y + 20, Names.DELAY_IGNORE));
         setDelay(5);
         buttonList.setSelectedOption(0);
     }
@@ -83,7 +85,7 @@ public class MenuDelayed extends MenuTriggered
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        gui.drawSplitString(StevesEnum.DELAY_INFO.toString(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X, 0.7F, 4210752);
+        gui.drawSplitString(Names.DELAY_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X, 0.7F, 4210752);
         buttonList.draw(gui, mX, mY);
         //gui.drawString(Localization.SECOND.toString(), TEXT_SECOND_X, TEXT_SECOND_Y, 0.7F, 4210752);
         super.draw(gui, mX, mY);
@@ -136,7 +138,7 @@ public class MenuDelayed extends MenuTriggered
     {
         if (getDelay() < 5 && isVisible())
         {
-            errors.add(StevesEnum.DELAY_ERROR.toString());
+            errors.add(Names.DELAY_ERROR);
         }
     }
 
@@ -159,13 +161,13 @@ public class MenuDelayed extends MenuTriggered
     @Override
     public String getName()
     {
-        return StevesEnum.DELAY_TRIGGER.toString();
+        return Names.DELAY_TRIGGER;
     }
 
     @Override
     public boolean isVisible()
     {
-        return getParent().getConnectionSet() == StevesEnum.DELAYED;
+        return getParent().getConnectionSet() == ConnectionSet.DELAYED;
     }
 
     @Override

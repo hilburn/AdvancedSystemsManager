@@ -3,7 +3,6 @@ package advancedsystemsmanager.items;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;

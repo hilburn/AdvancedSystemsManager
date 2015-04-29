@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.execution;
 
 
+import advancedsystemsmanager.flow.menus.MenuCrafting;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.flow.menus.MenuCrafting;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
