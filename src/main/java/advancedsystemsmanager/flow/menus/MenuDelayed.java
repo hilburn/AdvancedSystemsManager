@@ -32,7 +32,7 @@ public class MenuDelayed extends MenuTriggered
     public TextBoxNumber intervalTicks;
     public TextBoxNumber intervalSeconds;
     public RadioButtonList buttonList;
-    public static final EnumSet<ConnectionOption> delayed = EnumSet.of(StevesEnum.DELAYED_OUTPUT);
+    public static final EnumSet<ConnectionOption> delayed = EnumSet.of(ConnectionOption.DELAY_OUTPUT);
     public static final String NBT_RESTART = "Restart";
 
     public MenuDelayed(FlowComponent parent)

@@ -97,20 +97,39 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawString(String str, int x, int y, float mult, int color)
     {
+        drawLocalizedString(StatCollector.translateToLocal(str), x, y, mult, color);
+    }
+
+    public void drawStringFormatted(String str, int x, int y, float mult, int color, Object... args)
+    {
+        drawLocalizedString(StatCollector.translateToLocalFormatted(str, args), x, y, mult, color);
+    }
+
+    public void drawLocalizedString(String str, int x, int y, float mult, int color)
+    {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawString(StatCollector.translateToLocal(str), (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
+        fontRendererObj.drawString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
         GL11.glPopMatrix();
     }
 
     public void drawSplitString(String str, int x, int y, int w, float mult, int color)
     {
+        drawSplitStringLocalized(StatCollector.translateToLocal(str), x, y, w, mult, color);
+    }
+
+    public void drawSplitStringFormatted(String str, int x, int y, int w, float mult, int color, Object... args)
+    {
+        drawSplitStringLocalized(StatCollector.translateToLocalFormatted(str, args), x, y, w, mult, color);
+    }
+
+    public void drawSplitStringLocalized(String str, int x, int y, int w, float mult, int color)
+    {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawSplitString(StatCollector.translateToLocal(str), (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
+        fontRendererObj.drawSplitString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -137,10 +156,10 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             String newLine;
             if (line.equals(""))
             {
-                newLine = word;
+                newLine = StatCollector.translateToLocal(word);
             } else
             {
-                newLine = line + " " + word;
+                newLine = line + " " + StatCollector.translateToLocal(word);
             }
             if (getStringWidth(newLine) < width)
             {
@@ -289,7 +308,14 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawMouseOver(String str, int x, int y)
     {
-        drawMouseOver(Arrays.asList(str.split("\n")), x, y);
+        drawMouseOver(getLocalStrings(str.split("\n")), x, y);
+    }
+
+    public List<String> getLocalStrings(String[] strings)
+    {
+        ArrayList<String> results = new ArrayList<String>();
+        for (String string : strings) results.add(StatCollector.translateToLocal(string));
+        return results;
     }
 
     public void drawMouseOver(List lst, int x, int y)
@@ -460,7 +486,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawCenteredString(String str, int x, int y, float mult, int width, int color)
     {
-        drawString(StatCollector.translateToLocal(str), x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
+        str = StatCollector.translateToLocal(str);
+        drawString(str, x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
     }
 
     public void drawCursor(int x, int y, int z, int color)

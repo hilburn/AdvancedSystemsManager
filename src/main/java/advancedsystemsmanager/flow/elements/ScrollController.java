@@ -218,7 +218,7 @@ public abstract class ScrollController<T>
 
             if (textBox.getText().length() > 0 || result.size() > 0)
             {
-                gui.drawString(Names.ITEMS_FOUND + " " + result.size(), AMOUNT_TEXT_X, AMOUNT_TEXT_Y, 0.7F, 0x404040);
+                gui.drawStringFormatted(Names.ITEMS_FOUND, AMOUNT_TEXT_X, AMOUNT_TEXT_Y, 0.7F, 0x404040, result.size());
             }
         }
 

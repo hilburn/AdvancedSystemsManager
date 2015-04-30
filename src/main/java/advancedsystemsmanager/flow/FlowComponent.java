@@ -463,7 +463,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         if (!name.equals(cachedName))
         {
             cachedShortName = "";
-            for (char c : name.toCharArray())
+            for (char c : StatCollector.translateToLocal(name).toCharArray())
             {
                 if (gui.getStringWidth(cachedShortName + c) > TEXT_SPACE_SHORT)
                 {

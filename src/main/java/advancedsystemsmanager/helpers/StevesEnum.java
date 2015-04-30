@@ -38,7 +38,7 @@ public class StevesEnum
 //    public static Command RF_INPUT;
 //    public static Command RF_OUTPUT;
 //    public static Command RF_CONDITION;
-    public static ConnectionOption DELAYED_OUTPUT;// = addConnectionMethod("DELAYED_OUTPUT", DELAY_OUTPUT, ConnectionOption.ConnectionType.OUTPUT);
+    //public static ConnectionOption DELAYED_OUTPUT;// = addConnectionMethod("DELAYED_OUTPUT", DELAY_OUTPUT, ConnectionOption.ConnectionType.OUTPUT);
 //    public static final ConnectionSet DELAYED = addConnectionSet("DELAY_TRIGGER", DELAY_TRIGGER, new ConnectionOption[]{ConnectionOption.STANDARD_INPUT, DELAYED_OUTPUT});
 //
 //

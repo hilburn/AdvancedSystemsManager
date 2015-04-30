@@ -27,6 +27,7 @@ public final class Settings
         registerSetting("commandTypes", false);
         registerSetting("autoSide", true);
         registerSetting("autoBlacklist", true);
+        registerSetting("priorityMoveFirst", false);
         registerSetting("enlargeInterfaces", false);
     }
 

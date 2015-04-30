@@ -249,7 +249,7 @@ gui.system.DetectionPrecise=Precise detection
 gui.system.DetectionNbtFuzzy=NBT independent detection
 gui.system.DetectionFuzzy=Fuzzy detection
 gui.system.DetectionOreDictionary=Ore dictionary support
-gui.system.ItemsFound=Found
+gui.system.ItemsFound=Found %d
 gui.system.RedstoneEmitterSidesMenu=Sides
 gui.system.RedstoneEmitterSidesInfo=Select which block sides the redstone should be emitted at
 gui.system.TypeInventory=Inventory
@@ -374,7 +374,7 @@ gui.system.MaximumComponentError=Maximum component amount reached
 gui.system.ExitGroup=Close group
 gui.system.CopyCommand=Copy [Drop Command Here]
 gui.system.ExitGroupDrop=Move from group [Drop command here]
-gui.system.Commands=Commands
+gui.system.Commands=Commands %d
 gui.system.Preferences=User Preferences
 
 

@@ -21,6 +21,7 @@ public enum ConnectionOption
     BUD_HIGH(Names.CONNECTION_WHILE_HIGH_BLOCK, ConnectionType.OUTPUT),
     BUD_PULSE_LOW(Names.CONNECTION_ON_LOW_BLOCK_PULSE, ConnectionType.OUTPUT),
     BUD_LOW(Names.CONNECTION_WHILE_LOW_BLOCK, ConnectionType.OUTPUT),
+    DELAY_OUTPUT(Names.CONNECTION_DELAY_OUTPUT, ConnectionType.OUTPUT),
     DYNAMIC_INPUT(null, ConnectionType.INPUT),
     DYNAMIC_OUTPUT(null, ConnectionType.OUTPUT);
     public String name;
