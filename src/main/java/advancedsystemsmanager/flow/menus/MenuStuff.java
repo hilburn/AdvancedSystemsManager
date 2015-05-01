@@ -25,6 +25,42 @@ public abstract class MenuStuff<Type> extends Menu
 {
 
 
+    public static final int RADIO_BUTTON_X_LEFT = 5;
+    public static final int RADIO_BUTTON_X_RIGHT = 65;
+    public static final int RADIO_BUTTON_Y = 5;
+    public static final int ITEM_SIZE = 16;
+    public static final int ITEM_SIZE_WITH_MARGIN = 20;
+    public static final int ITEM_X = 5;
+    public static final int SETTING_SRC_X = 0;
+    public static final int SETTING_SRC_Y = 189;
+    public static final int EDIT_ITEM_X = 5;
+    public static final int EDIT_ITEM_Y = 5;
+    public static final int BACK_SRC_X = 46;
+    public static final int BACK_SRC_Y = 52;
+    public static final int BACK_SIZE_W = 9;
+    public static final int BACK_SIZE_H = 9;
+    public static final int BACK_X = 108;
+    public static final int BACK_Y = 57;
+    public static final int DELETE_SRC_X = 0;
+    public static final int DELETE_SRC_Y = 130;
+    public static final int DELETE_SIZE_W = 32;
+    public static final int DELETE_SIZE_H = 11;
+    public static final int DELETE_X = 85;
+    public static final int DELETE_Y = 3;
+    public static final int DELETE_TEXT_Y = 3;
+    public static final String NBT_RADIO_SELECTION = "FirstSelected";
+    public static final String NBT_SETTINGS = "Settings";
+    public static final String NBT_SETTING_ID = "Id";
+    public static final String NBT_SETTING_USE_SIZE = "SizeLimit";
+    public ScrollController scrollControllerSearch;
+    public ScrollController<Setting<Type>> scrollControllerSelected;
+    public List<Setting<Type>> settings;
+    public List<Setting<Type>> externalSettings;
+    public Setting selectedSetting;
+    public boolean editSetting;
+    public TextBoxNumberList numberTextBoxes;
+    public RadioButtonList radioButtons;
+    public CheckBoxList checkBoxes;
     public MenuStuff(FlowComponent parent, Class<? extends Setting> settingClass)
     {
         super(parent);
@@ -182,98 +218,21 @@ public abstract class MenuStuff<Type> extends Menu
         };
     }
 
-
-    @Override
-    public void update(float partial)
-    {
-        if (isSearching())
-        {
-            scrollControllerSearch.update(partial);
-        } else if (!isSearching() && !isEditing())
-        {
-            scrollControllerSelected.update(partial);
-        }
-    }
-
-    @Override
-    public void doScroll(int scroll)
-    {
-        if (isSearching())
-        {
-            scrollControllerSearch.doScroll(scroll);
-        } else if (!isSearching() && !isEditing())
-        {
-            scrollControllerSelected.doScroll(scroll);
-        }
-    }
-
     public void initRadioButtons()
     {
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.WHITE_LIST));
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.BLACK_LIST));
     }
 
-    public static final int RADIO_BUTTON_X_LEFT = 5;
-    public static final int RADIO_BUTTON_X_RIGHT = 65;
-    public static final int RADIO_BUTTON_Y = 5;
-
-
     public int getSettingCount()
     {
         return 30;
     }
 
-
     public boolean doAllowEdit()
     {
         return true;
     }
-
-    public boolean isListVisible()
-    {
-        return true;
-    }
-
-    public static final int ITEM_SIZE = 16;
-    public static final int ITEM_SIZE_WITH_MARGIN = 20;
-    public static final int ITEM_X = 5;
-
-
-    public static final int SETTING_SRC_X = 0;
-    public static final int SETTING_SRC_Y = 189;
-
-    public static final int EDIT_ITEM_X = 5;
-    public static final int EDIT_ITEM_Y = 5;
-
-
-    public static final int BACK_SRC_X = 46;
-    public static final int BACK_SRC_Y = 52;
-    public static final int BACK_SIZE_W = 9;
-    public static final int BACK_SIZE_H = 9;
-    public static final int BACK_X = 108;
-    public static final int BACK_Y = 57;
-
-    public static final int DELETE_SRC_X = 0;
-    public static final int DELETE_SRC_Y = 130;
-    public static final int DELETE_SIZE_W = 32;
-    public static final int DELETE_SIZE_H = 11;
-    public static final int DELETE_X = 85;
-    public static final int DELETE_Y = 3;
-    public static final int DELETE_TEXT_Y = 3;
-
-    public ScrollController scrollControllerSearch;
-    public ScrollController<Setting<Type>> scrollControllerSelected;
-    public List<Setting<Type>> settings;
-    public List<Setting<Type>> externalSettings;
-    public Setting selectedSetting;
-    public boolean editSetting;
-    public TextBoxNumberList numberTextBoxes;
-
-    public RadioButtonList radioButtons;
-    public CheckBoxList checkBoxes;
-
-    @SideOnly(Side.CLIENT)
-    public abstract void drawInfoMenuContent(GuiManager gui, int mX, int mY);
 
     @SideOnly(Side.CLIENT)
     public abstract void drawResultObject(GuiManager gui, Object obj, int x, int y);
@@ -286,6 +245,71 @@ public abstract class MenuStuff<Type> extends Menu
 
     @SideOnly(Side.CLIENT)
     public abstract List<String> getSettingObjectMouseOver(Setting setting);
+
+    public abstract void updateTextBoxes();
+
+    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
+    {
+        dw.writeBoolean(value);
+    }
+
+    public void writeServerData(DataTypeHeader header)
+    {
+        writeServerData(header, selectedSetting);
+    }
+
+    public void writeServerData(DataTypeHeader header, Setting setting)
+    {
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, header, setting);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeData(DataWriter dw, DataTypeHeader header, Setting setting)
+    {
+        dw.writeBoolean(true); //specific setting is being used
+        dw.writeData(setting.getId(), DataBitHelper.MENU_ITEM_SETTING_ID);
+        dw.writeData(header.id, DataBitHelper.MENU_ITEM_TYPE_HEADER);
+
+        switch (header)
+        {
+            case CLEAR:
+                break;
+            case USE_AMOUNT:
+                if (setting.isAmountSpecific())
+                {
+                    dw.writeBoolean(setting.isLimitedByAmount());
+                }
+                break;
+            case AMOUNT:
+                if (setting.isAmountSpecific())
+                {
+                    dw.writeData(setting.getAmount(), getAmountBitLength());
+                }
+                break;
+            default:
+                writeSpecificHeaderData(dw, header, setting);
+
+        }
+
+        //if the client send data to the server, do the update right away on that client
+        if (getParent().getManager().getWorldObj().isRemote)
+        {
+            onSettingContentChange();
+        }
+    }
+
+    public abstract DataBitHelper getAmountBitLength();
+
+    public abstract void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting);
+
+    public void onSettingContentChange()
+    {
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public abstract List updateSearch(String search, boolean showAll);
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -324,6 +348,14 @@ public abstract class MenuStuff<Type> extends Menu
         }
     }
 
+    public boolean isListVisible()
+    {
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public abstract void drawInfoMenuContent(GuiManager gui, int mX, int mY);
+
     public boolean inBackBounds(int mX, int mY)
     {
         return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
@@ -338,7 +370,6 @@ public abstract class MenuStuff<Type> extends Menu
     {
         return isSearching() ? scrollControllerSearch : scrollControllerSelected;
     }
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -364,7 +395,6 @@ public abstract class MenuStuff<Type> extends Menu
             gui.drawMouseOver(isEditing() ? Names.GO_BACK : Names.CANCEL, mX, mY);
         }
     }
-
 
     @Override
     public void onClick(int mX, int mY, int button)
@@ -399,19 +429,6 @@ public abstract class MenuStuff<Type> extends Menu
             selectedSetting = null;
             getScrollingList().updateScrolling();
         }
-    }
-
-    public abstract void updateTextBoxes();
-
-
-    public boolean isEditing()
-    {
-        return selectedSetting != null && editSetting;
-    }
-
-    public boolean isSearching()
-    {
-        return selectedSetting != null && !editSetting;
     }
 
     @Override
@@ -560,188 +577,12 @@ public abstract class MenuStuff<Type> extends Menu
         }
     }
 
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        boolean useSetting = dr.readBoolean();
-
-        if (useSetting)
-        {
-            int settingId = dr.readData(DataBitHelper.MENU_ITEM_SETTING_ID);
-            Setting setting = settings.get(settingId);
-            int headerId = dr.readData(DataBitHelper.MENU_ITEM_TYPE_HEADER);
-            DataTypeHeader header = getHeaderFromId(headerId);
-
-            switch (header)
-            {
-                case CLEAR:
-                    setting.clear();
-                    selectedSetting = null;
-                    break;
-                case USE_AMOUNT:
-                    if (setting.isAmountSpecific())
-                    {
-                        setting.setLimitedByAmount(dr.readBoolean());
-                        if (!setting.isLimitedByAmount() && setting.isValid())
-                        {
-                            setting.setDefaultAmount();
-                        }
-                    }
-                    break;
-                case AMOUNT:
-                    if (setting.isAmountSpecific() && setting.isValid())
-                    {
-                        setting.setAmount(dr.readData(getAmountBitLength()));
-                        if (isEditing())
-                        {
-                            updateTextBoxes();
-                        }
-                    }
-                    break;
-                default:
-                    readSpecificHeaderData(dr, header, setting);
-
-            }
-
-            onSettingContentChange();
-        } else
-        {
-            readNonSettingData(dr);
-        }
-    }
-
-    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
-    {
-        dw.writeBoolean(value);
-    }
-
-    public void readNonSettingData(DataReader dr)
-    {
-        setFirstRadioButtonSelected(dr.readBoolean());
-    }
-
     public void writeClientData(ContainerManager container, DataTypeHeader header, Setting setting)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, header, setting);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
-
-    public void writeServerData(DataTypeHeader header, Setting setting)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, header, setting);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeServerData(DataTypeHeader header)
-    {
-        writeServerData(header, selectedSetting);
-    }
-
-    public abstract DataBitHelper getAmountBitLength();
-
-    public void writeData(DataWriter dw, DataTypeHeader header, Setting setting)
-    {
-        dw.writeBoolean(true); //specific setting is being used
-        dw.writeData(setting.getId(), DataBitHelper.MENU_ITEM_SETTING_ID);
-        dw.writeData(header.id, DataBitHelper.MENU_ITEM_TYPE_HEADER);
-
-        switch (header)
-        {
-            case CLEAR:
-                break;
-            case USE_AMOUNT:
-                if (setting.isAmountSpecific())
-                {
-                    dw.writeBoolean(setting.isLimitedByAmount());
-                }
-                break;
-            case AMOUNT:
-                if (setting.isAmountSpecific())
-                {
-                    dw.writeData(setting.getAmount(), getAmountBitLength());
-                }
-                break;
-            default:
-                writeSpecificHeaderData(dw, header, setting);
-
-        }
-
-        //if the client send data to the server, do the update right away on that client
-        if (getParent().getManager().getWorldObj().isRemote)
-        {
-            onSettingContentChange();
-        }
-    }
-
-    public abstract void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting);
-
-    public abstract void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting);
-
-    public List<Setting<Type>> getSettings()
-    {
-        return externalSettings;
-    }
-
-    public void setBlackList()
-    {
-        setFirstRadioButtonSelected(false);
-    }
-
-    public enum DataTypeHeader
-    {
-        CLEAR(0),
-        SET_ITEM(1),
-        USE_AMOUNT(2),
-        USE_FUZZY(3),
-        AMOUNT(4),
-        META(5);
-
-        public int id;
-
-        DataTypeHeader(int header)
-        {
-            this.id = header;
-        }
-    }
-
-    public DataTypeHeader getHeaderFromId(int id)
-    {
-        for (DataTypeHeader header : DataTypeHeader.values())
-        {
-            if (id == header.id)
-            {
-                return header;
-            }
-        }
-        return null;
-    }
-
-
-    @SideOnly(Side.CLIENT)
-    public abstract List updateSearch(String search, boolean showAll);
-
-
-    public boolean isFirstRadioButtonSelected()
-    {
-        return radioButtons.getSelectedOption() == 0;
-    }
-
-    public void setFirstRadioButtonSelected(boolean value)
-    {
-        radioButtons.setSelectedOption(value ? 0 : 1);
-    }
-
-    public boolean useWhiteList()
-    {
-        return isFirstRadioButtonSelected();
-    }
-
-    public static final String NBT_RADIO_SELECTION = "FirstSelected";
-    public static final String NBT_SETTINGS = "Settings";
-    public static final String NBT_SETTING_ID = "Id";
-    public static final String NBT_SETTING_USE_SIZE = "SizeLimit";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -803,9 +644,149 @@ public abstract class MenuStuff<Type> extends Menu
         }
     }
 
-    public void onSettingContentChange()
+    @Override
+    public void update(float partial)
     {
+        if (isSearching())
+        {
+            scrollControllerSearch.update(partial);
+        } else if (!isSearching() && !isEditing())
+        {
+            scrollControllerSelected.update(partial);
+        }
+    }
 
+    @Override
+    public void doScroll(int scroll)
+    {
+        if (isSearching())
+        {
+            scrollControllerSearch.doScroll(scroll);
+        } else if (!isSearching() && !isEditing())
+        {
+            scrollControllerSelected.doScroll(scroll);
+        }
+    }
+
+    public boolean isEditing()
+    {
+        return selectedSetting != null && editSetting;
+    }
+
+    public boolean isSearching()
+    {
+        return selectedSetting != null && !editSetting;
+    }
+
+    public boolean useWhiteList()
+    {
+        return isFirstRadioButtonSelected();
+    }
+
+    public boolean isFirstRadioButtonSelected()
+    {
+        return radioButtons.getSelectedOption() == 0;
+    }
+
+    public void setFirstRadioButtonSelected(boolean value)
+    {
+        radioButtons.setSelectedOption(value ? 0 : 1);
+    }
+
+    @Override
+    public void readNetworkComponent(DataReader dr)
+    {
+        boolean useSetting = dr.readBoolean();
+
+        if (useSetting)
+        {
+            int settingId = dr.readData(DataBitHelper.MENU_ITEM_SETTING_ID);
+            Setting setting = settings.get(settingId);
+            int headerId = dr.readData(DataBitHelper.MENU_ITEM_TYPE_HEADER);
+            DataTypeHeader header = getHeaderFromId(headerId);
+
+            switch (header)
+            {
+                case CLEAR:
+                    setting.clear();
+                    selectedSetting = null;
+                    break;
+                case USE_AMOUNT:
+                    if (setting.isAmountSpecific())
+                    {
+                        setting.setLimitedByAmount(dr.readBoolean());
+                        if (!setting.isLimitedByAmount() && setting.isValid())
+                        {
+                            setting.setDefaultAmount();
+                        }
+                    }
+                    break;
+                case AMOUNT:
+                    if (setting.isAmountSpecific() && setting.isValid())
+                    {
+                        setting.setAmount(dr.readData(getAmountBitLength()));
+                        if (isEditing())
+                        {
+                            updateTextBoxes();
+                        }
+                    }
+                    break;
+                default:
+                    readSpecificHeaderData(dr, header, setting);
+
+            }
+
+            onSettingContentChange();
+        } else
+        {
+            readNonSettingData(dr);
+        }
+    }
+
+    public void readNonSettingData(DataReader dr)
+    {
+        setFirstRadioButtonSelected(dr.readBoolean());
+    }
+
+    public abstract void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting);
+
+    public DataTypeHeader getHeaderFromId(int id)
+    {
+        for (DataTypeHeader header : DataTypeHeader.values())
+        {
+            if (id == header.id)
+            {
+                return header;
+            }
+        }
+        return null;
+    }
+
+    public List<Setting<Type>> getSettings()
+    {
+        return externalSettings;
+    }
+
+    public void setBlackList()
+    {
+        setFirstRadioButtonSelected(false);
+    }
+
+    public enum DataTypeHeader
+    {
+        CLEAR(0),
+        SET_ITEM(1),
+        USE_AMOUNT(2),
+        USE_FUZZY(3),
+        AMOUNT(4),
+        META(5);
+
+        public int id;
+
+        DataTypeHeader(int header)
+        {
+            this.id = header;
+        }
     }
 }
 

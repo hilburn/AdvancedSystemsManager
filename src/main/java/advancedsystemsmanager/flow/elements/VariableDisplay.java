@@ -8,22 +8,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class VariableDisplay
 {
 
-    public String name;
-    public int x;
-    public int y;
-
     public static final int VARIABLE_X = 15;
     public static final int VARIABLE_SIZE = 14;
-
     public static final int ARROW_SRC_X = 18;
     public static final int ARROW_SRC_Y = 20;
     public static final int ARROW_WIDTH = 6;
     public static final int ARROW_HEIGHT = 10;
     public static final int ARROW_X_RIGHT = 38;
     public static final int ARROW_Y = 3;
-
     public static final int TEXT_X = -40;
     public static final int TEXT_Y = 5;
+    public String name;
+    public int x;
+    public int y;
 
     public VariableDisplay(String name, int x, int y)
     {
@@ -53,6 +50,10 @@ public abstract class VariableDisplay
             gui.drawTexture(posX, posY, ARROW_SRC_X + srcXArrow * ARROW_WIDTH, ARROW_SRC_Y + srcYArrow * ARROW_HEIGHT, ARROW_WIDTH, ARROW_HEIGHT);
         }
     }
+
+    public abstract int getValue();
+
+    public abstract void setValue(int val);
 
     @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager gui, int mX, int mY)
@@ -88,11 +89,6 @@ public abstract class VariableDisplay
             }
         }
     }
-
-
-    public abstract int getValue();
-
-    public abstract void setValue(int val);
 
     public abstract void onUpdate();
 }

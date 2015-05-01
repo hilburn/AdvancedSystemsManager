@@ -33,6 +33,37 @@ public class ItemLabeler extends ItemBase
         super(Names.LABELER);
     }
 
+    public static List<String> getSavedStrings(ItemStack stack)
+    {
+        List<String> result = new ArrayList<String>();
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if (tagCompound == null) return result;
+        NBTTagList tagList = tagCompound.getTagList("saved", 8);
+        for (int i = 0; i < tagList.tagCount(); i++)
+        {
+            result.add(tagList.getStringTagAt(i));
+        }
+        return result;
+    }
+
+    public static void setLabel(ItemStack stack, String string)
+    {
+        stack.getTagCompound().setString("Label", string);
+    }
+
+    public static void saveStrings(ItemStack stack, List<String> strings)
+    {
+        if (!stack.hasTagCompound())
+        {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        NBTTagList tagList = new NBTTagList();
+        for (String string : strings)
+            tagList.appendTag(new NBTTagString(string));
+        tagCompound.setTag("saved", tagList);
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -41,6 +72,23 @@ public class ItemLabeler extends ItemBase
             player.openGui(AdvancedSystemsManager.INSTANCE, 0, world, player.chunkCoordX, player.chunkCoordY, player.chunkCoordZ);
         }
         return super.onItemRightClick(stack, world, player);
+    }
+
+    @Override
+    @SuppressWarnings(value = "unchecked")
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extra)
+    {
+        super.addInformation(stack, player, list, extra);
+        String label = getLabel(stack);
+        if (label.isEmpty()) list.add("Clear Label");
+        else list.add("Label: " + label);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings(value = "unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
+    {
+        list.add(ItemRegistry.defaultLabeler);
     }
 
     @Override
@@ -74,56 +122,8 @@ public class ItemLabeler extends ItemBase
         return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof TileEntityClusterElement;
     }
 
-    public static List<String> getSavedStrings(ItemStack stack)
-    {
-        List<String> result = new ArrayList<String>();
-        NBTTagCompound tagCompound = stack.getTagCompound();
-        if (tagCompound == null) return result;
-        NBTTagList tagList = tagCompound.getTagList("saved", 8);
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            result.add(tagList.getStringTagAt(i));
-        }
-        return result;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SuppressWarnings(value = "unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List list)
-    {
-        list.add(ItemRegistry.defaultLabeler);
-    }
-
-    public static void setLabel(ItemStack stack, String string)
-    {
-        stack.getTagCompound().setString("Label", string);
-    }
-
-    public static void saveStrings(ItemStack stack, List<String> strings)
-    {
-        if (!stack.hasTagCompound())
-        {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-        NBTTagCompound tagCompound = stack.getTagCompound();
-        NBTTagList tagList = new NBTTagList();
-        for (String string : strings)
-            tagList.appendTag(new NBTTagString(string));
-        tagCompound.setTag("saved", tagList);
-    }
-
     public static String getLabel(ItemStack stack)
     {
         return stack.hasTagCompound() ? stack.getTagCompound().getString("Label") : "";
-    }
-
-    @Override
-    @SuppressWarnings(value = "unchecked")
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean extra)
-    {
-        super.addInformation(stack, player, list, extra);
-        String label = getLabel(stack);
-        if (label.isEmpty()) list.add("Clear Label");
-        else list.add("Label: " + label);
     }
 }

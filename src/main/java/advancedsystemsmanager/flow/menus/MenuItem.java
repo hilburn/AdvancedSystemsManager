@@ -41,20 +41,9 @@ public class MenuItem extends MenuStuff<ItemStack>
     public TextBoxNumber damageValueTextBox;
     public TextBoxNumber amountTextBox;
 
-    public MenuItem(FlowComponent parent, boolean whitelist)
-    {
-        this(parent, ItemSetting.class, whitelist);
-    }
-
     public MenuItem(FlowComponent parent, Class<? extends Setting> clazz)
     {
         this(parent, clazz, true);
-    }
-
-    public MenuItem(FlowComponent parent)
-    {
-        this(parent, true);
-        //this(parent, !Settings.isAutoBlacklist());
     }
 
     public MenuItem(FlowComponent parent, Class<? extends Setting> clazz, boolean whitelist)
@@ -121,6 +110,57 @@ public class MenuItem extends MenuStuff<ItemStack>
         return (ItemSetting)selectedSetting;
     }
 
+    public MenuItem(FlowComponent parent)
+    {
+        this(parent, true);
+        //this(parent, !Settings.isAutoBlacklist());
+    }
+
+    public MenuItem(FlowComponent parent, boolean whitelist)
+    {
+        this(parent, ItemSetting.class, whitelist);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static List<String> getToolTip(ItemStack itemStack)
+    {
+        try
+        {
+            return itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
+        } catch (Exception ex)
+        {
+            if (itemStack.getItemDamage() == 0)
+            {
+                return new ArrayList<String>();
+            } else
+            {
+                ItemStack newItem = itemStack.copy();
+                newItem.setItemDamage(0);
+                return getToolTip(newItem);
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static String getDisplayName(ItemStack itemStack)
+    {
+        try
+        {
+            return itemStack.getDisplayName();
+        } catch (Exception ex)
+        {
+            if (itemStack.getItemDamage() == 0)
+            {
+                return "";
+            } else
+            {
+                ItemStack newItem = itemStack.copy();
+                newItem.setItemDamage(0);
+                return getDisplayName(newItem);
+            }
+        }
+    }
+
     @Override
     public String getName()
     {
@@ -175,6 +215,42 @@ public class MenuItem extends MenuStuff<ItemStack>
     public List<String> getSettingObjectMouseOver(Setting setting)
     {
         return getResultObjectMouseOver(((ItemSetting)setting).getItem());
+    }
+
+    @Override
+    public void onClick(int mX, int mY, int button)
+    {
+        super.onClick(mX, mY, button);
+
+        if (isEditing())
+        {
+            for (int i = -1; i <= 1; i += 2)
+            {
+                int x = i == 1 ? ARROW_X_RIGHT : ARROW_X_LEFT;
+                int y = ARROW_Y;
+
+
+                if (CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY))
+                {
+                    int id = getSelectedSetting().getFuzzyMode().ordinal();
+                    id += i;
+                    if (id < 0)
+                    {
+                        id = FuzzyMode.values().length - 1;
+                    } else if (id == FuzzyMode.values().length)
+                    {
+                        id = 0;
+                    }
+                    getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
+                    writeServerData(DataTypeHeader.USE_FUZZY);
+                    break;
+                }
+            }
+
+            /*if (CollisionHelper.inBounds(EDIT_ITEM_X, EDIT_ITEM_Y, ITEM_SIZE, ITEM_SIZE, mX, mY) && getSelectedSetting().getItem().hasTagCompound()) {
+                getParent().getManager().specialRenderer = new NBTRenderer(getSelectedSetting().getItem().getTagCompound());
+            }*/
+        }
     }
 
     @Override
@@ -282,81 +358,5 @@ public class MenuItem extends MenuStuff<ItemStack>
         Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll));
         thread.start();
         return scrollControllerSearch.getResult();
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static List<String> getToolTip(ItemStack itemStack)
-    {
-        try
-        {
-            return itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
-        } catch (Exception ex)
-        {
-            if (itemStack.getItemDamage() == 0)
-            {
-                return new ArrayList<String>();
-            } else
-            {
-                ItemStack newItem = itemStack.copy();
-                newItem.setItemDamage(0);
-                return getToolTip(newItem);
-            }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static String getDisplayName(ItemStack itemStack)
-    {
-        try
-        {
-            return itemStack.getDisplayName();
-        } catch (Exception ex)
-        {
-            if (itemStack.getItemDamage() == 0)
-            {
-                return "";
-            } else
-            {
-                ItemStack newItem = itemStack.copy();
-                newItem.setItemDamage(0);
-                return getDisplayName(newItem);
-            }
-        }
-    }
-
-    @Override
-    public void onClick(int mX, int mY, int button)
-    {
-        super.onClick(mX, mY, button);
-
-        if (isEditing())
-        {
-            for (int i = -1; i <= 1; i += 2)
-            {
-                int x = i == 1 ? ARROW_X_RIGHT : ARROW_X_LEFT;
-                int y = ARROW_Y;
-
-
-                if (CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY))
-                {
-                    int id = getSelectedSetting().getFuzzyMode().ordinal();
-                    id += i;
-                    if (id < 0)
-                    {
-                        id = FuzzyMode.values().length - 1;
-                    } else if (id == FuzzyMode.values().length)
-                    {
-                        id = 0;
-                    }
-                    getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
-                    writeServerData(DataTypeHeader.USE_FUZZY);
-                    break;
-                }
-            }
-
-            /*if (CollisionHelper.inBounds(EDIT_ITEM_X, EDIT_ITEM_Y, ITEM_SIZE, ITEM_SIZE, mX, mY) && getSelectedSetting().getItem().hasTagCompound()) {
-                getParent().getManager().specialRenderer = new NBTRenderer(getSelectedSetting().getItem().getTagCompound());
-            }*/
-        }
     }
 }

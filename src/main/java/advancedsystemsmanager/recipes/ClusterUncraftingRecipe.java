@@ -45,6 +45,14 @@ public class ClusterUncraftingRecipe implements IRecipe
         return hasCluster;
     }
 
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting crafting)
+    {
+        ItemStack result = cluster.copy();
+        result.setItemDamage(getCluster(crafting).getItemDamage());
+        return result;
+    }
+
     public ItemStack getCluster(IInventory crafting)
     {
         for (int i = 0; i < crafting.getSizeInventory(); i++)
@@ -54,14 +62,6 @@ public class ClusterUncraftingRecipe implements IRecipe
             if (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)) return stack;
         }
         return null;
-    }
-
-    @Override
-    public ItemStack getCraftingResult(InventoryCrafting crafting)
-    {
-        ItemStack result = cluster.copy();
-        result.setItemDamage(getCluster(crafting).getItemDamage());
-        return result;
     }
 
     @Override

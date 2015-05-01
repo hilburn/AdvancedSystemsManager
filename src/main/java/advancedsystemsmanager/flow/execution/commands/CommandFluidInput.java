@@ -58,16 +58,17 @@ public class CommandFluidInput extends CommandInput<Fluid>
             if (entity instanceof IInternalTank)
             {
                 subElements.addAll(((IInternalTank)entity).getSubElements(id, settings));
-            }else
+            } else
             {
                 IFluidHandler tank = (IFluidHandler)entity;
-                Map<ForgeDirection,FluidTankInfo> tankInfoMap = new HashMap<ForgeDirection, FluidTankInfo>();
+                Map<ForgeDirection, FluidTankInfo> tankInfoMap = new HashMap<ForgeDirection, FluidTankInfo>();
                 for (int i = 0; i < 6; i++)
                 {
                     if (target.activatedDirections[i])
                     {
                         FluidTankInfo[] tankInfos = tank.getTankInfo(ForgeDirection.getOrientation(i));
-                        if (tankInfos == null || tankInfos[0] == null || tankInfos[0].fluid == null || tankInfos[0].fluid.amount == 0) continue;
+                        if (tankInfos == null || tankInfos[0] == null || tankInfos[0].fluid == null || tankInfos[0].fluid.amount == 0)
+                            continue;
                         boolean safeToAdd = true;
                         for (FluidTankInfo tankInfo : tankInfoMap.values())
                         {

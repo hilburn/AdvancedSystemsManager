@@ -26,9 +26,12 @@ public class MenuCamouflageSides extends MenuRedstoneSides
     }
 
     @Override
-    public boolean isVisible()
+    public void addErrors(List<String> errors)
     {
-        return true;
+        if (isVisible() && selection == 0)
+        {
+            errors.add(Names.NO_SIDES_ERROR);
+        }
     }
 
     @Override
@@ -37,14 +40,10 @@ public class MenuCamouflageSides extends MenuRedstoneSides
         return Names.CAMOUFLAGE_SIDES_NAME;
     }
 
-
     @Override
-    public void addErrors(List<String> errors)
+    public boolean isVisible()
     {
-        if (isVisible() && selection == 0)
-        {
-            errors.add(Names.NO_SIDES_ERROR);
-        }
+        return true;
     }
 
 

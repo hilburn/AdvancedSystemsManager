@@ -41,6 +41,14 @@ public class Point
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = x;
+        result = 31 * result + y;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -52,14 +60,6 @@ public class Point
         if (y != point.y) return false;
 
         return true;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = x;
-        result = 31 * result + y;
-        return result;
     }
 
     public void adjustToGrid()

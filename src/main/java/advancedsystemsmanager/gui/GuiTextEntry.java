@@ -9,11 +9,11 @@ public class GuiTextEntry extends Gui
 {
     public String string;
     public int height, width;
-    private FontRenderer fontRenderer;
     public int x, y;
-    boolean isSelected;
     public boolean isEditing;
     public boolean isVisible;
+    boolean isSelected;
+    private FontRenderer fontRenderer;
 
     public GuiTextEntry(String string, int height, int width)
     {
@@ -24,11 +24,6 @@ public class GuiTextEntry extends Gui
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
     }
 
-    private boolean isVisible()
-    {
-        return isVisible;
-    }
-
     public void draw()
     {
         if (isVisible())
@@ -36,6 +31,32 @@ public class GuiTextEntry extends Gui
             drawBackground();
             drawText();
         }
+    }
+
+    private boolean isVisible()
+    {
+        return isVisible;
+    }
+
+    private void drawBackground()
+    {
+        drawRect(this.x, this.y, this.x + width, this.y + height, 0xFF787878);
+        drawRect(this.x + 1, this.y + 1, this.x + width - 1, this.y + height - 1, isSelected ? 0xffb5b4b4 : 0xff9c9c9c);
+    }
+
+    public void drawText()
+    {
+        fontRenderer.drawString(getText(), this.x + 2, this.y + height / 2 - 4, isEditing ? 0x207020 : 0x000000);
+    }
+
+    public String getText()
+    {
+        return string;
+    }
+
+    public void setText(String text)
+    {
+        this.string = text;
     }
 
     public void setY(int y)
@@ -64,26 +85,5 @@ public class GuiTextEntry extends Gui
     public boolean pointIntersects(int x, int y)
     {
         return !(x < this.x || x > this.x + width || y < this.y || y > this.y + height);
-    }
-
-    private void drawBackground()
-    {
-        drawRect(this.x, this.y, this.x + width, this.y + height, 0xFF787878);
-        drawRect(this.x + 1, this.y + 1, this.x + width - 1, this.y + height - 1, isSelected ? 0xffb5b4b4 : 0xff9c9c9c);
-    }
-
-    public String getText()
-    {
-        return string;
-    }
-
-    public void drawText()
-    {
-        fontRenderer.drawString(getText(), this.x + 2, this.y + height / 2 - 4, isEditing ? 0x207020 : 0x000000);
-    }
-
-    public void setText(String text)
-    {
-        this.string = text;
     }
 }

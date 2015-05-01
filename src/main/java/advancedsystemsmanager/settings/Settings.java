@@ -31,6 +31,10 @@ public final class Settings
         registerSetting("enlargeInterfaces", false);
     }
 
+    private Settings()
+    {
+    }
+
     public static void registerSetting(String name, boolean value)
     {
         if (!settingsRegistry.containsKey(name)) settingsRegistry.put(name, value);
@@ -40,6 +44,21 @@ public final class Settings
     {
         settingsRegistry.put(name, value);
         save();
+    }
+
+    private static void save()
+    {
+        DataWriter dw = FileHelper.getWriter(NAME);
+
+        if (dw != null)
+        {
+            for (Map.Entry<String, Boolean> entry : settingsRegistry.entrySet())
+            {
+                dw.writeBoolean(entry.getValue());
+            }
+
+            FileHelper.close(dw);
+        }
     }
 
     public static boolean getSetting(String name)
@@ -61,7 +80,7 @@ public final class Settings
         {
             try
             {
-                for (Map.Entry<String, Boolean>  entry : settingsRegistry.entrySet())
+                for (Map.Entry<String, Boolean> entry : settingsRegistry.entrySet())
                 {
                     entry.setValue(dr.readBoolean());
                 }
@@ -81,21 +100,6 @@ public final class Settings
     private static void loadDefault()
     {
         settingsRegistry = new LinkedHashMap<String, Boolean>(Config.managerSettings);
-    }
-
-    private static void save()
-    {
-        DataWriter dw = FileHelper.getWriter(NAME);
-
-        if (dw != null)
-        {
-            for (Map.Entry<String, Boolean>  entry : settingsRegistry.entrySet())
-            {
-                dw.writeBoolean(entry.getValue());
-            }
-
-            FileHelper.close(dw);
-        }
     }
 
     public static boolean isAutoCloseGroup()
@@ -167,9 +171,5 @@ public final class Settings
             }
             manager.getWorldObj().setBlockMetadataWithNotify(manager.xCoord, manager.yCoord, manager.zCoord, meta, 3);
         }
-    }
-
-    private Settings()
-    {
     }
 }

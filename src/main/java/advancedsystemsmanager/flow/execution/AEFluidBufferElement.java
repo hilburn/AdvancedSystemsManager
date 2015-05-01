@@ -45,12 +45,6 @@ public class AEFluidBufferElement extends StackTankHolder
     }
 
     @Override
-    public int getSizeLeft()
-    {
-        return (int)Math.min(this.fluid.getStackSize(), this.sizeLeft);
-    }
-
-    @Override
     public StackTankHolder getSplitElement(int elementAmount, int id, boolean fair)
     {
         AEFluidBufferElement element = new AEFluidBufferElement(this.fluid, this.node);
@@ -66,5 +60,11 @@ public class AEFluidBufferElement extends StackTankHolder
         }
         element.sizeLeft = amount;
         return element;
+    }
+
+    @Override
+    public int getSizeLeft()
+    {
+        return (int)Math.min(this.fluid.getStackSize(), this.sizeLeft);
     }
 }

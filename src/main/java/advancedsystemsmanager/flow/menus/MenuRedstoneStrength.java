@@ -22,6 +22,25 @@ import java.util.List;
 
 public class MenuRedstoneStrength extends Menu
 {
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 50;
+    public static final int TEXT_BOX_X_LEFT = 10;
+    public static final int TEXT_BOX_X_RIGHT = 77;
+    public static final int TEXT_BOX_Y = 30;
+    public static final int TEXT_BOX_TEXT_X = 46;
+    public static final int TEXT_BOX_TEXT_Y = 33;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
+    public static final String NBT_LOW = "LowRange";
+    public static final String NBT_HIGH = "HighRange";
+    public static final String NBT_INVERTED = "Inverted";
+    public CheckBoxList checkBoxes;
+    public TextBoxNumberList textBoxes;
+    public boolean inverted;
+    public TextBoxNumber lowTextBox;
+    public TextBoxNumber highTextBox;
+
     public MenuRedstoneStrength(FlowComponent parent)
     {
         super(parent);
@@ -84,25 +103,28 @@ public class MenuRedstoneStrength extends Menu
         highTextBox.setNumber(15);
     }
 
-    public CheckBoxList checkBoxes;
-    public TextBoxNumberList textBoxes;
-    public boolean inverted;
-    public TextBoxNumber lowTextBox;
-    public TextBoxNumber highTextBox;
+    public void sendServerData(int id)
+    {
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, id);
+        PacketHandler.sendDataToServer(dw);
+    }
 
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 50;
-
-    public static final int TEXT_BOX_X_LEFT = 10;
-    public static final int TEXT_BOX_X_RIGHT = 77;
-    public static final int TEXT_BOX_Y = 30;
-
-    public static final int TEXT_BOX_TEXT_X = 46;
-    public static final int TEXT_BOX_TEXT_Y = 33;
-
-    public static final int MENU_WIDTH = 120;
-    public static final int TEXT_MARGIN_X = 5;
-    public static final int TEXT_Y = 5;
+    public void writeData(DataWriter dw, int id)
+    {
+        boolean isTextBox = id != 2;
+        dw.writeBoolean(isTextBox);
+        if (isTextBox)
+        {
+            boolean isHigh = id == 1;
+            dw.writeBoolean(isHigh);
+            TextBoxNumber textBox = isHigh ? highTextBox : lowTextBox;
+            dw.writeData(textBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
+        } else
+        {
+            dw.writeBoolean(inverted);
+        }
+    }
 
     @Override
     public String getName()
@@ -135,13 +157,6 @@ public class MenuRedstoneStrength extends Menu
         textBoxes.onClick(mX, mY, button);
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        return textBoxes.onKeyStroke(gui, c, k);
-    }
-
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
@@ -152,6 +167,13 @@ public class MenuRedstoneStrength extends Menu
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return textBoxes.onKeyStroke(gui, c, k);
     }
 
     @Override
@@ -207,39 +229,12 @@ public class MenuRedstoneStrength extends Menu
         }
     }
 
-    public void sendServerData(int id)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, id);
-        PacketHandler.sendDataToServer(dw);
-    }
-
     public void sendClientData(ContainerManager container, int id)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
-
-    public void writeData(DataWriter dw, int id)
-    {
-        boolean isTextBox = id != 2;
-        dw.writeBoolean(isTextBox);
-        if (isTextBox)
-        {
-            boolean isHigh = id == 1;
-            dw.writeBoolean(isHigh);
-            TextBoxNumber textBox = isHigh ? highTextBox : lowTextBox;
-            dw.writeData(textBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
-        } else
-        {
-            dw.writeBoolean(inverted);
-        }
-    }
-
-    public static final String NBT_LOW = "LowRange";
-    public static final String NBT_HIGH = "HighRange";
-    public static final String NBT_INVERTED = "Inverted";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -258,9 +253,31 @@ public class MenuRedstoneStrength extends Menu
     }
 
     @Override
+    public void addErrors(List<String> errors)
+    {
+        if (getLow() > getHigh())
+        {
+            errors.add(Names.INVALID_REDSTONE_RANGE_ERROR);
+        } else if (getLow() == 0 && getHigh() == 15)
+        {
+            errors.add(Names.REDUNDANT_REDSTONE_RANGE_ERROR);
+        }
+    }
+
+    @Override
     public boolean isVisible()
     {
         return getParent().getConnectionSet() == ConnectionSet.REDSTONE;
+    }
+
+    public int getLow()
+    {
+        return lowTextBox.getNumber();
+    }
+
+    public int getHigh()
+    {
+        return highTextBox.getNumber();
     }
 
     @Override
@@ -276,31 +293,8 @@ public class MenuRedstoneStrength extends Menu
         }
     }
 
-
     public boolean isInverted()
     {
         return inverted;
-    }
-
-    public int getLow()
-    {
-        return lowTextBox.getNumber();
-    }
-
-    public int getHigh()
-    {
-        return highTextBox.getNumber();
-    }
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        if (getLow() > getHigh())
-        {
-            errors.add(Names.INVALID_REDSTONE_RANGE_ERROR);
-        } else if (getLow() == 0 && getHigh() == 15)
-        {
-            errors.add(Names.REDUNDANT_REDSTONE_RANGE_ERROR);
-        }
     }
 }

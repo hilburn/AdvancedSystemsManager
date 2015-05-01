@@ -55,6 +55,17 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.EXIT_GROUP, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 3)
         {
             @Override
+            public boolean activateOnRelease()
+            {
+                for (FlowComponent item : manager.getFlowItems())
+                {
+                    if (item.isBeingMoved())
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }            @Override
             public void onClick(DataReader dr)
             {
                 int id = dr.readComponentId();
@@ -67,6 +78,17 @@ public class ManagerButtonRegistry
             }
 
             @Override
+            public String getMouseOver()
+            {
+                for (FlowComponent item : manager.getFlowItems())
+                {
+                    if (item.isBeingMoved())
+                    {
+                        return Names.EXIT_GROUP_DROP;
+                    }
+                }
+                return super.getMouseOver();
+            }            @Override
             public boolean onClick(DataWriter dw)
             {
                 for (FlowComponent item : manager.getFlowItems())
@@ -93,31 +115,9 @@ public class ManagerButtonRegistry
                 return manager.selectedGroup != null;
             }
 
-            @Override
-            public boolean activateOnRelease()
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
 
-            @Override
-            public String getMouseOver()
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        return Names.EXIT_GROUP_DROP;
-                    }
-                }
-                return super.getMouseOver();
-            }
+
+
         });
     }
 

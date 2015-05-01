@@ -21,6 +21,16 @@ import java.util.List;
 
 public class MenuLiquid extends MenuStuff<Fluid>
 {
+    public TextBoxNumber amountTextBoxBuckets;
+    public TextBoxNumber amountTextBoxMilli;
+
+
+    public MenuLiquid(FlowComponent parent)
+    {
+        this(parent, true);
+        //this(parent, !Settings.isAutoBlacklist());
+    }
+
     public MenuLiquid(FlowComponent parent, boolean whitelist)
     {
         super(parent, LiquidSetting.class);
@@ -57,23 +67,17 @@ public class MenuLiquid extends MenuStuff<Fluid>
         setFirstRadioButtonSelected(whitelist);
     }
 
-    public MenuLiquid(FlowComponent parent)
-    {
-        this(parent, true);
-        //this(parent, !Settings.isAutoBlacklist());
-    }
-
-
     public void sendAmountData()
     {
         selectedSetting.setAmount(amountTextBoxBuckets.getNumber() * 1000 + amountTextBoxMilli.getNumber());
         writeServerData(DataTypeHeader.AMOUNT);
     }
 
-    public TextBoxNumber amountTextBoxBuckets;
-    public TextBoxNumber amountTextBoxMilli;
-
-    @SideOnly(Side.CLIENT)
+    @Override
+    public String getName()
+    {
+        return Names.LIQUIDS_MENU;
+    }    @SideOnly(Side.CLIENT)
     @Override
     public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
     {
@@ -84,7 +88,10 @@ public class MenuLiquid extends MenuStuff<Fluid>
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    public LiquidSetting getSelectedSetting()
+    {
+        return (LiquidSetting)selectedSetting;
+    }    @SideOnly(Side.CLIENT)
     @Override
     public void drawResultObject(GuiManager gui, Object obj, int x, int y)
     {
@@ -155,16 +162,9 @@ public class MenuLiquid extends MenuStuff<Fluid>
     }
 
 
-    @Override
-    public String getName()
-    {
-        return Names.LIQUIDS_MENU;
-    }
 
-    public LiquidSetting getSelectedSetting()
-    {
-        return (LiquidSetting)selectedSetting;
-    }
+
+
 
     @SideOnly(Side.CLIENT)
     @Override

@@ -18,6 +18,25 @@ import java.util.Comparator;
 
 public class MenuListOrder extends Menu
 {
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 20;
+    public static final int RADIO_SPACING_Y = 12;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_AMOUNT_Y = 5;
+    public static final int CHECK_BOX_REVERSE_Y = 58;
+    public static final int TEXT_BOX_X = 60;
+    public static final int TEXT_BOX_Y = 3;
+    public static final String NBT_ALL = "All";
+    public static final String NBT_AMOUNT = "Amount";
+    public static final String NBT_REVERSED = "Reversed";
+    public static final String NBT_ORDER = "Order";
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber textBox;
+    public RadioButtonList radioButtons;
+    public CheckBoxList checkBoxes;
+    public boolean reversed;
+    public boolean all;
+
     public MenuListOrder(FlowComponent parent)
     {
         super(parent);
@@ -110,29 +129,48 @@ public class MenuListOrder extends Menu
         textBox.setNumber(1);
     }
 
+    public void sendServerData(UpdateType type)
+    {
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, type);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeData(DataWriter dw, UpdateType type)
+    {
+        dw.writeData(type.ordinal(), DataBitHelper.ORDER_TYPES);
+        switch (type)
+        {
+            case USE_ALL:
+                dw.writeBoolean(all);
+                break;
+            case AMOUNT:
+                dw.writeData(textBox.getNumber(), DataBitHelper.ORDER_AMOUNT);
+                break;
+            case TYPE:
+                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.ORDER_TYPES);
+                break;
+            case REVERSED:
+                dw.writeBoolean(reversed);
+        }
+
+    }
+
+    public boolean canReverse()
+    {
+        return getOrder() != LoopOrder.RANDOM;
+    }
+
+    public LoopOrder getOrder()
+    {
+        return LoopOrder.values()[radioButtons.getSelectedOption()];
+    }
+
     @Override
     public String getName()
     {
         return Names.LOOP_ORDER_MENU;
     }
-
-    public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 20;
-    public static final int RADIO_SPACING_Y = 12;
-
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_AMOUNT_Y = 5;
-    public static final int CHECK_BOX_REVERSE_Y = 58;
-
-    public static final int TEXT_BOX_X = 60;
-    public static final int TEXT_BOX_Y = 3;
-
-    public TextBoxNumberList textBoxes;
-    public TextBoxNumber textBox;
-    public RadioButtonList radioButtons;
-    public CheckBoxList checkBoxes;
-    public boolean reversed;
-    public boolean all;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -168,40 +206,6 @@ public class MenuListOrder extends Menu
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
         //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void sendServerData(UpdateType type)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, type);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void sendClientData(ContainerManager container, UpdateType type)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, type);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void writeData(DataWriter dw, UpdateType type)
-    {
-        dw.writeData(type.ordinal(), DataBitHelper.ORDER_TYPES);
-        switch (type)
-        {
-            case USE_ALL:
-                dw.writeBoolean(all);
-                break;
-            case AMOUNT:
-                dw.writeData(textBox.getNumber(), DataBitHelper.ORDER_AMOUNT);
-                break;
-            case TYPE:
-                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.ORDER_TYPES);
-                break;
-            case REVERSED:
-                dw.writeBoolean(reversed);
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -269,10 +273,12 @@ public class MenuListOrder extends Menu
         }
     }
 
-    public static final String NBT_ALL = "All";
-    public static final String NBT_AMOUNT = "Amount";
-    public static final String NBT_REVERSED = "Reversed";
-    public static final String NBT_ORDER = "Order";
+    public void sendClientData(ContainerManager container, UpdateType type)
+    {
+        DataWriter dw = getWriterForClientComponentPacket(container);
+        writeData(dw, type);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -317,7 +323,6 @@ public class MenuListOrder extends Menu
     {
         return reversed ? getOrder().reversedComparator : getOrder().comparator;
     }
-
 
     public boolean isReversed()
     {
@@ -374,16 +379,6 @@ public class MenuListOrder extends Menu
         {
             return name;
         }
-    }
-
-    public boolean canReverse()
-    {
-        return getOrder() != LoopOrder.RANDOM;
-    }
-
-    public LoopOrder getOrder()
-    {
-        return LoopOrder.values()[radioButtons.getSelectedOption()];
     }
 
     public enum UpdateType

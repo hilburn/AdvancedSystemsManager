@@ -19,10 +19,9 @@ import java.util.Set;
 
 public class CommandPastebin extends CommandDuplicator
 {
-    private static String apiKey = "367773fafa3565615286cf270e73f3de";
-
     public static final Set<String> usernameWhitelist = new HashSet<String>();
-
+    public static CommandPastebin instance = new CommandPastebin();
+    private static String apiKey = "367773fafa3565615286cf270e73f3de";
     private static ClipboardOwner clippy = new ClipboardOwner()
     {
         @Override
@@ -31,7 +30,6 @@ public class CommandPastebin extends CommandDuplicator
 
         }
     };
-    public static CommandPastebin instance = new CommandPastebin();
 
     @Override
     public void doCommand(ItemStack duplicator, EntityPlayerMP sender, String[] arguments)

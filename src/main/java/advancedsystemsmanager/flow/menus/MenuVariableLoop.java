@@ -19,6 +19,16 @@ import java.util.List;
 
 public class MenuVariableLoop extends Menu
 {
+    public static final int DISPLAY_X = 45;
+    public static final int DISPLAY_Y_TOP = 5;
+    public static final int DISPLAY_Y_BOT = 25;
+    public static final String NBT_LIST = "List";
+    public static final String NBT_ELEMENT = "Element";
+    public VariableDisplay listDisplay;
+    public VariableDisplay elementDisplay;
+    public int selectedList;
+    public int selectedElement;
+
     public MenuVariableLoop(FlowComponent parent)
     {
         super(parent);
@@ -69,21 +79,20 @@ public class MenuVariableLoop extends Menu
         selectedElement = 1;
     }
 
+    public void sendServerData(boolean useList)
+    {
+        int val = useList ? selectedList : selectedElement;
+        DataWriter dw = getWriterForServerComponentPacket();
+        dw.writeBoolean(useList);
+        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
+        PacketHandler.sendDataToServer(dw);
+    }
+
     @Override
     public String getName()
     {
         return Names.LOOP_VARIABLE_MENU;
     }
-
-    public static final int DISPLAY_X = 45;
-    public static final int DISPLAY_Y_TOP = 5;
-    public static final int DISPLAY_Y_BOT = 25;
-
-
-    public VariableDisplay listDisplay;
-    public VariableDisplay elementDisplay;
-    public int selectedList;
-    public int selectedElement;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -106,24 +115,6 @@ public class MenuVariableLoop extends Menu
     {
         listDisplay.onClick(mX, mY);
         elementDisplay.onClick(mX, mY);
-    }
-
-    public void sendServerData(boolean useList)
-    {
-        int val = useList ? selectedList : selectedElement;
-        DataWriter dw = getWriterForServerComponentPacket();
-        dw.writeBoolean(useList);
-        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void sendClientData(ContainerManager container, boolean useList)
-    {
-        int val = useList ? selectedList : selectedElement;
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        dw.writeBoolean(useList);
-        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     @Override
@@ -177,8 +168,14 @@ public class MenuVariableLoop extends Menu
         }
     }
 
-    public static final String NBT_LIST = "List";
-    public static final String NBT_ELEMENT = "Element";
+    public void sendClientData(ContainerManager container, boolean useList)
+    {
+        int val = useList ? selectedList : selectedElement;
+        DataWriter dw = getWriterForClientComponentPacket(container);
+        dw.writeBoolean(useList);
+        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -195,16 +192,16 @@ public class MenuVariableLoop extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void addErrors(List<String> errors)
     {
-        boolean useList = dr.readBoolean();
-        int val = dr.readData(DataBitHelper.VARIABLE_TYPE);
-        if (useList)
+        if (!getListVariable().isValid())
         {
-            selectedList = val;
-        } else
+            errors.add(Names.LIST_NOT_DECLARED);
+        }
+
+        if (!getElementVariable().isValid())
         {
-            selectedElement = val;
+            errors.add(Names.ELEMENT_NOT_DECLARED);
         }
     }
 
@@ -219,16 +216,16 @@ public class MenuVariableLoop extends Menu
     }
 
     @Override
-    public void addErrors(List<String> errors)
+    public void readNetworkComponent(DataReader dr)
     {
-        if (!getListVariable().isValid())
+        boolean useList = dr.readBoolean();
+        int val = dr.readData(DataBitHelper.VARIABLE_TYPE);
+        if (useList)
         {
-            errors.add(Names.LIST_NOT_DECLARED);
-        }
-
-        if (!getElementVariable().isValid())
+            selectedList = val;
+        } else
         {
-            errors.add(Names.ELEMENT_NOT_DECLARED);
+            selectedElement = val;
         }
     }
 }

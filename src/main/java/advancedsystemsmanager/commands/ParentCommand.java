@@ -30,48 +30,23 @@ public class ParentCommand extends CommandBase
         commands.put(command.getCommandName(), command);
     }
 
-    @Override
+    public static boolean commandExists(String name)
+    {
+        return commands.containsKey(name);
+    }    @Override
     public String getCommandName()
     {
         return "asm";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/" + getCommandName() + " help";
-    }
-
-    @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
         return true;
-    }
-
-    @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    }    @Override
+    public String getCommandUsage(ICommandSender sender)
     {
-        if (args.length < 1)
-        {
-            args = new String[]{"help"};
-        }
-        ISubCommand command = commands.get(args[0]);
-        if (command != null)
-        {
-            if (sender.canCommandSenderUseCommand(command.getPermissionLevel(), "asm " + command.getCommandName()) ||
-                    (sender instanceof EntityPlayerMP && command.getPermissionLevel() <= 0))
-            {
-                command.handleCommand(sender, args);
-                return;
-            }
-            throw new CommandException("commands.generic.permission");
-        }
-        throw new CommandNotFoundException("asm.command.notFound");
-    }
-
-    public static boolean commandExists(String name)
-    {
-        return commands.containsKey(name);
+        return "/" + getCommandName() + " help";
     }
 
     @Override
@@ -95,5 +70,30 @@ public class ParentCommand extends CommandBase
         }
         return null;
     }
+
+    @Override
+    public void processCommand(ICommandSender sender, String[] args)
+    {
+        if (args.length < 1)
+        {
+            args = new String[]{"help"};
+        }
+        ISubCommand command = commands.get(args[0]);
+        if (command != null)
+        {
+            if (sender.canCommandSenderUseCommand(command.getPermissionLevel(), "asm " + command.getCommandName()) ||
+                    (sender instanceof EntityPlayerMP && command.getPermissionLevel() <= 0))
+            {
+                command.handleCommand(sender, args);
+                return;
+            }
+            throw new CommandException("commands.generic.permission");
+        }
+        throw new CommandNotFoundException("asm.command.notFound");
+    }
+
+
+
+
 
 }

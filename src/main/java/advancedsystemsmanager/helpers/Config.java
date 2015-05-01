@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class Config
 {
+    public static final String CATEGORY_SETTINGS = "Default Settings";
     public static boolean wailaIntegration = true;
     public static boolean aeIntegration = Loader.isModLoaded(Mods.APPLIEDENERGISTICS2);
     public static Map<String, Boolean> managerSettings = new LinkedHashMap<String, Boolean>(Settings.settingsRegistry);
-    public static final String CATEGORY_SETTINGS = "Default Settings";
 
     public static void init(File file)
     {

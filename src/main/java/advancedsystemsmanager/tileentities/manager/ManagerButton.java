@@ -32,26 +32,26 @@ public abstract class ManagerButton implements IManagerButton
     }
 
     @Override
-    public boolean activateOnRelease()
-    {
-        return false;
-    }
-
-    @Override
     public String getMouseOver()
     {
         return StatCollector.translateToLocal(hoverText);
     }
 
     @Override
-    public ResourceLocation getTexture()
+    public boolean activateOnRelease()
     {
-        return Textures.BUTTONS;
+        return false;
     }
 
     @Override
     public boolean isVisible()
     {
         return true;
+    }
+
+    @Override
+    public ResourceLocation getTexture()
+    {
+        return Textures.BUTTONS;
     }
 }

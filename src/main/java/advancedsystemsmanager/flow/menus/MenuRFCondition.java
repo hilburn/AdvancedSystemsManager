@@ -56,6 +56,27 @@ public class MenuRFCondition extends Menu
         this.textBox.setNumber(0);
     }
 
+    public void sendServerData(int id)
+    {
+        DataWriter dw = this.getWriterForServerComponentPacket();
+        this.writeData(dw, id);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeData(DataWriter dw, int id)
+    {
+        boolean isTextBox = id == 0;
+        dw.writeBoolean(isTextBox);
+        if (isTextBox)
+        {
+            dw.writeData(textBox.getNumber(), 32);
+        } else
+        {
+            dw.writeBoolean(this.triggerBelow);
+        }
+
+    }
+
     public String getName()
     {
         return Names.RF_CONDITION_MENU;
@@ -80,18 +101,18 @@ public class MenuRFCondition extends Menu
         this.textBoxes.onClick(mX, mY, button);
     }
 
-    @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        return this.textBoxes.onKeyStroke(gui, c, k);
-    }
-
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
     }
 
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return this.textBoxes.onKeyStroke(gui, c, k);
     }
 
     public void writeData(DataWriter dw)
@@ -130,32 +151,11 @@ public class MenuRFCondition extends Menu
 
     }
 
-    public void sendServerData(int id)
-    {
-        DataWriter dw = this.getWriterForServerComponentPacket();
-        this.writeData(dw, id);
-        PacketHandler.sendDataToServer(dw);
-    }
-
     public void sendClientData(ContainerManager container, int id)
     {
         DataWriter dw = this.getWriterForClientComponentPacket(container);
         this.writeData(dw, id);
         PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void writeData(DataWriter dw, int id)
-    {
-        boolean isTextBox = id == 0;
-        dw.writeBoolean(isTextBox);
-        if (isTextBox)
-        {
-            dw.writeData(textBox.getNumber(), 32);
-        } else
-        {
-            dw.writeBoolean(this.triggerBelow);
-        }
-
     }
 
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -168,6 +168,11 @@ public class MenuRFCondition extends Menu
     {
         nbtTagCompound.setInteger("textBox", this.textBox.getNumber());
         nbtTagCompound.setBoolean("Inverted", this.triggerBelow);
+    }
+
+    public void addErrors(List<String> errors)
+    {
+        if (textBox.getNumber() == 0 && triggerBelow) errors.add(Names.RF_CONDITION_ERROR);
     }
 
     public boolean isVisible()
@@ -194,10 +199,5 @@ public class MenuRFCondition extends Menu
     public int getAmount()
     {
         return this.textBox.getNumber();
-    }
-
-    public void addErrors(List<String> errors)
-    {
-        if (textBox.getNumber() == 0 && triggerBelow) errors.add(Names.RF_CONDITION_ERROR);
     }
 }

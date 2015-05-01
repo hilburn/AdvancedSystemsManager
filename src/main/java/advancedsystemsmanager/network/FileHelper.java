@@ -11,6 +11,10 @@ public final class FileHelper
 
     private static File dir;
 
+    private FileHelper()
+    {
+    }
+
     public static void setConfigDir(File dir)
     {
         FileHelper.dir = dir;
@@ -66,9 +70,5 @@ public final class FileHelper
     {
         dw.writeFinalBits();
         dw.close();
-    }
-
-    private FileHelper()
-    {
     }
 }

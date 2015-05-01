@@ -14,6 +14,21 @@ public class VersionHelper
         return getModVersion(modId).equals(version);
     }
 
+    private static String getModVersion(String modId)
+    {
+        if (Loader.isModLoaded(modId))
+        {
+            for (ModContainer mod : Loader.instance().getActiveModList())
+            {
+                if (mod.getModId().equals(modId))
+                {
+                    return mod.getVersion();
+                }
+            }
+        }
+        return "";
+    }
+
     /**
      * Calculates whether the loaded version of a mod is newer than required
      *
@@ -33,6 +48,17 @@ public class VersionHelper
                 if (compareStringInt(split[i], versionInt[i])) return false;
             }
             return true;
+        }
+        return false;
+    }
+
+    private static boolean compareStringInt(String string, int val)
+    {
+        try
+        {
+            if (Integer.valueOf(string) >= val) return true;
+        } catch (Exception e)
+        {
         }
         return false;
     }
@@ -68,32 +94,6 @@ public class VersionHelper
                 }
                 return true;
             }
-        }
-        return false;
-    }
-
-    private static String getModVersion(String modId)
-    {
-        if (Loader.isModLoaded(modId))
-        {
-            for (ModContainer mod : Loader.instance().getActiveModList())
-            {
-                if (mod.getModId().equals(modId))
-                {
-                    return mod.getVersion();
-                }
-            }
-        }
-        return "";
-    }
-
-    private static boolean compareStringInt(String string, int val)
-    {
-        try
-        {
-            if (Integer.valueOf(string) >= val) return true;
-        } catch (Exception e)
-        {
         }
         return false;
     }

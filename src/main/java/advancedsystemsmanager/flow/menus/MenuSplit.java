@@ -20,6 +20,18 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuSplit extends Menu
 {
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int CHECK_BOX_X = 15;
+    public static final int SPACING_Y = 15;
+    public static final String NBT_SPLIT = "Split";
+    public static final String NBT_FAIR = "Fair";
+    public static final String NBT_EMPTY = "Empty";
+    public RadioButtonList radioButtons;
+    public CheckBoxList checkBoxes;
+    public boolean useFair;
+    public boolean useEmpty;
+
     public MenuSplit(FlowComponent parent)
     {
         super(parent);
@@ -83,15 +95,54 @@ public class MenuSplit extends Menu
         });
     }
 
-    public RadioButtonList radioButtons;
-    public CheckBoxList checkBoxes;
-    public boolean useFair;
-    public boolean useEmpty;
+    public void sendServerData(int id)
+    {
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, id);
+        PacketHandler.sendDataToServer(dw);
+    }
 
-    public static final int RADIO_X = 5;
-    public static final int RADIO_Y = 5;
-    public static final int CHECK_BOX_X = 15;
-    public static final int SPACING_Y = 15;
+    public void writeData(DataWriter dw, int id)
+    {
+        dw.writeData(id, DataBitHelper.MENU_SPLIT_DATA_ID);
+        switch (id)
+        {
+            case 0:
+                dw.writeBoolean(useSplit());
+                break;
+            case 1:
+                dw.writeBoolean(useFair());
+                break;
+            case 2:
+                dw.writeBoolean(useEmpty());
+                break;
+        }
+    }
+
+    public boolean useSplit()
+    {
+        return radioButtons.getSelectedOption() == 1;
+    }
+
+    public boolean useFair()
+    {
+        return useFair;
+    }
+
+    public boolean useEmpty()
+    {
+        return useEmpty;
+    }
+
+    public void setFair(boolean val)
+    {
+        useFair = val;
+    }
+
+    public void setEmpty(boolean val)
+    {
+        useEmpty = val;
+    }
 
     @Override
     public String getName()
@@ -208,34 +259,6 @@ public class MenuSplit extends Menu
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    public void sendServerData(int id)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, id);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeData(DataWriter dw, int id)
-    {
-        dw.writeData(id, DataBitHelper.MENU_SPLIT_DATA_ID);
-        switch (id)
-        {
-            case 0:
-                dw.writeBoolean(useSplit());
-                break;
-            case 1:
-                dw.writeBoolean(useFair());
-                break;
-            case 2:
-                dw.writeBoolean(useEmpty());
-                break;
-        }
-    }
-
-    public static final String NBT_SPLIT = "Split";
-    public static final String NBT_FAIR = "Fair";
-    public static final String NBT_EMPTY = "Empty";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -259,6 +282,22 @@ public class MenuSplit extends Menu
     }
 
     @Override
+    public boolean isVisible()
+    {
+        return isSplitConnection(getParent());
+    }
+
+    public static boolean isSplitConnection(FlowComponent component)
+    {
+        return component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_2 || component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_5;
+    }
+
+    public void setSplit(boolean val)
+    {
+        radioButtons.setSelectedOption(val ? 1 : 0);
+    }
+
+    @Override
     public void readNetworkComponent(DataReader dr)
     {
         int id = dr.readData(DataBitHelper.MENU_SPLIT_DATA_ID);
@@ -274,47 +313,6 @@ public class MenuSplit extends Menu
                 setEmpty(dr.readBoolean());
                 break;
         }
-    }
-
-    @Override
-    public boolean isVisible()
-    {
-        return isSplitConnection(getParent());
-    }
-
-    public static boolean isSplitConnection(FlowComponent component)
-    {
-        return component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_2 || component.getConnectionSet() == ConnectionSet.MULTIPLE_OUTPUT_5;
-    }
-
-    public boolean useSplit()
-    {
-        return radioButtons.getSelectedOption() == 1;
-    }
-
-    public void setSplit(boolean val)
-    {
-        radioButtons.setSelectedOption(val ? 1 : 0);
-    }
-
-    public boolean useFair()
-    {
-        return useFair;
-    }
-
-    public void setFair(boolean val)
-    {
-        useFair = val;
-    }
-
-    public boolean useEmpty()
-    {
-        return useEmpty;
-    }
-
-    public void setEmpty(boolean val)
-    {
-        useEmpty = val;
     }
 
 }

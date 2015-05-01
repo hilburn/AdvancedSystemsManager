@@ -29,8 +29,92 @@ import java.util.ListIterator;
 @SideOnly(Side.CLIENT)
 public class GuiManager extends GuiBase implements INEIGuiHandler
 {
+    private static final ResourceLocation BACKGROUND_1 = registerTexture("Background1");
+    private static final ResourceLocation BACKGROUND_2 = registerTexture("Background2");
+    private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
+    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 100;
+    public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
+    public static int Z_LEVEL_COMPONENT_START = 750;
+    public static int Z_LEVEL_OPEN_MAXIMUM = 5;
+    private long lastTicks;
+    private AnimationController controller;
+    private boolean doubleShiftFlag;
+    private boolean useButtons = true;
+    private boolean useInfo = true;
+    private boolean useMouseOver = true;
+
+    private TileEntityManager manager;
+
+    private List<SecretCode> codes = new ArrayList<SecretCode>();
+
+    {
+        codes.add(new SecretCode("animate")
+        {
+            @Override
+            protected void trigger()
+            {
+                controller = new AnimationController(manager, 2);
+            }
+        });
+        codes.add(new SecretCode("animslow")
+        {
+            @Override
+            protected void trigger()
+            {
+                controller = new AnimationController(manager, 1);
+            }
+        });
+        codes.add(new SecretCode("animfast")
+        {
+            @Override
+            protected void trigger()
+            {
+                controller = new AnimationController(manager, 5);
+            }
+        });
+        codes.add(new SecretCode("animrapid")
+        {
+            @Override
+            protected void trigger()
+            {
+                controller = new AnimationController(manager, 20);
+            }
+        });
+        codes.add(new SecretCode("animinstant")
+        {
+            @Override
+            protected void trigger()
+            {
+                controller = new AnimationController(manager, 100);
+            }
+        });
+        codes.add(new SecretCode("buttons")
+        {
+            @Override
+            protected void trigger()
+            {
+                useButtons = !useButtons;
+            }
+        });
+        codes.add(new SecretCode("info")
+        {
+            @Override
+            protected void trigger()
+            {
+                useInfo = !useInfo;
+            }
+        });
+        codes.add(new SecretCode("mouse")
+        {
+            @Override
+            protected void trigger()
+            {
+                useMouseOver = !useMouseOver;
+            }
+        });
+    }
 
     public GuiManager(TileEntityManager manager, InventoryPlayer player)
     {
@@ -43,28 +127,19 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         Keyboard.enableRepeatEvents(true);
     }
 
-    private static final ResourceLocation BACKGROUND_1 = registerTexture("Background1");
-    private static final ResourceLocation BACKGROUND_2 = registerTexture("Background2");
-    private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
-
     @Override
     public ResourceLocation getComponentResource()
     {
         return COMPONENTS;
     }
 
-    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 100;
-    public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
-    public static int Z_LEVEL_COMPONENT_START = 750;
-    public static int Z_LEVEL_OPEN_MAXIMUM = 5;
-
     @Override
-    public void drawWorldBackground(int val)
+    @Optional.Method(modid = "NotEnoughItems")
+    public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
-        super.drawWorldBackground(val);
+        visiblityData.showNEI = false;
+        return visiblityData;
     }
-
-    private long lastTicks;
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
@@ -169,31 +244,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         }
     }
 
-    public void handleMouseInput()
-    {
-        super.handleMouseInput();
-
-
-        int scroll = Mouse.getEventDWheel();
-        if (scroll != 0)
-        {
-            if (hasSpecialRenderer())
-            {
-                getSpecialRenderer().onScroll(scroll);
-                return;
-            }
-
-            for (FlowComponent component : manager.getZLevelRenderingList())
-            {
-                if (component.isVisible())
-                {
-                    component.doScroll(scroll);
-                    return;
-                }
-            }
-        }
-    }
-
     private String getInfo()
     {
         String ret = StatCollector.translateToLocalFormatted(Names.COMMANDS, manager.getFlowItems().size());
@@ -239,7 +289,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         }
 
 
-        for (ListIterator<FlowComponent> itr = manager.getZLevelRenderingList().listIterator(); itr.hasNext();)
+        for (ListIterator<FlowComponent> itr = manager.getZLevelRenderingList().listIterator(); itr.hasNext(); )
         {
             FlowComponent itemBase = itr.next();
             if (itemBase.isVisible() && itemBase.onClick(x, y, button))
@@ -326,119 +376,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     }
 
-    private AnimationController controller;
-    private boolean doubleShiftFlag;
-    private boolean useButtons = true;
-    private boolean useInfo = true;
-    private boolean useMouseOver = true;
-
-    private List<SecretCode> codes = new ArrayList<SecretCode>();
-
-    {
-        codes.add(new SecretCode("animate")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 2);
-            }
-        });
-        codes.add(new SecretCode("animslow")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 1);
-            }
-        });
-        codes.add(new SecretCode("animfast")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 5);
-            }
-        });
-        codes.add(new SecretCode("animrapid")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 20);
-            }
-        });
-        codes.add(new SecretCode("animinstant")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 100);
-            }
-        });
-        codes.add(new SecretCode("buttons")
-        {
-            @Override
-            protected void trigger()
-            {
-                useButtons = !useButtons;
-            }
-        });
-        codes.add(new SecretCode("info")
-        {
-            @Override
-            protected void trigger()
-            {
-                useInfo = !useInfo;
-            }
-        });
-        codes.add(new SecretCode("mouse")
-        {
-            @Override
-            protected void trigger()
-            {
-                useMouseOver = !useMouseOver;
-            }
-        });
-    }
-
-    private abstract class SecretCode
-    {
-        private final String code;
-        private int triggerNumber;
-
-        private SecretCode(String code)
-        {
-            this.code = code;
-        }
-
-        public boolean keyTyped(char c)
-        {
-            if (Character.isAlphabetic(c))
-            {
-                if (code.charAt(triggerNumber) == c)
-                {
-                    if (triggerNumber + 1 > code.length() - 1)
-                    {
-                        triggerNumber = 0;
-                        trigger();
-                    } else
-                    {
-                        triggerNumber++;
-                    }
-                    return true;
-                } else if (triggerNumber != 0)
-                {
-                    triggerNumber = 0;
-                    keyTyped(c);
-                }
-            }
-
-            return false;
-        }
-
-        protected abstract void trigger();
-    }
-
     @Override
     protected void keyTyped(char c, int k)
     {
@@ -495,22 +432,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         super.onGuiClosed();
     }
 
-    @Override
-    @Optional.Method(modid = "NotEnoughItems")
-    public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
-    {
-        visiblityData.showNEI = false;
-        return visiblityData;
-    }
-
-
-    private TileEntityManager manager;
-
-    public TileEntityManager getManager()
-    {
-        return manager;
-    }
-
     private boolean hasSpecialRenderer()
     {
         return getSpecialRenderer() != null;
@@ -519,6 +440,80 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     private IInterfaceRenderer getSpecialRenderer()
     {
         return manager.specialRenderer;
+    }
+
+    public void handleMouseInput()
+    {
+        super.handleMouseInput();
+
+
+        int scroll = Mouse.getEventDWheel();
+        if (scroll != 0)
+        {
+            if (hasSpecialRenderer())
+            {
+                getSpecialRenderer().onScroll(scroll);
+                return;
+            }
+
+            for (FlowComponent component : manager.getZLevelRenderingList())
+            {
+                if (component.isVisible())
+                {
+                    component.doScroll(scroll);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void drawWorldBackground(int val)
+    {
+        super.drawWorldBackground(val);
+    }
+
+    public TileEntityManager getManager()
+    {
+        return manager;
+    }
+
+    private abstract class SecretCode
+    {
+        private final String code;
+        private int triggerNumber;
+
+        private SecretCode(String code)
+        {
+            this.code = code;
+        }
+
+        public boolean keyTyped(char c)
+        {
+            if (Character.isAlphabetic(c))
+            {
+                if (code.charAt(triggerNumber) == c)
+                {
+                    if (triggerNumber + 1 > code.length() - 1)
+                    {
+                        triggerNumber = 0;
+                        trigger();
+                    } else
+                    {
+                        triggerNumber++;
+                    }
+                    return true;
+                } else if (triggerNumber != 0)
+                {
+                    triggerNumber = 0;
+                    keyTyped(c);
+                }
+            }
+
+            return false;
+        }
+
+        protected abstract void trigger();
     }
 
 }

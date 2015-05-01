@@ -13,30 +13,15 @@ import java.util.List;
 
 public class ContainerRelay extends ContainerBase
 {
-
+    public List<UserPermission> oldPermissions;
+    public boolean oldCreativeMode;
+    public boolean oldOpList;
     private TileEntityRelay relay;
 
     public ContainerRelay(TileEntityRelay relay, InventoryPlayer player)
     {
         super(relay, player);
         this.relay = relay;
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
-        return entityplayer.getDistanceSq(relay.xCoord, relay.yCoord, relay.zCoord) <= 64;
-    }
-
-    @Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-
-        if (oldPermissions != null)
-        {
-            relay.updateData(this);
-        }
     }
 
     @Override
@@ -53,8 +38,20 @@ public class ContainerRelay extends ContainerBase
         oldOpList = relay.doesListRequireOp();
     }
 
-    public List<UserPermission> oldPermissions;
-    public boolean oldCreativeMode;
-    public boolean oldOpList;
+    @Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
 
+        if (oldPermissions != null)
+        {
+            relay.updateData(this);
+        }
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
+        return entityplayer.getDistanceSq(relay.xCoord, relay.yCoord, relay.zCoord) <= 64;
+    }
 }

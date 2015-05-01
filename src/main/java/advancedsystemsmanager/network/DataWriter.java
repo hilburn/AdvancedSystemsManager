@@ -26,20 +26,20 @@ public class DataWriter
     private int byteBuffer;
     private int bitCountBuffer;
     private OutputStream stream;
+    private boolean idWritten;
+    private int idBits;
+    private boolean invWritten;
+    private int invBits;
 
     DataWriter()
     {
         stream = new ByteArrayOutputStream();
     }
 
+
     DataWriter(OutputStream stream)
     {
         this.stream = stream;
-    }
-
-    public void writeByte(int data)
-    {
-        writeData(data, 8);
     }
 
     public void writeBoolean(boolean data)
@@ -47,46 +47,9 @@ public class DataWriter
         writeData(data ? 1 : 0, DataBitHelper.BOOLEAN);
     }
 
-    public void writeData(int data, DataBitHelper bitCount)
+    void sendPlayerPackets(double x, double y, double z, double r, int dimension)
     {
-        writeData(data, bitCount.getBitCount());
-    }
-
-
-    public void writeData(int data, int bitCount)
-    {
-        long mask = (long)Math.pow(2, bitCount) - 1;
-
-        data &= mask;
-
-        while (true)
-        {
-            if (bitCountBuffer + bitCount >= 8)
-            {
-                int bitsToAdd = 8 - bitCountBuffer;
-                int addMask = (int)Math.pow(2, bitsToAdd) - 1;
-                int addData = data & addMask;
-                data >>>= bitsToAdd;
-                addData <<= bitCountBuffer;
-                byteBuffer |= addData;
-
-                try
-                {
-                    stream.write(byteBuffer);
-                } catch (IOException ignored)
-                {
-                }
-
-                byteBuffer = 0;
-                bitCount -= bitsToAdd;
-                bitCountBuffer = 0;
-            } else
-            {
-                byteBuffer |= data << bitCountBuffer;
-                bitCountBuffer += bitCount;
-                break;
-            }
-        }
+        packetHandler.sendToAllAround(createPacket(), new TargetPoint(dimension, x, y, z, r));
     }
 
     private FMLProxyPacket createPacket()
@@ -96,9 +59,18 @@ public class DataWriter
         return new FMLProxyPacket(buf, ID);
     }
 
-    void sendPlayerPackets(double x, double y, double z, double r, int dimension)
+    void writeFinalBits()
     {
-        packetHandler.sendToAllAround(createPacket(), new TargetPoint(dimension, x, y, z, r));
+        if (bitCountBuffer > 0)
+        {
+            try
+            {
+                stream.write(byteBuffer);
+                bitCountBuffer = 0;
+            } catch (IOException ignored)
+            {
+            }
+        }
     }
 
     void sendPlayerPacket(EntityPlayerMP player)
@@ -141,6 +113,52 @@ public class DataWriter
         }
     }
 
+    public void writeByte(int data)
+    {
+        writeData(data, 8);
+    }
+
+    public void writeData(int data, DataBitHelper bitCount)
+    {
+        writeData(data, bitCount.getBitCount());
+    }
+
+    public void writeData(int data, int bitCount)
+    {
+        long mask = (long)Math.pow(2, bitCount) - 1;
+
+        data &= mask;
+
+        while (true)
+        {
+            if (bitCountBuffer + bitCount >= 8)
+            {
+                int bitsToAdd = 8 - bitCountBuffer;
+                int addMask = (int)Math.pow(2, bitsToAdd) - 1;
+                int addData = data & addMask;
+                data >>>= bitsToAdd;
+                addData <<= bitCountBuffer;
+                byteBuffer |= addData;
+
+                try
+                {
+                    stream.write(byteBuffer);
+                } catch (IOException ignored)
+                {
+                }
+
+                byteBuffer = 0;
+                bitCount -= bitsToAdd;
+                bitCountBuffer = 0;
+            } else
+            {
+                byteBuffer |= data << bitCountBuffer;
+                bitCountBuffer += bitCount;
+                break;
+            }
+        }
+    }
+
     public void writeNBT(NBTTagCompound nbtTagCompound)
     {
         byte[] bytes = null;
@@ -167,9 +185,6 @@ public class DataWriter
         }
     }
 
-    private boolean idWritten;
-    private int idBits;
-
     public void writeComponentId(TileEntityManager manager, int id)
     {
         if (!idWritten)
@@ -192,9 +207,6 @@ public class DataWriter
         writeData(id, idBits);
     }
 
-    private boolean invWritten;
-    private int invBits;
-
     public void writeInventoryId(TileEntityManager manager, int id)
     {
         if (!invWritten)
@@ -216,20 +228,6 @@ public class DataWriter
         }
 
         writeData(id, invBits);
-    }
-
-    void writeFinalBits()
-    {
-        if (bitCountBuffer > 0)
-        {
-            try
-            {
-                stream.write(byteBuffer);
-                bitCountBuffer = 0;
-            } catch (IOException ignored)
-            {
-            }
-        }
     }
 
     void close()

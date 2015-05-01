@@ -13,13 +13,12 @@ import java.util.List;
 
 public class ItemCluster extends ItemAdvanced
 {
+    public static final String NBT_CABLE = "Cable";
+    public static final String NBT_TYPES = "Types";
     public ItemCluster(Block block)
     {
         super(block);
     }
-
-    public static final String NBT_CABLE = "Cable";
-    public static final String NBT_TYPES = "Types";
 
     @Override
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)

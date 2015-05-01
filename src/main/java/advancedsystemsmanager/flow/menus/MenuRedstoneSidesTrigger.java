@@ -34,23 +34,6 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
         }
     }
 
-    @Override
-    public boolean isVisible()
-    {
-        return getParent().getConnectionSet() == ConnectionSet.REDSTONE || isBUD();
-    }
-
-    public boolean requireAll()
-    {
-        return useFirstOption();
-    }
-
-    @Override
-    public String getName()
-    {
-        return isBUD() ? Names.UPDATE_SIDES_MENU: Names.REDSTONE_SIDES_MENU_TRIGGER;
-    }
-
     public boolean isBUD()
     {
         return getParent().getConnectionSet() == ConnectionSet.BUD;
@@ -63,5 +46,22 @@ public class MenuRedstoneSidesTrigger extends MenuRedstoneSides
         {
             errors.add(Names.NO_SIDES_ERROR);
         }
+    }
+
+    public boolean requireAll()
+    {
+        return useFirstOption();
+    }
+
+    @Override
+    public String getName()
+    {
+        return isBUD() ? Names.UPDATE_SIDES_MENU : Names.REDSTONE_SIDES_MENU_TRIGGER;
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() == ConnectionSet.REDSTONE || isBUD();
     }
 }

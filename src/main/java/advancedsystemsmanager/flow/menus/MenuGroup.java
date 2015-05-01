@@ -18,14 +18,59 @@ import java.util.List;
 
 public class MenuGroup extends Menu
 {
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
     public MenuGroup(FlowComponent parent)
     {
         super(parent);
     }
 
-    public static final int MENU_WIDTH = 120;
-    public static final int TEXT_MARGIN_X = 5;
-    public static final int TEXT_Y = 5;
+    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
+    {
+
+        if (moveCluster)
+        {
+            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
+            findCluster(cluster, component, parent);
+            for (FlowComponent flowComponent : cluster)
+            {
+                flowComponent.setParent(parent);
+                if (parent != null)
+                {
+                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
+                    {
+                        Connection connection = flowComponent.getConnection(i);
+                        if (connection != null && connection.getComponentId() == parent.getId())
+                        {
+                            flowComponent.removeConnection(i); //remove all connections to the component we're moving stuff into
+                        }
+                    }
+                }
+            }
+        } else if (!component.equals(parent))
+        {
+            component.setParent(parent);
+            component.removeAllConnections();
+        }
+    }
+
+    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
+    {
+        if (!components.contains(component) && !component.equals(parent))
+        {
+            components.add(component);
+
+            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
+            {
+                Connection connection = component.getConnection(i);
+                if (connection != null)
+                {
+                    findCluster(components, component.getManager().getFlowItem(connection.getComponentId()), parent);
+                }
+            }
+        }
+    }
 
     @Override
     public String getName()
@@ -45,15 +90,15 @@ public class MenuGroup extends Menu
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean inBounds(int mX, int mY)
-    {
-        return (CollisionHelper.inBounds(0, 0, MENU_WIDTH, FlowComponent.getMenuOpenSize(), mX, mY));
-    }
-
     @Override
     public void onClick(int mX, int mY, int button)
     {
         if (inBounds(mX, mY)) getParent().getManager().setSelectedGroup(getParent());
+    }
+
+    public boolean inBounds(int mX, int mY)
+    {
+        return (CollisionHelper.inBounds(0, 0, MENU_WIDTH, FlowComponent.getMenuOpenSize(), mX, mY));
     }
 
     @Override
@@ -131,52 +176,6 @@ public class MenuGroup extends Menu
             boolean moveCluster = dr.readBoolean();
 
             moveComponents(component, getParent(), moveCluster);
-        }
-    }
-
-    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
-    {
-
-        if (moveCluster)
-        {
-            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
-            findCluster(cluster, component, parent);
-            for (FlowComponent flowComponent : cluster)
-            {
-                flowComponent.setParent(parent);
-                if (parent != null)
-                {
-                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-                    {
-                        Connection connection = flowComponent.getConnection(i);
-                        if (connection != null && connection.getComponentId() == parent.getId())
-                        {
-                            flowComponent.removeConnection(i); //remove all connections to the component we're moving stuff into
-                        }
-                    }
-                }
-            }
-        } else if (!component.equals(parent))
-        {
-            component.setParent(parent);
-            component.removeAllConnections();
-        }
-    }
-
-    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
-    {
-        if (!components.contains(component) && !component.equals(parent))
-        {
-            components.add(component);
-
-            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
-            {
-                Connection connection = component.getConnection(i);
-                if (connection != null)
-                {
-                    findCluster(components, component.getManager().getFlowItem(connection.getComponentId()), parent);
-                }
-            }
         }
     }
 }

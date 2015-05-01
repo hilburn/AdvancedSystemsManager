@@ -25,11 +25,11 @@ import java.util.Set;
 public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener
 {
     public static final int MAX_BUFFER = 96000;
+    private static final String STORED = "Stored";
     private boolean[] inputSides = new boolean[6];
     private boolean[] outputSides = new boolean[6];
     private Set<TileEntityManager> managers = new HashSet<TileEntityManager>();
     private Set<FlowComponent> components = new HashSet<FlowComponent>();
-    private static final String STORED = "Stored";
     private boolean updated = true;
     private int stored;
 
@@ -76,19 +76,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
-    {
-        tagCompound.setInteger(STORED, stored);
-    }
-
-    @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        stored = tagCompound.getInteger(STORED);
-    }
-
-
-    @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
         if (inputSides[from.ordinal()])
@@ -98,88 +85,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             return toReceive;
         }
         return 0;
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
-    {
-        if (outputSides[from.ordinal()])
-        {
-            int toExtract = Math.min(maxExtract, stored);
-            if (!simulate) stored -= toExtract;
-            return toExtract;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from)
-    {
-        return stored;
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from)
-    {
-        return MAX_BUFFER;
-    }
-
-    @Override
-    public boolean canConnectEnergy(ForgeDirection from)
-    {
-        return outputSides[from.ordinal()] || inputSides[from.ordinal()];
-    }
-
-    @Override
-    public void added(TileEntityManager tileEntityManager)
-    {
-        managers.add(tileEntityManager);
-    }
-
-    @Override
-    public void removed(TileEntityManager tileEntityManager)
-    {
-//        managers.remove(tileEntityManager);
-        for (Iterator<FlowComponent> itr = components.iterator(); itr.hasNext(); )
-        {
-            if (itr.next().getManager() == tileEntityManager) itr.remove();
-        }
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CONNECT_ENERGY, ClusterMethodRegistration.EXTRACT_ENERGY, ClusterMethodRegistration.RECEIVE_ENERGY, ClusterMethodRegistration.STORED_ENERGY);
-    }
-
-    public boolean isInput(int side)
-    {
-        return inputSides[side];
-    }
-
-    public boolean isOutput(int side)
-    {
-        return outputSides[side];
-    }
-
-    public void setOutputSides(boolean[] outputSides)
-    {
-        this.outputSides = outputSides;
-    }
-
-    public void setInputSides(boolean[] inputSides)
-    {
-        this.inputSides = inputSides;
-    }
-
-    public boolean[] getOutputs()
-    {
-        return outputSides;
-    }
-
-    public boolean[] getInputs()
-    {
-        return inputSides;
     }
 
     @Override
@@ -238,5 +143,99 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     private boolean[] getSides(boolean input)
     {
         return input ? inputSides : outputSides;
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        stored = tagCompound.getInteger(STORED);
+    }
+
+    @Override
+    public void writeContentToNBT(NBTTagCompound tagCompound)
+    {
+        tagCompound.setInteger(STORED, stored);
+    }
+
+    @Override
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.CONNECT_ENERGY, ClusterMethodRegistration.EXTRACT_ENERGY, ClusterMethodRegistration.RECEIVE_ENERGY, ClusterMethodRegistration.STORED_ENERGY);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
+        if (outputSides[from.ordinal()])
+        {
+            int toExtract = Math.min(maxExtract, stored);
+            if (!simulate) stored -= toExtract;
+            return toExtract;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from)
+    {
+        return stored;
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
+        return MAX_BUFFER;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from)
+    {
+        return outputSides[from.ordinal()] || inputSides[from.ordinal()];
+    }
+
+    @Override
+    public void added(TileEntityManager tileEntityManager)
+    {
+        managers.add(tileEntityManager);
+    }
+
+    @Override
+    public void removed(TileEntityManager tileEntityManager)
+    {
+//        managers.remove(tileEntityManager);
+        for (Iterator<FlowComponent> itr = components.iterator(); itr.hasNext(); )
+        {
+            if (itr.next().getManager() == tileEntityManager) itr.remove();
+        }
+    }
+
+    public boolean isInput(int side)
+    {
+        return inputSides[side];
+    }
+
+    public boolean isOutput(int side)
+    {
+        return outputSides[side];
+    }
+
+    public void setOutputSides(boolean[] outputSides)
+    {
+        this.outputSides = outputSides;
+    }
+
+    public void setInputSides(boolean[] inputSides)
+    {
+        this.inputSides = inputSides;
+    }
+
+    public boolean[] getOutputs()
+    {
+        return outputSides;
+    }
+
+    public boolean[] getInputs()
+    {
+        return inputSides;
     }
 }

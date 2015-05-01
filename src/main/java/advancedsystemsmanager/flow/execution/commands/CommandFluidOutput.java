@@ -32,11 +32,12 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
         MenuLiquid menuLiquid = (MenuLiquid)component.menus.get(2);
         List<Setting<Fluid>> validSettings = getValidSettings(menuLiquid.getSettings());
         List<Integer> validSides = new ArrayList<Integer>();
-        for (int i = 0; i< ((MenuTargetTank)component.getMenus().get(1)).activatedDirections.length; i++) if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
+        for (int i = 0; i < ((MenuTargetTank)component.getMenus().get(1)).activatedDirections.length; i++)
+            if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
         for (SystemBlock block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
         {
             IFluidHandler tank = block.getTileEntity() instanceof IInternalTank ? ((IInternalTank)block.getTileEntity()).getTank() : (IFluidHandler)block.getTileEntity();
-            Iterator<Map.Entry<Key<Fluid>,IBufferElement<Fluid>>> iterator = buffer.getOrderedIterator();
+            Iterator<Map.Entry<Key<Fluid>, IBufferElement<Fluid>>> iterator = buffer.getOrderedIterator();
             while (iterator.hasNext())
             {
                 IBufferElement<Fluid> fluidBufferElement = iterator.next().getValue();

@@ -21,6 +21,15 @@ public class MenuBUDs extends MenuContainer
     }
 
     @Override
+    public void addErrors(List<String> errors)
+    {
+        if (selectedInventories.isEmpty())
+        {
+            errors.add(Names.NO_DETECTOR_ERROR);
+        }
+    }
+
+    @Override
     public boolean isVisible()
     {
         return getParent().getConnectionSet() == ConnectionSet.BUD;
@@ -31,14 +40,5 @@ public class MenuBUDs extends MenuContainer
     {
         radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(0, Names.REQUIRE_ALL_TARGETS));
         radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(1, Names.REQUIRE_ONE_TARGET));
-    }
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        if (selectedInventories.isEmpty())
-        {
-            errors.add(Names.NO_DETECTOR_ERROR);
-        }
     }
 }

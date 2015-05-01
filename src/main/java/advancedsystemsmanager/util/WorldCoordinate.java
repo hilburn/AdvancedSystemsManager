@@ -22,6 +22,15 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = 173 + x;
+        result = 31 * result + z;
+        result = 31 * result + y;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -31,15 +40,6 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
 
         return x == that.x && y == that.y && z == that.z;
 
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = 173 + x;
-        result = 31 * result + z;
-        result = 31 * result + y;
-        return result;
     }
 
     public int getX()
@@ -68,13 +68,13 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
         return depth == o.depth ? 0 : depth < o.depth ? -1 : 1;
     }
 
-    public void setTileEntity(TileEntity tileEntity)
-    {
-        this.tileEntity = tileEntity;
-    }
-
     public TileEntity getTileEntity()
     {
         return tileEntity;
+    }
+
+    public void setTileEntity(TileEntity tileEntity)
+    {
+        this.tileEntity = tileEntity;
     }
 }

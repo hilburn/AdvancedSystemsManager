@@ -23,12 +23,6 @@ public class MenuVariableContainers extends MenuContainer
     }
 
     @Override
-    public String getName()
-    {
-        return Names.VARIABLE_CONTAINERS_MENU;
-    }
-
-    @Override
     public Set<ISystemType> getValidTypes()
     {
         MenuContainerTypes componentMenuContainerTypes = ((MenuContainerTypes)getParent().getMenus().get(1));
@@ -54,5 +48,11 @@ public class MenuVariableContainers extends MenuContainer
     public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
     {
         return super.isVariableAllowed(validTypes, i) && i != ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
+    }
+
+    @Override
+    public String getName()
+    {
+        return Names.VARIABLE_CONTAINERS_MENU;
     }
 }

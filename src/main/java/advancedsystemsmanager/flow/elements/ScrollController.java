@@ -14,18 +14,8 @@ import java.util.List;
 public abstract class ScrollController<T>
 {
 
-    public int offset;
-    public boolean canScroll;
-    public int dir;
-    public boolean clicked;
-    public boolean selected;
-    public TextBoxLogic textBox;
-    public List<T> result;
-    public boolean hasSearchBox;
-
     public static final int ITEM_SIZE = 16;
     public static final int ITEM_SIZE_WITH_MARGIN = 20;
-
     public static final int ARROW_SIZE_W = 10;
     public static final int ARROW_SIZE_H = 6;
     public static final int ARROW_SRC_X = 64;
@@ -33,7 +23,6 @@ public abstract class ScrollController<T>
     public static final int ARROW_X = 105;
     public static final int ARROW_Y_UP = 32;
     public static final int ARROW_Y_DOWN = 42;
-
     public static final int TEXT_BOX_SIZE_W = 64;
     public static final int TEXT_BOX_SIZE_H = 12;
     public static final int TEXT_BOX_SRC_X = 0;
@@ -47,14 +36,23 @@ public abstract class ScrollController<T>
     public static final int CURSOR_Z = 5;
     public static final int AMOUNT_TEXT_X = 75;
     public static final int AMOUNT_TEXT_Y = 9;
-
-
+    public static final int SCROLL_SPEED = 100;
+    public int offset;
+    public boolean canScroll;
+    public int dir;
+    public boolean clicked;
+    public boolean selected;
+    public TextBoxLogic textBox;
+    public List<T> result;
+    public boolean hasSearchBox;
     public int itemsPerRow = 5;
     public int visibleRows = 2;
     public int startX = 5;
     public int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
     public boolean disabledScroll;
     public long lastUpdate;
+    public float left;
+
 
     public ScrollController(boolean hasSearchBox)
     {
@@ -88,63 +86,32 @@ public abstract class ScrollController<T>
         updateSearch();
     }
 
+    public void updateSearch()
+    {
+        if (hasSearchBox)
+        {
+            result = updateSearch(textBox.getText().toLowerCase(), textBox.getText().toLowerCase().equals(".all"));
+        } else
+        {
+            result = updateSearch("", false);
+        }
+        updateScrolling();
+    }
 
     public abstract List<T> updateSearch(String search, boolean all);
 
-    @SideOnly(Side.CLIENT)
-    public abstract void onClick(T t, int mX, int mY, int button);
-
-    @SideOnly(Side.CLIENT)
-    public abstract void draw(GuiManager gui, T t, int x, int y, boolean hover);
-
-    @SideOnly(Side.CLIENT)
-    public abstract void drawMouseOver(GuiManager gui, T t, int mX, int mY);
-
+    public void updateScrolling()
+    {
+        canScroll = result.size() > itemsPerRow * visibleRows;
+        if (!canScroll)
+        {
+            offset = 0;
+        }
+    }
 
     public void setX(int val)
     {
         startX = val;
-    }
-
-    public int getScrollingStartX()
-    {
-        return startX;
-    }
-
-    public int getScrollingStartY()
-    {
-        return scrollingUpperLimit + 3;
-    }
-
-
-    public int getFirstRow()
-    {
-        return (scrollingUpperLimit + offset - getScrollingStartY()) / ITEM_SIZE_WITH_MARGIN;
-    }
-
-    public List<Point> getItemCoordinates()
-    {
-        List<Point> points = new ArrayList<Point>();
-
-        int start = getFirstRow();
-        for (int row = start; row < start + visibleRows + 1; row++)
-        {
-            for (int col = 0; col < itemsPerRow; col++)
-            {
-                int id = row * itemsPerRow + col;
-                if (id >= 0 && id < result.size())
-                {
-                    int x = getScrollingStartX() + ITEM_SIZE_WITH_MARGIN * col;
-                    int y = getScrollingStartY() + row * ITEM_SIZE_WITH_MARGIN - offset;
-                    if (y > scrollingUpperLimit && y + ITEM_SIZE < FlowComponent.getMenuOpenSize())
-                    {
-                        points.add(new Point(id, x, y));
-                    }
-                }
-            }
-        }
-
-        return points;
     }
 
     public void onClick(int mX, int mY, int button)
@@ -181,6 +148,53 @@ public abstract class ScrollController<T>
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    public abstract void onClick(T t, int mX, int mY, int button);
+
+    public List<Point> getItemCoordinates()
+    {
+        List<Point> points = new ArrayList<Point>();
+
+        int start = getFirstRow();
+        for (int row = start; row < start + visibleRows + 1; row++)
+        {
+            for (int col = 0; col < itemsPerRow; col++)
+            {
+                int id = row * itemsPerRow + col;
+                if (id >= 0 && id < result.size())
+                {
+                    int x = getScrollingStartX() + ITEM_SIZE_WITH_MARGIN * col;
+                    int y = getScrollingStartY() + row * ITEM_SIZE_WITH_MARGIN - offset;
+                    if (y > scrollingUpperLimit && y + ITEM_SIZE < FlowComponent.getMenuOpenSize())
+                    {
+                        points.add(new Point(id, x, y));
+                    }
+                }
+            }
+        }
+
+        return points;
+    }
+
+    public int getScrollingStartX()
+    {
+        return startX;
+    }
+
+    public int getFirstRow()
+    {
+        return (scrollingUpperLimit + offset - getScrollingStartY()) / ITEM_SIZE_WITH_MARGIN;
+    }
+
+    public int getScrollingStartY()
+    {
+        return scrollingUpperLimit + 3;
+    }
+
+    public boolean inArrowBounds(boolean down, int mX, int mY)
+    {
+        return CollisionHelper.inBounds(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
+    }
 
     public void onRelease(int mX, int mY)
     {
@@ -235,9 +249,20 @@ public abstract class ScrollController<T>
         }
     }
 
-    public static final int SCROLL_SPEED = 100;
+    @SideOnly(Side.CLIENT)
+    public abstract void draw(GuiManager gui, T t, int x, int y, boolean hover);
 
-    public float left;
+    @SideOnly(Side.CLIENT)
+    public void drawArrow(GuiManager gui, boolean down, int mX, int mY)
+    {
+        if (canScroll)
+        {
+            int srcArrowX = canScroll ? clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 : 3;
+            int srcArrowY = down ? 1 : 0;
+
+            gui.drawTexture(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
+        }
+    }
 
     public void update(float partial)
     {
@@ -267,23 +292,6 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawArrow(GuiManager gui, boolean down, int mX, int mY)
-    {
-        if (canScroll)
-        {
-            int srcArrowX = canScroll ? clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 : 3;
-            int srcArrowY = down ? 1 : 0;
-
-            gui.drawTexture(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
-        }
-    }
-
-    public boolean inArrowBounds(boolean down, int mX, int mY)
-    {
-        return CollisionHelper.inBounds(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
-    }
-
-    @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
         List<Point> points = getItemCoordinates();
@@ -296,15 +304,8 @@ public abstract class ScrollController<T>
         }
     }
 
-
-    public void updateScrolling()
-    {
-        canScroll = result.size() > itemsPerRow * visibleRows;
-        if (!canScroll)
-        {
-            offset = 0;
-        }
-    }
+    @SideOnly(Side.CLIENT)
+    public abstract void drawMouseOver(GuiManager gui, T t, int mX, int mY);
 
     public void setItemsPerRow(int n)
     {
@@ -321,32 +322,20 @@ public abstract class ScrollController<T>
         scrollingUpperLimit = n;
     }
 
-    public void updateSearch()
-    {
-        if (hasSearchBox)
-        {
-            result = updateSearch(textBox.getText().toLowerCase(), textBox.getText().toLowerCase().equals(".all"));
-        } else
-        {
-            result = updateSearch("", false);
-        }
-        updateScrolling();
-    }
-
     public List<T> getResult()
     {
         return result;
+    }
+
+    public String getText()
+    {
+        return textBox.getText();
     }
 
     public void setText(String s)
     {
         textBox.setText(s);
         updateSearch();
-    }
-
-    public String getText()
-    {
-        return textBox.getText();
     }
 
     public void setTextAndCursor(String s)

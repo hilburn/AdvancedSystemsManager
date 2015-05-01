@@ -33,16 +33,16 @@ public class MenuReceivers extends MenuContainer
     }
 
     @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() == ConnectionSet.REDSTONE;
+    }
+
+    @Override
     public void initRadioButtons()
     {
         radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
         radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(1, Names.REQUIRE_ALL_TARGETS));
         radioButtonsMulti.add(new MenuContainer.RadioButtonInventory(2, Names.REQUIRE_ONE_TARGET));
-    }
-
-    @Override
-    public boolean isVisible()
-    {
-        return getParent().getConnectionSet() == ConnectionSet.REDSTONE;
     }
 }

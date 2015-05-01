@@ -15,6 +15,10 @@ public class DataReader
     private InputStream stream;
     private int byteBuffer;
     private int bitCountBuffer;
+    private boolean idRead;
+    private int idBits;
+    private boolean invRead;
+    private int invBits;
 
     DataReader(byte[] data)
     {
@@ -26,14 +30,42 @@ public class DataReader
         this.stream = stream;
     }
 
-    public int readByte()
-    {
-        return readData(8);
-    }
-
     public boolean readBoolean()
     {
         return readData(DataBitHelper.BOOLEAN) != 0;
+    }
+
+    public void close()
+    {
+        try
+        {
+            stream.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public String readString(DataBitHelper bits)
+    {
+        int length = readData(bits);
+        if (length == 0)
+        {
+            return null;
+        } else
+        {
+            byte[] bytes = new byte[length];
+            for (int i = 0; i < bytes.length; i++)
+            {
+                bytes[i] = (byte)readByte();
+            }
+            return new String(bytes);
+        }
+    }
+
+    public int readByte()
+    {
+        return readData(8);
     }
 
     public int readData(DataBitHelper bitCount)
@@ -76,34 +108,6 @@ public class DataReader
         return data;
     }
 
-    public void close()
-    {
-        try
-        {
-            stream.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public String readString(DataBitHelper bits)
-    {
-        int length = readData(bits);
-        if (length == 0)
-        {
-            return null;
-        } else
-        {
-            byte[] bytes = new byte[length];
-            for (int i = 0; i < bytes.length; i++)
-            {
-                bytes[i] = (byte)readByte();
-            }
-            return new String(bytes);
-        }
-    }
-
     public NBTTagCompound readNBT()
     {
         if (readBoolean())
@@ -127,9 +131,6 @@ public class DataReader
         }
     }
 
-    private boolean idRead;
-    private int idBits;
-
     public int readComponentId()
     {
         if (!idRead)
@@ -147,9 +148,6 @@ public class DataReader
 
         return readData(idBits);
     }
-
-    private boolean invRead;
-    private int invBits;
 
     public int readInventoryId()
     {

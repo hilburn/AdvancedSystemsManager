@@ -7,6 +7,9 @@ import net.minecraft.item.ItemStack;
 
 public class Null
 {
+    public static IInventory NULL_INVENTORY = new NullInventory();
+    public static ItemStack NULL_STACK = new ItemStack(Blocks.end_portal, 0);
+
     private static class NullInventory implements IInventory
     {
         @Override
@@ -84,7 +87,4 @@ public class Null
             return false;
         }
     }
-
-    public static IInventory NULL_INVENTORY = new NullInventory();
-    public static ItemStack NULL_STACK = new ItemStack(Blocks.end_portal, 0);
 }

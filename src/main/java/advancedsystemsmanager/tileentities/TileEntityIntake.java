@@ -18,6 +18,7 @@ import java.util.List;
 public class TileEntityIntake extends TileEntityClusterElement implements IInventory
 {
 
+    private static final int DISTANCE = 3;
     private List<EntityItem> items;
 
     @Override
@@ -65,6 +66,12 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
         {
             return null;
         }
+    }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int i)
+    {
+        return null;
     }
 
     @Override
@@ -130,42 +137,6 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
         return true;
     }
 
-    private static final int DISTANCE = 3;
-
-    private void updateInventory()
-    {
-        if (items == null)
-        {
-            items = new ArrayList<EntityItem>();
-
-            int lowX = xCoord - DISTANCE;
-            int lowY = yCoord - DISTANCE;
-            int lowZ = zCoord - DISTANCE;
-
-            int highX = xCoord + 1 + DISTANCE;
-            int highY = yCoord + 1 + DISTANCE;
-            int highZ = zCoord + 1 + DISTANCE;
-
-            items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(lowX, lowY, lowZ, highX, highY, highZ));
-
-            //remove items we can't use right away, this check is done when we interact with items too, to make sure it hasn't changed
-            for (Iterator<EntityItem> iterator = items.iterator(); iterator.hasNext(); )
-            {
-                EntityItem next = iterator.next();
-                if (!canPickUp(next))
-                {
-                    iterator.remove();
-                }
-            }
-        }
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int i)
-    {
-        return null;
-    }
-
     @Override
     public int getInventoryStackLimit()
     {
@@ -196,15 +167,43 @@ public class TileEntityIntake extends TileEntityClusterElement implements IInven
         return true;
     }
 
-    @Override
-    public void updateEntity()
+    private void updateInventory()
     {
-        items = null;
+        if (items == null)
+        {
+            items = new ArrayList<EntityItem>();
+
+            int lowX = xCoord - DISTANCE;
+            int lowY = yCoord - DISTANCE;
+            int lowZ = zCoord - DISTANCE;
+
+            int highX = xCoord + 1 + DISTANCE;
+            int highY = yCoord + 1 + DISTANCE;
+            int highZ = zCoord + 1 + DISTANCE;
+
+            items = worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(lowX, lowY, lowZ, highX, highY, highZ));
+
+            //remove items we can't use right away, this check is done when we interact with items too, to make sure it hasn't changed
+            for (Iterator<EntityItem> iterator = items.iterator(); iterator.hasNext(); )
+            {
+                EntityItem next = iterator.next();
+                if (!canPickUp(next))
+                {
+                    iterator.remove();
+                }
+            }
+        }
     }
 
     private boolean canPickUp(EntityItem item)
     {
         return !item.isDead && (item.delayBeforeCanPickup == 0 || BlockRegistry.blockCableIntake.isAdvanced(getBlockMetadata()));
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        items = null;
     }
 
     @Override

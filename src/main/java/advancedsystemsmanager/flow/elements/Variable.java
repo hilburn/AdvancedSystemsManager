@@ -14,6 +14,12 @@ import java.util.List;
 
 public class Variable implements IContainerSelection<GuiManager>
 {
+    public static final int VARIABLE_SRC_X = 32;
+    public static final int VARIABLE_SRC_Y = 130;
+    public static final int VARIABLE_SIZE = 14;
+    public static final String NBT_EXECUTED = "Executed";
+    public static final String NBT_SELECTION = "Selection";
+    public static final String NBT_SELECTION_ID = "Id";
     public int id;
     public FlowComponent declaration;
     public List<Integer> containers;
@@ -35,10 +41,6 @@ public class Variable implements IContainerSelection<GuiManager>
     {
         return id;
     }
-
-    public static final int VARIABLE_SRC_X = 32;
-    public static final int VARIABLE_SRC_Y = 130;
-    public static final int VARIABLE_SIZE = 14;
 
     @Override
     public void draw(GuiManager gui, int x, int y)
@@ -80,6 +82,11 @@ public class Variable implements IContainerSelection<GuiManager>
 
     }
 
+    public FlowComponent getDeclaration()
+    {
+        return declaration;
+    }
+
     public void setDeclaration(FlowComponent flowComponent)
     {
         if (flowComponent == null || declaration == null)
@@ -88,14 +95,14 @@ public class Variable implements IContainerSelection<GuiManager>
         }
     }
 
-    public FlowComponent getDeclaration()
-    {
-        return declaration;
-    }
-
     public List<Integer> getContainers()
     {
         return containers;
+    }
+
+    public void setContainers(List<Integer> containers)
+    {
+        this.containers = containers;
     }
 
     public void add(int id)
@@ -104,11 +111,6 @@ public class Variable implements IContainerSelection<GuiManager>
         {
             containers.add(id);
         }
-    }
-
-    public void setContainers(List<Integer> containers)
-    {
-        this.containers = containers;
     }
 
     public boolean hasBeenExecuted()
@@ -130,10 +132,6 @@ public class Variable implements IContainerSelection<GuiManager>
     {
         containers.remove((Integer)id);
     }
-
-    public static final String NBT_EXECUTED = "Executed";
-    public static final String NBT_SELECTION = "Selection";
-    public static final String NBT_SELECTION_ID = "Id";
 
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {

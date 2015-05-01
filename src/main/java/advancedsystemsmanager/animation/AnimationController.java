@@ -1,4 +1,5 @@
 package advancedsystemsmanager.animation;
+
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
@@ -11,6 +12,9 @@ import java.util.*;
 public class AnimationController
 {
 
+    public static final int MOVE_SPEED = 300; //pixels per second
+    public static final int MOVE_SPEED_CONNECTION = 300; //pixels per second
+    public static final int MOVE_SPEED_NODE = 250;
     public final TileEntityManager manager;
     public List<FlowComponent> blueprints;
     public List<FlowComponent> items;
@@ -18,7 +22,6 @@ public class AnimationController
     public FlowComponent blueprint;
     public Progress progress = Progress.GROUP;
     public float delay;
-
     public int targetConnectionX, targetConnectionY;
     public boolean setMenuInfo;
     public int menuId;
@@ -26,9 +29,13 @@ public class AnimationController
     public boolean openNext;
     public int virtualId;
     public int mult;
-
+    public float time;
+    public int connectionX;
+    public int connectionY;
+    public Point blueprintNode;
+    public List<Point> nodesBlueprint;
+    public Connection nodesConnection;
     Map<Integer, Integer> groupNodes = new HashMap<Integer, Integer>();
-
     public AnimationController(TileEntityManager manager, int mult)
     {
         this.manager = manager;
@@ -114,18 +121,12 @@ public class AnimationController
         }
     }
 
-    public float time;
-
     public void update(float elapsedSeconds)
     {
         time += elapsedSeconds * mult;
 
         while (execute()) ;
     }
-
-    public static final int MOVE_SPEED = 300; //pixels per second
-    public static final int MOVE_SPEED_CONNECTION = 300; //pixels per second
-    public static final int MOVE_SPEED_NODE = 250;
 
     public boolean execute()
     {
@@ -520,11 +521,13 @@ public class AnimationController
         return false;
     }
 
-    public int connectionX;
-    public int connectionY;
-    public Point blueprintNode;
-    public List<Point> nodesBlueprint;
-    public Connection nodesConnection;
+    public void moveToFront(FlowComponent c)
+    {
+        FlowComponent component = manager.getFlowItem(c.getId());
+        manager.getZLevelRenderingList().remove(c);
+        manager.getZLevelRenderingList().add(0, component);
+    }
+
 
     public enum Progress
     {
@@ -537,14 +540,6 @@ public class AnimationController
         CLOSE,
         CONNECT,
         NODES
-    }
-
-
-    public void moveToFront(FlowComponent c)
-    {
-        FlowComponent component = manager.getFlowItem(c.getId());
-        manager.getZLevelRenderingList().remove(c);
-        manager.getZLevelRenderingList().add(0, component);
     }
 
 }

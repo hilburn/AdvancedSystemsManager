@@ -59,6 +59,10 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
         {
             @Override
+            public String getMouseOver()
+            {
+                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Names.MAXIMUM_COMPONENT_ERROR : super.getMouseOver();
+            }            @Override
             public void onClick(DataReader dataReader)
             {
                 if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
@@ -96,11 +100,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 return true;
             }
 
-            @Override
-            public String getMouseOver()
-            {
-                return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Names.MAXIMUM_COMPONENT_ERROR : super.getMouseOver();
-            }
+
         });
         return buttons;
     }

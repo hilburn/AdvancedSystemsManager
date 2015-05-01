@@ -10,15 +10,6 @@ import java.util.TimerTask;
 
 public class GuiTextField extends Gui
 {
-    private class ToggleCursor extends TimerTask
-    {
-        @Override
-        public void run()
-        {
-            toggleCursor = !toggleCursor;
-        }
-    }
-
     private int xSize, ySize;
     private int x, y;
     private String text;
@@ -26,7 +17,6 @@ public class GuiTextField extends Gui
     private int cursorPos = 0;
     private boolean toggleCursor;
     private Timer timer = new Timer();
-
     public GuiTextField(int width, int height, int x, int y)
     {
         this.x = x;
@@ -38,19 +28,9 @@ public class GuiTextField extends Gui
         this.timer.scheduleAtFixedRate(new ToggleCursor(), 0, 300);
     }
 
-    protected void setText(String text)
-    {
-        this.text = text;
-    }
-
     protected void fixCursorPos()
     {
         cursorPos = text.length();
-    }
-
-    public String getText()
-    {
-        return this.text;
     }
 
     public void keyTyped(char c, int keycode)
@@ -145,16 +125,6 @@ public class GuiTextField extends Gui
         drawRect(this.x, this.y, this.x + xSize, this.y + ySize, 0xff000000);
     }
 
-    public String getPreCursor()
-    {
-        return getText().substring(0, cursorPos);
-    }
-
-    public String getPostCursor()
-    {
-        return getText().substring(cursorPos);
-    }
-
     public void drawText()
     {
         String preCursor = getPreCursor();
@@ -165,8 +135,37 @@ public class GuiTextField extends Gui
         fontRenderer.drawString(getPostCursor(), x + 2, this.y + ySize / 2 - 4, 0xe0e0e0);
     }
 
+    public String getPreCursor()
+    {
+        return getText().substring(0, cursorPos);
+    }
+
+    public String getText()
+    {
+        return this.text;
+    }
+
+    protected void setText(String text)
+    {
+        this.text = text;
+    }
+
+    public String getPostCursor()
+    {
+        return getText().substring(cursorPos);
+    }
+
     public void close()
     {
         this.timer.cancel();
+    }
+
+    private class ToggleCursor extends TimerTask
+    {
+        @Override
+        public void run()
+        {
+            toggleCursor = !toggleCursor;
+        }
     }
 }

@@ -60,7 +60,12 @@ public abstract class MenuContainer extends Menu
 
     public static final int CHECK_BOX_FILTER_Y = 5;
     public static final int CHECK_BOX_FILTER_SPACING = 12;
-
+    public static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
+    public static final String NBT_SELECTION = "InventorySelection";
+    public static final String NBT_SELECTION_ID = "InventoryID";
+    public static final String NBT_SHARED = "SharedCommand";
+    //ugly way to make sure the filter controller isn't updating multiple times
+    public static boolean hasUpdated;
     public Page currentPage;
     public List<Integer> selectedInventories;
     public List<IContainerSelection> inventories;
@@ -70,15 +75,8 @@ public abstract class MenuContainer extends Menu
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
     public List<Button> buttons;
-    public static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
     public List<Variable> filterVariables;
     public boolean clientUpdate; //ugly quick way to fix client/server issue
-
-
-    public Set<ISystemType> getValidTypes()
-    {
-        return new HashSet<ISystemType>(Arrays.asList(validType));
-    }
 
     public MenuContainer(FlowComponent parent, ISystemType validType)
     {
@@ -102,6 +100,15 @@ public abstract class MenuContainer extends Menu
 
         scrollController = new ScrollController<IContainerSelection>(getDefaultSearch())
         {
+            public boolean locked;
+            public int lockedX;
+            public int lockedY;
+            @SideOnly(Side.CLIENT)
+            public ToolTip cachedTooltip;
+            public int cachedId;
+            public IContainerSelection cachedContainer;
+            public boolean keepCache;
+
             @Override
             public List<IContainerSelection> updateSearch(String search, boolean all)
             {
@@ -182,18 +189,73 @@ public abstract class MenuContainer extends Menu
                 drawContainer(gui, iContainerSelection, selectedInventories, x, y, hover);
             }
 
-            public boolean locked;
-            public int lockedX;
-            public int lockedY;
             @SideOnly(Side.CLIENT)
-            public ToolTip cachedTooltip;
-            public int cachedId;
-            public IContainerSelection cachedContainer;
-            public boolean keepCache;
+            @Override
+            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int mX, int mY)
+            {
+                drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
+            }
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void drawMouseOver(GuiManager gui, int mX, int mY)
+            {
+                if (locked && GuiBase.isShiftKeyDown())
+                {
+                    drawMouseOver(gui, cachedContainer, lockedX, lockedY, mX, mY);
+                    cachedTooltip.drawMouseOverMouseOver(gui, lockedX + gui.getAdvancedToolTipContentStartX(cachedTooltip), lockedY + gui.getAdvancedToolTipContentStartY(cachedTooltip), mX, mY);
+                } else
+                {
+                    locked = false;
+                    keepCache = false;
+                    super.drawMouseOver(gui, mX, mY);
+                    if (!keepCache)
+                    {
+                        cachedTooltip = null;
+                        cachedContainer = null;
+                    }
+                }
+            }
+
+            @SideOnly(Side.CLIENT)
+            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
+            {
+                boolean isBlock = !iContainerSelection.isVariable();
+
+                if (GuiScreen.isShiftKeyDown() && isBlock)
+                {
+                    if (cachedTooltip == null || cachedId != iContainerSelection.getId())
+                    {
+                        cachedContainer = iContainerSelection;
+                        cachedTooltip = new ToolTip(gui, (SystemBlock)iContainerSelection);
+                        cachedId = iContainerSelection.getId();
+                    }
+                    keepCache = true;
+
+                    gui.drawMouseOver(cachedTooltip, x, y, mX, mY);
+                } else
+                {
+                    List<String> lines = getMouseOverForContainer(iContainerSelection, selectedInventories);
+                    if (isBlock)
+                    {
+                        if (lines == null)
+                        {
+                            lines = new ArrayList<String>();
+                        }
+
+                        lines.add("");
+                        lines.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_EXTRA_INFO));
+                    }
+
+                    gui.drawMouseOver(lines, mX, mY);
+                }
+            }
 
             @SideOnly(Side.CLIENT)
             class ToolTip implements IAdvancedTooltip
             {
+                public static final int SRC_X = 30;
+                public static final int SRC_Y = 20;
                 public ItemStack[] items;
                 public List<String>[] itemTexts;
                 List<String> prefix;
@@ -273,8 +335,18 @@ public abstract class MenuContainer extends Menu
                     return 70;
                 }
 
-                public static final int SRC_X = 30;
-                public static final int SRC_Y = 20;
+                @SideOnly(Side.CLIENT)
+                @Override
+                public void drawContent(GuiBase gui, int x, int y, int mX, int mY)
+                {
+                    drawBlock(gui, x + 25, y + 5, mX, mY, ForgeDirection.NORTH);
+                    drawBlock(gui, x + 5, y + 25, mX, mY, ForgeDirection.WEST);
+                    drawBlock(gui, x + 25, y + 45, mX, mY, ForgeDirection.SOUTH);
+                    drawBlock(gui, x + 45, y + 25, mX, mY, ForgeDirection.EAST);
+
+                    drawBlock(gui, x + 80, y + 15, mX, mY, ForgeDirection.UP);
+                    drawBlock(gui, x + 80, y + 35, mX, mY, ForgeDirection.DOWN);
+                }
 
                 @SideOnly(Side.CLIENT)
                 public void drawBlock(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
@@ -292,34 +364,17 @@ public abstract class MenuContainer extends Menu
                 }
 
                 @SideOnly(Side.CLIENT)
-                public boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
+                @Override
+                public List<String> getPrefix(GuiBase gui)
                 {
-                    if (CollisionHelper.inBounds(x, y, 16, 16, mX, mY))
-                    {
-                        List<String> itemText = itemTexts[direction.ordinal()];
-                        if (itemText != null)
-                        {
-                            gui.drawMouseOver(itemText, mX, mY);
-                        }
-                        return true;
-                    } else
-                    {
-                        return false;
-                    }
+                    return prefix;
                 }
-
 
                 @SideOnly(Side.CLIENT)
                 @Override
-                public void drawContent(GuiBase gui, int x, int y, int mX, int mY)
+                public List<String> getSuffix(GuiBase gui)
                 {
-                    drawBlock(gui, x + 25, y + 5, mX, mY, ForgeDirection.NORTH);
-                    drawBlock(gui, x + 5, y + 25, mX, mY, ForgeDirection.WEST);
-                    drawBlock(gui, x + 25, y + 45, mX, mY, ForgeDirection.SOUTH);
-                    drawBlock(gui, x + 45, y + 25, mX, mY, ForgeDirection.EAST);
-
-                    drawBlock(gui, x + 80, y + 15, mX, mY, ForgeDirection.UP);
-                    drawBlock(gui, x + 80, y + 35, mX, mY, ForgeDirection.DOWN);
+                    return locked ? lockedSuffix : suffix;
                 }
 
                 @SideOnly(Side.CLIENT)
@@ -336,80 +391,20 @@ public abstract class MenuContainer extends Menu
                 }
 
                 @SideOnly(Side.CLIENT)
-                @Override
-                public List<String> getPrefix(GuiBase gui)
+                public boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
                 {
-                    return prefix;
-                }
-
-                @SideOnly(Side.CLIENT)
-                @Override
-                public List<String> getSuffix(GuiBase gui)
-                {
-                    return locked ? lockedSuffix : suffix;
-                }
-            }
-
-
-            @SideOnly(Side.CLIENT)
-            @Override
-            public void drawMouseOver(GuiManager gui, int mX, int mY)
-            {
-                if (locked && GuiBase.isShiftKeyDown())
-                {
-                    drawMouseOver(gui, cachedContainer, lockedX, lockedY, mX, mY);
-                    cachedTooltip.drawMouseOverMouseOver(gui, lockedX + gui.getAdvancedToolTipContentStartX(cachedTooltip), lockedY + gui.getAdvancedToolTipContentStartY(cachedTooltip), mX, mY);
-                } else
-                {
-                    locked = false;
-                    keepCache = false;
-                    super.drawMouseOver(gui, mX, mY);
-                    if (!keepCache)
+                    if (CollisionHelper.inBounds(x, y, 16, 16, mX, mY))
                     {
-                        cachedTooltip = null;
-                        cachedContainer = null;
-                    }
-                }
-            }
-
-            @SideOnly(Side.CLIENT)
-            @Override
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int mX, int mY)
-            {
-                drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
-            }
-
-            @SideOnly(Side.CLIENT)
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
-            {
-                boolean isBlock = !iContainerSelection.isVariable();
-
-                if (GuiScreen.isShiftKeyDown() && isBlock)
-                {
-                    if (cachedTooltip == null || cachedId != iContainerSelection.getId())
-                    {
-                        cachedContainer = iContainerSelection;
-                        cachedTooltip = new ToolTip(gui, (SystemBlock)iContainerSelection);
-                        cachedId = iContainerSelection.getId();
-                    }
-                    keepCache = true;
-
-                    gui.drawMouseOver(cachedTooltip, x, y, mX, mY);
-                } else
-                {
-                    List<String> lines = getMouseOverForContainer(iContainerSelection, selectedInventories);
-                    if (isBlock)
-                    {
-                        if (lines == null)
+                        List<String> itemText = itemTexts[direction.ordinal()];
+                        if (itemText != null)
                         {
-                            lines = new ArrayList<String>();
+                            gui.drawMouseOver(itemText, mX, mY);
                         }
-
-                        lines.add("");
-                        lines.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_EXTRA_INFO));
+                        return true;
+                    } else
+                    {
+                        return false;
                     }
-
-                    gui.drawMouseOver(lines, mX, mY);
                 }
             }
         };
@@ -526,11 +521,88 @@ public abstract class MenuContainer extends Menu
         return ret;
     }
 
-
     public void initRadioButtons()
     {
         radioButtonsMulti.add(new RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
         radioButtonsMulti.add(new RadioButtonInventory(1, Names.RUN_ONE_PER_TARGET));
+    }
+
+    public void writeRadioButtonData(DataWriter dw, int option)
+    {
+        dw.writeBoolean(true);
+        dw.writeData(option, DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
+    }
+
+    public void setSelectedInventoryAndSync(int val, boolean select)
+    {
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, val, select);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeData(DataWriter dw, int id, boolean select)
+    {
+        dw.writeBoolean(false);
+        dw.writeInventoryId(getParent().getManager(), id);
+        dw.writeBoolean(select);
+    }
+
+    public List<IContainerSelection> getInventories(TileEntityManager manager)
+    {
+        Set<ISystemType> validTypes = getValidTypes();
+        List<SystemBlock> tempInventories = manager.getConnectedInventories();
+        List<IContainerSelection> ret = new ArrayList<IContainerSelection>();
+        filterVariables.clear();
+
+        for (int i = 0; i < manager.getVariables().length; i++)
+        {
+            Variable variable = manager.getVariables()[i];
+            if (isVariableAllowed(validTypes, i))
+            {
+                ret.add(variable);
+                filterVariables.add(variable);
+            }
+        }
+
+        for (SystemBlock tempInventory : tempInventories)
+        {
+            if (tempInventory.isOfAnyType(validTypes))
+            {
+                ret.add(tempInventory);
+            }
+        }
+
+        if (getParent().isInventoryListDirty())
+        {
+            getParent().setInventoryListDirty(false);
+            scrollController.updateSearch();
+        }
+        filter.scrollControllerVariable.updateSearch();
+
+
+        return ret;
+    }
+
+    public Set<ISystemType> getValidTypes()
+    {
+        return new HashSet<ISystemType>(Arrays.asList(validType));
+    }
+
+    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
+    {
+        Variable variable = getParent().getManager().getVariables()[i];
+        if (variable.isValid())
+        {
+            Set<ISystemType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
+            for (ISystemType type : validTypes)
+            {
+                if (SystemBlock.isOfType(variableValidTypes, type))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Page getCurrentPage()
@@ -542,16 +614,6 @@ public abstract class MenuContainer extends Menu
     {
         return filterVariables;
     }
-
-    public class RadioButtonInventory extends RadioButton
-    {
-
-        public RadioButtonInventory(int id, String text)
-        {
-            super(RADIO_BUTTON_MULTI_X, RADIO_BUTTON_MULTI_Y + id * RADIO_BUTTON_SPACING, text);
-        }
-    }
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -624,32 +686,6 @@ public abstract class MenuContainer extends Menu
         return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
-    //ugly way to make sure the filter controller isn't updating multiple times
-    public static boolean hasUpdated;
-
-    @Override
-    public void update(float partial)
-    {
-        scrollController.update(partial);
-        if (!hasUpdated)
-        {
-            filter.scrollControllerVariable.update(partial);
-            hasUpdated = true;
-        }
-    }
-
-    @Override
-    public void doScroll(int scroll)
-    {
-        if (currentPage == Page.MAIN)
-        {
-            scrollController.doScroll(scroll);
-        } else if (currentPage == Page.VARIABLE)
-        {
-            filter.scrollControllerVariable.doScroll(scroll);
-        }
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
@@ -665,7 +701,7 @@ public abstract class MenuContainer extends Menu
         {
             if (CollisionHelper.inBounds(5, 60, MENU_WIDTH - 20, 5, mX, mY))
             {
-                String str = StatCollector.translateToLocal(Names.ABSOLUTE_RANGES)+ ":";
+                String str = StatCollector.translateToLocal(Names.ABSOLUTE_RANGES) + ":";
 
                 str += "\n" + StatCollector.translateToLocal(Names.X) + " (" + (filter.lowerRange[0].getNumber() + getParent().getManager().xCoord) + ", " + (filter.higherRange[0].getNumber() + getParent().getManager().xCoord) + ")";
                 str += "\n" + StatCollector.translateToLocal(Names.Y) + " (" + (filter.lowerRange[1].getNumber() + getParent().getManager().yCoord) + ", " + (filter.higherRange[1].getNumber() + getParent().getManager().yCoord) + ")";
@@ -685,7 +721,6 @@ public abstract class MenuContainer extends Menu
             gui.drawMouseOver(StatCollector.translateToLocal(Names.GO_BACK), mX, mY);
         }
     }
-
 
     @Override
     public void onClick(int mX, int mY, int b)
@@ -729,11 +764,6 @@ public abstract class MenuContainer extends Menu
         }
     }
 
-    public boolean hasMultipleInventories()
-    {
-        return selectedInventories.size() > 1 || (selectedInventories.size() > 0 && selectedInventories.get(0) < VariableColor.values().length);
-    }
-
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
@@ -746,6 +776,14 @@ public abstract class MenuContainer extends Menu
         filter.currentMenu = this;
         scrollController.onRelease(mX, mY); //no need to check we're on the correct menu, this makes sure the holding always stops
         filter.scrollControllerVariable.onRelease(mX, mY);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        filter.currentMenu = this;
+        return currentPage == Page.MAIN ? scrollController.onKeyStroke(gui, c, k) : filter.textBoxes.onKeyStroke(gui, c, k);
     }
 
     @Override
@@ -830,63 +868,6 @@ public abstract class MenuContainer extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
-        } else
-        {
-            int id = dr.readInventoryId();
-            if (dr.readBoolean())
-            {
-                selectedInventories.add(id);
-            } else
-            {
-                selectedInventories.remove((Integer)id);
-            }
-        }
-    }
-
-    public void writeRadioButtonData(DataWriter dw, int option)
-    {
-        dw.writeBoolean(true);
-        dw.writeData(option, DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
-    }
-
-    public void setSelectedInventoryAndSync(int val, boolean select)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, val, select);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeData(DataWriter dw, int id, boolean select)
-    {
-        dw.writeBoolean(false);
-        dw.writeInventoryId(getParent().getManager(), id);
-        dw.writeBoolean(select);
-    }
-
-
-    public List<Integer> getSelectedInventories()
-    {
-        return selectedInventories;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        filter.currentMenu = this;
-        return currentPage == Page.MAIN ? scrollController.onKeyStroke(gui, c, k) : filter.textBoxes.onKeyStroke(gui, c, k);
-    }
-
-    public static final String NBT_SELECTION = "InventorySelection";
-    public static final String NBT_SELECTION_ID = "InventoryID";
-    public static final String NBT_SHARED = "SharedCommand";
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
         selectedInventories.clear();
@@ -939,10 +920,27 @@ public abstract class MenuContainer extends Menu
         nbtTagCompound.setByte(NBT_SHARED, (byte)getOption());
     }
 
-
-    public void setSelectedInventories(List<Integer> selectedInventories)
+    @Override
+    public void update(float partial)
     {
-        this.selectedInventories = selectedInventories;
+        scrollController.update(partial);
+        if (!hasUpdated)
+        {
+            filter.scrollControllerVariable.update(partial);
+            hasUpdated = true;
+        }
+    }
+
+    @Override
+    public void doScroll(int scroll)
+    {
+        if (currentPage == Page.MAIN)
+        {
+            scrollController.doScroll(scroll);
+        } else if (currentPage == Page.VARIABLE)
+        {
+            filter.scrollControllerVariable.doScroll(scroll);
+        }
     }
 
     public int getOption()
@@ -955,57 +953,38 @@ public abstract class MenuContainer extends Menu
         radioButtonsMulti.setSelectedOption(val);
     }
 
-    public List<IContainerSelection> getInventories(TileEntityManager manager)
+    public boolean hasMultipleInventories()
     {
-        Set<ISystemType> validTypes = getValidTypes();
-        List<SystemBlock> tempInventories = manager.getConnectedInventories();
-        List<IContainerSelection> ret = new ArrayList<IContainerSelection>();
-        filterVariables.clear();
-
-        for (int i = 0; i < manager.getVariables().length; i++)
-        {
-            Variable variable = manager.getVariables()[i];
-            if (isVariableAllowed(validTypes, i))
-            {
-                ret.add(variable);
-                filterVariables.add(variable);
-            }
-        }
-
-        for (SystemBlock tempInventory : tempInventories)
-        {
-            if (tempInventory.isOfAnyType(validTypes))
-            {
-                ret.add(tempInventory);
-            }
-        }
-
-        if (getParent().isInventoryListDirty())
-        {
-            getParent().setInventoryListDirty(false);
-            scrollController.updateSearch();
-        }
-        filter.scrollControllerVariable.updateSearch();
-
-
-        return ret;
+        return selectedInventories.size() > 1 || (selectedInventories.size() > 0 && selectedInventories.get(0) < VariableColor.values().length);
     }
 
-    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
+    @Override
+    public void readNetworkComponent(DataReader dr)
     {
-        Variable variable = getParent().getManager().getVariables()[i];
-        if (variable.isValid())
+        if (dr.readBoolean())
         {
-            Set<ISystemType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
-            for (ISystemType type : validTypes)
+            setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
+        } else
+        {
+            int id = dr.readInventoryId();
+            if (dr.readBoolean())
             {
-                if (SystemBlock.isOfType(variableValidTypes, type))
-                {
-                    return true;
-                }
+                selectedInventories.add(id);
+            } else
+            {
+                selectedInventories.remove((Integer)id);
             }
         }
-        return false;
+    }
+
+    public List<Integer> getSelectedInventories()
+    {
+        return selectedInventories;
+    }
+
+    public void setSelectedInventories(List<Integer> selectedInventories)
+    {
+        this.selectedInventories = selectedInventories;
     }
 
     public enum Page
@@ -1026,19 +1005,25 @@ public abstract class MenuContainer extends Menu
         }
     }
 
+    public class RadioButtonInventory extends RadioButton
+    {
+
+        public RadioButtonInventory(int id, String text)
+        {
+            super(RADIO_BUTTON_MULTI_X, RADIO_BUTTON_MULTI_Y + id * RADIO_BUTTON_SPACING, text);
+        }
+    }
 
     public abstract class Button
     {
-        int x, y;
-        String label;
-        String description;
-        Page page;
-
-
         public final int width;
         public final int height;
         public final int srcX;
         public final int srcY;
+        int x, y;
+        String label;
+        String description;
+        Page page;
 
 
         public Button(String label, Page page, boolean wide, int x, int y)
@@ -1064,11 +1049,6 @@ public abstract class MenuContainer extends Menu
 
         abstract void onClick();
 
-        boolean inBounds(int mX, int mY)
-        {
-            return isVisible() && CollisionHelper.inBounds(x, y, width, height, mX, mY);
-        }
-
         @SideOnly(Side.CLIENT)
         void draw(GuiManager gui, int mX, int mY)
         {
@@ -1079,6 +1059,16 @@ public abstract class MenuContainer extends Menu
             }
         }
 
+        boolean inBounds(int mX, int mY)
+        {
+            return isVisible() && CollisionHelper.inBounds(x, y, width, height, mX, mY);
+        }
+
+        boolean isVisible()
+        {
+            return currentPage == page;
+        }
+
         @SideOnly(Side.CLIENT)
         void drawMouseOver(GuiManager gui, int mX, int mY)
         {
@@ -1086,11 +1076,6 @@ public abstract class MenuContainer extends Menu
             {
                 gui.drawMouseOver(description, mX, mY);
             }
-        }
-
-        boolean isVisible()
-        {
-            return currentPage == page;
         }
     }
 

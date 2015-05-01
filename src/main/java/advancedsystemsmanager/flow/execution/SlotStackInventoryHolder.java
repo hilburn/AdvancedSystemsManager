@@ -25,18 +25,6 @@ public class SlotStackInventoryHolder implements IItemBufferSubElement
         return itemStack;
     }
 
-
-    public IInventory getInventory()
-    {
-        return inventory;
-    }
-
-
-    public int getSlot()
-    {
-        return slot;
-    }
-
     @Override
     public void remove()
     {
@@ -44,6 +32,11 @@ public class SlotStackInventoryHolder implements IItemBufferSubElement
         {
             getInventory().setInventorySlotContents(getSlot(), null);
         }
+    }
+
+    public IInventory getInventory()
+    {
+        return inventory;
     }
 
     @Override
@@ -77,12 +70,6 @@ public class SlotStackInventoryHolder implements IItemBufferSubElement
         return inventory;
     }
 
-    public void reduceAmount(int val)
-    {
-        itemStack.stackSize -= val;
-        sizeLeft -= val;
-    }
-
     public SlotStackInventoryHolder getSplitElement(int elementAmount, int id, boolean fair)
     {
         SlotStackInventoryHolder element = new SlotStackInventoryHolder(this.itemStack, this.inventory, this.slot);
@@ -99,5 +86,16 @@ public class SlotStackInventoryHolder implements IItemBufferSubElement
 
         element.sizeLeft = amount;
         return element;
+    }
+
+    public int getSlot()
+    {
+        return slot;
+    }
+
+    public void reduceAmount(int val)
+    {
+        itemStack.stackSize -= val;
+        sizeLeft -= val;
     }
 }

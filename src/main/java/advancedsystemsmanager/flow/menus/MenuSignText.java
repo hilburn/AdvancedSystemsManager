@@ -35,7 +35,9 @@ public class MenuSignText extends Menu
     public static final int CHECK_BOX_X = 75;
     public static final int CHECK_BOX_Y = 2;
     public static final float IDLE_TIME = 1F;
-
+    public static final String NBT_LINES = "Lines";
+    public static final String NBT_UPDATE = "Update";
+    public static final String NBT_TEXT = "Text";
     public TextBoxLogic[] textBoxes;
     public CheckBoxList checkBoxes;
     public boolean[] update;
@@ -93,33 +95,6 @@ public class MenuSignText extends Menu
 
     }
 
-
-    @Override
-    public void update(float partial)
-    {
-        for (int i = 0; i < hasChanged.length; i++)
-        {
-            if (hasChanged[i] > 0)
-            {
-                hasChanged[i] -= partial;
-                if (hasChanged[i] <= 0)
-                {
-                    DataWriter dw = getWriterForServerComponentPacket();
-                    dw.writeData(i, DataBitHelper.LINE_ID);
-                    dw.writeBoolean(true);
-                    dw.writeString(textBoxes[i].getText(), DataBitHelper.LINE_LENGTH);
-                    PacketHandler.sendDataToServer(dw);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        update(IDLE_TIME);
-    }
-
     @Override
     public String getName()
     {
@@ -154,30 +129,6 @@ public class MenuSignText extends Menu
 
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        if (k == 15)
-        {
-            selected = (selected + 1) % 4;
-            onSelectedChange();
-            return true;
-        } else if (selected == -1)
-        {
-            return super.onKeyStroke(gui, c, k);
-        } else
-        {
-            textBoxes[selected].onKeyStroke(gui, c, k);
-            return true;
-        }
-    }
-
-    public void onSelectedChange()
-    {
-        update(IDLE_TIME);
-    }
-
     @Override
     public void onClick(int mX, int mY, int button)
     {
@@ -209,6 +160,30 @@ public class MenuSignText extends Menu
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
 
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (k == 15)
+        {
+            selected = (selected + 1) % 4;
+            onSelectedChange();
+            return true;
+        } else if (selected == -1)
+        {
+            return super.onKeyStroke(gui, c, k);
+        } else
+        {
+            textBoxes[selected].onKeyStroke(gui, c, k);
+            return true;
+        }
+    }
+
+    public void onSelectedChange()
+    {
+        update(IDLE_TIME);
     }
 
     @Override
@@ -281,11 +256,6 @@ public class MenuSignText extends Menu
         }
     }
 
-
-    public static final String NBT_LINES = "Lines";
-    public static final String NBT_UPDATE = "Update";
-    public static final String NBT_TEXT = "Text";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -312,6 +282,32 @@ public class MenuSignText extends Menu
         }
 
         nbtTagCompound.setTag(NBT_LINES, list);
+    }
+
+    @Override
+    public void update(float partial)
+    {
+        for (int i = 0; i < hasChanged.length; i++)
+        {
+            if (hasChanged[i] > 0)
+            {
+                hasChanged[i] -= partial;
+                if (hasChanged[i] <= 0)
+                {
+                    DataWriter dw = getWriterForServerComponentPacket();
+                    dw.writeData(i, DataBitHelper.LINE_ID);
+                    dw.writeBoolean(true);
+                    dw.writeString(textBoxes[i].getText(), DataBitHelper.LINE_LENGTH);
+                    PacketHandler.sendDataToServer(dw);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        update(IDLE_TIME);
     }
 
     @Override

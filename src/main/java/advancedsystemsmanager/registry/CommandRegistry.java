@@ -42,9 +42,9 @@ public class CommandRegistry
             componentsMapping.put(componentType.getId(), components.size());
             components.add(componentType);
             return componentType;
-        }else
+        } else
         {
-            AdvancedSystemsManager.log.warn("Component ID "+ componentType.getId() + " is already registered by " + components.get(componentType.getId()).getName());
+            AdvancedSystemsManager.log.warn("Component ID " + componentType.getId() + " is already registered by " + components.get(componentType.getId()).getName());
         }
         return null;
     }

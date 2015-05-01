@@ -1,7 +1,6 @@
 package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.registry.ConnectionOption;
 
 public class StevesEnum
 {
@@ -11,7 +10,7 @@ public class StevesEnum
 //    private static final Class[][] connectionSetClasses = new Class[][]{{ConnectionSet.class, Localization.class, ConnectionOption[].class}};
 //    private static final Class[][] connectionOptionClasses = new Class[][]{{ConnectionOption.class, Localization.class, ConnectionOption.ConnectionType.class}};
 
-//    public static final Localization TYPE_RF = addLocalization("TYPE_RF");
+    //    public static final Localization TYPE_RF = addLocalization("TYPE_RF");
 //    public static final Localization TYPE_RF_INPUT = addLocalization("TYPE_RF_INPUT");
 //    public static final Localization TYPE_RF_OUTPUT = addLocalization("TYPE_RF_OUTPUT");
 //    public static final Localization RF_INPUT_SHORT = addLocalization("RF_INPUT_SHORT");
@@ -32,9 +31,9 @@ public class StevesEnum
 //    public static final Localization DELAY_ERROR = addLocalization("DELAY_ERROR");
 //    public static final Localization DELAY_RESTART = addLocalization("DELAY_RESTART");
 //    public static final Localization DELAY_IGNORE = addLocalization("DELAY_IGNORE");
-    public static  ISystemType RF_PROVIDER;// = addConnectionBlockType("RF_PROVIDER", TYPE_RF_INPUT, IEnergyProvider.class, false);
-    public static  ISystemType RF_RECEIVER; //= addConnectionBlockType("RF_RECEIVER", TYPE_RF_OUTPUT, IEnergyReceiver.class, false);
-    public static  ISystemType RF_CONNECTION ;//= addConnectionBlockType("RF_CONNECTION", TYPE_RF, IEnergyConnection.class, false);
+    public static ISystemType RF_PROVIDER;// = addConnectionBlockType("RF_PROVIDER", TYPE_RF_INPUT, IEnergyProvider.class, false);
+    public static ISystemType RF_RECEIVER; //= addConnectionBlockType("RF_RECEIVER", TYPE_RF_OUTPUT, IEnergyReceiver.class, false);
+    public static ISystemType RF_CONNECTION;//= addConnectionBlockType("RF_CONNECTION", TYPE_RF, IEnergyConnection.class, false);
 //    public static Command RF_INPUT;
 //    public static Command RF_OUTPUT;
 //    public static Command RF_CONDITION;

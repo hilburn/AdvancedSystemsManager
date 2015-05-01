@@ -29,13 +29,13 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
+    private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
     protected Container container;
 
     public GuiBase(Container container)
@@ -43,9 +43,10 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         super(container);
     }
 
-    private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
-
-    public abstract ResourceLocation getComponentResource();
+    public static ResourceLocation registerTexture(String name)
+    {
+        return new ResourceLocation(Reference.RESOURCE_LOCATION, Textures.GUI + name + ".png");
+    }
 
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
     {
@@ -85,19 +86,23 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.draw();
     }
 
-    public static void bindTexture(ResourceLocation resource)
+    protected float getScale()
     {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
-    }
 
-    public static ResourceLocation registerTexture(String name)
-    {
-        return new ResourceLocation(Reference.RESOURCE_LOCATION, Textures.GUI + name + ".png");
-    }
+        net.minecraft.client.gui.ScaledResolution scaledresolution = new net.minecraft.client.gui.ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        float w = scaledresolution.getScaledWidth() * 0.9F;
+        float h = scaledresolution.getScaledHeight() * 0.9F;
+        float multX = w / xSize;
+        float multY = h / ySize;
+        float mult = Math.min(multX, multY);
+        if (mult > 1F && !Settings.isEnlargeInterfaces())
+        {
+            mult = 1F;
+        }
 
-    public void drawString(String str, int x, int y, float mult, int color)
-    {
-        drawLocalizedString(StatCollector.translateToLocal(str), x, y, mult, color);
+        mult = (float)(Math.floor(mult * 1000)) / 1000F;
+
+        return mult;
     }
 
     public void drawStringFormatted(String str, int x, int y, float mult, int color, Object... args)
@@ -115,14 +120,16 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glPopMatrix();
     }
 
+    public abstract ResourceLocation getComponentResource();
+
+    public static void bindTexture(ResourceLocation resource)
+    {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
+    }
+
     public void drawSplitString(String str, int x, int y, int w, float mult, int color)
     {
         drawSplitStringLocalized(StatCollector.translateToLocal(str), x, y, w, mult, color);
-    }
-
-    public void drawSplitStringFormatted(String str, int x, int y, int w, float mult, int color, Object... args)
-    {
-        drawSplitStringLocalized(StatCollector.translateToLocalFormatted(str, args), x, y, w, mult, color);
     }
 
     public void drawSplitStringLocalized(String str, int x, int y, int w, float mult, int color)
@@ -136,9 +143,19 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glPopMatrix();
     }
 
+    public void drawSplitStringFormatted(String str, int x, int y, int w, float mult, int color, Object... args)
+    {
+        drawSplitStringLocalized(StatCollector.translateToLocalFormatted(str, args), x, y, w, mult, color);
+    }
+
     public void drawString(String str, int x, int y, int color)
     {
         drawString(str, x, y, 1F, color);
+    }
+
+    public void drawString(String str, int x, int y, float mult, int color)
+    {
+        drawLocalizedString(StatCollector.translateToLocal(str), x, y, mult, color);
     }
 
     public void drawMouseOver(String str, int x, int y, int width)
@@ -175,53 +192,17 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return lst;
     }
 
-    private int getStringMaxWidth(List<String> lines)
+    public int getStringWidth(String str)
     {
-        int width = 0;
-
-        if (lines != null)
-        {
-            for (String line : lines)
-            {
-                int w = fontRendererObj.getStringWidth(line);
-
-                if (w > width)
-                {
-                    width = w;
-                }
-            }
-        }
-
-        return width;
+        return fontRendererObj.getStringWidth(str);
     }
 
-    private int renderLines(List<String> lines, int mX, int mY, boolean first)
+    public void drawMouseOver(List lst, int x, int y)
     {
-        return renderLines(lines, mX, mY, first, false);
-    }
-
-    private int renderLines(List<String> lines, int mX, int mY, boolean first, boolean fake)
-    {
-        if (lines != null)
+        if (lst != null)
         {
-            for (String line : lines)
-            {
-                if (!fake)
-                {
-                    fontRendererObj.drawStringWithShadow(line, mX, mY, -1);
-                }
-
-                if (first)
-                {
-                    mY += 2;
-                    first = false;
-                }
-
-                mY += 10;
-            }
+            drawHoveringText(lst, x + guiLeft, y + guiTop, fontRendererObj);
         }
-
-        return mY;
     }
 
     public void drawMouseOver(IAdvancedTooltip tooltip, int mX, int mY)
@@ -290,6 +271,55 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         }
     }
 
+    private int getStringMaxWidth(List<String> lines)
+    {
+        int width = 0;
+
+        if (lines != null)
+        {
+            for (String line : lines)
+            {
+                int w = fontRendererObj.getStringWidth(line);
+
+                if (w > width)
+                {
+                    width = w;
+                }
+            }
+        }
+
+        return width;
+    }
+
+    private int renderLines(List<String> lines, int mX, int mY, boolean first)
+    {
+        return renderLines(lines, mX, mY, first, false);
+    }
+
+    private int renderLines(List<String> lines, int mX, int mY, boolean first, boolean fake)
+    {
+        if (lines != null)
+        {
+            for (String line : lines)
+            {
+                if (!fake)
+                {
+                    fontRendererObj.drawStringWithShadow(line, mX, mY, -1);
+                }
+
+                if (first)
+                {
+                    mY += 2;
+                    first = false;
+                }
+
+                mY += 10;
+            }
+        }
+
+        return mY;
+    }
+
     public int getAdvancedToolTipContentStartX(IAdvancedTooltip tooltip)
     {
         return 12;
@@ -305,7 +335,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return 0;
     }
 
-
     public void drawMouseOver(String str, int x, int y)
     {
         drawMouseOver(getLocalStrings(str.split("\n")), x, y);
@@ -318,15 +347,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return results;
     }
 
-    public void drawMouseOver(List lst, int x, int y)
-    {
-        if (lst != null)
-        {
-            drawHoveringText(lst, x + guiLeft, y + guiTop, fontRendererObj);
-        }
-    }
-
-
     public void drawBlock(TileEntity te, int x, int y)
     {
         ItemStack item = getItemStackFromBlock(te);
@@ -335,7 +355,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             drawItemStack(item, x, y);
         }
     }
-
 
     public String getBlockName(TileEntity te)
     {
@@ -389,20 +408,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return null;
     }
 
-    public ItemStack getItemStackFromBlock(World world, int x, int y, int z)
-    {
-        if (world != null)
-        {
-            Block block = world.getBlock(x, y, z);
-            if (block != null)
-            {
-                return getItemStackFromBlock(world, x, y, z, block, world.getBlockMetadata(x, y, z));
-            }
-        }
-
-        return null;
-    }
-
     private ItemStack getItemStackFromBlock(World world, int x, int y, int z, Block block, int meta)
     {
         try
@@ -433,6 +438,20 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
         //get it from its id and meta
         return new ItemStack(block, 1, meta);
+    }
+
+    public ItemStack getItemStackFromBlock(World world, int x, int y, int z)
+    {
+        if (world != null)
+        {
+            Block block = world.getBlock(x, y, z);
+            if (block != null)
+            {
+                return getItemStackFromBlock(world, x, y, z, block, world.getBlockMetadata(x, y, z));
+            }
+        }
+
+        return null;
     }
 
     public void drawItemAmount(ItemStack itemstack, int x, int y)
@@ -478,12 +497,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         }
     }
 
-    public int getStringWidth(String str)
-    {
-        return fontRendererObj.getStringWidth(str);
-    }
-
-
     public void drawCenteredString(String str, int x, int y, float mult, int width, int color)
     {
         str = StatCollector.translateToLocal(str);
@@ -507,7 +520,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         Gui.drawRect(x, y + 1, x + 1, y + 10, color);
         GL11.glPopMatrix();
     }
-
 
     public void drawLine(int x1, int y1, int x2, int y2)
     {
@@ -535,22 +547,12 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glPopMatrix();
     }
 
-
     @Override
     public final void drawDefaultBackground()
     {
         super.drawDefaultBackground();
 
         startScaling();
-    }
-
-
-    @Override
-    public void drawScreen(int x, int y, float f)
-    {
-        super.drawScreen(scaleX(x), scaleY(y), f);
-
-        stopScaling();
     }
 
     private void startScaling()
@@ -565,29 +567,18 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glTranslatef((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale), 0.0F);
     }
 
+    @Override
+    public void drawScreen(int x, int y, float f)
+    {
+        super.drawScreen(scaleX(x), scaleY(y), f);
+
+        stopScaling();
+    }
+
     private void stopScaling()
     {
         //stop scale
         GL11.glPopMatrix();
-    }
-
-    protected float getScale()
-    {
-
-        net.minecraft.client.gui.ScaledResolution scaledresolution = new net.minecraft.client.gui.ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        float w = scaledresolution.getScaledWidth() * 0.9F;
-        float h = scaledresolution.getScaledHeight() * 0.9F;
-        float multX = w / xSize;
-        float multY = h / ySize;
-        float mult = Math.min(multX, multY);
-        if (mult > 1F && !Settings.isEnlargeInterfaces())
-        {
-            mult = 1F;
-        }
-
-        mult = (float)(Math.floor(mult * 1000)) / 1000F;
-
-        return mult;
     }
 
     protected int scaleX(float x)
@@ -606,11 +597,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         y += guiTop;
         y -= (this.height - this.ySize * scale) / (2 * scale);
         return (int)y;
-    }
-
-    public void drawIcon(IIcon icon, int x, int y)
-    {
-        drawTexturedModelRectFromIcon(guiLeft + x, guiTop + y, icon, 16, 16);
     }
 
     public void drawFluid(Fluid fluid, int x, int y)
@@ -640,6 +626,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             GL11.glColor4f(1F, 1F, 1F, 1F);
             bindTexture(getComponentResource());
         }
+    }
+
+    public void drawIcon(IIcon icon, int x, int y)
+    {
+        drawTexturedModelRectFromIcon(guiLeft + x, guiTop + y, icon, 16, 16);
     }
 
     private void setColor(int color)
@@ -674,13 +665,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     @Override
     @Optional.Method(modid = "NotEnoughItems")
-    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
-    {
-        return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);
-    }
-
-    @Override
-    @Optional.Method(modid = "NotEnoughItems")
     public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui)
     {
         return null;
@@ -691,5 +675,12 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button)
     {
         return false;
+    }
+
+    @Override
+    @Optional.Method(modid = "NotEnoughItems")
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
+    {
+        return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);
     }
 }

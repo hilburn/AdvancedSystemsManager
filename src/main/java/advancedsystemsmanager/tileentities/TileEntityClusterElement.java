@@ -36,18 +36,6 @@ public abstract class TileEntityClusterElement extends TileEntity
         isPartOfCluster = partOfCluster;
     }
 
-    @Override
-    public int getBlockMetadata()
-    {
-        if (isPartOfCluster)
-        {
-            return meta;
-        } else
-        {
-            return super.getBlockMetadata();
-        }
-    }
-
     public void setMetaData(int meta)
     {
         if (isPartOfCluster)
@@ -60,6 +48,13 @@ public abstract class TileEntityClusterElement extends TileEntity
     }
 
     @Override
+    public final void readFromNBT(NBTTagCompound tagCompound)
+    {
+        super.readFromNBT(tagCompound);
+        readContentFromNBT(tagCompound);
+    }
+
+    @Override
     public final void writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
@@ -67,17 +62,22 @@ public abstract class TileEntityClusterElement extends TileEntity
     }
 
     @Override
-    public final void readFromNBT(NBTTagCompound tagCompound)
+    public int getBlockMetadata()
     {
-        super.readFromNBT(tagCompound);
-        readContentFromNBT(tagCompound);
-    }
-
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
-    {
+        if (isPartOfCluster)
+        {
+            return meta;
+        } else
+        {
+            return super.getBlockMetadata();
+        }
     }
 
     protected void writeContentToNBT(NBTTagCompound tagCompound)
+    {
+    }
+
+    protected void readContentFromNBT(NBTTagCompound tagCompound)
     {
     }
 

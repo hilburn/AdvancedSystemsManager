@@ -19,6 +19,19 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuRedstoneOutput extends Menu
 {
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 22;
+    public static final int RADIO_SPACING_X = 68;
+    public static final int RADIO_SPACING_Y = 12;
+    public static final int TEXT_BOX_X = 80;
+    public static final int TEXT_BOX_Y = 5;
+    public static final int TEXT_X = 5;
+    public static final int TEXT_Y = 9;
+    public static final String NBT_NUMBER = "Strength";
+    public static final String NBT_TYPE = "OutputType";
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber textBox;
+    public RadioButtonList radioButtons;
     public MenuRedstoneOutput(FlowComponent parent)
     {
         super(parent);
@@ -28,18 +41,18 @@ public class MenuRedstoneOutput extends Menu
         textBoxes.addTextBox(textBox = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 2, true)
         {
             @Override
-            public int getMaxNumber()
-            {
-                return 15;
-            }
-
-            @Override
             public void onNumberChanged()
             {
                 DataWriter dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(true); //header
                 dw.writeData(getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
                 PacketHandler.sendDataToServer(dw);
+            }
+
+            @Override
+            public int getMaxNumber()
+            {
+                return 15;
             }
         });
         textBox.setNumber(15);
@@ -70,55 +83,10 @@ public class MenuRedstoneOutput extends Menu
         }
     }
 
-    public TextBoxNumberList textBoxes;
-    public TextBoxNumber textBox;
-    public RadioButtonList radioButtons;
-
     public int getSelectedStrength()
     {
         return textBox.getNumber();
     }
-
-    public static enum Settings
-    {
-        FIXED(Names.FIXED),
-        TOGGLE(Names.TOGGLE),
-        MAX(Names.MAX),
-        MIN(Names.MIN),
-        INCREASE(Names.INCREASE),
-        DECREASE(Names.DECREASE),
-        FORWARD(Names.FORWARD),
-        BACKWARD(Names.BACKWARD);
-
-        public String name;
-
-        Settings(String name)
-        {
-            this.name = name;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        @Override
-        public String toString()
-        {
-            return name;
-        }
-    }
-
-    public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 22;
-    public static final int RADIO_SPACING_X = 68;
-    public static final int RADIO_SPACING_Y = 12;
-
-    public static final int TEXT_BOX_X = 80;
-    public static final int TEXT_BOX_Y = 5;
-
-    public static final int TEXT_X = 5;
-    public static final int TEXT_Y = 9;
 
     @Override
     public String getName()
@@ -148,19 +116,6 @@ public class MenuRedstoneOutput extends Menu
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        if (useStrengthSetting())
-        {
-            return textBoxes.onKeyStroke(gui, c, k);
-        } else
-        {
-            return super.onKeyStroke(gui, c, k);
-        }
-    }
-
     @Override
     public void onClick(int mX, int mY, int button)
     {
@@ -181,6 +136,19 @@ public class MenuRedstoneOutput extends Menu
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (useStrengthSetting())
+        {
+            return textBoxes.onKeyStroke(gui, c, k);
+        } else
+        {
+            return super.onKeyStroke(gui, c, k);
+        }
     }
 
     @Override
@@ -232,9 +200,6 @@ public class MenuRedstoneOutput extends Menu
         }
     }
 
-    public static final String NBT_NUMBER = "Strength";
-    public static final String NBT_TYPE = "OutputType";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -247,6 +212,16 @@ public class MenuRedstoneOutput extends Menu
     {
         nbtTagCompound.setByte(NBT_NUMBER, (byte)textBox.getNumber());
         nbtTagCompound.setByte(NBT_TYPE, (byte)radioButtons.getSelectedOption());
+    }
+
+    public boolean useStrengthSetting()
+    {
+        return getSelectedSetting() != Settings.TOGGLE;
+    }
+
+    public Settings getSelectedSetting()
+    {
+        return Settings.values()[radioButtons.getSelectedOption()];
     }
 
     @Override
@@ -263,13 +238,33 @@ public class MenuRedstoneOutput extends Menu
         }
     }
 
-    public boolean useStrengthSetting()
+    public static enum Settings
     {
-        return getSelectedSetting() != Settings.TOGGLE;
-    }
+        FIXED(Names.FIXED),
+        TOGGLE(Names.TOGGLE),
+        MAX(Names.MAX),
+        MIN(Names.MIN),
+        INCREASE(Names.INCREASE),
+        DECREASE(Names.DECREASE),
+        FORWARD(Names.FORWARD),
+        BACKWARD(Names.BACKWARD);
 
-    public Settings getSelectedSetting()
-    {
-        return Settings.values()[radioButtons.getSelectedOption()];
+        public String name;
+
+        Settings(String name)
+        {
+            this.name = name;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name;
+        }
     }
 }

@@ -32,34 +32,7 @@ public abstract class TriggerHelper
         this.blockType = blockType;
     }
 
-    public abstract boolean isBlockPowered(FlowComponent component, int power);
-
     public abstract void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid);
-
-
-    public boolean isTriggerPowered(FlowComponent component, int[] currentPower, boolean high)
-    {
-        MenuRedstoneSidesTrigger menuSides = (MenuRedstoneSidesTrigger)component.getMenus().get(sidesId);
-        for (int i = 0; i < currentPower.length; i++)
-        {
-            if (menuSides.isSideRequired(i))
-            {
-                if (isBlockPowered(component, currentPower[i]) == high)
-                {
-                    if (!menuSides.requireAll())
-                    {
-                        return true;
-                    }
-                } else if (menuSides.requireAll())
-                {
-                    return false;
-                }
-            }
-        }
-
-        return menuSides.requireAll();
-    }
-
 
     public boolean hasRedStoneFlipped(FlowComponent component, int[] newPower, int[] oldPower, boolean high)
     {
@@ -78,7 +51,6 @@ public abstract class TriggerHelper
 
         return false;
     }
-
 
     public boolean isPulseReceived(FlowComponent component, int[] newPower, int[] oldPower, boolean high)
     {
@@ -219,6 +191,30 @@ public abstract class TriggerHelper
         }
     }
 
+    public boolean isTriggerPowered(FlowComponent component, int[] currentPower, boolean high)
+    {
+        MenuRedstoneSidesTrigger menuSides = (MenuRedstoneSidesTrigger)component.getMenus().get(sidesId);
+        for (int i = 0; i < currentPower.length; i++)
+        {
+            if (menuSides.isSideRequired(i))
+            {
+                if (isBlockPowered(component, currentPower[i]) == high)
+                {
+                    if (!menuSides.requireAll())
+                    {
+                        return true;
+                    }
+                } else if (menuSides.requireAll())
+                {
+                    return false;
+                }
+            }
+        }
+
+        return menuSides.requireAll();
+    }
+
+    public abstract boolean isBlockPowered(FlowComponent component, int power);
 
     public void activateTrigger(FlowComponent item, EnumSet<ConnectionOption> types)
     {

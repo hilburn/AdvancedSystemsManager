@@ -40,6 +40,7 @@ import java.util.*;
 
 public class CommandExecutor
 {
+    public static final int MAX_FLUID_TRANSFER = 10000000;
     public TileEntityManager manager;
     public List<RFBufferElement> rfBuffer;
     public List<ItemBufferElement> itemBuffer;
@@ -47,7 +48,6 @@ public class CommandExecutor
     public List<CraftingBufferFluidElement> craftingBufferHigh;
     public List<CraftingBufferFluidElement> craftingBufferLow;
     public List<Integer> usedCommands;
-    public static final int MAX_FLUID_TRANSFER = 10000000;
 
     public CommandExecutor(TileEntityManager manager)
     {
@@ -69,6 +69,157 @@ public class CommandExecutor
         this.usedCommands = usedCommandCopy;
         this.rfBuffer = rfBuffer;
         this.liquidBuffer = liquidBufferSplit;
+    }
+
+    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ISystemType type)
+    {
+        if (!(menu instanceof MenuContainer)) return null;
+        MenuContainer menuContainer = (MenuContainer)menu;
+        if (menuContainer.getSelectedInventories().size() == 0)
+        {
+            return null;
+        } else
+        {
+            ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
+            List<SystemBlock> inventories = manager.getConnectedInventories();
+            Variable[] variables = manager.getVariables();
+
+            int i;
+            label50:
+            for (i = 0; i < variables.length; ++i)
+            {
+                Variable selected = variables[i];
+                if (selected.isValid())
+                {
+
+                    for (int val : menuContainer.getSelectedInventories())
+                    {
+                        if (val == i)
+                        {
+                            List<Integer> selection = selected.getContainers();
+                            Iterator<Integer> i$1 = selection.iterator();
+
+                            while (true)
+                            {
+                                if (!i$1.hasNext())
+                                {
+                                    continue label50;
+                                }
+
+                                int selected1 = i$1.next();
+                                addContainer(inventories, ret, selected1, menuContainer, type, ((MenuContainerTypes)selected.getDeclaration().getMenus().get(1)).getValidTypes());
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
+            {
+                int var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
+                addContainer(inventories, ret, var14, menuContainer, type, SystemTypeRegistry.getTypes());
+            }
+
+            if (ret.isEmpty())
+            {
+                return null;
+            } else
+            {
+                return ret;
+            }
+        }
+    }
+
+    public static void addContainer(List<SystemBlock> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
+    {
+        if (selected >= 0 && selected < inventories.size())
+        {
+            SystemBlock connection = inventories.get(selected);
+            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
+            {
+                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
+            }
+        }
+    }
+
+    public static boolean containsTe(List<SlotInventoryHolder> lst, TileEntity te)
+    {
+        Iterator<SlotInventoryHolder> i$ = lst.iterator();
+
+        SlotInventoryHolder slotInventoryHolder;
+        do
+        {
+            if (!i$.hasNext())
+            {
+                return false;
+            }
+
+            slotInventoryHolder = i$.next();
+        }
+        while (slotInventoryHolder.getTile().xCoord != te.xCoord || slotInventoryHolder.getTile().yCoord != te.yCoord || slotInventoryHolder.getTile().zCoord != te.zCoord || !slotInventoryHolder.getTile().getClass().equals(te.getClass()));
+
+        return true;
+    }
+
+    public static void getValidSlots(Menu menu, List<SlotInventoryHolder> inventories)
+    {
+        MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
+
+        for (SlotInventoryHolder slotInventoryHolder : inventories)
+        {
+            if (!(slotInventoryHolder.getTile() instanceof IHiddenInventory))
+            {
+                IInventory inventory = slotInventoryHolder.getInventory();
+                Map<Integer, SlotSideTarget> validSlots = slotInventoryHolder.getValidSlots();
+
+                for (int side = 0; side < MenuTarget.directions.length; ++side)
+                {
+                    if (menuTarget.isActive(side))
+                    {
+                        int[] inventoryValidSlots;
+                        int start;
+                        if (inventory instanceof ISidedInventory)
+                        {
+                            inventoryValidSlots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side);
+                        } else
+                        {
+                            inventoryValidSlots = new int[inventory.getSizeInventory()];
+
+                            for (start = 0; start < inventoryValidSlots.length; inventoryValidSlots[start] = start++) ;
+                        }
+
+                        int end;
+                        if (menuTarget.useAdvancedSetting(side))
+                        {
+                            start = menuTarget.getStart(side);
+                            end = menuTarget.getEnd(side);
+                        } else
+                        {
+                            start = 0;
+                            end = inventory.getSizeInventory();
+                        }
+
+                        if (start <= end)
+                        {
+                            for (int inventoryValidSlot : inventoryValidSlots)
+                            {
+                                if (inventoryValidSlot >= start && inventoryValidSlot <= end)
+                                {
+                                    SlotSideTarget target = validSlots.get(inventoryValidSlot);
+                                    if (target == null)
+                                    {
+                                        validSlots.put(inventoryValidSlot, new SlotSideTarget(inventoryValidSlot, side));
+                                    } else
+                                    {
+                                        target.addSide(side);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void executeTriggerCommand(FlowComponent command, EnumSet<ConnectionOption> validTriggerOutputs)
@@ -377,157 +528,6 @@ public class CommandExecutor
     public List<SlotInventoryHolder> getTiles(Menu menu)
     {
         return getContainers(this.manager, menu, null);
-    }
-
-    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ISystemType type)
-    {
-        if (!(menu instanceof MenuContainer)) return null;
-        MenuContainer menuContainer = (MenuContainer)menu;
-        if (menuContainer.getSelectedInventories().size() == 0)
-        {
-            return null;
-        } else
-        {
-            ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
-            List<SystemBlock> inventories = manager.getConnectedInventories();
-            Variable[] variables = manager.getVariables();
-
-            int i;
-            label50:
-            for (i = 0; i < variables.length; ++i)
-            {
-                Variable selected = variables[i];
-                if (selected.isValid())
-                {
-
-                    for (int val : menuContainer.getSelectedInventories())
-                    {
-                        if (val == i)
-                        {
-                            List<Integer> selection = selected.getContainers();
-                            Iterator<Integer> i$1 = selection.iterator();
-
-                            while (true)
-                            {
-                                if (!i$1.hasNext())
-                                {
-                                    continue label50;
-                                }
-
-                                int selected1 = i$1.next();
-                                addContainer(inventories, ret, selected1, menuContainer, type, ((MenuContainerTypes)selected.getDeclaration().getMenus().get(1)).getValidTypes());
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
-            {
-                int var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
-                addContainer(inventories, ret, var14, menuContainer, type, SystemTypeRegistry.getTypes());
-            }
-
-            if (ret.isEmpty())
-            {
-                return null;
-            } else
-            {
-                return ret;
-            }
-        }
-    }
-
-    public static void addContainer(List<SystemBlock> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
-    {
-        if (selected >= 0 && selected < inventories.size())
-        {
-            SystemBlock connection = inventories.get(selected);
-            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
-            {
-                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
-            }
-        }
-    }
-
-    public static boolean containsTe(List<SlotInventoryHolder> lst, TileEntity te)
-    {
-        Iterator<SlotInventoryHolder> i$ = lst.iterator();
-
-        SlotInventoryHolder slotInventoryHolder;
-        do
-        {
-            if (!i$.hasNext())
-            {
-                return false;
-            }
-
-            slotInventoryHolder = i$.next();
-        }
-        while (slotInventoryHolder.getTile().xCoord != te.xCoord || slotInventoryHolder.getTile().yCoord != te.yCoord || slotInventoryHolder.getTile().zCoord != te.zCoord || !slotInventoryHolder.getTile().getClass().equals(te.getClass()));
-
-        return true;
-    }
-
-    public static void getValidSlots(Menu menu, List<SlotInventoryHolder> inventories)
-    {
-        MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
-
-        for (SlotInventoryHolder slotInventoryHolder : inventories)
-        {
-            if (!(slotInventoryHolder.getTile() instanceof IHiddenInventory))
-            {
-                IInventory inventory = slotInventoryHolder.getInventory();
-                Map<Integer, SlotSideTarget> validSlots = slotInventoryHolder.getValidSlots();
-
-                for (int side = 0; side < MenuTarget.directions.length; ++side)
-                {
-                    if (menuTarget.isActive(side))
-                    {
-                        int[] inventoryValidSlots;
-                        int start;
-                        if (inventory instanceof ISidedInventory)
-                        {
-                            inventoryValidSlots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side);
-                        } else
-                        {
-                            inventoryValidSlots = new int[inventory.getSizeInventory()];
-
-                            for (start = 0; start < inventoryValidSlots.length; inventoryValidSlots[start] = start++) ;
-                        }
-
-                        int end;
-                        if (menuTarget.useAdvancedSetting(side))
-                        {
-                            start = menuTarget.getStart(side);
-                            end = menuTarget.getEnd(side);
-                        } else
-                        {
-                            start = 0;
-                            end = inventory.getSizeInventory();
-                        }
-
-                        if (start <= end)
-                        {
-                            for (int inventoryValidSlot : inventoryValidSlots)
-                            {
-                                if (inventoryValidSlot >= start && inventoryValidSlot <= end)
-                                {
-                                    SlotSideTarget target = validSlots.get(inventoryValidSlot);
-                                    if (target == null)
-                                    {
-                                        validSlots.put(inventoryValidSlot, new SlotSideTarget(inventoryValidSlot, side));
-                                    } else
-                                    {
-                                        target.addSide(side);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     public void getValidRFStorage(Menu menu, List<SlotInventoryHolder> cells)

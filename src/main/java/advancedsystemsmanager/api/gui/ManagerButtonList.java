@@ -38,7 +38,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     public void draw(GuiManager guiManager, int mouseX, int mouseY, int zLevel)
     {
         GuiManager.bindTexture(BUTTONS);
-        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext();)
+        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
             IManagerButton button = itr.next();
             boolean selected = CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY);
@@ -59,7 +59,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     @Override
     public void drawMouseOver(GuiManager guiManager, int mouseX, int mouseY)
     {
-        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext();)
+        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
             IManagerButton button = itr.next();
             if (CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY))
@@ -85,7 +85,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
 
     public boolean onClick(int mouseX, int mouseY, boolean release)
     {
-        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext();)
+        for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
             IManagerButton managerButton = itr.next();
             if (CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY) && managerButton.activateOnRelease() == release)
@@ -122,9 +122,9 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
 
     private class VisibleIterator implements Iterator<IManagerButton>
     {
-        private ListIterator<IManagerButton> itr = ManagerButtonList.this.listIterator();
         int x, y;
         int index;
+        private ListIterator<IManagerButton> itr = ManagerButtonList.this.listIterator();
 
         private VisibleIterator()
         {

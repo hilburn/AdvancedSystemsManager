@@ -33,6 +33,9 @@ import java.util.Map;
 public class TileEntityCluster extends TileEntity implements ITileEntityInterface, IPacketBlock, IEnergyProvider, IEnergyReceiver
 {
 
+    private static final String NBT_SUB_BLOCKS = "SubBlocks";
+    private static final String NBT_SUB_BLOCK_ID = "SubId";
+    private static final String NBT_SUB_BLOCK_META = "SubMeta";
     private boolean requestedInfo;
     private List<TileEntityClusterElement> elements;
     private List<ClusterRegistry> registryList;
@@ -49,6 +52,35 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         {
             methodRegistration.put(clusterMethodRegistration, new ArrayList<Pair>());
         }
+    }
+
+    public static <T> T getTileEntity(Class<? extends TileEntityClusterElement> clazz, IBlockAccess world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+
+        if (te != null)
+        {
+            if (clazz.isInstance(te))
+            {
+                return (T)te;
+            } else if (te instanceof TileEntityCluster)
+            {
+                for (TileEntityClusterElement element : ((TileEntityCluster)te).getElements())
+                {
+                    if (clazz.isInstance(element))
+                    {
+                        return (T)element;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public List<TileEntityClusterElement> getElements()
+    {
+        return elements;
     }
 
     public void loadElements(ItemStack itemStack)
@@ -93,59 +125,6 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    private class Pair
-    {
-        private ClusterRegistry registry;
-        private TileEntityClusterElement te;
-
-        private Pair(ClusterRegistry registry, TileEntityClusterElement te)
-        {
-            this.registry = registry;
-            this.te = te;
-        }
-    }
-
-    public List<TileEntityClusterElement> getElements()
-    {
-        return elements;
-    }
-
-
-    @Override
-    public void updateEntity()
-    {
-        for (TileEntityClusterElement element : elements)
-        {
-            setWorldObject(element);
-            element.updateEntity();
-        }
-
-        if (!requestedInfo && worldObj.isRemote)
-        {
-            requestedInfo = true;
-            requestData();
-        }
-    }
-
-    public void setWorldObject(TileEntityClusterElement te)
-    {
-        if (!te.hasWorldObj())
-        {
-            te.setWorldObj(this.worldObj);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void requestData()
-    {
-        PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 1);
-    }
-
-    private List<Pair> getRegistrations(ClusterMethodRegistration method)
-    {
-        return methodRegistration.get(method);
-    }
-
     public void onBlockPlacedBy(EntityLivingBase entity, ItemStack itemStack)
     {
         for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
@@ -153,6 +132,11 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
             setWorldObject(blockContainer.te);
             blockContainer.registry.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, entity, blockContainer.registry.getItemStack());
         }
+    }
+
+    private List<Pair> getRegistrations(ClusterMethodRegistration method)
+    {
+        return methodRegistration.get(method);
     }
 
     public void onNeighborBlockChange(Block block)
@@ -296,32 +280,6 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         return false;
     }
 
-
-    public static <T> T getTileEntity(Class<? extends TileEntityClusterElement> clazz, IBlockAccess world, int x, int y, int z)
-    {
-        TileEntity te = world.getTileEntity(x, y, z);
-
-        if (te != null)
-        {
-            if (clazz.isInstance(te))
-            {
-                return (T)te;
-            } else if (te instanceof TileEntityCluster)
-            {
-                for (TileEntityClusterElement element : ((TileEntityCluster)te).getElements())
-                {
-                    if (clazz.isInstance(element))
-                    {
-                        return (T)element;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-
     @Override
     public Container getContainer(TileEntity te, InventoryPlayer inv)
     {
@@ -361,32 +319,6 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    private static final String NBT_SUB_BLOCKS = "SubBlocks";
-    private static final String NBT_SUB_BLOCK_ID = "SubId";
-    private static final String NBT_SUB_BLOCK_META = "SubMeta";
-
-    @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
-
-        NBTTagList subList = new NBTTagList();
-        for (int i = 0; i < elements.size(); i++)
-        {
-            TileEntityClusterElement element = elements.get(i);
-            ClusterRegistry registryElement = registryList.get(i);
-            NBTTagCompound sub = new NBTTagCompound();
-            sub.setByte(NBT_SUB_BLOCK_ID, (byte)registryElement.getId());
-            sub.setByte(NBT_SUB_BLOCK_META, (byte)element.getBlockMetadata());
-            element.writeContentToNBT(sub);
-
-            subList.appendTag(sub);
-        }
-
-
-        tagCompound.setTag(NBT_SUB_BLOCKS, subList);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound tagCompound)
     {
@@ -412,6 +344,58 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
             element.setMetaData(sub.getByte(NBT_SUB_BLOCK_META));
             element.readContentFromNBT(sub);
         }
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound tagCompound)
+    {
+        super.writeToNBT(tagCompound);
+
+        NBTTagList subList = new NBTTagList();
+        for (int i = 0; i < elements.size(); i++)
+        {
+            TileEntityClusterElement element = elements.get(i);
+            ClusterRegistry registryElement = registryList.get(i);
+            NBTTagCompound sub = new NBTTagCompound();
+            sub.setByte(NBT_SUB_BLOCK_ID, (byte)registryElement.getId());
+            sub.setByte(NBT_SUB_BLOCK_META, (byte)element.getBlockMetadata());
+            element.writeContentToNBT(sub);
+
+            subList.appendTag(sub);
+        }
+
+
+        tagCompound.setTag(NBT_SUB_BLOCKS, subList);
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        for (TileEntityClusterElement element : elements)
+        {
+            setWorldObject(element);
+            element.updateEntity();
+        }
+
+        if (!requestedInfo && worldObj.isRemote)
+        {
+            requestedInfo = true;
+            requestData();
+        }
+    }
+
+    public void setWorldObject(TileEntityClusterElement te)
+    {
+        if (!te.hasWorldObj())
+        {
+            te.setWorldObj(this.worldObj);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void requestData()
+    {
+        PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 1);
     }
 
     @Override
@@ -492,5 +476,17 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         }
 
         return bytes;
+    }
+
+    private class Pair
+    {
+        private ClusterRegistry registry;
+        private TileEntityClusterElement te;
+
+        private Pair(ClusterRegistry registry, TileEntityClusterElement te)
+        {
+            this.registry = registry;
+            this.te = te;
+        }
     }
 }

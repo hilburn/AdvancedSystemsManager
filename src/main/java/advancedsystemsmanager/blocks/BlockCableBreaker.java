@@ -43,13 +43,6 @@ public class BlockCableBreaker extends BlockTileBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return side == 3 ? icons[0] : blockIcon;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
 
@@ -75,18 +68,11 @@ public class BlockCableBreaker extends BlockTileBase
         return blockIcon;
     }
 
-
+    @SideOnly(Side.CLIENT)
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
+    public IIcon getIcon(int side, int meta)
     {
-        int meta = BlockPistonBase.determineOrientation(world, x, y, z, entity);
-
-        TileEntityBreaker breaker = TileEntityCluster.getTileEntity(TileEntityBreaker.class, world, x, y, z);
-        if (breaker != null)
-        {
-            breaker.setMetaData(meta);
-            breaker.setPlaceDirection(meta);
-        }
+        return side == 3 ? icons[0] : blockIcon;
     }
 
     @Override
@@ -106,5 +92,18 @@ public class BlockCableBreaker extends BlockTileBase
 
 
         return false;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
+    {
+        int meta = BlockPistonBase.determineOrientation(world, x, y, z, entity);
+
+        TileEntityBreaker breaker = TileEntityCluster.getTileEntity(TileEntityBreaker.class, world, x, y, z);
+        if (breaker != null)
+        {
+            breaker.setMetaData(meta);
+            breaker.setPlaceDirection(meta);
+        }
     }
 }

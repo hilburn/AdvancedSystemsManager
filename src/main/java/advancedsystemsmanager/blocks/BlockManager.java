@@ -24,35 +24,23 @@ import java.util.Arrays;
 
 public class BlockManager extends BlockTileBase
 {
-    public BlockManager()
-    {
-        super(Names.MANAGER, 2F);
-    }
-
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int meta)
-    {
-        return new TileEntityManager();
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xSide, float ySide, float zSide)
-    {
-        if (!world.isRemote)
-        {
-            FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
-        }
-
-        return true;
-    }
-
     @SideOnly(Side.CLIENT)
     private IIcon sideIcon;
     @SideOnly(Side.CLIENT)
     private IIcon topIcon;
     @SideOnly(Side.CLIENT)
     private IIcon botIcon;
+
+    public BlockManager()
+    {
+        super(Names.MANAGER, 2F);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta)
+    {
+        return new TileEntityManager();
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -80,14 +68,6 @@ public class BlockManager extends BlockTileBase
     }
 
     @Override
-    public void onBlockAdded(World world, int x, int y, int z)
-    {
-        super.onBlockAdded(world, x, y, z);
-
-        updateInventories(world, x, y, z);
-    }
-
-    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         super.onNeighborBlockChange(world, x, y, z, block);
@@ -95,11 +75,10 @@ public class BlockManager extends BlockTileBase
         updateInventories(world, x, y, z);
     }
 
-
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    public void onBlockAdded(World world, int x, int y, int z)
     {
-        super.breakBlock(world, x, y, z, block, meta);
+        super.onBlockAdded(world, x, y, z);
 
         updateInventories(world, x, y, z);
     }
@@ -114,21 +93,38 @@ public class BlockManager extends BlockTileBase
     }
 
     @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
-    }
-
-    @Override
     public int damageDropped(int meta)
     {
         return meta & 1;
     }
 
     @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xSide, float ySide, float zSide)
+    {
+        if (!world.isRemote)
+        {
+            FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack)
+    {
+        super.onBlockPlacedBy(world, x, y, z, entity, itemStack);
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+    }
+
+    @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
-        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x,y,z)));
+        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x, y, z)));
         result.setTagCompound(getTagCompound(world, x, y, z));
         return result;
     }
@@ -145,10 +141,11 @@ public class BlockManager extends BlockTileBase
         return null;
     }
 
-
     @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack)
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
     {
-        super.onBlockPlacedBy(world, x, y, z, entity, itemStack);
+        super.breakBlock(world, x, y, z, block, meta);
+
+        updateInventories(world, x, y, z);
     }
 }

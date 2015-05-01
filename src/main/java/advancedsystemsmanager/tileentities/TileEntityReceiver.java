@@ -16,10 +16,11 @@ import java.util.List;
 
 public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode
 {
+    private static final String NBT_SIDES = "Sides";
+    private static final String NBT_POWER = "Power";
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();
     private int[] oldPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private int[] isPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
-
 
     @Override
     public void added(TileEntityManager owner)
@@ -60,10 +61,6 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
         return isPowered;
     }
 
-    private static final String NBT_SIDES = "Sides";
-    private static final String NBT_POWER = "Power";
-
-
     @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)
     {
@@ -96,6 +93,12 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED, ClusterMethodRegistration.ON_BLOCK_ADDED);
+    }
+
+    @Override
     public int[] getData()
     {
         return isPowered;
@@ -105,11 +108,5 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     public int[] getOldData()
     {
         return oldPowered;
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED, ClusterMethodRegistration.ON_BLOCK_ADDED);
     }
 }

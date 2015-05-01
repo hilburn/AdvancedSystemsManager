@@ -31,13 +31,13 @@ public class MenuRFStorage extends MenuContainer
         }
     }
 
+    public void initRadioButtons()
+    {
+    }
+
     @Override
     public Set<ISystemType> getValidTypes()
     {
         return new HashSet<ISystemType>(Arrays.asList(StevesEnum.RF_PROVIDER, StevesEnum.RF_RECEIVER));
-    }
-
-    public void initRadioButtons()
-    {
     }
 }

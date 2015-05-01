@@ -18,12 +18,6 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
     }
 
     @Override
-    public int getCommandID()
-    {
-        return this.id;
-    }
-
-    @Override
     public Key<Type> getKey()
     {
         return new Key<Type>(content);
@@ -35,9 +29,16 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
         return content;
     }
 
+    @Override
+    public int getCommandID()
+    {
+        return this.id;
+    }
+
     public int getMaxWithSetting(int amount)
     {
-        if (setting != null && setting.isLimitedByAmount()) return whitelist ? Math.min(amount, setting.getAmount()) : amount - setting.getAmount();
+        if (setting != null && setting.isLimitedByAmount())
+            return whitelist ? Math.min(amount, setting.getAmount()) : amount - setting.getAmount();
         return amount;
     }
 }

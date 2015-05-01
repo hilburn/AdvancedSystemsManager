@@ -23,14 +23,14 @@ import net.minecraft.item.ItemStack;
 
 public class BlockRegistry
 {
-//    Manager
+    //    Manager
     @Register(tileEntity = TileEntityManager.class, itemBlock = ItemManager.class, name = Names.MANAGER)
     public static BlockManager blockManager;
 
     @Register(name = Names.CABLE)
     public static BlockCable blockCable;
 
-//    Cluster Elements
+    //    Cluster Elements
     @Register(tileEntity = TileEntityCluster.class, itemBlock = ItemCluster.class, name = Names.CABLE_CLUSTER)
     public static BlockCableCluster blockCableCluster;
     @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_RELAY)
@@ -52,7 +52,7 @@ public class BlockRegistry
     @Register(tileEntity = TileEntitySignUpdater.class, name = Names.CABLE_SIGN)
     public static BlockCableSign blockCableSign;
 
-//    Mod Cluster Elements
+    //    Mod Cluster Elements
     @Register(tileEntity = TileEntityAENode.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
     public static BlockCableAE cableAENode;
     @Register(tileEntity = TileEntityRFNode.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)

@@ -18,6 +18,17 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuInterval extends Menu
 {
+    public static final int TEXT_BOX_X = 15;
+    public static final int TEXT_BOX_Y = 35;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 10;
+    public static final int TEXT_Y2 = 15;
+    public static final int TEXT_SECONDS_X = 60;
+    public static final int TEXT_SECOND_Y = 38;
+    public static final String NBT_INTERVAL = "Interval";
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber interval;
     public MenuInterval(FlowComponent parent)
     {
         super(parent);
@@ -37,24 +48,11 @@ public class MenuInterval extends Menu
         interval.setNumber(1);
     }
 
-    public static final int TEXT_BOX_X = 15;
-    public static final int TEXT_BOX_Y = 35;
-    public static final int MENU_WIDTH = 120;
-    public static final int TEXT_MARGIN_X = 5;
-    public static final int TEXT_Y = 10;
-    public static final int TEXT_Y2 = 15;
-
-    public static final int TEXT_SECONDS_X = 60;
-    public static final int TEXT_SECOND_Y = 38;
-
     @Override
     public String getName()
     {
         return Names.INTERVAL_MENU;
     }
-
-    public TextBoxNumberList textBoxes;
-    public TextBoxNumber interval;
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -73,22 +71,9 @@ public class MenuInterval extends Menu
     }
 
     @Override
-    public boolean isVisible()
-    {
-        return getParent().getConnectionSet() != ConnectionSet.DELAYED;
-    }
-
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         textBoxes.onClick(mX, mY, button);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        return textBoxes.onKeyStroke(gui, c, k);
     }
 
     @Override
@@ -101,6 +86,13 @@ public class MenuInterval extends Menu
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return textBoxes.onKeyStroke(gui, c, k);
     }
 
     @Override
@@ -143,9 +135,21 @@ public class MenuInterval extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
-        setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
+        setInterval(nbtTagCompound.getShort(NBT_INTERVAL));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        nbtTagCompound.setShort(NBT_INTERVAL, (short)getInterval());
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() != ConnectionSet.DELAYED;
     }
 
     public int getInterval()
@@ -158,18 +162,10 @@ public class MenuInterval extends Menu
         interval.setNumber(val);
     }
 
-    public static final String NBT_INTERVAL = "Interval";
-
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readNetworkComponent(DataReader dr)
     {
-        setInterval(nbtTagCompound.getShort(NBT_INTERVAL));
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        nbtTagCompound.setShort(NBT_INTERVAL, (short)getInterval());
+        setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
     }
 
 }

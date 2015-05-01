@@ -26,9 +26,22 @@ public enum ModCompat
         this("minecraft", "Minecraft", compatClass, true);
     }
 
+    private ModCompat(String modId, String modName, CompatBase compatClass, boolean loaded)
+    {
+        this.modId = modId;
+        this.modName = modName;
+        this.compatClass = compatClass;
+        this.loaded = loaded;
+    }
+
     ModCompat(String modId, CompatBase compatClass)
     {
         this(modId, modId, compatClass);
+    }
+
+    ModCompat(String modId, String modName, CompatBase compatClass)
+    {
+        this(modId, modName, compatClass, Loader.isModLoaded(modId) || ModAPIManager.INSTANCE.hasAPI(modId));
     }
 
     ModCompat(String modId)
@@ -41,17 +54,16 @@ public enum ModCompat
         this(modId, modName, null);
     }
 
-    ModCompat(String modId, String modName, CompatBase compatClass)
+    public static void loadAll()
     {
-        this(modId, modName, compatClass, Loader.isModLoaded(modId) || ModAPIManager.INSTANCE.hasAPI(modId));
+        for (ModCompat compat : values())
+            compat.load();
     }
 
-    private ModCompat(String modId, String modName, CompatBase compatClass, boolean loaded)
+    private void load()
     {
-        this.modId = modId;
-        this.modName = modName;
-        this.compatClass = compatClass;
-        this.loaded = loaded;
+        if (compatClass != null)
+            compatClass.load(this);
     }
 
     public String getModId()
@@ -69,21 +81,9 @@ public enum ModCompat
         return loaded;
     }
 
-    private void load()
-    {
-        if (compatClass != null)
-            compatClass.load(this);
-    }
-
     @SuppressWarnings(value = "unchecked")
     public <T extends CompatBase> T getCompatClass()
     {
         return (T)compatClass;
-    }
-
-    public static void loadAll()
-    {
-        for (ModCompat compat : values())
-            compat.load();
     }
 }

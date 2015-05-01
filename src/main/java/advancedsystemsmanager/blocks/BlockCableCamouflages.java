@@ -39,7 +39,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
         icons = new IIcon[TileEntityCamouflage.CamouflageType.values().length];
         for (int i = 0; i < icons.length; i++)
         {
-            icons[i] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon().replace("system_",""));
+            icons[i] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + TileEntityCamouflage.CamouflageType.values()[i].getIcon().replace("system_", ""));
         }
     }
 
@@ -58,16 +58,6 @@ public class BlockCableCamouflages extends BlockCamouflageBase
     }
 
     @Override
-    @SuppressWarnings(value = "unchecked")
-    public void getSubBlocks(Item block, CreativeTabs tabs, List list)
-    {
-        for (int i = 0; i < TileEntityCamouflage.CamouflageType.values().length; i++)
-        {
-            list.add(new ItemStack(block, 1, i));
-        }
-    }
-
-    @Override
     public int damageDropped(int meta)
     {
         return meta;
@@ -80,6 +70,16 @@ public class BlockCableCamouflages extends BlockCamouflageBase
         if (camouflage != null)
         {
             camouflage.setMetaData(item.getItemDamage());
+        }
+    }
+
+    @Override
+    @SuppressWarnings(value = "unchecked")
+    public void getSubBlocks(Item block, CreativeTabs tabs, List list)
+    {
+        for (int i = 0; i < TileEntityCamouflage.CamouflageType.values().length; i++)
+        {
+            list.add(new ItemStack(block, 1, i));
         }
     }
 }

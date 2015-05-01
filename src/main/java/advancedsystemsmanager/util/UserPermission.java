@@ -18,6 +18,14 @@ public class UserPermission
         }
     }
 
+    public UserPermission copy()
+    {
+        UserPermission temp = new UserPermission(getName());
+        temp.setOp(isOp());
+        temp.setActive(isActive());
+        return temp;
+    }
+
     public String getName()
     {
         return name;
@@ -41,13 +49,5 @@ public class UserPermission
     public void setActive(boolean active)
     {
         this.active = active;
-    }
-
-    public UserPermission copy()
-    {
-        UserPermission temp = new UserPermission(getName());
-        temp.setOp(isOp());
-        temp.setActive(isActive());
-        return temp;
     }
 }

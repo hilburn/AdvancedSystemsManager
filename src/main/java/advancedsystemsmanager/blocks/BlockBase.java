@@ -17,27 +17,27 @@ public class BlockBase extends Block
 
     protected int extraIcons;
 
-    protected BlockBase(String name)
+    public BlockBase(String name)
     {
         this(Material.iron, soundTypeMetal, name, 1.2F, 0);
     }
 
-    protected BlockBase(String name, float hardness)
+    public BlockBase(String name, float hardness)
     {
         this(Material.iron, soundTypeMetal, name, hardness, 0);
     }
 
-    protected BlockBase(String name, int extraIcons)
+    public BlockBase(String name, int extraIcons)
     {
         this(Material.iron, soundTypeMetal, name, 1.2F, extraIcons);
     }
 
-    protected BlockBase(String name, float hardness, int extraIcons)
+    public BlockBase(String name, float hardness, int extraIcons)
     {
         this(Material.iron, soundTypeMetal, name, hardness, extraIcons);
     }
 
-    protected BlockBase(Material material, SoundType sound, String name, float hardness, int extraIcons)
+    public BlockBase(Material material, SoundType sound, String name, float hardness, int extraIcons)
     {
         super(material);
         setCreativeTab(AdvancedSystemsManager.creativeTab);
@@ -51,7 +51,7 @@ public class BlockBase extends Block
     @Override
     public Block setBlockTextureName(String name)
     {
-        return super.setBlockTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace(Names.PREFIX,""));
+        return super.setBlockTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace(Names.PREFIX, ""));
     }
 
     @SideOnly(Side.CLIENT)
@@ -59,7 +59,11 @@ public class BlockBase extends Block
     public void registerBlockIcons(IIconRegister register)
     {
         super.registerBlockIcons(register);
-        icons = new IIcon[extraIcons];
-        for (int i = 0; i < icons.length; i++) icons[i] = register.registerIcon(getTextureName() + (i > 0 ? "_" + i : ""));
+        if (extraIcons > 0)
+        {
+            icons = new IIcon[extraIcons];
+            for (int i = 0; i < icons.length; i++)
+                icons[i] = register.registerIcon(getTextureName() + (i > 0 ? "_" + i : ""));
+        }
     }
 }

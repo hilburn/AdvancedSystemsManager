@@ -46,18 +46,24 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 {
 
     private static final int MAX_CHAIN_LENGTH = 512;
+    private static final String NBT_OWNER = "Owner";
+    private static final String NBT_CREATIVE = "Creative";
+    private static final String NBT_LIST = "ShowList";
+    private static final String NBT_PERMISSIONS = "Permissions";
+    private static final String NBT_NAME = "Name";
+    private static final String NBT_ACTIVE = "Active";
+    private static final String NBT_EDITOR = "Editor";
+    public static int PERMISSION_MAX_LENGTH = 255;
     private int[] cachedAllSlots;
     private boolean blockingUsage;
     private int chainLength;
     private Entity[] cachedEntities = new Entity[2];
     private InventoryWrapper cachedInventoryWrapper;
-
     //used by the advanced version
     private List<UserPermission> permissions = new ArrayList<UserPermission>();
     private boolean doesListRequireOp = false;
     private String owner = "Unknown";
     private boolean creativeMode;
-    public static int PERMISSION_MAX_LENGTH = 255;
 
     public String getOwner()
     {
@@ -77,29 +83,9 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         doesListRequireOp = val;
     }
 
-    public boolean doesListRequireOp()
-    {
-        return doesListRequireOp;
-    }
-
-    public boolean isCreativeMode()
-    {
-        return creativeMode;
-    }
-
-    public void setCreativeMode(boolean creativeMode)
-    {
-        this.creativeMode = creativeMode;
-    }
-
     public List<UserPermission> getPermissions()
     {
         return permissions;
-    }
-
-    private boolean isAdvanced()
-    {
-        return BlockRegistry.blockCableRelay.isAdvanced(getBlockMetadata());
     }
 
     @Override
@@ -184,6 +170,154 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             unBlockUsage();
         }
+    }
+
+    private void unBlockUsage()
+    {
+        blockingUsage = false;
+        chainLength = 0;
+    }
+
+    private IInventory getInventory()
+    {
+        return getContainer(IInventory.class, 0);
+    }
+
+    private <T> T getContainer(Class<T> type, int id)
+    {
+        if (isBlockingUsage())
+        {
+            return null;
+        }
+
+        blockUsage();
+
+        if (cachedEntities[id] != null)
+        {
+            if (cachedEntities[id].isDead)
+            {
+                cachedEntities[id] = null;
+                if (id == 0)
+                {
+                    cachedInventoryWrapper = null;
+                }
+            } else
+            {
+                return getEntityContainer(id);
+            }
+        }
+
+        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.blockCableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+
+        int x = xCoord + direction.offsetX;
+        int y = yCoord + direction.offsetY;
+        int z = zCoord + direction.offsetZ;
+
+        World world = getWorldObj();
+        if (world != null)
+        {
+            TileEntity te = world.getTileEntity(x, y, z);
+
+            if (te != null && type.isInstance(te))
+            {
+                if (te instanceof TileEntityRelay)
+                {
+                    TileEntityRelay relay = (TileEntityRelay)te;
+                    relay.chainLength = chainLength + 1;
+                }
+                return (T)te;
+            }
+
+
+            List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1));
+            if (entities != null)
+            {
+                double closest = -1;
+                for (Entity entity : entities)
+                {
+                    double distance = entity.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+                    if (isEntityValid(entity, type, id) && (closest == -1 || distance < closest))
+                    {
+                        closest = distance;
+                        cachedEntities[id] = entity;
+                    }
+                }
+                if (id == 0 && cachedEntities[id] != null)
+                {
+                    cachedInventoryWrapper = getInventoryWrapper(cachedEntities[id]);
+                }
+
+                return getEntityContainer(id);
+            }
+        }
+
+
+        return null;
+    }
+
+    private void blockUsage()
+    {
+        blockingUsage = true;
+    }
+
+    public boolean isBlockingUsage()
+    {
+        return blockingUsage || chainLength >= MAX_CHAIN_LENGTH;
+    }
+
+    private InventoryWrapper getInventoryWrapper(Entity entity)
+    {
+        if (entity instanceof EntityPlayer)
+        {
+            return new InventoryWrapperPlayer((EntityPlayer)entity);
+        } else if (entity instanceof EntityHorse)
+        {
+            return new InventoryWrapperHorse((EntityHorse)entity);
+        } else
+        {
+            return null;
+        }
+    }
+
+    private boolean isEntityValid(Entity entity, Class type, int id)
+    {
+        return type.isInstance(entity) || (id == 0 && ((entity instanceof EntityPlayer && allowPlayerInteraction((EntityPlayer)entity)) || entity instanceof EntityHorse));
+    }
+
+    public boolean allowPlayerInteraction(EntityPlayer player)
+    {
+        return isAdvanced() && (creativeMode != isPlayerActive(player));
+    }
+
+    private boolean isAdvanced()
+    {
+        return BlockRegistry.blockCableRelay.isAdvanced(getBlockMetadata());
+    }
+
+    private boolean isPlayerActive(EntityPlayer player)
+    {
+        if (player != null)
+        {
+            for (UserPermission permission : permissions)
+            {
+                if (permission.getName().equals(Utils.stripControlCodes(player.getDisplayName())))
+                {
+                    return permission.isActive();
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private <T> T getEntityContainer(int id)
+    {
+        if (id == 0 && cachedInventoryWrapper != null)
+        {
+            return (T)cachedInventoryWrapper;
+        }
+
+        return (T)cachedEntities[id];
     }
 
     @Override
@@ -335,22 +469,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
-    {
-        try
-        {
-            IInventory inventory = getInventory();
-
-            return inventory != null && inventory.isItemValidForSlot(i, itemstack);
-
-        } finally
-        {
-            unBlockUsage();
-        }
-    }
-
     @Override
     public void openInventory()
     {
@@ -379,6 +497,21 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             {
                 inventory.closeInventory();
             }
+        } finally
+        {
+            unBlockUsage();
+        }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack itemstack)
+    {
+        try
+        {
+            IInventory inventory = getInventory();
+
+            return inventory != null && inventory.isItemValidForSlot(i, itemstack);
+
         } finally
         {
             unBlockUsage();
@@ -499,6 +632,18 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
+    private IFluidHandler getTank()
+    {
+        return getContainer(IFluidHandler.class, 1);
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        cachedEntities[0] = null;
+        cachedEntities[1] = null;
+        cachedInventoryWrapper = null;
+    }
 
     @Override
     public void markDirty()
@@ -518,163 +663,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
-    private void blockUsage()
-    {
-        blockingUsage = true;
-    }
-
-    private void unBlockUsage()
-    {
-        blockingUsage = false;
-        chainLength = 0;
-    }
-
-    public boolean isBlockingUsage()
-    {
-        return blockingUsage || chainLength >= MAX_CHAIN_LENGTH;
-    }
-
-    private IFluidHandler getTank()
-    {
-        return getContainer(IFluidHandler.class, 1);
-    }
-
-    private IInventory getInventory()
-    {
-        return getContainer(IInventory.class, 0);
-    }
-
-    private <T> T getContainer(Class<T> type, int id)
-    {
-        if (isBlockingUsage())
-        {
-            return null;
-        }
-
-        blockUsage();
-
-        if (cachedEntities[id] != null)
-        {
-            if (cachedEntities[id].isDead)
-            {
-                cachedEntities[id] = null;
-                if (id == 0)
-                {
-                    cachedInventoryWrapper = null;
-                }
-            } else
-            {
-                return getEntityContainer(id);
-            }
-        }
-
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.blockCableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
-
-        int x = xCoord + direction.offsetX;
-        int y = yCoord + direction.offsetY;
-        int z = zCoord + direction.offsetZ;
-
-        World world = getWorldObj();
-        if (world != null)
-        {
-            TileEntity te = world.getTileEntity(x, y, z);
-
-            if (te != null && type.isInstance(te))
-            {
-                if (te instanceof TileEntityRelay)
-                {
-                    TileEntityRelay relay = (TileEntityRelay)te;
-                    relay.chainLength = chainLength + 1;
-                }
-                return (T)te;
-            }
-
-
-            List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1));
-            if (entities != null)
-            {
-                double closest = -1;
-                for (Entity entity : entities)
-                {
-                    double distance = entity.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                    if (isEntityValid(entity, type, id) && (closest == -1 || distance < closest))
-                    {
-                        closest = distance;
-                        cachedEntities[id] = entity;
-                    }
-                }
-                if (id == 0 && cachedEntities[id] != null)
-                {
-                    cachedInventoryWrapper = getInventoryWrapper(cachedEntities[id]);
-                }
-
-                return getEntityContainer(id);
-            }
-        }
-
-
-        return null;
-    }
-
-    private InventoryWrapper getInventoryWrapper(Entity entity)
-    {
-        if (entity instanceof EntityPlayer)
-        {
-            return new InventoryWrapperPlayer((EntityPlayer)entity);
-        } else if (entity instanceof EntityHorse)
-        {
-            return new InventoryWrapperHorse((EntityHorse)entity);
-        } else
-        {
-            return null;
-        }
-    }
-
-
-    private boolean isEntityValid(Entity entity, Class type, int id)
-    {
-        return type.isInstance(entity) || (id == 0 && ((entity instanceof EntityPlayer && allowPlayerInteraction((EntityPlayer)entity)) || entity instanceof EntityHorse));
-    }
-
-    private <T> T getEntityContainer(int id)
-    {
-        if (id == 0 && cachedInventoryWrapper != null)
-        {
-            return (T)cachedInventoryWrapper;
-        }
-
-        return (T)cachedEntities[id];
-    }
-
-    @Override
-    public void updateEntity()
-    {
-        cachedEntities[0] = null;
-        cachedEntities[1] = null;
-        cachedInventoryWrapper = null;
-    }
-
-    public boolean allowPlayerInteraction(EntityPlayer player)
-    {
-        return isAdvanced() && (creativeMode != isPlayerActive(player));
-    }
-
-    private boolean isPlayerActive(EntityPlayer player)
-    {
-        if (player != null)
-        {
-            for (UserPermission permission : permissions)
-            {
-                if (permission.getName().equals(Utils.stripControlCodes(player.getDisplayName())))
-                {
-                    return permission.isActive();
-                }
-            }
-        }
-
-        return false;
-    }
-
     @Override
     public Container getContainer(TileEntity te, InventoryPlayer inv)
     {
@@ -686,22 +674,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
     {
         return new GuiRelay((TileEntityRelay)te, inv);
-    }
-
-    @Override
-    public void writeAllData(DataWriter dw)
-    {
-        dw.writeString(owner, DataBitHelper.NAME_LENGTH);
-        dw.writeBoolean(creativeMode);
-        dw.writeBoolean(doesListRequireOp);
-        dw.writeData(permissions.size(), DataBitHelper.PERMISSION_ID);
-        for (UserPermission permission : permissions)
-        {
-            dw.writeString(permission.getName(), DataBitHelper.NAME_LENGTH);
-            dw.writeBoolean(permission.isActive());
-            dw.writeBoolean(permission.isOp());
-        }
-
     }
 
     @Override
@@ -725,7 +697,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             permissions.add(permission);
         }
     }
-
 
     @Override
     public void readUpdatedData(DataReader dr, EntityPlayer player)
@@ -816,6 +787,21 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
+    @Override
+    public void writeAllData(DataWriter dw)
+    {
+        dw.writeString(owner, DataBitHelper.NAME_LENGTH);
+        dw.writeBoolean(creativeMode);
+        dw.writeBoolean(doesListRequireOp);
+        dw.writeData(permissions.size(), DataBitHelper.PERMISSION_ID);
+        for (UserPermission permission : permissions)
+        {
+            dw.writeString(permission.getName(), DataBitHelper.NAME_LENGTH);
+            dw.writeBoolean(permission.isActive());
+            dw.writeBoolean(permission.isOp());
+        }
+
+    }
 
     public void updateData(ContainerRelay container)
     {
@@ -889,34 +875,19 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
-    private static final String NBT_OWNER = "Owner";
-    private static final String NBT_CREATIVE = "Creative";
-    private static final String NBT_LIST = "ShowList";
-    private static final String NBT_PERMISSIONS = "Permissions";
-    private static final String NBT_NAME = "Name";
-    private static final String NBT_ACTIVE = "Active";
-    private static final String NBT_EDITOR = "Editor";
-
-    @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    public boolean doesListRequireOp()
     {
-        if (isAdvanced())
-        {
-            nbtTagCompound.setString(NBT_OWNER, owner);
-            nbtTagCompound.setBoolean(NBT_CREATIVE, creativeMode);
-            nbtTagCompound.setBoolean(NBT_LIST, doesListRequireOp);
+        return doesListRequireOp;
+    }
 
-            NBTTagList permissionTags = new NBTTagList();
-            for (UserPermission permission : permissions)
-            {
-                NBTTagCompound permissionTag = new NBTTagCompound();
-                permissionTag.setString(NBT_NAME, permission.getName());
-                permissionTag.setBoolean(NBT_ACTIVE, permission.isActive());
-                permissionTag.setBoolean(NBT_EDITOR, permission.isOp());
-                permissionTags.appendTag(permissionTag);
-            }
-            nbtTagCompound.setTag(NBT_PERMISSIONS, permissionTags);
-        }
+    public boolean isCreativeMode()
+    {
+        return creativeMode;
+    }
+
+    public void setCreativeMode(boolean creativeMode)
+    {
+        this.creativeMode = creativeMode;
     }
 
     @Override
@@ -939,6 +910,28 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
                 permission.setOp(permissionTag.getBoolean(NBT_EDITOR));
                 permissions.add(permission);
             }
+        }
+    }
+
+    @Override
+    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    {
+        if (isAdvanced())
+        {
+            nbtTagCompound.setString(NBT_OWNER, owner);
+            nbtTagCompound.setBoolean(NBT_CREATIVE, creativeMode);
+            nbtTagCompound.setBoolean(NBT_LIST, doesListRequireOp);
+
+            NBTTagList permissionTags = new NBTTagList();
+            for (UserPermission permission : permissions)
+            {
+                NBTTagCompound permissionTag = new NBTTagCompound();
+                permissionTag.setString(NBT_NAME, permission.getName());
+                permissionTag.setBoolean(NBT_ACTIVE, permission.isActive());
+                permissionTag.setBoolean(NBT_EDITOR, permission.isOp());
+                permissionTags.appendTag(permissionTag);
+            }
+            nbtTagCompound.setTag(NBT_PERMISSIONS, permissionTags);
         }
     }
 

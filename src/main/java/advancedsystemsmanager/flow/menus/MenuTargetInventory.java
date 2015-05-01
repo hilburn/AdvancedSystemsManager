@@ -20,6 +20,14 @@ import java.util.List;
 
 public class MenuTargetInventory extends MenuTarget
 {
+    public static final String NBT_START = "StartRange";
+    public static final String NBT_END = "EndRange";
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber startTextBox;
+    public TextBoxNumber endTextBox;
+    public int[] startRange = new int[directions.length];
+    public int[] endRange = new int[directions.length];
+
     public MenuTargetInventory(FlowComponent parent)
     {
         super(parent);
@@ -49,13 +57,6 @@ public class MenuTargetInventory extends MenuTarget
         });
     }
 
-    public TextBoxNumberList textBoxes;
-    public TextBoxNumber startTextBox;
-    public TextBoxNumber endTextBox;
-
-    public int[] startRange = new int[directions.length];
-    public int[] endRange = new int[directions.length];
-
     @Override
     public Button getSecondButton()
     {
@@ -81,23 +82,6 @@ public class MenuTargetInventory extends MenuTarget
         };
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
-    {
-        textBoxes.draw(gui, mX, mY);
-    }
-
-    @Override
-    public void refreshAdvancedComponent()
-    {
-        if (selectedDirectionId != -1)
-        {
-            startTextBox.setNumber(startRange[selectedDirectionId]);
-            endTextBox.setNumber(endRange[selectedDirectionId]);
-        }
-    }
-
     @Override
     public void writeAdvancedSetting(DataWriter dw, int i)
     {
@@ -113,40 +97,17 @@ public class MenuTargetInventory extends MenuTarget
     }
 
     @Override
+    public void resetAdvancedSetting(int i)
+    {
+        startRange[i] = endRange[i] = 0;
+    }
+
+    @Override
     public void copyAdvancedSetting(Menu menu, int i)
     {
         MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
         startRange[i] = menuTarget.startRange[i];
         endRange[i] = menuTarget.endRange[i];
-    }
-
-    @Override
-    public void onAdvancedClick(int mX, int mY, int button)
-    {
-        textBoxes.onClick(mX, mY, button);
-    }
-
-    public static final String NBT_START = "StartRange";
-    public static final String NBT_END = "EndRange";
-
-    @Override
-    public void loadAdvancedComponent(NBTTagCompound directionTag, int i)
-    {
-        startRange[i] = directionTag.getByte(NBT_START);
-        endRange[i] = directionTag.getByte(NBT_END);
-    }
-
-    @Override
-    public void saveAdvancedComponent(NBTTagCompound directionTag, int i)
-    {
-        directionTag.setByte(NBT_START, (byte)getStart(i));
-        directionTag.setByte(NBT_END, (byte)getEnd(i));
-    }
-
-    @Override
-    public void resetAdvancedSetting(int i)
-    {
-        startRange[i] = endRange[i] = 0;
     }
 
     @Override
@@ -170,21 +131,18 @@ public class MenuTargetInventory extends MenuTarget
     }
 
     @Override
-    public void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i)
+    public void loadAdvancedComponent(NBTTagCompound directionTag, int i)
     {
-        int data = dr.readData(header.getBits());
-        switch (header)
-        {
-            case START_OR_TANK_DATA:
-                startRange[i] = data;
-                refreshAdvancedComponent();
-                break;
-            case END:
-                endRange[i] = data;
-                refreshAdvancedComponent();
-        }
+        startRange[i] = directionTag.getByte(NBT_START);
+        endRange[i] = directionTag.getByte(NBT_END);
     }
 
+    @Override
+    public void saveAdvancedComponent(NBTTagCompound directionTag, int i)
+    {
+        directionTag.setByte(NBT_START, (byte)getStart(i));
+        directionTag.setByte(NBT_END, (byte)getEnd(i));
+    }
 
     public int getStart(int i)
     {
@@ -208,6 +166,45 @@ public class MenuTargetInventory extends MenuTarget
         }
 
         super.addErrors(errors);
+    }
+
+    @Override
+    public void refreshAdvancedComponent()
+    {
+        if (selectedDirectionId != -1)
+        {
+            startTextBox.setNumber(startRange[selectedDirectionId]);
+            endTextBox.setNumber(endRange[selectedDirectionId]);
+        }
+    }
+
+    @Override
+    public void onAdvancedClick(int mX, int mY, int button)
+    {
+        textBoxes.onClick(mX, mY, button);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    {
+        textBoxes.draw(gui, mX, mY);
+    }
+
+    @Override
+    public void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i)
+    {
+        int data = dr.readData(header.getBits());
+        switch (header)
+        {
+            case START_OR_TANK_DATA:
+                startRange[i] = data;
+                refreshAdvancedComponent();
+                break;
+            case END:
+                endRange[i] = data;
+                refreshAdvancedComponent();
+        }
     }
 
     @SideOnly(Side.CLIENT)

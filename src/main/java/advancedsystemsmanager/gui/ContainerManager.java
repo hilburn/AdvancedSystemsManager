@@ -18,8 +18,10 @@ import java.util.List;
 
 public class ContainerManager extends ContainerBase
 {
-
     private TileEntityManager manager;
+    private TIntObjectHashMap<FlowComponent> oldComponents;
+    private List<WorldCoordinate> oldInventories;
+    private int oldIdIndexToRemove;
 
     public ContainerManager(TileEntityManager manager, InventoryPlayer player)
     {
@@ -28,9 +30,23 @@ public class ContainerManager extends ContainerBase
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
+    public void addCraftingToCrafters(ICrafting player)
     {
-        return entityplayer.getDistanceSq(manager.xCoord, manager.yCoord, manager.zCoord) <= 64 || (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor);
+        super.addCraftingToCrafters(player);
+
+        PacketHandler.sendAllData(this, player, manager);
+        oldComponents = new TIntObjectHashMap<FlowComponent>();
+        for (FlowComponent component : manager.getFlowItems())
+        {
+            oldComponents.put(component.getId(), component.copy());
+        }
+        manager.updateInventories();
+        oldInventories = new ArrayList<WorldCoordinate>();
+        for (SystemBlock connection : manager.getConnectedInventories())
+        {
+            oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
+        }
+        oldIdIndexToRemove = manager.getRemovedIds().size();
     }
 
     @Override
@@ -90,29 +106,8 @@ public class ContainerManager extends ContainerBase
     }
 
     @Override
-    public void addCraftingToCrafters(ICrafting player)
+    public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        super.addCraftingToCrafters(player);
-
-        PacketHandler.sendAllData(this, player, manager);
-        oldComponents = new TIntObjectHashMap<FlowComponent>();
-        for (FlowComponent component : manager.getFlowItems())
-        {
-            oldComponents.put(component.getId(), component.copy());
-        }
-        manager.updateInventories();
-        oldInventories = new ArrayList<WorldCoordinate>();
-        for (SystemBlock connection : manager.getConnectedInventories())
-        {
-            oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
-        }
-        oldIdIndexToRemove = manager.getRemovedIds().size();
+        return entityplayer.getDistanceSq(manager.xCoord, manager.yCoord, manager.zCoord) <= 64 || (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor);
     }
-
-
-    private TIntObjectHashMap<FlowComponent> oldComponents;
-    private List<WorldCoordinate> oldInventories;
-    private int oldIdIndexToRemove;
-
-
 }

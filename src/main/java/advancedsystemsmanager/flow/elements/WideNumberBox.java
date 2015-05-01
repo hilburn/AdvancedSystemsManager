@@ -8,17 +8,16 @@ public class WideNumberBox extends TextBoxNumber
         super(x, y, length, true);
     }
 
+    @Override
+    public int getMaxNumber()
+    {
+        return Integer.MAX_VALUE;
+    }
 
     @Override
     public boolean isVisible()
     {
         return true;
-    }
-
-    @Override
-    public int getMaxNumber()
-    {
-        return Integer.MAX_VALUE;
     }
 
     public int getWidth()

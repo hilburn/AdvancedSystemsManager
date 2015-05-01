@@ -45,11 +45,6 @@ public class StackTankHolder
         fluidStack.amount -= val;
     }
 
-    public int getSizeLeft()
-    {
-        return Math.min(fluidStack.amount, sizeLeft);
-    }
-
     public StackTankHolder getSplitElement(int elementAmount, int id, boolean fair)
     {
         StackTankHolder element = new StackTankHolder(this.fluidStack, this.tank, this.side);
@@ -66,5 +61,10 @@ public class StackTankHolder
 
         element.sizeLeft = amount;
         return element;
+    }
+
+    public int getSizeLeft()
+    {
+        return Math.min(fluidStack.amount, sizeLeft);
     }
 }

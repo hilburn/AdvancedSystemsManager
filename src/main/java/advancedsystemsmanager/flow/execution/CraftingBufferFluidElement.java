@@ -22,6 +22,8 @@ import java.util.*;
 public class CraftingBufferFluidElement implements IItemBufferElement, IItemBufferSubElement
 {
     public static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
+    public static final double SPEED_MULTIPLIER = 0.05000000074505806D;
+    public static final Random rand = new Random();
     public CommandExecutor executor;
     public MenuCrafting craftingMenu;
     public MenuContainerScrap scrapMenu;
@@ -31,8 +33,6 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public boolean justRemoved;
     public int overflowBuffer;
     public List<ItemStack> containerItems;
-    public static final double SPEED_MULTIPLIER = 0.05000000074505806D;
-    public static final Random rand = new Random();
     public List<IInventory> inventories = new ArrayList<IInventory>();
 
     public CraftingBufferFluidElement(CommandExecutor executor, MenuCrafting craftingMenu, MenuContainerScrap scrapMenu)
@@ -67,6 +67,17 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
 
     @Override
     public void removeSubElement()
+    {
+    }
+
+    @Override
+    public int retrieveItemCount(int moveCount)
+    {
+        return moveCount;
+    }
+
+    @Override
+    public void decreaseStackSize(int moveCount)
     {
     }
 
@@ -144,17 +155,6 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     }
 
     @Override
-    public int retrieveItemCount(int moveCount)
-    {
-        return moveCount;
-    }
-
-    @Override
-    public void decreaseStackSize(int moveCount)
-    {
-    }
-
-    @Override
     public void remove()
     {
     }
@@ -222,9 +222,10 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         return null;
     }
 
-    public boolean useAdvancedDetection()
+    @Override
+    public int getSlot()
     {
-        return this.craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
+        return 0;
     }
 
     public boolean findItems(boolean remove)
@@ -361,15 +362,14 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         }
     }
 
+    public boolean useAdvancedDetection()
+    {
+        return this.craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
+    }
+
     public static boolean isBucket(CraftingSetting setting)
     {
         return FluidContainerRegistry.isBucket(setting.getItem());
-    }
-
-    @Override
-    public int getSlot()
-    {
-        return 0;
     }
 
     public static class FluidElement

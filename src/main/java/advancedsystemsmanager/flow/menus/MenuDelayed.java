@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
@@ -26,14 +25,14 @@ public class MenuDelayed extends MenuTriggered
     public static final int MENU_WIDTH = 120;
     public static final int TEXT_MARGIN_X = 5;
     public static final int TEXT_Y = 10;
+    public static final EnumSet<ConnectionOption> delayed = EnumSet.of(ConnectionOption.DELAY_OUTPUT);
+    public static final String NBT_RESTART = "Restart";
     //    public static final int TEXT_Y2 = 15;
 //    public static final int TEXT_SECOND_X = 60;
 //    public static final int TEXT_SECOND_Y = 38;
     public TextBoxNumber intervalTicks;
     public TextBoxNumber intervalSeconds;
     public RadioButtonList buttonList;
-    public static final EnumSet<ConnectionOption> delayed = EnumSet.of(ConnectionOption.DELAY_OUTPUT);
-    public static final String NBT_RESTART = "Restart";
 
     public MenuDelayed(FlowComponent parent)
     {
@@ -134,18 +133,10 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public void addErrors(List<String> errors)
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        if (getDelay() < 5 && isVisible())
-        {
-            errors.add(Names.DELAY_ERROR);
-        }
-    }
-
-    @Override
-    public EnumSet<ConnectionOption> getConnectionSets()
-    {
-        return delayed;
+        super.writeToNBT(nbtTagCompound, pickup);
+        nbtTagCompound.setBoolean(NBT_RESTART, buttonList.getSelectedOption() == 0);
     }
 
     @Override
@@ -159,33 +150,41 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public String getName()
-    {
-        return Names.DELAY_TRIGGER;
-    }
-
-    @Override
-    public boolean isVisible()
-    {
-        return getParent().getConnectionSet() == ConnectionSet.DELAYED;
-    }
-
-    @Override
     public boolean remove()
     {
         return counter < 0;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        super.writeToNBT(nbtTagCompound, pickup);
-        nbtTagCompound.setBoolean(NBT_RESTART, buttonList.getSelectedOption() == 0);
-    }
-
-    @Override
     public void resetCounter()
     {
         counter = -1;
+    }
+
+    @Override
+    public EnumSet<ConnectionOption> getConnectionSets()
+    {
+        return delayed;
+    }
+
+    @Override
+    public String getName()
+    {
+        return Names.DELAY_TRIGGER;
+    }
+
+    @Override
+    public void addErrors(List<String> errors)
+    {
+        if (getDelay() < 5 && isVisible())
+        {
+            errors.add(Names.DELAY_ERROR);
+        }
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() == ConnectionSet.DELAYED;
     }
 }

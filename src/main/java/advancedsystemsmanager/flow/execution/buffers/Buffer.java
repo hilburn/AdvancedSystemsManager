@@ -42,27 +42,6 @@ public class Buffer<Type> implements IBuffer<Type>
             remove(multiMap.get(key), amount, fair);
     }
 
-    public void remove(List<IBufferElement<Type>> subElements, int amount, boolean fair)
-    {
-        int amountToRemove = fair? Math.min(amount/subElements.size(), 1) : amount;
-        Iterator<IBufferElement<Type>> iterator = subElements.iterator();
-        while (amount > 0 && iterator.hasNext())
-        {
-            int removed = iterator.next().reduceBufferAmount(amountToRemove);
-            if (removed < amountToRemove)
-            {
-                iterator.remove();
-            }
-            amount -= removed;
-        }
-        if (amount > 0 && subElements.size() > 0) remove(subElements, amount, fair);
-    }
-
-    public Key<Type> getKey(Type key)
-    {
-        return new Key<Type>(key);
-    }
-
     @Override
     public boolean add(IBufferElement<Type> subElement)
     {
@@ -79,5 +58,26 @@ public class Buffer<Type> implements IBuffer<Type>
     public Iterator<Key<Type>> getKeyIterator()
     {
         return multiMap.keySet().iterator();
+    }
+
+    public Key<Type> getKey(Type key)
+    {
+        return new Key<Type>(key);
+    }
+
+    public void remove(List<IBufferElement<Type>> subElements, int amount, boolean fair)
+    {
+        int amountToRemove = fair ? Math.min(amount / subElements.size(), 1) : amount;
+        Iterator<IBufferElement<Type>> iterator = subElements.iterator();
+        while (amount > 0 && iterator.hasNext())
+        {
+            int removed = iterator.next().reduceBufferAmount(amountToRemove);
+            if (removed < amountToRemove)
+            {
+                iterator.remove();
+            }
+            amount -= removed;
+        }
+        if (amount > 0 && subElements.size() > 0) remove(subElements, amount, fair);
     }
 }

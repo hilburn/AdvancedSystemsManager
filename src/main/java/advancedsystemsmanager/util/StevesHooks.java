@@ -40,52 +40,6 @@ public class StevesHooks
         return string;
     }
 
-    public static void removeFlowComponent(TileEntityManager manager, int idToRemove)
-    {
-        for (int id : getIdsToRemove(idToRemove, manager.getFlowItems()))
-        {
-            manager.removeFlowComponent(id, manager.components);
-            if (!manager.getWorldObj().isRemote)
-            {
-                manager.getRemovedIds().add(id);
-            } else
-            {
-                for (Iterator<FlowComponent> itr = manager.getZLevelRenderingList().iterator(); itr.hasNext();)
-                {
-                    if (itr.next().getId() == id)
-                    {
-                        itr.remove();
-                        break;
-                    }
-                }
-            }
-            manager.updateVariables();
-        }
-    }
-
-    public static List<Integer> getIdsToRemove(int idToRemove, Collection<FlowComponent> items)
-    {
-        List<Integer> ids = new ArrayList<Integer>();
-        getIdsToRemove(ids, idToRemove, items);
-        Collections.sort(ids);
-        Collections.reverse(ids);
-        return ids;
-    }
-
-    private static void getIdsToRemove(List<Integer> ids, int idToRemove, Collection<FlowComponent> items)
-    {
-        for (FlowComponent component : items)
-        {
-            if (component.getParent() != null && component.getParent().getId() == idToRemove) getIdsToRemove(ids, component.getId(), items);
-        }
-        ids.add(idToRemove);
-    }
-
-    public static boolean instanceOf(Class clazz, TileEntity entity)
-    {
-        return clazz.isInstance(entity) || entity instanceof IHiddenTank && clazz == IFluidHandler.class || entity instanceof IHiddenInventory && clazz == IInventory.class || clazz == IEnergyConnection.class && (entity instanceof IEnergyProvider || entity instanceof IEnergyReceiver);
-    }
-
     public static String getContentString(TileEntity tileEntity)
     {
         String result = "";
@@ -123,6 +77,53 @@ public class StevesHooks
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
+    public static void removeFlowComponent(TileEntityManager manager, int idToRemove)
+    {
+        for (int id : getIdsToRemove(idToRemove, manager.getFlowItems()))
+        {
+            manager.removeFlowComponent(id, manager.components);
+            if (!manager.getWorldObj().isRemote)
+            {
+                manager.getRemovedIds().add(id);
+            } else
+            {
+                for (Iterator<FlowComponent> itr = manager.getZLevelRenderingList().iterator(); itr.hasNext(); )
+                {
+                    if (itr.next().getId() == id)
+                    {
+                        itr.remove();
+                        break;
+                    }
+                }
+            }
+            manager.updateVariables();
+        }
+    }
+
+    public static List<Integer> getIdsToRemove(int idToRemove, Collection<FlowComponent> items)
+    {
+        List<Integer> ids = new ArrayList<Integer>();
+        getIdsToRemove(ids, idToRemove, items);
+        Collections.sort(ids);
+        Collections.reverse(ids);
+        return ids;
+    }
+
+    private static void getIdsToRemove(List<Integer> ids, int idToRemove, Collection<FlowComponent> items)
+    {
+        for (FlowComponent component : items)
+        {
+            if (component.getParent() != null && component.getParent().getId() == idToRemove)
+                getIdsToRemove(ids, component.getId(), items);
+        }
+        ids.add(idToRemove);
+    }
+
+    public static boolean instanceOf(Class clazz, TileEntity entity)
+    {
+        return clazz.isInstance(entity) || entity instanceof IHiddenTank && clazz == IFluidHandler.class || entity instanceof IHiddenInventory && clazz == IInventory.class || clazz == IEnergyConnection.class && (entity instanceof IEnergyProvider || entity instanceof IEnergyReceiver);
+    }
+
     public static boolean containerAdvancedSearch(SystemBlock block, String search)
     {
         TileEntity tileEntity = block.getTileEntity();
@@ -139,6 +140,11 @@ public class StevesHooks
         }
     }
 
+    private static Multimap<TileEntityManager, FlowComponent> getRegistry(MenuTriggered menu)
+    {
+        return delayedRegistry;
+    }
+
     public static TileEntityManager tickTriggers(TileEntityManager manager)
     {
         tick(delayedRegistry.get(manager));
@@ -149,23 +155,18 @@ public class StevesHooks
     {
         if (triggers != null)
         {
-            for (Iterator<FlowComponent> itr = triggers.iterator(); itr.hasNext();)
+            for (Iterator<FlowComponent> itr = triggers.iterator(); itr.hasNext(); )
             {
                 MenuTriggered toTrigger = (MenuTriggered)itr.next().getMenus().get(6);
                 if (toTrigger.isVisible())
                 {
                     toTrigger.tick();
                     if (toTrigger.remove()) itr.remove();
-                }else
+                } else
                 {
                     itr.remove();
                 }
             }
         }
-    }
-
-    private static Multimap<TileEntityManager, FlowComponent> getRegistry(MenuTriggered menu)
-    {
-        return delayedRegistry;
     }
 }

@@ -91,6 +91,12 @@ public class SlotInventoryHolder
     }
 
     @Override
+    public int hashCode()
+    {
+        return inventory.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -99,12 +105,6 @@ public class SlotInventoryHolder
         SlotInventoryHolder that = (SlotInventoryHolder)o;
 
         return inventory.xCoord == that.inventory.xCoord && inventory.yCoord == that.inventory.yCoord && inventory.zCoord == that.inventory.yCoord;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return inventory.hashCode();
     }
 
     public TileEntity getTile()

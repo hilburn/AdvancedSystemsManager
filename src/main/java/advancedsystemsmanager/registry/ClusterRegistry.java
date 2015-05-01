@@ -2,6 +2,7 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ public class ClusterRegistry
     protected final Class<? extends TileEntityClusterElement> clazz;
     protected final Block block;
     protected final ItemStack itemStack;
+    protected final int id;
     protected ClusterRegistry nextSubRegistry;
     protected ClusterRegistry headSubRegistry;
-    protected final int id;
 
 
     private ClusterRegistry(Class<? extends TileEntityClusterElement> clazz, Block block, ItemStack itemStack)
@@ -32,7 +33,8 @@ public class ClusterRegistry
 
     public static void register(Class<? extends TileEntityClusterElement> clazz, Block block)
     {
-        register(new ClusterRegistry(clazz, block, new ItemStack(block)));
+        if (block instanceof ITileEntityProvider)
+            register(new ClusterRegistry(clazz, block, new ItemStack(block)));
     }
 
     public static void register(ClusterRegistry registryElement)
@@ -55,20 +57,24 @@ public class ClusterRegistry
         }
     }
 
+    public static ClusterRegistry get(TileEntityClusterElement tileEntityClusterElement)
+    {
+        return registry.get(tileEntityClusterElement.getClass());
+    }
+
+    public static List<ClusterRegistry> getRegistryList()
+    {
+        return registryList;
+    }
+
     public int getId()
     {
         return id;
     }
 
-
     public Block getBlock()
     {
         return block;
-    }
-
-    public ItemStack getItemStack()
-    {
-        return itemStack;
     }
 
     public ItemStack getItemStack(int meta)
@@ -86,19 +92,14 @@ public class ClusterRegistry
         return getItemStack();
     }
 
+    public ItemStack getItemStack()
+    {
+        return itemStack;
+    }
+
     public boolean isValidMeta(int meta)
     {
         return true;
-    }
-
-    public static ClusterRegistry get(TileEntityClusterElement tileEntityClusterElement)
-    {
-        return registry.get(tileEntityClusterElement.getClass());
-    }
-
-    public static List<ClusterRegistry> getRegistryList()
-    {
-        return registryList;
     }
 
     public boolean isChainPresentIn(List<Integer> types)

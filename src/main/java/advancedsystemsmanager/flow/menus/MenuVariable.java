@@ -19,6 +19,19 @@ import java.util.List;
 
 public class MenuVariable extends Menu
 {
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 28;
+    public static final int RADIO_BUTTON_SPACING = 12;
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 52;
+    public static final String NBT_VARIABLE = "Variable";
+    public static final String NBT_MODE = "Mode";
+    public static final String NBT_EXECUTED = "Executed";
+    public RadioButtonList radioButtons;
+    public VariableDisplay varDisplay;
+    public int selectedVariable = 0;
+    public CheckBoxList checkBoxes;
+    public boolean executed;
     public MenuVariable(FlowComponent parent)
     {
         super(parent);
@@ -28,17 +41,6 @@ public class MenuVariable extends Menu
 
         radioButtons = new RadioButtonList()
         {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(true); //var || mode
-                dw.writeBoolean(false); //mode
-                dw.writeData(selectedOption, DataBitHelper.CONTAINER_MODE);
-                PacketHandler.sendDataToServer(dw);
-            }
-
             @Override
             public int getSelectedOption()
             {
@@ -61,6 +63,17 @@ public class MenuVariable extends Menu
                 {
                     getParent().getManager().updateVariables();
                 }
+            }
+
+            @Override
+            public void updateSelectedOption(int selectedOption)
+            {
+                setSelectedOption(selectedOption);
+                DataWriter dw = getWriterForServerComponentPacket();
+                dw.writeBoolean(true); //var || mode
+                dw.writeBoolean(false); //mode
+                dw.writeData(selectedOption, DataBitHelper.CONTAINER_MODE);
+                PacketHandler.sendDataToServer(dw);
             }
         };
 
@@ -138,42 +151,26 @@ public class MenuVariable extends Menu
         });
     }
 
+    public boolean isDeclaration()
+    {
+        return getParent().getConnectionSet() == ConnectionSet.EMPTY;
+    }
+
+    public int getDefaultId()
+    {
+        return isDeclaration() ? 1 : 2;
+    }
+
+    public VariableMode getVariableMode()
+    {
+        return VariableMode.values()[radioButtons.getSelectedOption()];
+    }
+
     @Override
     public String getName()
     {
         return Names.VARIABLE_MENU;
     }
-
-
-    public void setSelectedVariable(int val)
-    {
-        selectedVariable = val;
-
-        if (isDeclaration())
-        {
-            getParent().getManager().updateVariables();
-        }
-    }
-
-    public Variable getVariable()
-    {
-        return getParent().getManager().getVariables()[getSelectedVariable()];
-    }
-
-    public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 28;
-    public static final int RADIO_BUTTON_SPACING = 12;
-
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 52;
-
-
-    public RadioButtonList radioButtons;
-    public VariableDisplay varDisplay;
-    public int selectedVariable = 0;
-    public CheckBoxList checkBoxes;
-    public boolean executed;
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -235,7 +232,6 @@ public class MenuVariable extends Menu
         executed = ((MenuVariable)menu).executed;
     }
 
-
     @Override
     public void refreshData(ContainerManager container, Menu newData)
     {
@@ -275,9 +271,25 @@ public class MenuVariable extends Menu
         }
     }
 
-    public static final String NBT_VARIABLE = "Variable";
-    public static final String NBT_MODE = "Mode";
-    public static final String NBT_EXECUTED = "Executed";
+    public Variable getVariable()
+    {
+        return getParent().getManager().getVariables()[getSelectedVariable()];
+    }
+
+    public int getSelectedVariable()
+    {
+        return selectedVariable;
+    }
+
+    public void setSelectedVariable(int val)
+    {
+        selectedVariable = val;
+
+        if (isDeclaration())
+        {
+            getParent().getManager().updateVariables();
+        }
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
@@ -293,6 +305,19 @@ public class MenuVariable extends Menu
         nbtTagCompound.setByte(NBT_VARIABLE, (byte)selectedVariable);
         nbtTagCompound.setByte(NBT_MODE, (byte)radioButtons.getSelectedOption());
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
+    }
+
+    @Override
+    public void addErrors(List<String> errors)
+    {
+        Variable variable = getParent().getManager().getVariables()[selectedVariable];
+        if (!variable.isValid())
+        {
+            errors.add(Names.NOT_DECLARED_ERROR);
+        } else if (isDeclaration() && variable.getDeclaration().getId() != getParent().getId())
+        {
+            errors.add(Names.ALREADY_DECLARED_ERROR);
+        }
     }
 
     @Override
@@ -317,10 +342,6 @@ public class MenuVariable extends Menu
         }
     }
 
-    public int getSelectedVariable()
-    {
-        return selectedVariable;
-    }
 
     public enum VariableMode
     {
@@ -343,35 +364,6 @@ public class MenuVariable extends Menu
         public String toString()
         {
             return super.toString().charAt(0) + super.toString().substring(1).toLowerCase();
-        }
-    }
-
-    public boolean isDeclaration()
-    {
-        return getParent().getConnectionSet() == ConnectionSet.EMPTY;
-    }
-
-    public int getDefaultId()
-    {
-        return isDeclaration() ? 1 : 2;
-    }
-
-    public VariableMode getVariableMode()
-    {
-        return VariableMode.values()[radioButtons.getSelectedOption()];
-    }
-
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        Variable variable = getParent().getManager().getVariables()[selectedVariable];
-        if (!variable.isValid())
-        {
-            errors.add(Names.NOT_DECLARED_ERROR);
-        } else if (isDeclaration() && variable.getDeclaration().getId() != getParent().getId())
-        {
-            errors.add(Names.ALREADY_DECLARED_ERROR);
         }
     }
 }

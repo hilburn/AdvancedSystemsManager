@@ -4,7 +4,7 @@ public class Names
 {
     public static final String PREFIX = "system_";
     public static final String MANAGER = PREFIX + "manager";
-    
+
     public static final String CABLE = PREFIX + "cable";
     public static final String CABLE_RELAY = CABLE + "_relay";
     public static final String CABLE_OUTPUT = CABLE + "_output";
@@ -20,7 +20,7 @@ public class Names
 
     public static final String CABLE_RF = CABLE + "_rf";
     public static final String CABLE_AE = CABLE + "_ae";
-    
+
     public static final String DUPLICATOR = PREFIX + "duplicator";
     public static final String LABELER = PREFIX + "labeler";
     public static final String REMOTE_ACCESS = PREFIX + "remote_access";
@@ -380,5 +380,5 @@ public class Names
     public static final String PERMISSION_CREATIVE = GUI_PREFIX + "PermissionCreative";
     public static final String PERMISSION_INVENTORY = GUI_PREFIX + "PermissionInventory";
     public static final String PERMISSION_DENIED = GUI_PREFIX + "PermissionDenied";
-    
+
 }

@@ -24,14 +24,6 @@ public abstract class MenuTarget extends Menu
 {
 
 
-    public MenuTarget(FlowComponent parent)
-    {
-        super(parent);
-
-        selectedDirectionId = -1;
-
-    }
-
     public static final int DIRECTION_SIZE_W = 31;
     public static final int DIRECTION_SIZE_H = 12;
     public static final int DIRECTION_SRC_X = 0;
@@ -42,15 +34,17 @@ public abstract class MenuTarget extends Menu
     public static final int DIRECTION_MARGIN = 10;
     public static final int DIRECTION_TEXT_X = 2;
     public static final int DIRECTION_TEXT_Y = 3;
-
     public static final int BUTTON_SIZE_W = 42;
     public static final int BUTTON_SIZE_H = 12;
     public static final int BUTTON_SRC_X = 0;
     public static final int BUTTON_SRC_Y = 106;
     public static final int BUTTON_X = 39;
     public static final int BUTTON_TEXT_Y = 5;
-
-
+    public static final String NBT_DIRECTIONS = "Directions";
+    public static final String NBT_ACTIVE = "Active";
+    public static final String NBT_RANGE = "UseRange";
+    public static ForgeDirection[] directions = ForgeDirection.VALID_DIRECTIONS;
+    public int selectedDirectionId;
     public Button[] buttons = {new Button(5)
     {
         @Override
@@ -72,23 +66,25 @@ public abstract class MenuTarget extends Menu
         }
     },
             getSecondButton()};
+    public boolean[] activatedDirections = new boolean[directions.length];
+    public boolean[] useRangeForDirections = new boolean[directions.length];
+
+
+    public MenuTarget(FlowComponent parent)
+    {
+        super(parent);
+
+        selectedDirectionId = -1;
+
+    }
 
     public abstract Button getSecondButton();
-
 
     @Override
     public String getName()
     {
         return Names.TARGET_MENU;
     }
-
-
-    public static ForgeDirection[] directions = ForgeDirection.VALID_DIRECTIONS;
-
-    public int selectedDirectionId;
-    public boolean[] activatedDirections = new boolean[directions.length];
-    public boolean[] useRangeForDirections = new boolean[directions.length];
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -131,7 +127,6 @@ public abstract class MenuTarget extends Menu
         }
     }
 
-
     public boolean isActive(int i)
     {
         return activatedDirections[i];
@@ -142,12 +137,10 @@ public abstract class MenuTarget extends Menu
         return i % 2 == 0 ? DIRECTION_X_LEFT : DIRECTION_X_RIGHT;
     }
 
-
     public boolean useAdvancedSetting(int i)
     {
         return useRangeForDirections[i];
     }
-
 
     public int getDirectionY(int i)
     {
@@ -220,23 +213,6 @@ public abstract class MenuTarget extends Menu
 
     }
 
-    public abstract class Button
-    {
-        public int y;
-
-        public Button(int y)
-        {
-            this.y = y;
-        }
-
-        public abstract String getLabel();
-
-        public abstract String getMouseOverText();
-
-        public abstract void onClicked();
-    }
-
-
     @Override
     public void writeData(DataWriter dw)
     {
@@ -252,28 +228,7 @@ public abstract class MenuTarget extends Menu
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
-
-    public abstract void refreshAdvancedComponent();
-
     public abstract void writeAdvancedSetting(DataWriter dw, int i);
-
-    public abstract void readAdvancedSetting(DataReader dr, int i);
-
-    public abstract void copyAdvancedSetting(Menu menuTarget, int i);
-
-    public abstract void onAdvancedClick(int mX, int mY, int button);
-
-    public abstract void loadAdvancedComponent(NBTTagCompound directionTag, int i);
-
-    public abstract void saveAdvancedComponent(NBTTagCompound directionTag, int i);
-
-    public abstract void resetAdvancedSetting(int i);
-
-    public abstract void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i);
-
-    public abstract void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i);
 
     @Override
     public void readData(DataReader dr)
@@ -294,6 +249,10 @@ public abstract class MenuTarget extends Menu
         }
     }
 
+    public abstract void readAdvancedSetting(DataReader dr, int i);
+
+    public abstract void resetAdvancedSetting(int i);
+
     @Override
     public void copyFrom(Menu menu)
     {
@@ -307,6 +266,7 @@ public abstract class MenuTarget extends Menu
         }
     }
 
+    public abstract void copyAdvancedSetting(Menu menuTarget, int i);
 
     @Override
     public void refreshData(ContainerManager container, Menu newData)
@@ -333,6 +293,7 @@ public abstract class MenuTarget extends Menu
         }
     }
 
+    public abstract void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i);
 
     public void writeUpdatedData(ContainerManager container, int id, DataTypeHeader header, int data)
     {
@@ -340,6 +301,69 @@ public abstract class MenuTarget extends Menu
         writeData(dw, id, header, data);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
+
+    public void writeData(DataWriter dw, int id, DataTypeHeader header, int data)
+    {
+        dw.writeData(id, DataBitHelper.MENU_TARGET_DIRECTION_ID);
+        dw.writeData(header.id, DataBitHelper.MENU_TARGET_TYPE_HEADER);
+        dw.writeData(data, header.bits);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
+        NBTTagList directionTagList = nbtTagCompound.getTagList(NBT_DIRECTIONS, 10);
+
+        for (int i = 0; i < directionTagList.tagCount(); i++)
+        {
+            NBTTagCompound directionTag = directionTagList.getCompoundTagAt(i);
+            activatedDirections[i] = directionTag.getBoolean(NBT_ACTIVE);
+            useRangeForDirections[i] = directionTag.getBoolean(NBT_RANGE);
+            loadAdvancedComponent(directionTag, i);
+        }
+    }
+
+    public abstract void loadAdvancedComponent(NBTTagCompound directionTag, int i);
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        NBTTagList directionTagList = new NBTTagList();
+
+        for (int i = 0; i < directions.length; i++)
+        {
+            NBTTagCompound directionTag = new NBTTagCompound();
+            directionTag.setBoolean(NBT_ACTIVE, isActive(i));
+            directionTag.setBoolean(NBT_RANGE, useAdvancedSetting(i));
+            saveAdvancedComponent(directionTag, i);
+            directionTagList.appendTag(directionTag);
+        }
+
+        nbtTagCompound.setTag(NBT_DIRECTIONS, directionTagList);
+    }
+
+    public abstract void saveAdvancedComponent(NBTTagCompound directionTag, int i);
+
+    @Override
+    public void addErrors(List<String> errors)
+    {
+        for (int i = 0; i < directions.length; i++)
+        {
+            if (isActive(i))
+            {
+                return;
+            }
+        }
+
+        errors.add(Names.NO_DIRECTION_ERROR);
+    }
+
+    public abstract void refreshAdvancedComponent();
+
+    public abstract void onAdvancedClick(int mX, int mY, int button);
+
+    @SideOnly(Side.CLIENT)
+    public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
 
     @Override
     public void readNetworkComponent(DataReader dr)
@@ -365,6 +389,19 @@ public abstract class MenuTarget extends Menu
         }
     }
 
+    public abstract void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i);
+
+    public DataTypeHeader getHeaderFromId(int id)
+    {
+        for (DataTypeHeader header : DataTypeHeader.values())
+        {
+            if (id == header.id)
+            {
+                return header;
+            }
+        }
+        return null;
+    }
 
     public void writeData(DataTypeHeader header, int data)
     {
@@ -373,12 +410,11 @@ public abstract class MenuTarget extends Menu
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, int id, DataTypeHeader header, int data)
+    public void setActive(int side)
     {
-        dw.writeData(id, DataBitHelper.MENU_TARGET_DIRECTION_ID);
-        dw.writeData(header.id, DataBitHelper.MENU_TARGET_TYPE_HEADER);
-        dw.writeData(data, header.bits);
+        activatedDirections[side] = true;
     }
+
 
     public enum DataTypeHeader
     {
@@ -407,72 +443,19 @@ public abstract class MenuTarget extends Menu
         }
     }
 
-    public DataTypeHeader getHeaderFromId(int id)
+    public abstract class Button
     {
-        for (DataTypeHeader header : DataTypeHeader.values())
+        public int y;
+
+        public Button(int y)
         {
-            if (id == header.id)
-            {
-                return header;
-            }
-        }
-        return null;
-    }
-
-    public static final String NBT_DIRECTIONS = "Directions";
-    public static final String NBT_ACTIVE = "Active";
-    public static final String NBT_RANGE = "UseRange";
-
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
-    {
-        NBTTagList directionTagList = nbtTagCompound.getTagList(NBT_DIRECTIONS, 10);
-
-        for (int i = 0; i < directionTagList.tagCount(); i++)
-        {
-            NBTTagCompound directionTag = directionTagList.getCompoundTagAt(i);
-            activatedDirections[i] = directionTag.getBoolean(NBT_ACTIVE);
-            useRangeForDirections[i] = directionTag.getBoolean(NBT_RANGE);
-            loadAdvancedComponent(directionTag, i);
-        }
-    }
-
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        NBTTagList directionTagList = new NBTTagList();
-
-        for (int i = 0; i < directions.length; i++)
-        {
-            NBTTagCompound directionTag = new NBTTagCompound();
-            directionTag.setBoolean(NBT_ACTIVE, isActive(i));
-            directionTag.setBoolean(NBT_RANGE, useAdvancedSetting(i));
-            saveAdvancedComponent(directionTag, i);
-            directionTagList.appendTag(directionTag);
+            this.y = y;
         }
 
-        nbtTagCompound.setTag(NBT_DIRECTIONS, directionTagList);
-    }
+        public abstract String getLabel();
 
+        public abstract String getMouseOverText();
 
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        for (int i = 0; i < directions.length; i++)
-        {
-            if (isActive(i))
-            {
-                return;
-            }
-        }
-
-        errors.add(Names.NO_DIRECTION_ERROR);
-    }
-
-    public void setActive(int side)
-    {
-        activatedDirections[side] = true;
+        public abstract void onClicked();
     }
 }

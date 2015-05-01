@@ -12,15 +12,13 @@ import java.util.List;
 
 public class MenuCamouflageItems extends MenuItem
 {
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 40;
+    public static final int MENU_WIDTH = 120;
+
     public MenuCamouflageItems(FlowComponent parent)
     {
         super(parent);
-    }
-
-    @Override
-    public int getSettingCount()
-    {
-        return 1;
     }
 
     @Override
@@ -30,21 +28,23 @@ public class MenuCamouflageItems extends MenuItem
     }
 
     @Override
-    public boolean doAllowEdit()
-    {
-        return false;
-    }
-
-    @Override
     public void initRadioButtons()
     {
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.CLEAR_CAMOUFLAGE));
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.SET_CAMOUFLAGE));
     }
 
-    public static final int TEXT_MARGIN_X = 5;
-    public static final int TEXT_Y = 40;
-    public static final int MENU_WIDTH = 120;
+    @Override
+    public int getSettingCount()
+    {
+        return 1;
+    }
+
+    @Override
+    public boolean doAllowEdit()
+    {
+        return false;
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -59,17 +59,17 @@ public class MenuCamouflageItems extends MenuItem
     }
 
     @Override
+    public boolean isListVisible()
+    {
+        return isSearching() || !isFirstRadioButtonSelected();
+    }
+
+    @Override
     public void addErrors(List<String> errors)
     {
         if (!isFirstRadioButtonSelected() && !getSettings().get(0).isValid())
         {
             errors.add(Names.NO_CAMOUFLAGE_SETTING);
         }
-    }
-
-    @Override
-    public boolean isListVisible()
-    {
-        return isSearching() || !isFirstRadioButtonSelected();
     }
 }

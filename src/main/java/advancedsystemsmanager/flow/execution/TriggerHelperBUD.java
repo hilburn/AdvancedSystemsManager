@@ -21,6 +21,45 @@ public class TriggerHelperBUD extends TriggerHelper
     }
 
     @Override
+    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
+    {
+        List<SlotInventoryHolder> buds = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
+
+        if (buds != null)
+        {
+            for (SlotInventoryHolder bud : buds)
+            {
+                bud.getBUD().updateData();
+            }
+
+            if (isSpecialPulseReceived(item, true))
+            {
+                valid.add(ConnectionOption.BUD_PULSE_HIGH);
+                valid.add(ConnectionOption.BUD_HIGH);
+            } else if (isTriggerPowered(item, true))
+            {
+                valid.add(ConnectionOption.BUD_HIGH);
+            }
+
+            if (isSpecialPulseReceived(item, false))
+            {
+                valid.add(ConnectionOption.BUD_PULSE_LOW);
+                valid.add(ConnectionOption.BUD_LOW);
+            } else if (isTriggerPowered(item, false))
+            {
+                valid.add(ConnectionOption.BUD_LOW);
+            }
+
+
+            for (SlotInventoryHolder bud : buds)
+            {
+                bud.getBUD().makeOld();
+            }
+        }
+
+    }
+
+    @Override
     public boolean isBlockPowered(FlowComponent component, int power)
     {
         int id = power >>> 4;
@@ -62,45 +101,6 @@ public class TriggerHelperBUD extends TriggerHelper
         }
 
         return true;
-    }
-
-    @Override
-    public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
-    {
-        List<SlotInventoryHolder> buds = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
-
-        if (buds != null)
-        {
-            for (SlotInventoryHolder bud : buds)
-            {
-                bud.getBUD().updateData();
-            }
-
-            if (isSpecialPulseReceived(item, true))
-            {
-                valid.add(ConnectionOption.BUD_PULSE_HIGH);
-                valid.add(ConnectionOption.BUD_HIGH);
-            } else if (isTriggerPowered(item, true))
-            {
-                valid.add(ConnectionOption.BUD_HIGH);
-            }
-
-            if (isSpecialPulseReceived(item, false))
-            {
-                valid.add(ConnectionOption.BUD_PULSE_LOW);
-                valid.add(ConnectionOption.BUD_LOW);
-            } else if (isTriggerPowered(item, false))
-            {
-                valid.add(ConnectionOption.BUD_LOW);
-            }
-
-
-            for (SlotInventoryHolder bud : buds)
-            {
-                bud.getBUD().makeOld();
-            }
-        }
-
     }
 
     public void triggerBUD(FlowComponent item, TileEntityBUD tileEntityBUD)

@@ -16,12 +16,22 @@ import java.util.List;
 
 public class ItemSetting extends Setting<ItemStack>
 {
+    public static final String NBT_SETTING_FUZZY = "FuzzyMode";
     public FuzzyMode fuzzyMode;
     public ItemStack item;
 
     public ItemSetting(int id)
     {
         super(id);
+    }
+
+    @Override
+    public void clear()
+    {
+        super.clear();
+
+        fuzzyMode = FuzzyMode.PRECISE;
+        item = null;
     }
 
     @Override
@@ -54,12 +64,9 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public void clear()
+    public int getDefaultAmount()
     {
-        super.clear();
-
-        fuzzyMode = FuzzyMode.PRECISE;
-        item = null;
+        return 1;
     }
 
     @Override
@@ -81,21 +88,6 @@ public class ItemSetting extends Setting<ItemStack>
     public boolean isValid()
     {
         return item != null;
-    }
-
-    public FuzzyMode getFuzzyMode()
-    {
-        return fuzzyMode;
-    }
-
-    public void setFuzzyMode(FuzzyMode fuzzy)
-    {
-        this.fuzzyMode = fuzzy;
-    }
-
-    public ItemStack getItem()
-    {
-        return item;
     }
 
     @Override
@@ -124,13 +116,15 @@ public class ItemSetting extends Setting<ItemStack>
         fuzzyMode = ((ItemSetting)setting).fuzzyMode;
     }
 
-    @Override
-    public int getDefaultAmount()
+    public ItemStack getItem()
     {
-        return 1;
+        return item;
     }
 
-    public static final String NBT_SETTING_FUZZY = "FuzzyMode";
+    public void setItem(ItemStack item)
+    {
+        this.item = item;
+    }
 
     @Override
     public void load(NBTTagCompound settingTag)
@@ -162,11 +156,6 @@ public class ItemSetting extends Setting<ItemStack>
     public boolean isContentEqual(ItemStack check)
     {
         return isEqualForCommandExecutor(check);
-    }
-
-    public void setItem(ItemStack item)
-    {
-        this.item = item;
     }
 
     public boolean isEqualForCommandExecutor(ItemStack other)
@@ -206,6 +195,16 @@ public class ItemSetting extends Setting<ItemStack>
                     return false;
             }
         }
+    }
+
+    public FuzzyMode getFuzzyMode()
+    {
+        return fuzzyMode;
+    }
+
+    public void setFuzzyMode(FuzzyMode fuzzy)
+    {
+        this.fuzzyMode = fuzzy;
     }
 
     public boolean canChangeMetaData()

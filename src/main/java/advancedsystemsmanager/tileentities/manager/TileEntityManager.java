@@ -58,20 +58,32 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public static final int BUTTON_SRC_Y = 0;
     public static final int BUTTON_INNER_SRC_X = 230;
     public static final int BUTTON_INNER_SRC_Y = 0;
+    public static final int MAX_CABLE_LENGTH = 128;
+    public static final int MAX_COMPONENT_AMOUNT = 511;
+    public static final int MAX_CONNECTED_INVENTORIES = 1023;
     private static final String NBT_MAX_ID = "maxID";
+    private static final String NBT_TIMER = "Timer";
+    private static final String NBT_COMPONENTS = "Components";
+    private static final String NBT_VARIABLES = "Variables";
     public List<FlowComponent> triggers;
-    private Connection currentlyConnecting;
     public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
-    private List<FlowComponent> zLevelRenderingList;
     public TIntObjectHashMap<FlowComponent> components;
-    private Variable[] variables;
     public FlowComponent selectedGroup;
     @SideOnly(Side.CLIENT)
     public IInterfaceRenderer specialRenderer;
+    List<SystemBlock> inventories = new ArrayList<SystemBlock>();
+    private Connection currentlyConnecting;
+    private List<FlowComponent> zLevelRenderingList;
+    private Variable[] variables;
     private int maxID;
     private int triggerOffset;
-
+    private List<Integer> removedIds;
+    private boolean firstInventoryUpdate = true;
+    private boolean firstCommandExecution = true;
+    private int timer = 0;
+    private TileEntityManager self = this;
+    private boolean usingUnlimitedInventories;
     public TileEntityManager()
     {
         zLevelRenderingList = new ArrayList<FlowComponent>();
@@ -86,8 +98,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
-    private List<Integer> removedIds;
-
     public void removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
 
@@ -98,7 +108,8 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             selectedGroup = null;
         }
 
-        for (FlowComponent component : componentMap.valueCollection()) component.updateConnectionIdsAtRemoval(idToRemove);
+        for (FlowComponent component : componentMap.valueCollection())
+            component.updateConnectionIdsAtRemoval(idToRemove);
         //do this afterwards so the new ids won't mess anything up
 //        for (int i = idToRemove; i < items.size(); i++)
 //        {
@@ -126,35 +137,153 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         updateVariables();
     }
 
-
-    public Collection<FlowComponent> getFlowItems()
-    {
-        return components.valueCollection();
-    }
-
     public FlowComponent getFlowItem(int i)
     {
         return components.get(i);
     }
-
-    public List<FlowComponent> getZLevelRenderingList()
-    {
-        return zLevelRenderingList;
-    }
-
-    List<SystemBlock> inventories = new ArrayList<SystemBlock>();
 
     public List<SystemBlock> getConnectedInventories()
     {
         return inventories;
     }
 
-    public static final int MAX_CABLE_LENGTH = 128;
-    public static final int MAX_COMPONENT_AMOUNT = 511;
-    public static final int MAX_CONNECTED_INVENTORIES = 1023;
+    public Connection getCurrentlyConnecting()
+    {
+        return currentlyConnecting;
+    }
 
-    private boolean firstInventoryUpdate = true;
-    private boolean firstCommandExecution = true;
+    public void setCurrentlyConnecting(Connection currentlyConnecting)
+    {
+        this.currentlyConnecting = currentlyConnecting;
+    }
+
+    public void updateFirst()
+    {
+        if (firstCommandExecution)
+        {
+            updateInventories();
+            updateVariables();
+
+            firstCommandExecution = false;
+        }
+    }
+
+    public void activateTrigger(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
+    {
+        updateFirst();
+        for (SystemBlock inventory : inventories)
+        {
+            if (inventory.getTileEntity().isInvalid())
+            {
+                updateInventories();
+                break;
+            }
+        }
+        new Executor(this).executeTriggerCommand(component, validTriggerOutputs);
+    }
+
+    public void triggerRedstone(TileEntityReceiver inputTrigger)
+    {
+        for (FlowComponent item : getFlowItems())
+        {
+            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
+            {
+                redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
+            }
+        }
+    }
+
+    public Collection<FlowComponent> getFlowItems()
+    {
+        return components.valueCollection();
+    }
+
+    public void triggerChat()
+    {
+        for (FlowComponent item : getFlowItems())
+        {
+            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
+            {
+                activateTrigger(item, EnumSet.allOf(ConnectionOption.class));
+            }
+        }
+    }
+
+    public void readGenericData(DataReader dr)
+    {
+        if (worldObj.isRemote)
+        {
+            if (dr.readBoolean())
+            {
+                updateInventories();
+            } else
+            {
+                removeFlowComponent(dr.readComponentId());
+            }
+        } else
+        {
+            int buttonId = dr.readData(DataBitHelper.GUI_BUTTON_ID);
+            if (buttonId >= 0 && buttonId < buttons.size())
+            {
+                IManagerButton button = buttons.get(buttonId);
+                if (button.isVisible())
+                {
+                    button.onClick(dr);
+                }
+            }
+        }
+    }
+
+    public List<Integer> getRemovedIds()
+    {
+        return removedIds;
+    }
+
+    @Override
+    public Container getContainer(TileEntity te, InventoryPlayer inv)
+    {
+        return new ContainerManager((TileEntityManager)te, inv);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
+    {
+        return new GuiManager((TileEntityManager)te, inv);
+    }
+
+    @Override
+    public void readAllData(DataReader dr, EntityPlayer player)
+    {
+        updateInventories();
+        int flowControlCount = dr.readComponentId();
+        components.clear();
+        getZLevelRenderingList().clear();
+        for (int i = 0; i < flowControlCount; i++)
+        {
+            readAllComponentData(dr);
+        }
+        for (FlowComponent item : getFlowItems())
+        {
+            item.linkParentAfterLoad();
+        }
+
+        if (Settings.isAutoCloseGroup())
+        {
+            selectedGroup = null;
+        } else
+        {
+            while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+            {
+                selectedGroup = selectedGroup.getParent();
+            }
+        }
+    }
+
+    public List<FlowComponent> getZLevelRenderingList()
+    {
+        return zLevelRenderingList;
+    }
 
     public void updateInventories()
     {
@@ -356,182 +485,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return newSelection;
     }
 
-
-    public Connection getCurrentlyConnecting()
-    {
-        return currentlyConnecting;
-    }
-
-    public void setCurrentlyConnecting(Connection currentlyConnecting)
-    {
-        this.currentlyConnecting = currentlyConnecting;
-    }
-
-    private int timer = 0;
-
-    @Override
-    public void updateEntity()
-    {
-        justSentServerComponentRemovalPacket = false;
-        if (!worldObj.isRemote)
-        {
-            StevesHooks.tickTriggers(this);
-            if (timer++ % 20 == triggerOffset)
-            {
-                for (FlowComponent item : getFlowItems())
-                {
-                    if (item.getType().getCommandType() == CommandType.TRIGGER)
-                    {
-                        MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
-                        int interval = componentMenuInterval.getInterval();
-                        if (interval == 0)
-                        {
-                            continue;
-                        }
-                        item.setCurrentInterval(item.getCurrentInterval() + 1);
-                        if (item.getCurrentInterval() >= interval)
-                        {
-                            item.setCurrentInterval(0);
-
-                            EnumSet<ConnectionOption> valid = EnumSet.of(ConnectionOption.INTERVAL);
-                            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
-                            {
-                                redstoneTrigger.onTrigger(item, valid);
-                            } else if (item.getConnectionSet() == ConnectionSet.BUD)
-                            {
-                                budTrigger.onTrigger(item, valid);
-                            }
-                            activateTrigger(item, valid);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public void updateFirst()
-    {
-        if (firstCommandExecution)
-        {
-            updateInventories();
-            updateVariables();
-
-            firstCommandExecution = false;
-        }
-    }
-
-    public void activateTrigger(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
-    {
-        updateFirst();
-        for (SystemBlock inventory : inventories)
-        {
-            if (inventory.getTileEntity().isInvalid())
-            {
-                updateInventories();
-                break;
-            }
-        }
-        new Executor(this).executeTriggerCommand(component, validTriggerOutputs);
-    }
-
-
-    public void triggerRedstone(TileEntityReceiver inputTrigger)
-    {
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
-            {
-                redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
-            }
-        }
-    }
-
-    public void triggerChat()
-    {
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
-            {
-                activateTrigger(item, EnumSet.allOf(ConnectionOption.class));
-            }
-        }
-    }
-
-
-    public void readGenericData(DataReader dr)
-    {
-        if (worldObj.isRemote)
-        {
-            if (dr.readBoolean())
-            {
-                updateInventories();
-            } else
-            {
-                removeFlowComponent(dr.readComponentId());
-            }
-        } else
-        {
-            int buttonId = dr.readData(DataBitHelper.GUI_BUTTON_ID);
-            if (buttonId >= 0 && buttonId < buttons.size())
-            {
-                IManagerButton button = buttons.get(buttonId);
-                if (button.isVisible())
-                {
-                    button.onClick(dr);
-                }
-            }
-        }
-    }
-
-
-    private TileEntityManager self = this;
-
-    public List<Integer> getRemovedIds()
-    {
-        return removedIds;
-    }
-
-    @Override
-    public Container getContainer(TileEntity te, InventoryPlayer inv)
-    {
-        return new ContainerManager((TileEntityManager)te, inv);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
-    {
-        return new GuiManager((TileEntityManager)te, inv);
-    }
-
-    @Override
-    public void readAllData(DataReader dr, EntityPlayer player)
-    {
-        updateInventories();
-        int flowControlCount = dr.readComponentId();
-        components.clear();
-        getZLevelRenderingList().clear();
-        for (int i = 0; i < flowControlCount; i++)
-        {
-            readAllComponentData(dr);
-        }
-        for (FlowComponent item : getFlowItems())
-        {
-            item.linkParentAfterLoad();
-        }
-
-        if (Settings.isAutoCloseGroup())
-        {
-            selectedGroup = null;
-        } else
-        {
-            while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
-            {
-                selectedGroup = selectedGroup.getParent();
-            }
-        }
-    }
-
     private boolean findNewSelectedComponent(int id)
     {
         for (FlowComponent item : getFlowItems())
@@ -595,22 +548,26 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         updateVariables();
     }
 
-    public int getNextFreeID()
-    {
-        while (components.containsKey(++maxID) || maxID < 0) if (maxID < 0) maxID = 0;
-        return maxID;
-    }
-
     public boolean addNewComponent(FlowComponent component)
     {
         return components.put(component.getId(), component) != null;
     }
 
-    private boolean usingUnlimitedInventories;
-
-    public boolean isUsingUnlimitedStuff()
+    public void updateVariables()
     {
-        return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
+        for (Variable variable : variables)
+        {
+            variable.setDeclaration(null);
+        }
+
+        for (FlowComponent item : getFlowItems())
+        {
+            if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
+            {
+                int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
+                variables[selectedVariable].setDeclaration(item);
+            }
+        }
     }
 
     @Override
@@ -667,6 +624,17 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
+    public int getNextFreeID()
+    {
+        while (components.containsKey(++maxID) || maxID < 0) if (maxID < 0) maxID = 0;
+        return maxID;
+    }
+
+    public boolean isUsingUnlimitedStuff()
+    {
+        return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
+    }
+
     private INetworkReader getNetworkReaderForComponentPacket(DataReader dr, TileEntityManager jam)
     {
 
@@ -694,23 +662,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return variables;
     }
 
-    public void updateVariables()
-    {
-        for (Variable variable : variables)
-        {
-            variable.setDeclaration(null);
-        }
-
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
-            {
-                int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
-                variables[selectedVariable].setDeclaration(item);
-            }
-        }
-    }
-
     public void triggerBUD(TileEntityBUD tileEntityBUD)
     {
         for (FlowComponent item : getFlowItems())
@@ -732,10 +683,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         this.selectedGroup = selectedGroup;
     }
 
-    private static final String NBT_TIMER = "Timer";
-    private static final String NBT_COMPONENTS = "Components";
-    private static final String NBT_VARIABLES = "Variables";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
@@ -750,6 +697,70 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         super.writeToNBT(nbtTagCompound);
 
         writeContentToNBT(nbtTagCompound, false);
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        justSentServerComponentRemovalPacket = false;
+        if (!worldObj.isRemote)
+        {
+            StevesHooks.tickTriggers(this);
+            if (timer++ % 20 == triggerOffset)
+            {
+                for (FlowComponent item : getFlowItems())
+                {
+                    if (item.getType().getCommandType() == CommandType.TRIGGER)
+                    {
+                        MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
+                        int interval = componentMenuInterval.getInterval();
+                        if (interval == 0)
+                        {
+                            continue;
+                        }
+                        item.setCurrentInterval(item.getCurrentInterval() + 1);
+                        if (item.getCurrentInterval() >= interval)
+                        {
+                            item.setCurrentInterval(0);
+
+                            EnumSet<ConnectionOption> valid = EnumSet.of(ConnectionOption.INTERVAL);
+                            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
+                            {
+                                redstoneTrigger.onTrigger(item, valid);
+                            } else if (item.getConnectionSet() == ConnectionSet.BUD)
+                            {
+                                budTrigger.onTrigger(item, valid);
+                            }
+                            activateTrigger(item, valid);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        nbtTagCompound.setByte(NBT_TIMER, (byte)(timer % 20));
+        nbtTagCompound.setInteger(NBT_MAX_ID, maxID);
+        NBTTagList components = new NBTTagList();
+        for (FlowComponent item : getFlowItems())
+        {
+            NBTTagCompound component = new NBTTagCompound();
+            item.writeToNBT(component, pickup);
+            components.appendTag(component);
+        }
+        nbtTagCompound.setTag(NBT_COMPONENTS, components);
+
+
+        NBTTagList variablesTag = new NBTTagList();
+        for (Variable variable : variables)
+        {
+            NBTTagCompound variableTag = new NBTTagCompound();
+            variable.writeToNBT(variableTag);
+            variablesTag.appendTag(variableTag);
+        }
+        nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
     }
 
     public void readContentFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
@@ -778,30 +789,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     }
 
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        nbtTagCompound.setByte(NBT_TIMER, (byte)(timer % 20));
-        nbtTagCompound.setInteger(NBT_MAX_ID, maxID);
-        NBTTagList components = new NBTTagList();
-        for (FlowComponent item : getFlowItems())
-        {
-            NBTTagCompound component = new NBTTagCompound();
-            item.writeToNBT(component, pickup);
-            components.appendTag(component);
-        }
-        nbtTagCompound.setTag(NBT_COMPONENTS, components);
-
-
-        NBTTagList variablesTag = new NBTTagList();
-        for (Variable variable : variables)
-        {
-            NBTTagCompound variableTag = new NBTTagCompound();
-            variable.writeToNBT(variableTag);
-            variablesTag.appendTag(variableTag);
-        }
-        nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
-    }
-
     public String getUniqueComponentName(FlowComponent component)
     {
         String name = getComponentName(component);
@@ -811,7 +798,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             FlowComponent other = components.get(i);
             if (getComponentName(other).equals(name)) modifier++;
         }
-        if (modifier>0) name += " ["+modifier+"]";
+        if (modifier > 0) name += " [" + modifier + "]";
         return name;
     }
 

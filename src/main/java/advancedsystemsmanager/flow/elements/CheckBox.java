@@ -14,9 +14,9 @@ public abstract class CheckBox
         textWidth = Integer.MAX_VALUE;
     }
 
-    public abstract void setValue(boolean val);
-
     public abstract boolean getValue();
+
+    public abstract void setValue(boolean val);
 
     public abstract void onUpdate();
 

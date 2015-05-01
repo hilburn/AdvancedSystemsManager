@@ -23,9 +23,11 @@ public class BlockCableInput extends BlockTileBase
     }
 
     @Override
-    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        return true;
+        super.onNeighborBlockChange(world, x, y, z, block);
+
+        updateRedstone(world, x, y, z);
     }
 
     @Override
@@ -37,11 +39,9 @@ public class BlockCableInput extends BlockTileBase
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
-        super.onNeighborBlockChange(world, x, y, z, block);
-
-        updateRedstone(world, x, y, z);
+        return true;
     }
 
     private void updateRedstone(World world, int x, int y, int z)

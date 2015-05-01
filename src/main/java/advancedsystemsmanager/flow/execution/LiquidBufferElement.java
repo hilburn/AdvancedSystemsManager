@@ -40,18 +40,6 @@ public class LiquidBufferElement
         holders = new ArrayList<StackTankHolder>();
     }
 
-    public boolean addTarget(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, StackTankHolder target)
-    {
-        if (component.getId() == owner.getId() && (this.setting == null || (setting != null && this.setting.getId() == setting.getId())) && (this.inventoryHolder.isShared() || this.inventoryHolder.equals(inventoryHolder)))
-        {
-            addTarget(target);
-            return true;
-        } else
-        {
-            return false;
-        }
-    }
-
     public void addTarget(StackTankHolder target)
     {
         holders.add(target);
@@ -64,14 +52,21 @@ public class LiquidBufferElement
         }
     }
 
+    public boolean addTarget(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, StackTankHolder target)
+    {
+        if (component.getId() == owner.getId() && (this.setting == null || (setting != null && this.setting.getId() == setting.getId())) && (this.inventoryHolder.isShared() || this.inventoryHolder.equals(inventoryHolder)))
+        {
+            addTarget(target);
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
     public Setting getSetting()
     {
         return setting;
-    }
-
-    public List<StackTankHolder> getHolders()
-    {
-        return holders;
     }
 
     public int retrieveItemCount(int desiredItemCount)
@@ -137,6 +132,11 @@ public class LiquidBufferElement
             bufferSize = Math.min(bufferSize, maxSize);
         }
         return bufferSize;
+    }
+
+    public List<StackTankHolder> getHolders()
+    {
+        return holders;
     }
 
     public LiquidBufferElement getSplitElement(int elementAmount, int id, boolean fair)

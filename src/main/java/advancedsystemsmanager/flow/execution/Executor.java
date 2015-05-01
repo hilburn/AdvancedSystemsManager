@@ -13,9 +13,23 @@ import java.util.*;
 
 public class Executor implements IBufferProvider
 {
-    private Map<String, IBuffer> buffers;
     public TileEntityManager manager;
     public List<Integer> usedCommands;
+    private Map<String, IBuffer> buffers;
+
+    public Executor(TileEntityManager manager)
+    {
+        this.manager = manager;
+        this.buffers = new HashMap<String, IBuffer>();
+        this.usedCommands = new ArrayList<Integer>();
+    }
+
+    public Executor(TileEntityManager manager, HashMap<String, IBuffer> buffers, List<Integer> usedCommands)
+    {
+        this.manager = manager;
+        this.buffers = buffers;
+        this.usedCommands = usedCommands;
+    }
 
     @Override
     public <T extends IBuffer> T getBuffer(String buffer)
@@ -34,21 +48,6 @@ public class Executor implements IBufferProvider
     {
         if (!buffers.containsKey(key))
             buffers.put(key, buffer);
-    }
-
-
-    public Executor(TileEntityManager manager)
-    {
-        this.manager = manager;
-        this.buffers = new HashMap<String, IBuffer>();
-        this.usedCommands = new ArrayList<Integer>();
-    }
-
-    public Executor(TileEntityManager manager, HashMap<String, IBuffer> buffers, List<Integer> usedCommands)
-    {
-        this.manager = manager;
-        this.buffers = buffers;
-        this.usedCommands = usedCommands;
     }
 
     public void executeCommand(FlowComponent command, int connectionId)

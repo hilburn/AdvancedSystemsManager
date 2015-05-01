@@ -30,22 +30,6 @@ public class AEHelper
     }
 
     /**
-     * Get the full {@link IGrid}
-     *
-     * @return the {@link IGrid} the {@link IGridNode} is in
-     * @throws GridAccessException
-     */
-    public IGrid getGrid() throws GridAccessException
-    {
-        if (host.getActionableNode() == null)
-            throw new GridAccessException();
-        IGrid grid = host.getActionableNode().getGrid();
-        if (grid == null)
-            throw new GridAccessException();
-        return grid;
-    }
-
-    /**
      * Get the {@link ITickManager}
      *
      * @return the {@link ITickManager} for the {@link IGridNode}
@@ -63,23 +47,19 @@ public class AEHelper
     }
 
     /**
-     * Get the {@link IStorageGrid}
+     * Get the full {@link IGrid}
      *
-     * @return the {@link IStorageGrid} for the {@link IGridNode}
+     * @return the {@link IGrid} the {@link IGridNode} is in
      * @throws GridAccessException
      */
-    public IStorageGrid getStorage() throws GridAccessException
+    public IGrid getGrid() throws GridAccessException
     {
-        IGrid grid = getGrid();
+        if (host.getActionableNode() == null)
+            throw new GridAccessException();
+        IGrid grid = host.getActionableNode().getGrid();
         if (grid == null)
             throw new GridAccessException();
-
-        IStorageGrid pg = grid.getCache(IStorageGrid.class);
-
-        if (pg == null)
-            throw new GridAccessException();
-
-        return pg;
+        return grid;
     }
 
     /**
@@ -204,6 +184,26 @@ public class AEHelper
         {
             return null;
         }
+    }
+
+    /**
+     * Get the {@link IStorageGrid}
+     *
+     * @return the {@link IStorageGrid} for the {@link IGridNode}
+     * @throws GridAccessException
+     */
+    public IStorageGrid getStorage() throws GridAccessException
+    {
+        IGrid grid = getGrid();
+        if (grid == null)
+            throw new GridAccessException();
+
+        IStorageGrid pg = grid.getCache(IStorageGrid.class);
+
+        if (pg == null)
+            throw new GridAccessException();
+
+        return pg;
     }
 
     /**

@@ -45,6 +45,16 @@ public abstract class RadioButtonList
         }
     }
 
+    public int getSelectedOption()
+    {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(int selectedOption)
+    {
+        this.selectedOption = selectedOption;
+    }
+
     public void onClick(int mX, int mY, int button)
     {
         for (int i = 0; i < radioButtonList.size(); i++)
@@ -57,16 +67,6 @@ public abstract class RadioButtonList
                 break;
             }
         }
-    }
-
-    public int getSelectedOption()
-    {
-        return selectedOption;
-    }
-
-    public void setSelectedOption(int selectedOption)
-    {
-        this.selectedOption = selectedOption;
     }
 
     public abstract void updateSelectedOption(int selectedOption);

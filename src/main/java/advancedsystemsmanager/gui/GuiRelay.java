@@ -21,6 +21,58 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class GuiRelay extends GuiBase
 {
+    private static final ResourceLocation TEXTURE = registerTexture("Relay");
+    private static final int LIST_POS_X = 12;
+    private static final int LIST_POS_Y = 14;
+    private static final int LIST_TEXT_POS_X = 3;
+    private static final int LIST_TEXT_POS_Y = 4;
+    private static final int LIST_MENU_HEIGHT = 12;
+    private static final int LIST_MENU_WIDTH = 95;
+    private static final int INFO_SIZE = 7;
+    private static final int INFO_MARGIN_X = 1;
+    private static final int INFO_MARGIN_Y = 2;
+    private static final int NO_ACCESS_TEXT_Y = 30;
+    private static final int INFO_BOX_POS_X = 122;
+    private static final int INFO_BOX_POS_Y = 109;
+    private static final int INFO_BOX_NAME_X = 5;
+    private static final int INFO_BOX_NAME_Y = 5;
+    private static final int INFO_BOX_INFO_X = 5;
+    private static final int INFO_BOX_INFO_Y = 16;
+    private static final int INFO_MARGIN_INFO_Y = 3;
+    private static final int INFO_TEXT_X = 6;
+    private static final int INFO_TEXT_Y = 1;
+    private static final int INFO_BOX_FULL_TEXT_X = 5;
+    private static final int INFO_BOX_FULL_TEXT_Y = 5;
+    private static final int INFO_BOX_FULL_TEXT_W = 85;
+    private static final int BUTTON_WIDTH = 47;
+    private static final int BUTTON_HEIGHT = 11;
+    private static final int BUTTON_TEXT_Y = 4;
+    private static final int BUTTON_AREA_X = 121;
+    private static final int BUTTON_AREA_Y = 13;
+    private static final int BUTTON_AREA_WIDTH = 97;
+    private static final int BUTTON_X_LEFT = BUTTON_AREA_X;
+    private static final int BUTTON_X_MIDDLE = BUTTON_X_LEFT + (BUTTON_AREA_WIDTH - BUTTON_WIDTH) / 2;
+    private static final int BUTTON_X_RIGHT = BUTTON_X_LEFT + BUTTON_AREA_WIDTH - BUTTON_WIDTH;
+    private static final int BUTTON_Y_TOP = 45;
+    private static final int BUTTON_Y_MIDDLE = 60;
+    private static final int BUTTON_Y_BOT = 75;
+    private static final int BUTTON_Y_DOWN = 64;
+    private static final int BUTTON_Y_FURTHER_DOWN = 77;
+    private static final int BUTTON_Y_FAR_BOT = 90;
+    private static final int PERMISSIONS_PER_PAGE = 11;
+    private static final int PAGE_Y = 149;
+    private static final int PAGE_BUTTON_SIZE = 7;
+    private static final int PAGE_BUTTON_DISTANCE = 40;
+    private static final int PAGE_BUTTON_X_LEFT = LIST_POS_X + (LIST_MENU_WIDTH - PAGE_BUTTON_DISTANCE) / 2 - PAGE_BUTTON_SIZE;
+    private static final int PAGE_BUTTON_X_RIGHT = LIST_POS_X + (LIST_MENU_WIDTH + PAGE_BUTTON_DISTANCE) / 2;
+    private static final int PAGE_BUTTON_Y = 147;
+    private TileEntityRelay relay;
+    private List<Button> buttons = new ArrayList<Button>();
+    private int currentPage;
+    private int selectedPermission = -1;
+    private UserPermission cachedPermission;
+    private boolean hasCachedPermission;
+
     public GuiRelay(final TileEntityRelay relay, InventoryPlayer player)
     {
         super(new ContainerRelay(relay, player));
@@ -276,74 +328,11 @@ public class GuiRelay extends GuiBase
         });
     }
 
-
-    private TileEntityRelay relay;
-    private List<Button> buttons = new ArrayList<Button>();
-    private int currentPage;
-
-    private static final ResourceLocation TEXTURE = registerTexture("Relay");
-
-    private static final int LIST_POS_X = 12;
-    private static final int LIST_POS_Y = 14;
-
-    private static final int LIST_TEXT_POS_X = 3;
-    private static final int LIST_TEXT_POS_Y = 4;
-
-    private static final int LIST_MENU_HEIGHT = 12;
-    private static final int LIST_MENU_WIDTH = 95;
-
-    private static final int INFO_SIZE = 7;
-    private static final int INFO_MARGIN_X = 1;
-    private static final int INFO_MARGIN_Y = 2;
-
-    private static final int NO_ACCESS_TEXT_Y = 30;
-
-    private static final int INFO_BOX_POS_X = 122;
-    private static final int INFO_BOX_POS_Y = 109;
-
-    private static final int INFO_BOX_NAME_X = 5;
-    private static final int INFO_BOX_NAME_Y = 5;
-    private static final int INFO_BOX_INFO_X = 5;
-    private static final int INFO_BOX_INFO_Y = 16;
-    private static final int INFO_MARGIN_INFO_Y = 3;
-    private static final int INFO_TEXT_X = 6;
-    private static final int INFO_TEXT_Y = 1;
-    private static final int INFO_BOX_FULL_TEXT_X = 5;
-    private static final int INFO_BOX_FULL_TEXT_Y = 5;
-    private static final int INFO_BOX_FULL_TEXT_W = 85;
-
-    private static final int BUTTON_WIDTH = 47;
-    private static final int BUTTON_HEIGHT = 11;
-    private static final int BUTTON_TEXT_Y = 4;
-    private static final int BUTTON_AREA_X = 121;
-    private static final int BUTTON_AREA_Y = 13;
-    private static final int BUTTON_AREA_WIDTH = 97;
-    private static final int BUTTON_X_LEFT = BUTTON_AREA_X;
-    private static final int BUTTON_X_MIDDLE = BUTTON_X_LEFT + (BUTTON_AREA_WIDTH - BUTTON_WIDTH) / 2;
-    private static final int BUTTON_X_RIGHT = BUTTON_X_LEFT + BUTTON_AREA_WIDTH - BUTTON_WIDTH;
-    private static final int BUTTON_Y_TOP = 45;
-    private static final int BUTTON_Y_MIDDLE = 60;
-    private static final int BUTTON_Y_BOT = 75;
-
-    private static final int BUTTON_Y_DOWN = 64;
-    private static final int BUTTON_Y_FURTHER_DOWN = 77;
-    private static final int BUTTON_Y_FAR_BOT = 90;
-
-    private static final int PERMISSIONS_PER_PAGE = 11;
-    private static final int PAGE_Y = 149;
-    private static final int PAGE_BUTTON_SIZE = 7;
-    private static final int PAGE_BUTTON_DISTANCE = 40;
-    private static final int PAGE_BUTTON_X_LEFT = LIST_POS_X + (LIST_MENU_WIDTH - PAGE_BUTTON_DISTANCE) / 2 - PAGE_BUTTON_SIZE;
-    private static final int PAGE_BUTTON_X_RIGHT = LIST_POS_X + (LIST_MENU_WIDTH + PAGE_BUTTON_DISTANCE) / 2;
-    private static final int PAGE_BUTTON_Y = 147;
-
     @Override
     public ResourceLocation getComponentResource()
     {
         return TEXTURE;
     }
-
-    private int selectedPermission = -1;
 
     private int getSelectedPermission()
     {
@@ -467,52 +456,6 @@ public class GuiRelay extends GuiBase
         }
     }
 
-    private int getStartId()
-    {
-        int maxPageId = getPageCount();
-        if (currentPage >= maxPageId)
-        {
-            currentPage = maxPageId - 1;
-        }
-
-        return currentPage * PERMISSIONS_PER_PAGE;
-    }
-
-    private int getPageCount()
-    {
-        return (relay.getPermissions().size() - 1) / PERMISSIONS_PER_PAGE + 1;
-    }
-
-    private int getEndId()
-    {
-        return Math.min(getStartId() + PERMISSIONS_PER_PAGE, relay.getPermissions().size()) - 1;
-    }
-
-    private void renderInfoBox(int id, UserPermission permission, int x, int y)
-    {
-        int textureId = id == 0 ? isOwner(permission, false) ? 5 : isOp(permission, false) ? 4 : 3 : permission.isActive() ? relay.isCreativeMode() ? 2 : 1 : 0;
-
-        drawTexture(x, y, textureId * INFO_SIZE, ySize + LIST_MENU_HEIGHT * 2, INFO_SIZE, INFO_SIZE);
-    }
-
-    private void drawInfoBoxString(int id, UserPermission permission, int x, int y)
-    {
-        String str = id == 0 ? isOwner(permission, false) ? Names.PERMISSION_OWNER : isOp(permission, false) ? Names.PERMISSION_EDITOR : Names.PERMISSION_USER : relay.isCreativeMode() ? permission.isActive() ? Names.PERMISSION_RESTRICTED : Names.PERMISSION_CREATIVE : permission.isActive() ? Names.PERMISSION_INVENTORY : Names.PERMISSION_DENIED;
-
-        drawString(str, x, y, 0.7F, 0x404040);
-    }
-
-    private boolean isOwner(UserPermission permission, boolean viewer)
-    {
-        return (permission != null && permission.getName().equals(relay.getOwner())) || (viewer && getUserName().equals(relay.getOwner()));
-    }
-
-    private boolean isOp(UserPermission permission, boolean viewer)
-    {
-        return isOwner(permission, viewer) || (permission != null && permission.isOp());
-    }
-
-
     @Override
     protected void mouseClicked(int mX, int mY, int b)
     {
@@ -583,8 +526,50 @@ public class GuiRelay extends GuiBase
         }
     }
 
-    private UserPermission cachedPermission;
-    private boolean hasCachedPermission;
+    private int getStartId()
+    {
+        int maxPageId = getPageCount();
+        if (currentPage >= maxPageId)
+        {
+            currentPage = maxPageId - 1;
+        }
+
+        return currentPage * PERMISSIONS_PER_PAGE;
+    }
+
+    private int getPageCount()
+    {
+        return (relay.getPermissions().size() - 1) / PERMISSIONS_PER_PAGE + 1;
+    }
+
+    private int getEndId()
+    {
+        return Math.min(getStartId() + PERMISSIONS_PER_PAGE, relay.getPermissions().size()) - 1;
+    }
+
+    private void renderInfoBox(int id, UserPermission permission, int x, int y)
+    {
+        int textureId = id == 0 ? isOwner(permission, false) ? 5 : isOp(permission, false) ? 4 : 3 : permission.isActive() ? relay.isCreativeMode() ? 2 : 1 : 0;
+
+        drawTexture(x, y, textureId * INFO_SIZE, ySize + LIST_MENU_HEIGHT * 2, INFO_SIZE, INFO_SIZE);
+    }
+
+    private void drawInfoBoxString(int id, UserPermission permission, int x, int y)
+    {
+        String str = id == 0 ? isOwner(permission, false) ? Names.PERMISSION_OWNER : isOp(permission, false) ? Names.PERMISSION_EDITOR : Names.PERMISSION_USER : relay.isCreativeMode() ? permission.isActive() ? Names.PERMISSION_RESTRICTED : Names.PERMISSION_CREATIVE : permission.isActive() ? Names.PERMISSION_INVENTORY : Names.PERMISSION_DENIED;
+
+        drawString(str, x, y, 0.7F, 0x404040);
+    }
+
+    private boolean isOwner(UserPermission permission, boolean viewer)
+    {
+        return (permission != null && permission.getName().equals(relay.getOwner())) || (viewer && getUserName().equals(relay.getOwner()));
+    }
+
+    private boolean isOp(UserPermission permission, boolean viewer)
+    {
+        return isOwner(permission, viewer) || (permission != null && permission.isOp());
+    }
 
     private String getUserName()
     {
@@ -611,26 +596,6 @@ public class GuiRelay extends GuiBase
             }
         }
         return cachedPermission;
-    }
-
-
-    private abstract class Button
-    {
-        private String name;
-        private int x, y;
-
-        protected Button(String name, int x, int y)
-        {
-            this.name = name;
-            this.x = x;
-            this.y = y;
-        }
-
-        public abstract boolean isVisible();
-
-        public abstract boolean isEnabled();
-
-        public abstract void onClick();
     }
 
     private void removeUser(int id)
@@ -684,5 +649,24 @@ public class GuiRelay extends GuiBase
         dw.writeBoolean(permission.isActive());
         dw.writeBoolean(permission.isOp());
         PacketHandler.sendDataToServer(dw);
+    }
+
+    private abstract class Button
+    {
+        private String name;
+        private int x, y;
+
+        protected Button(String name, int x, int y)
+        {
+            this.name = name;
+            this.x = x;
+            this.y = y;
+        }
+
+        public abstract boolean isVisible();
+
+        public abstract boolean isEnabled();
+
+        public abstract void onClick();
     }
 }

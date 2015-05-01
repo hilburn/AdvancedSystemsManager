@@ -63,7 +63,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
             if (entity instanceof IInternalInventory)
             {
                 subElements.addAll(((IInternalInventory)entity).getSubElements(id, settings));
-            }else
+            } else
             {
                 IInventory inventory = (IInventory)entity;
                 List<Integer> checkedSlots = new ArrayList<Integer>();
@@ -81,8 +81,8 @@ public class CommandItemInput extends CommandInput<ItemStack>
                             slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
                         } else
                         {
-                            slots = new int[end-start];
-                            for (int j = 0; j < slots.length;) slots[j + start] = j++;
+                            slots = new int[end - start];
+                            for (int j = 0; j < slots.length; ) slots[j + start] = j++;
                         }
                         scanSlots(id, inventory, checkedSlots, slots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements);
                     }

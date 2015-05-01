@@ -17,15 +17,14 @@ public class MenuRFInput extends MenuRF
         return Names.TYPE_RF_INPUT;
     }
 
+    public void initRadioButtons()
+    {
+    }
 
     @Override
     public void readNetworkComponent(DataReader dr)
     {
         super.readNetworkComponent(dr);
         updateConnectedNodes();
-    }
-
-    public void initRadioButtons()
-    {
     }
 }

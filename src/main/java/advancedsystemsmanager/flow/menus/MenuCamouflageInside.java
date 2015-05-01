@@ -17,6 +17,12 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuCamouflageInside extends MenuCamouflageAdvanced
 {
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 5;
+    public static final int RADIO_BUTTON_SPACING = 12;
+    public static final String NBT_SETTING = "Setting";
+    public RadioButtonList radioButtons;
+
     public MenuCamouflageInside(FlowComponent parent)
     {
         super(parent);
@@ -40,31 +46,10 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
         }
     }
 
-    public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 5;
-    public static final int RADIO_BUTTON_SPACING = 12;
-
-    public RadioButtonList radioButtons;
-
-    @Override
-    public String getWarningText()
-    {
-        return Names.INSIDE_WARNING;
-    }
-
     @Override
     public String getName()
     {
         return Names.INSIDE_MENU;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void draw(GuiManager gui, int mX, int mY)
-    {
-        super.draw(gui, mX, mY);
-
-        radioButtons.draw(gui, mX, mY);
     }
 
     @Override
@@ -72,7 +57,6 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     {
         radioButtons.onClick(mX, mY, button);
     }
-
 
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
@@ -119,8 +103,6 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
         }
     }
 
-    public static final String NBT_SETTING = "Setting";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -131,6 +113,21 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         nbtTagCompound.setByte(NBT_SETTING, (byte)radioButtons.getSelectedOption());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void draw(GuiManager gui, int mX, int mY)
+    {
+        super.draw(gui, mX, mY);
+
+        radioButtons.draw(gui, mX, mY);
+    }
+
+    @Override
+    public String getWarningText()
+    {
+        return Names.INSIDE_WARNING;
     }
 
     @Override

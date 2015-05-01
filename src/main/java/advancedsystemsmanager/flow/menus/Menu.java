@@ -47,11 +47,6 @@ public abstract class Menu implements INetworkReader
         return false;
     }
 
-    public FlowComponent getParent()
-    {
-        return parent;
-    }
-
     public abstract void writeData(DataWriter dw);
 
     public abstract void readData(DataReader dr);
@@ -59,6 +54,11 @@ public abstract class Menu implements INetworkReader
     public DataWriter getWriterForServerComponentPacket()
     {
         return PacketHandler.getWriterForServerComponentPacket(getParent(), this);
+    }
+
+    public FlowComponent getParent()
+    {
+        return parent;
     }
 
     public DataWriter getWriterForClientComponentPacket(ContainerManager container)

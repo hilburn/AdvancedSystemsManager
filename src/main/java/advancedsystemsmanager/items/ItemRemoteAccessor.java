@@ -31,31 +31,21 @@ public class ItemRemoteAccessor extends ItemBase
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (player.isSneaking())
+        if (!world.isRemote && stack.hasTagCompound())
         {
-            TileEntity te = world.getTileEntity(x, y, z);
-            if (te instanceof TileEntityManager)
+            World managerWorld = stack.getItemDamage() == 0 ? world : DimensionManager.getWorld(stack.getTagCompound().getByte(WORLD));
+            int x = stack.getTagCompound().getInteger(X);
+            int y = stack.getTagCompound().getInteger(Y);
+            int z = stack.getTagCompound().getInteger(Z);
+            if (managerWorld.getChunkProvider().chunkExists(x / 16, z / 16))
             {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte(WORLD, (byte)world.provider.dimensionId);
-                tagCompound.setInteger(X, te.xCoord);
-                tagCompound.setInteger(Y, te.yCoord);
-                tagCompound.setInteger(Z, te.zCoord);
-                stack.setTagCompound(tagCompound);
-                return true;
+                if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
+                    FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
             }
         }
-        return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SuppressWarnings(value = "unchecked")
-    public void getSubItems(Item item, CreativeTabs tab, List list)
-    {
-        list.add(new ItemStack(item, 1, 0));
-        list.add(new ItemStack(item, 1, 1));
+        return super.onItemRightClick(stack, world, player);
     }
 
     @Override
@@ -73,8 +63,7 @@ public class ItemRemoteAccessor extends ItemBase
             if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != stack.getTagCompound().getByte("World"))
             {
                 list.add("§cWrong Dimension");
-            }
-            else
+            } else
             {
                 int x = stack.getTagCompound().getInteger(X);
                 int y = stack.getTagCompound().getInteger(Y);
@@ -85,21 +74,31 @@ public class ItemRemoteAccessor extends ItemBase
         }
     }
 
-    @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings(value = "unchecked")
+    public void getSubItems(Item item, CreativeTabs tab, List list)
     {
-        if (!world.isRemote && stack.hasTagCompound())
+        list.add(new ItemStack(item, 1, 0));
+        list.add(new ItemStack(item, 1, 1));
+    }
+
+    @Override
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        if (player.isSneaking())
         {
-            World managerWorld = stack.getItemDamage() == 0 ? world : DimensionManager.getWorld(stack.getTagCompound().getByte(WORLD));
-            int x = stack.getTagCompound().getInteger(X);
-            int y = stack.getTagCompound().getInteger(Y);
-            int z = stack.getTagCompound().getInteger(Z);
-            if (managerWorld.getChunkProvider().chunkExists(x/16, z/16))
+            TileEntity te = world.getTileEntity(x, y, z);
+            if (te instanceof TileEntityManager)
             {
-                if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
-                    FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setByte(WORLD, (byte)world.provider.dimensionId);
+                tagCompound.setInteger(X, te.xCoord);
+                tagCompound.setInteger(Y, te.yCoord);
+                tagCompound.setInteger(Z, te.zCoord);
+                stack.setTagCompound(tagCompound);
+                return true;
             }
         }
-        return super.onItemRightClick(stack, world, player);
+        return false;
     }
 }

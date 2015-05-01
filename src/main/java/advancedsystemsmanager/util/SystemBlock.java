@@ -40,16 +40,6 @@ public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritab
         types.add(type);
     }
 
-    public static boolean isOfType(Set<ISystemType> types, ISystemType type)
-    {
-        return type == null || types.contains(type) || (type == SystemTypeRegistry.NODE && (types.contains(SystemTypeRegistry.RECEIVER) || types.contains(SystemTypeRegistry.EMITTER)));
-    }
-
-    public boolean isOfType(ISystemType type)
-    {
-        return isOfType(this.types, type);
-    }
-
     public boolean isOfAnyType(Collection<ISystemType> types)
     {
         for (ISystemType type : types)
@@ -63,20 +53,30 @@ public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritab
         return false;
     }
 
+    public boolean isOfType(ISystemType type)
+    {
+        return isOfType(this.types, type);
+    }
+
+    public static boolean isOfType(Set<ISystemType> types, ISystemType type)
+    {
+        return type == null || types.contains(type) || (type == SystemTypeRegistry.NODE && (types.contains(SystemTypeRegistry.RECEIVER) || types.contains(SystemTypeRegistry.EMITTER)));
+    }
+
     public TileEntity getTileEntity()
     {
         return tileEntity;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
     }
 
     @Override
     public int getId()
     {
         return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -106,11 +106,6 @@ public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritab
         return (int)Math.round(Math.sqrt(manager.getDistanceFrom(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5)));
     }
 
-    public int getCableDistance()
-    {
-        return cableDistance;
-    }
-
     @Override
     public String getName(GuiManager gui)
     {
@@ -122,7 +117,6 @@ public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritab
     {
         return false;
     }
-
 
     @SideOnly(Side.CLIENT)
     private String getVariableTag(GuiManager gui)
@@ -151,11 +145,16 @@ public class SystemBlock implements IContainerSelection<GuiManager>, IJsonWritab
         return variable.isValid() && ((MenuContainer)variable.getDeclaration().getMenus().get(2)).getSelectedInventories().contains(id);
     }
 
+    public int getCableDistance()
+    {
+        return cableDistance;
+    }
+
     @Override
     public JsonObject writeToJson()
     {
         JsonObject object = new JsonObject();
-        object.add("Position", new JsonPrimitive(tileEntity.xCoord +", "+tileEntity.yCoord+", "+tileEntity.zCoord));
+        object.add("Position", new JsonPrimitive(tileEntity.xCoord + ", " + tileEntity.yCoord + ", " + tileEntity.zCoord));
         object.add("Name", new JsonPrimitive(new GuiManager(null, null).getBlockName(tileEntity)));
         return object;
     }

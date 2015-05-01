@@ -28,6 +28,11 @@ public class SearchItems implements Runnable
         this.time = System.currentTimeMillis();
     }
 
+    public static void setItems()
+    {
+        new Thread(new CacheItems()).start();
+    }
+
     @Override
     public void run()
     {
@@ -64,11 +69,6 @@ public class SearchItems implements Runnable
     {
         controller.result = items;
         controller.lastUpdate = time;
-    }
-
-    public static void setItems()
-    {
-        new Thread(new CacheItems()).start();
     }
 
     public ScrollController getScrollController()

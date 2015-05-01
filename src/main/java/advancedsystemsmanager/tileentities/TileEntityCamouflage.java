@@ -28,6 +28,27 @@ import java.util.Random;
 public class TileEntityCamouflage extends TileEntityClusterElement implements IPacketBlock
 {
 
+    private static final Random rand = new Random();
+    private static final int UPDATE_BUFFER_DISTANCE = 5;
+    private static final String NBT_SIDES = "Sides";
+    private static final String NBT_ID = "Id";
+    private static final String NBT_META = "Meta";
+    private static final String NBT_COLLISION = "Collision";
+    private static final String NBT_FULL = "Full";
+    private static final String NBT_MIN_X = "MinX";
+    private static final String NBT_MAX_X = "MaxX";
+    private static final String NBT_MIN_Y = "MinY";
+    private static final String NBT_MAX_Y = "MaxY";
+    private static final String NBT_MIN_Z = "MinZ";
+    private static final String NBT_MAX_Z = "MaxZ";
+    private boolean useCollision = true;
+    private boolean fullCollision = false;
+    private int[] bounds = {0, 32, 0, 32, 0, 32};
+    private int[] ids = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
+    private int[] metas = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
+    private boolean hasClientUpdatedData;
+    private boolean isServerDirty;
+
     public boolean isNormalBlock()
     {
         if (getCamouflageType().useSpecialShape())
@@ -49,7 +70,10 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         return true;
     }
 
-    private static final Random rand = new Random();
+    public CamouflageType getCamouflageType()
+    {
+        return CamouflageType.getByID(getBlockMetadata());
+    }
 
     @SideOnly(Side.CLIENT)
     public boolean addBlockEffect(Block camoBlock, int sideHit, EffectRenderer effectRenderer)
@@ -100,57 +124,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         return false;
     }
 
-
-    public enum CamouflageType
-    {
-        NORMAL("", false, false),
-        INSIDE("_inside", true, false),
-        SHAPE("_shape", true, true);
-
-        private String unlocalized;
-        private String icon;
-        private boolean useDouble;
-        private boolean useShape;
-
-        private CamouflageType(String tag, boolean useDouble, boolean useShape)
-        {
-            this.unlocalized = tag;
-            this.icon = Names.CABLE_CAMO + tag;
-            this.useDouble = useDouble;
-            this.useShape = useShape;
-        }
-
-        public String getUnlocalized()
-        {
-            return unlocalized;
-        }
-
-        public String getIcon()
-        {
-            return icon;
-        }
-
-        public boolean useDoubleRendering()
-        {
-            return useDouble;
-        }
-
-        public boolean useSpecialShape()
-        {
-            return useShape;
-        }
-
-        public static CamouflageType getByID(int id)
-        {
-            return values()[id % values().length];
-        }
-    }
-
-    public CamouflageType getCamouflageType()
-    {
-        return CamouflageType.getByID(getBlockMetadata());
-    }
-
     public void setBlockBounds(BlockCamouflageBase blockCamouflageBase)
     {
         blockCamouflageBase.setBlockBounds(bounds[0] / 32F, bounds[2] / 32F, bounds[4] / 32F, bounds[1] / 32F, bounds[3] / 32F, bounds[5] / 32F);
@@ -165,12 +138,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     {
         return fullCollision;
     }
-
-    private boolean useCollision = true;
-    private boolean fullCollision = false;
-    private int[] bounds = {0, 32, 0, 32, 0, 32};
-    private int[] ids = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
-    private int[] metas = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
 
     public void setBounds(MenuCamouflageShape menu)
     {
@@ -271,6 +238,14 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
+    private void validateSide(int i)
+    {
+        if (ids[i] < 0 || ids[i] >= Block.blockRegistry.getKeys().size())
+        {
+            ids[i] = 0;
+        }
+    }
+
     public int getId(int side)
     {
         return ids[side];
@@ -279,17 +254,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     public int getMeta(int side)
     {
         return metas[side];
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
-    }
-
-    private int getSideCount()
-    {
-        return getCamouflageType().useDoubleRendering() ? ids.length : ids.length / 2;
     }
 
     @Override
@@ -341,6 +305,11 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         {
             //nothing to write, empty packet
         }
+    }
+
+    private int getSideCount()
+    {
+        return getCamouflageType().useDoubleRendering() ? ids.length : ids.length / 2;
     }
 
     @Override
@@ -396,23 +365,11 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    private void validateSide(int i)
-    {
-        if (ids[i] < 0 || ids[i] >= Block.blockRegistry.getKeys().size())
-        {
-            ids[i] = 0;
-        }
-    }
-
     @Override
     public int infoBitLength(boolean onServer)
     {
         return 1;
     }
-
-    private static final int UPDATE_BUFFER_DISTANCE = 5;
-    private boolean hasClientUpdatedData;
-    private boolean isServerDirty;
 
     @Override
     public void updateEntity()
@@ -445,17 +402,32 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    private static final String NBT_SIDES = "Sides";
-    private static final String NBT_ID = "Id";
-    private static final String NBT_META = "Meta";
-    private static final String NBT_COLLISION = "Collision";
-    private static final String NBT_FULL = "Full";
-    private static final String NBT_MIN_X = "MinX";
-    private static final String NBT_MAX_X = "MaxX";
-    private static final String NBT_MIN_Y = "MinY";
-    private static final String NBT_MAX_Y = "MaxY";
-    private static final String NBT_MIN_Z = "MinZ";
-    private static final String NBT_MAX_Z = "MaxZ";
+    @Override
+    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
+        for (int i = 0; i < list.tagCount(); i++)
+        {
+            NBTTagCompound element = list.getCompoundTagAt(i);
+
+            ids[i] = element.getShort(NBT_ID);
+            metas[i] = element.getByte(NBT_META);
+            validateSide(i);
+        }
+
+        if (tagCompound.hasKey(NBT_COLLISION))
+        {
+            useCollision = tagCompound.getBoolean(NBT_COLLISION);
+            fullCollision = tagCompound.getBoolean(NBT_FULL);
+
+            bounds[0] = tagCompound.getByte(NBT_MIN_X);
+            bounds[1] = tagCompound.getByte(NBT_MAX_X);
+            bounds[2] = tagCompound.getByte(NBT_MIN_Y);
+            bounds[3] = tagCompound.getByte(NBT_MAX_Y);
+            bounds[4] = tagCompound.getByte(NBT_MIN_Z);
+            bounds[5] = tagCompound.getByte(NBT_MAX_Z);
+        }
+    }
 
     @Override
     protected void writeContentToNBT(NBTTagCompound tagCompound)
@@ -489,30 +461,21 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < list.tagCount(); i++)
-        {
-            NBTTagCompound element = list.getCompoundTagAt(i);
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
+    }
 
-            ids[i] = element.getShort(NBT_ID);
-            metas[i] = element.getByte(NBT_META);
-            validateSide(i);
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconWithDefault(IBlockAccess world, int x, int y, int z, BlockCamouflageBase block, int side, boolean inside)
+    {
+        IIcon icon = getIcon(side, inside);
+        if (icon == null)
+        {
+            icon = block.getDefaultIcon(side, world.getBlockMetadata(x, y, z), getBlockMetadata()); //here we actually want to fetch the meta data of the block, rather then getting the tile entity version
         }
 
-        if (tagCompound.hasKey(NBT_COLLISION))
-        {
-            useCollision = tagCompound.getBoolean(NBT_COLLISION);
-            fullCollision = tagCompound.getBoolean(NBT_FULL);
-
-            bounds[0] = tagCompound.getByte(NBT_MIN_X);
-            bounds[1] = tagCompound.getByte(NBT_MAX_X);
-            bounds[2] = tagCompound.getByte(NBT_MIN_Y);
-            bounds[3] = tagCompound.getByte(NBT_MAX_Y);
-            bounds[4] = tagCompound.getByte(NBT_MIN_Z);
-            bounds[5] = tagCompound.getByte(NBT_MAX_Z);
-        }
+        return icon;
     }
 
     @SideOnly(Side.CLIENT)
@@ -540,15 +503,48 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         return null;
     }
 
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconWithDefault(IBlockAccess world, int x, int y, int z, BlockCamouflageBase block, int side, boolean inside)
+    public enum CamouflageType
     {
-        IIcon icon = getIcon(side, inside);
-        if (icon == null)
+        NORMAL("", false, false),
+        INSIDE("_inside", true, false),
+        SHAPE("_shape", true, true);
+
+        private String unlocalized;
+        private String icon;
+        private boolean useDouble;
+        private boolean useShape;
+
+        private CamouflageType(String tag, boolean useDouble, boolean useShape)
         {
-            icon = block.getDefaultIcon(side, world.getBlockMetadata(x, y, z), getBlockMetadata()); //here we actually want to fetch the meta data of the block, rather then getting the tile entity version
+            this.unlocalized = tag;
+            this.icon = Names.CABLE_CAMO + tag;
+            this.useDouble = useDouble;
+            this.useShape = useShape;
         }
 
-        return icon;
+        public static CamouflageType getByID(int id)
+        {
+            return values()[id % values().length];
+        }
+
+        public String getUnlocalized()
+        {
+            return unlocalized;
+        }
+
+        public String getIcon()
+        {
+            return icon;
+        }
+
+        public boolean useDoubleRendering()
+        {
+            return useDouble;
+        }
+
+        public boolean useSpecialShape()
+        {
+            return useShape;
+        }
     }
 }

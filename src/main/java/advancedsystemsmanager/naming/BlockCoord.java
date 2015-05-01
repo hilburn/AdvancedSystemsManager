@@ -7,17 +7,17 @@ public class BlockCoord
     public int x, y, z;
     public String name;
 
+    public BlockCoord(int x, int y, int z, String name)
+    {
+        this(x, y, z);
+        this.name = name;
+    }
+
     public BlockCoord(int x, int y, int z)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-    }
-
-    public BlockCoord(int x, int y, int z, String name)
-    {
-        this(x, y, z);
-        this.name = name;
     }
 
     public BlockCoord(NBTTagCompound tagCompound)
@@ -39,6 +39,15 @@ public class BlockCoord
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = 121 * (x ^ (x >>> 16));
+        result = 15 * result + (y ^ (y << 16));
+        result = 15 * result + (z ^ (z >>> 16));
+        return result;
+    }
+
+    @Override
     public boolean equals(Object obj)
     {
         if (obj instanceof BlockCoord)
@@ -47,15 +56,6 @@ public class BlockCoord
             return other.x == x && other.z == z && other.y == y;
         }
         return true;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = 121 * (x ^ (x >>> 16));
-        result = 15 * result + (y ^ (y << 16));
-        result = 15 * result + (z ^ (z >>> 16));
-        return result;
     }
 
     @Override

@@ -32,14 +32,10 @@ public class HttpPost implements Callable<String>
         }
     }
 
-    public String getPost()
+    @Override
+    public String call() throws Exception
     {
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry : postData.entrySet())
-            builder.append(entry.getKey()).append('=').append(entry.getValue()).append('&');
-        if (postData.size() > 0)
-            builder.deleteCharAt(builder.length() - 1);
-        return new String(builder);
+        return getContents();
     }
 
     public String getContents()
@@ -76,9 +72,13 @@ public class HttpPost implements Callable<String>
         }
     }
 
-    @Override
-    public String call() throws Exception
+    public String getPost()
     {
-        return getContents();
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : postData.entrySet())
+            builder.append(entry.getKey()).append('=').append(entry.getValue()).append('&');
+        if (postData.size() > 0)
+            builder.deleteCharAt(builder.length() - 1);
+        return new String(builder);
     }
 }

@@ -19,6 +19,33 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuCamouflageShape extends MenuCamouflageAdvanced
 {
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 3;
+    public static final int CHECK_BOX_SPACING_X = 50;
+    public static final int CHECK_BOX_SPACING_Y = 10;
+    public static final int TEXT_X = 6;
+    public static final int TEXT_X_TO = 55;
+    public static final int TEXT_Y = 28;
+    public static final int TEXT_BOX_X = 30;
+    public static final int TEXT_BOX_Y = 25;
+    public static final int TEXT_BOX_SPACING_X = 40;
+    public static final int TEXT_BOX_SPACING_Y = 15;
+    public static final String NBT_USE = "Use";
+    public static final String NBT_COLLISION = "UseCollision";
+    public static final String NBT_FULL = "FullCollision";
+    public static final String NBT_MIN_X = "MinX";
+    public static final String NBT_MAX_X = "MaxX";
+    public static final String NBT_MIN_Y = "MinY";
+    public static final String NBT_MAX_Y = "MaxY";
+    public static final String NBT_MIN_Z = "MinZ";
+    public static final String NBT_MAX_Z = "MaxZ";
+    public CheckBoxList checkBoxes;
+    public boolean inUse;
+    public boolean useCollision;
+    public boolean fullCollision;
+    public TextBoxNumberList textBoxes;
+    public String[] coordinates = {Names.X, Names.Y, Names.Z};
+
     public MenuCamouflageShape(FlowComponent parent)
     {
         super(parent);
@@ -127,6 +154,17 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         PacketHandler.sendDataToServer(dw);
     }
 
+    public void loadDefault()
+    {
+        inUse = false;
+        useCollision = true;
+        fullCollision = false;
+        for (int i = 0; i < 6; i++)
+        {
+            ((TextBoxRange)textBoxes.getTextBox(i)).reset();
+        }
+    }
+
     public boolean shouldUpdate()
     {
         return inUse;
@@ -147,88 +185,10 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         return textBoxes.getTextBox(id).getNumber();
     }
 
-    public class TextBoxRange extends TextBoxNumber
-    {
-        public int id;
-        public int defaultNumber;
-
-        public TextBoxRange(int id, int x, int y, int defaultNumber)
-        {
-            super(x, y, 2, false);
-            this.defaultNumber = defaultNumber;
-            this.id = id;
-        }
-
-        @Override
-        public void onNumberChanged()
-        {
-            DataWriter dw = getWriterForServerComponentPacket();
-            dw.writeData(id + 1, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
-            dw.writeData(getNumber(), DataBitHelper.CAMOUFLAGE_BOUNDS);
-            PacketHandler.sendDataToServer(dw);
-        }
-
-        @Override
-        public int getMaxNumber()
-        {
-            return 32;
-        }
-
-        public void reset()
-        {
-            setNumber(defaultNumber);
-        }
-    }
-
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 3;
-    public static final int CHECK_BOX_SPACING_X = 50;
-    public static final int CHECK_BOX_SPACING_Y = 10;
-
-    public static final int TEXT_X = 6;
-    public static final int TEXT_X_TO = 55;
-    public static final int TEXT_Y = 28;
-    public static final int TEXT_BOX_X = 30;
-    public static final int TEXT_BOX_Y = 25;
-    public static final int TEXT_BOX_SPACING_X = 40;
-    public static final int TEXT_BOX_SPACING_Y = 15;
-
-    public CheckBoxList checkBoxes;
-    public boolean inUse;
-    public boolean useCollision;
-    public boolean fullCollision;
-    public TextBoxNumberList textBoxes;
-
-    @Override
-    public String getWarningText()
-    {
-        return Names.BOUNDS_WARNING;
-    }
-
     @Override
     public String getName()
     {
         return Names.BOUNDS_MENU;
-    }
-
-    public String[] coordinates = {Names.X, Names.Y, Names.Z};
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void draw(GuiManager gui, int mX, int mY)
-    {
-        super.draw(gui, mX, mY);
-
-        checkBoxes.draw(gui, mX, mY);
-        if (inUse)
-        {
-            textBoxes.draw(gui, mX, mY);
-            for (int i = 0; i < coordinates.length; i++)
-            {
-                gui.drawString(coordinates[i], TEXT_X, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
-                gui.drawString(Names.TO, TEXT_X_TO, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
-            }
-        }
     }
 
     @Override
@@ -238,19 +198,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         if (inUse)
         {
             textBoxes.onClick(mX, mY, button);
-        }
-    }
-
-
-    @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        if (inUse)
-        {
-            return textBoxes.onKeyStroke(gui, c, k);
-        } else
-        {
-            return super.onKeyStroke(gui, c, k);
         }
     }
 
@@ -264,6 +211,18 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (inUse)
+        {
+            return textBoxes.onKeyStroke(gui, c, k);
+        } else
+        {
+            return super.onKeyStroke(gui, c, k);
+        }
     }
 
     @Override
@@ -296,17 +255,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         } else
         {
             loadDefault();
-        }
-    }
-
-    public void loadDefault()
-    {
-        inUse = false;
-        useCollision = true;
-        fullCollision = false;
-        for (int i = 0; i < 6; i++)
-        {
-            ((TextBoxRange)textBoxes.getTextBox(i)).reset();
         }
     }
 
@@ -367,16 +315,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         }
     }
 
-    public static final String NBT_USE = "Use";
-    public static final String NBT_COLLISION = "UseCollision";
-    public static final String NBT_FULL = "FullCollision";
-    public static final String NBT_MIN_X = "MinX";
-    public static final String NBT_MAX_X = "MaxX";
-    public static final String NBT_MIN_Y = "MinY";
-    public static final String NBT_MAX_Y = "MaxY";
-    public static final String NBT_MIN_Z = "MinZ";
-    public static final String NBT_MAX_Z = "MaxZ";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -414,6 +352,30 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void draw(GuiManager gui, int mX, int mY)
+    {
+        super.draw(gui, mX, mY);
+
+        checkBoxes.draw(gui, mX, mY);
+        if (inUse)
+        {
+            textBoxes.draw(gui, mX, mY);
+            for (int i = 0; i < coordinates.length; i++)
+            {
+                gui.drawString(coordinates[i], TEXT_X, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
+                gui.drawString(Names.TO, TEXT_X_TO, TEXT_Y + TEXT_BOX_SPACING_Y * i, 0x404040);
+            }
+        }
+    }
+
+    @Override
+    public String getWarningText()
+    {
+        return Names.BOUNDS_WARNING;
+    }
+
     @Override
     public void readNetworkComponent(DataReader dr)
     {
@@ -432,6 +394,39 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         } else
         {
             textBoxes.getTextBox(id - 1).setNumber(dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS));
+        }
+    }
+
+    public class TextBoxRange extends TextBoxNumber
+    {
+        public int id;
+        public int defaultNumber;
+
+        public TextBoxRange(int id, int x, int y, int defaultNumber)
+        {
+            super(x, y, 2, false);
+            this.defaultNumber = defaultNumber;
+            this.id = id;
+        }
+
+        @Override
+        public void onNumberChanged()
+        {
+            DataWriter dw = getWriterForServerComponentPacket();
+            dw.writeData(id + 1, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
+            dw.writeData(getNumber(), DataBitHelper.CAMOUFLAGE_BOUNDS);
+            PacketHandler.sendDataToServer(dw);
+        }
+
+        @Override
+        public int getMaxNumber()
+        {
+            return 32;
+        }
+
+        public void reset()
+        {
+            setNumber(defaultNumber);
         }
     }
 

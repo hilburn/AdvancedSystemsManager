@@ -45,10 +45,10 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     }
 
     @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getDefaultIcon(int side, int blockMeta, int camoMeta)
+    private IIcon getIconFromSideAndMeta(int side, int meta)
     {
-        return getIconFromSideAndMeta(side, blockMeta);
+        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
+        //return side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? isAdvanced(meta) ? frontIconAdv : frontIcon : isAdvanced(meta) ? sideIconAdv : sideIcon;
     }
 
 //    @Override
@@ -68,6 +68,142 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
 //            BlockRegistry.blockCable.updateInventories(world, x, y, z);
 //        }
 //    }
+
+    public boolean isAdvanced(int meta)
+    {
+        return (meta & 8) != 0;
+    }
+
+    public int getSideMeta(int meta)
+    {
+        return meta & 7;
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        if (cluster != null)
+        {
+            cluster.onNeighborBlockChange(block);
+        }
+
+        if (isAdvanced(world.getBlockMetadata(x, y, z)))
+        {
+            BlockRegistry.blockCable.updateInventories(world, x, y, z);
+        }
+    }
+
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        if (cluster != null)
+        {
+            cluster.onBlockAdded();
+        }
+
+        if (isAdvanced(world.getBlockMetadata(x, y, z)))
+        {
+            BlockRegistry.blockCable.updateInventories(world, x, y, z);
+        }
+    }
+
+    @Override
+    public int damageDropped(int meta)
+    {
+        return getAdvancedMeta(meta);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        return cluster != null && cluster.onBlockActivated(player, side, hitX, hitY, hitZ);
+
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        return cluster != null ? cluster.isProvidingWeakPower(side) : 0;
+    }
+
+    @Override
+    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        return cluster != null ? cluster.isProvidingStrongPower(side) : 0;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack)
+    {
+        int meta = addAdvancedMeta(BlockPistonBase.determineOrientation(world, x, y, z, entity), itemStack.getItemDamage());
+        world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        if (cluster != null)
+        {
+            cluster.loadElements(itemStack);
+
+            cluster.onBlockPlacedBy(entity, itemStack);
+        }
+    }
+
+    private TileEntityCluster getTe(IBlockAccess world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && te instanceof TileEntityCluster)
+        {
+            return (TileEntityCluster)te;
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings(value = "unchecked")
+    public void getSubBlocks(Item item, CreativeTabs tabs, List list)
+    {
+        list.add(new ItemStack(item, 1, 0));
+        list.add(new ItemStack(item, 1, 8));
+    }
+
+    @Override
+    public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
+    {
+        if (!player.capabilities.isCreativeMode)
+        {
+            harvesters.set(player);
+            dropBlockAsItem(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
+            harvesters.set(null);
+            world.setBlock(x, y, z, Blocks.air, 0, 7);
+        }
+    }
+
+    @Override
+    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+    {
+        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+        drops.add(getItemStack(world, x, y, z, metadata));
+        return drops;
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TileEntityCluster cluster = getTe(world, x, y, z);
+
+        return cluster != null && cluster.canConnectRedstone(side);
+
+    }
 
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
@@ -101,106 +237,6 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     }
 
     @Override
-    public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player)
-    {
-        if (!player.capabilities.isCreativeMode)
-        {
-            harvesters.set(player);
-            dropBlockAsItem(world, x, y, z, meta, EnchantmentHelper.getFortuneModifier(player));
-            harvesters.set(null);
-            world.setBlock(x, y, z, Blocks.air, 0, 7);
-        }
-    }
-
-    @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-        drops.add(getItemStack(world, x, y, z, metadata));
-        return drops;
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon getIconFromSideAndMeta(int side, int meta)
-    {
-        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
-        //return side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? isAdvanced(meta) ? frontIconAdv : frontIcon : isAdvanced(meta) ? sideIconAdv : sideIcon;
-    }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int meta)
-    {
-        return new TileEntityCluster();
-    }
-
-    private TileEntityCluster getTe(IBlockAccess world, int x, int y, int z)
-    {
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof TileEntityCluster)
-        {
-            return (TileEntityCluster)te;
-        }
-        return null;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack)
-    {
-        int meta = addAdvancedMeta(BlockPistonBase.determineOrientation(world, x, y, z, entity), itemStack.getItemDamage());
-        world.setBlockMetadataWithNotify(x, y, z, meta, 2);
-
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        if (cluster != null)
-        {
-            cluster.loadElements(itemStack);
-
-            cluster.onBlockPlacedBy(entity, itemStack);
-        }
-    }
-
-    @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
-    {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        if (cluster != null)
-        {
-            cluster.onNeighborBlockChange(block);
-        }
-
-        if (isAdvanced(world.getBlockMetadata(x, y, z)))
-        {
-            BlockRegistry.blockCable.updateInventories(world, x, y, z);
-        }
-    }
-
-    @Override
-    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        return cluster != null && cluster.canConnectRedstone(side);
-
-    }
-
-    @Override
-    public void onBlockAdded(World world, int x, int y, int z)
-    {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        if (cluster != null)
-        {
-            cluster.onBlockAdded();
-        }
-
-        if (isAdvanced(world.getBlockMetadata(x, y, z)))
-        {
-            BlockRegistry.blockCable.updateInventories(world, x, y, z);
-        }
-    }
-
-    @Override
     public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
         TileEntityCluster cluster = getTe(world, x, y, z);
@@ -209,48 +245,9 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
 
     }
 
-    @Override
-    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    private int getAdvancedMeta(int meta)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        return cluster != null ? cluster.isProvidingWeakPower(side) : 0;
-    }
-
-    @Override
-    public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        return cluster != null ? cluster.isProvidingStrongPower(side) : 0;
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-    {
-        TileEntityCluster cluster = getTe(world, x, y, z);
-
-        return cluster != null && cluster.onBlockActivated(player, side, hitX, hitY, hitZ);
-
-    }
-
-
-    @Override
-    @SuppressWarnings(value = "unchecked")
-    public void getSubBlocks(Item item, CreativeTabs tabs, List list)
-    {
-        list.add(new ItemStack(item, 1, 0));
-        list.add(new ItemStack(item, 1, 8));
-    }
-
-    public boolean isAdvanced(int meta)
-    {
-        return (meta & 8) != 0;
-    }
-
-    public int getSideMeta(int meta)
-    {
-        return meta & 7;
+        return addAdvancedMeta(0, meta);
     }
 
     private int addAdvancedMeta(int meta, int advancedMeta)
@@ -258,15 +255,17 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         return meta | (advancedMeta & 8);
     }
 
-    private int getAdvancedMeta(int meta)
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getDefaultIcon(int side, int blockMeta, int camoMeta)
     {
-        return addAdvancedMeta(0, meta);
+        return getIconFromSideAndMeta(side, blockMeta);
     }
 
     @Override
-    public int damageDropped(int meta)
+    public TileEntity createNewTileEntity(World world, int meta)
     {
-        return getAdvancedMeta(meta);
+        return new TileEntityCluster();
     }
 
     @Override

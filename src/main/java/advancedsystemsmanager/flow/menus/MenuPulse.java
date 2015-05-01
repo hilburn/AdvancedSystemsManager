@@ -17,6 +17,26 @@ import net.minecraft.nbt.NBTTagCompound;
 public class MenuPulse extends Menu
 {
 
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 5;
+    public static final int RADIO_BUTTON_X = 5;
+    public static final int RADIO_BUTTON_Y = 44;
+    public static final int RADIO_BUTTON_SPACING_X = 67;
+    public static final int RADIO_BUTTON_SPACING_Y = 12;
+    public static final int TEXT_BOX_X_LEFT = 10;
+    public static final int TEXT_BOX_X_RIGHT = 70;
+    public static final int TEXT_BOX_Y = 25;
+    public static final String NBT_USE_PULSE = "UsePulse";
+    public static final String NBT_TYPE = "Type";
+    public static final String NBT_SECOND = "Seconds";
+    public static final String NBT_TICK = "Ticks";
+    public CheckBoxList checkBoxes;
+    public boolean usePulse;
+    public RadioButtonList radioButtons;
+    public TextBoxNumberList textBoxes;
+    public TextBoxNumber ticksTextBox;
+    public TextBoxNumber secondsTextBox;
+
     public MenuPulse(FlowComponent parent)
     {
         super(parent);
@@ -91,50 +111,39 @@ public class MenuPulse extends Menu
         setDefault();
     }
 
-    public enum PULSE_OPTIONS
+    public void sendServerPacket(ComponentSyncType type)
     {
-        EXTEND_OLD(Names.EXTEND_OLD),
-        KEEP_ALL(Names.KEEP_ALL),
-        KEEP_OLD(Names.KEEP_OLD),
-        KEEP_NEW(Names.KEEP_NEW);
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, type);
+        PacketHandler.sendDataToServer(dw);
+    }
 
-        public String name;
-
-        PULSE_OPTIONS(String name)
+    public void writeData(DataWriter dw, ComponentSyncType type)
+    {
+        dw.writeData(type.ordinal(), DataBitHelper.PULSE_COMPONENT_TYPES);
+        switch (type)
         {
-            this.name = name;
-        }
+            case CHECK_BOX:
+                dw.writeBoolean(usePulse);
+                break;
+            case RADIO_BUTTON:
+                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.PULSE_TYPES);
+                break;
+            case TEXT_BOX_1:
+                dw.writeData(secondsTextBox.getNumber(), DataBitHelper.PULSE_SECONDS);
+                break;
+            case TEXT_BOX_2:
+                dw.writeData(ticksTextBox.getNumber(), DataBitHelper.PULSE_TICKS);
 
-        @Override
-        public String toString()
-        {
-            return name.toString();
-        }
-
-        public String getName()
-        {
-            return name;
         }
     }
 
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 5;
-    public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 44;
-    public static final int RADIO_BUTTON_SPACING_X = 67;
-    public static final int RADIO_BUTTON_SPACING_Y = 12;
-
-    public static final int TEXT_BOX_X_LEFT = 10;
-    public static final int TEXT_BOX_X_RIGHT = 70;
-    public static final int TEXT_BOX_Y = 25;
-
-
-    public CheckBoxList checkBoxes;
-    public boolean usePulse;
-    public RadioButtonList radioButtons;
-    public TextBoxNumberList textBoxes;
-    public TextBoxNumber ticksTextBox;
-    public TextBoxNumber secondsTextBox;
+    public void setDefault()
+    {
+        radioButtons.setSelectedOption(0);
+        secondsTextBox.setNumber(0);
+        ticksTextBox.setNumber(10);
+    }
 
     @Override
     public String getName()
@@ -282,38 +291,6 @@ public class MenuPulse extends Menu
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    public void sendServerPacket(ComponentSyncType type)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, type);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeData(DataWriter dw, ComponentSyncType type)
-    {
-        dw.writeData(type.ordinal(), DataBitHelper.PULSE_COMPONENT_TYPES);
-        switch (type)
-        {
-            case CHECK_BOX:
-                dw.writeBoolean(usePulse);
-                break;
-            case RADIO_BUTTON:
-                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.PULSE_TYPES);
-                break;
-            case TEXT_BOX_1:
-                dw.writeData(secondsTextBox.getNumber(), DataBitHelper.PULSE_SECONDS);
-                break;
-            case TEXT_BOX_2:
-                dw.writeData(ticksTextBox.getNumber(), DataBitHelper.PULSE_TICKS);
-
-        }
-    }
-
-    public static final String NBT_USE_PULSE = "UsePulse";
-    public static final String NBT_TYPE = "Type";
-    public static final String NBT_SECOND = "Seconds";
-    public static final String NBT_TICK = "Ticks";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -367,21 +344,6 @@ public class MenuPulse extends Menu
         }
     }
 
-    public void setDefault()
-    {
-        radioButtons.setSelectedOption(0);
-        secondsTextBox.setNumber(0);
-        ticksTextBox.setNumber(10);
-    }
-
-    public enum ComponentSyncType
-    {
-        CHECK_BOX,
-        RADIO_BUTTON,
-        TEXT_BOX_1,
-        TEXT_BOX_2
-    }
-
     public boolean shouldEmitPulse()
     {
         return usePulse;
@@ -395,5 +357,39 @@ public class MenuPulse extends Menu
     public int getPulseTime()
     {
         return secondsTextBox.getNumber() * 20 + ticksTextBox.getNumber();
+    }
+
+    public enum PULSE_OPTIONS
+    {
+        EXTEND_OLD(Names.EXTEND_OLD),
+        KEEP_ALL(Names.KEEP_ALL),
+        KEEP_OLD(Names.KEEP_OLD),
+        KEEP_NEW(Names.KEEP_NEW);
+
+        public String name;
+
+        PULSE_OPTIONS(String name)
+        {
+            this.name = name;
+        }
+
+        @Override
+        public String toString()
+        {
+            return name.toString();
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+    }
+
+    public enum ComponentSyncType
+    {
+        CHECK_BOX,
+        RADIO_BUTTON,
+        TEXT_BOX_1,
+        TEXT_BOX_2
     }
 }

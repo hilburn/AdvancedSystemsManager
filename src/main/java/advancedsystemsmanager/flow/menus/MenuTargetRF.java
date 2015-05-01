@@ -40,18 +40,6 @@ public class MenuTargetRF extends MenuTarget
     }
 
     @Override
-    public void drawAdvancedComponent(GuiManager guiManager, int i, int i1)
-    {
-
-    }
-
-    @Override
-    public void refreshAdvancedComponent()
-    {
-
-    }
-
-    @Override
     public void writeAdvancedSetting(DataWriter dataWriter, int i)
     {
 
@@ -64,13 +52,19 @@ public class MenuTargetRF extends MenuTarget
     }
 
     @Override
+    public void resetAdvancedSetting(int i)
+    {
+
+    }
+
+    @Override
     public void copyAdvancedSetting(Menu menu, int i)
     {
 
     }
 
     @Override
-    public void onAdvancedClick(int i, int i1, int i2)
+    public void refreshAdvancedComponentData(ContainerManager containerManager, Menu menu, int i)
     {
 
     }
@@ -88,19 +82,19 @@ public class MenuTargetRF extends MenuTarget
     }
 
     @Override
-    public void resetAdvancedSetting(int i)
+    public void refreshAdvancedComponent()
     {
 
     }
 
     @Override
-    public void refreshAdvancedComponentData(ContainerManager containerManager, Menu menu, int i)
+    public void onAdvancedClick(int i, int i1, int i2)
     {
 
     }
 
     @Override
-    public void readAdvancedNetworkComponent(DataReader dataReader, DataTypeHeader dataTypeHeader, int i)
+    public void drawAdvancedComponent(GuiManager guiManager, int i, int i1)
     {
 
     }
@@ -117,5 +111,11 @@ public class MenuTargetRF extends MenuTarget
                 ((MenuRF)menu).updateConnectedNodes();
             }
         }
+    }
+
+    @Override
+    public void readAdvancedNetworkComponent(DataReader dataReader, DataTypeHeader dataTypeHeader, int i)
+    {
+
     }
 }

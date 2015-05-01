@@ -23,6 +23,21 @@ import java.util.List;
 public abstract class MenuRedstoneSides extends Menu
 {
 
+    public static final int RADIO_BUTTON_X_LEFT = 5;
+    public static final int RADIO_BUTTON_X_RIGHT = 65;
+    public static final int RADIO_BUTTON_Y = 23;
+    public static final int CHECKBOX_X = 5;
+    public static final int CHECKBOX_Y = 35;
+    public static final int CHECKBOX_SPACING_X = 70;
+    public static final int CHECKBOX_SPACING_Y = 12;
+    public static final int MENU_WIDTH = 120;
+    public static final int TEXT_MARGIN_X = 5;
+    public static final int TEXT_Y = 5;
+    public static final String NBT_ACTIVE = "Selection";
+    public static final String NBT_ALL = "RequrieAll";
+    public CheckBoxList checkBoxList;
+    public RadioButtonList radioButtonList;
+    public int selection;
     public MenuRedstoneSides(FlowComponent parent)
     {
         super(parent);
@@ -53,59 +68,34 @@ public abstract class MenuRedstoneSides extends Menu
 
     public abstract void initRadioButtons();
 
-    public static final int RADIO_BUTTON_X_LEFT = 5;
-    public static final int RADIO_BUTTON_X_RIGHT = 65;
-    public static final int RADIO_BUTTON_Y = 23;
-
-    public static final int CHECKBOX_X = 5;
-    public static final int CHECKBOX_Y = 35;
-    public static final int CHECKBOX_SPACING_X = 70;
-    public static final int CHECKBOX_SPACING_Y = 12;
-
-    public static final int MENU_WIDTH = 120;
-    public static final int TEXT_MARGIN_X = 5;
-    public static final int TEXT_Y = 5;
-
-    public class CheckBoxSide extends CheckBox
+    public void sendServerData(boolean syncRequire)
     {
-        public int id;
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, syncRequire);
+        PacketHandler.sendDataToServer(dw);
+    }
 
-        public CheckBoxSide(int id)
+    public void writeData(DataWriter dw, boolean syncRequire)
+    {
+        dw.writeBoolean(syncRequire);
+        if (syncRequire)
         {
-            super(LocalizationHelper.getDirectionString(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
-
-            this.id = id;
-        }
-
-        @Override
-        public void setValue(boolean val)
+            dw.writeBoolean(useFirstOption());
+        } else
         {
-            if (val)
-            {
-                selection |= 1 << id;
-            } else
-            {
-                selection &= ~(1 << id);
-            }
-        }
-
-        @Override
-        public boolean getValue()
-        {
-            return (selection & (1 << id)) != 0;
-        }
-
-        @Override
-        public void onUpdate()
-        {
-            sendServerData(false);
+            dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
         }
     }
 
-    public CheckBoxList checkBoxList;
-    public RadioButtonList radioButtonList;
-    public int selection;
+    public boolean useFirstOption()
+    {
+        return radioButtonList.getSelectedOption() == 0;
+    }
 
+    public void setFirstOption(boolean val)
+    {
+        radioButtonList.setSelectedOption(val ? 0 : 1);
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -195,28 +185,6 @@ public abstract class MenuRedstoneSides extends Menu
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    public void sendServerData(boolean syncRequire)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, syncRequire);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeData(DataWriter dw, boolean syncRequire)
-    {
-        dw.writeBoolean(syncRequire);
-        if (syncRequire)
-        {
-            dw.writeBoolean(useFirstOption());
-        } else
-        {
-            dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
-        }
-    }
-
-    public static final String NBT_ACTIVE = "Selection";
-    public static final String NBT_ALL = "RequrieAll";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -236,6 +204,15 @@ public abstract class MenuRedstoneSides extends Menu
     }
 
     @Override
+    public void addErrors(List<String> errors)
+    {
+        if (isVisible() && selection == 0)
+        {
+            errors.add(Names.NO_REDSTONE_SIDES_ERROR);
+        }
+    }
+
+    @Override
     public void readNetworkComponent(DataReader dr)
     {
         if (dr.readBoolean())
@@ -247,28 +224,44 @@ public abstract class MenuRedstoneSides extends Menu
         }
     }
 
-
-    public boolean useFirstOption()
-    {
-        return radioButtonList.getSelectedOption() == 0;
-    }
-
-    public void setFirstOption(boolean val)
-    {
-        radioButtonList.setSelectedOption(val ? 0 : 1);
-    }
-
     public boolean isSideRequired(int i)
     {
         return (selection & (1 << i)) != 0;
     }
 
-    @Override
-    public void addErrors(List<String> errors)
+    public class CheckBoxSide extends CheckBox
     {
-        if (isVisible() && selection == 0)
+        public int id;
+
+        public CheckBoxSide(int id)
         {
-            errors.add(Names.NO_REDSTONE_SIDES_ERROR);
+            super(LocalizationHelper.getDirectionString(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
+
+            this.id = id;
+        }
+
+        @Override
+        public void setValue(boolean val)
+        {
+            if (val)
+            {
+                selection |= 1 << id;
+            } else
+            {
+                selection &= ~(1 << id);
+            }
+        }
+
+        @Override
+        public boolean getValue()
+        {
+            return (selection & (1 << id)) != 0;
+        }
+
+        @Override
+        public void onUpdate()
+        {
+            sendServerData(false);
         }
     }
 }

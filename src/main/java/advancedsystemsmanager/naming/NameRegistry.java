@@ -78,17 +78,17 @@ public class NameRegistry
         data.remove(message.blockCoord);
     }
 
-    public static void setWorldData(int dim, NameData data)
-    {
-        instance.nameMapping.put(dim, data);
-        MessageHandler.INSTANCE.sendToAll(new WorldDataSyncMessage(dim, data));
-    }
-
     public static void setWorldData(WorldDataSyncMessage message)
     {
         NameData nameData = new NameData();
         nameData.readFromNBT(message.tagCompound);
         NameRegistry.setWorldData(message.dimId, nameData);
+    }
+
+    public static void setWorldData(int dim, NameData data)
+    {
+        instance.nameMapping.put(dim, data);
+        MessageHandler.INSTANCE.sendToAll(new WorldDataSyncMessage(dim, data));
     }
 
     public static NameData getWorldData(int dim, boolean unload)

@@ -15,6 +15,12 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuCraftingPriority extends Menu
 {
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int RADIO_MARGIN = 13;
+    public static final String NBT_SELECTED = "SelectedOption";
+    public RadioButtonList radioButtons;
+
     public MenuCraftingPriority(FlowComponent parent)
     {
         super(parent);
@@ -34,12 +40,6 @@ public class MenuCraftingPriority extends Menu
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Names.PRIORITY_MOVE_FIRST));
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + RADIO_MARGIN, Names.PRIORITY_CRAFT_FIRST));
     }
-
-    public static final int RADIO_X = 5;
-    public static final int RADIO_Y = 5;
-    public static final int RADIO_MARGIN = 13;
-
-    public RadioButtonList radioButtons;
 
     @Override
     public String getName()
@@ -111,8 +111,6 @@ public class MenuCraftingPriority extends Menu
             PacketHandler.sendDataToListeningClients(container, dw);
         }
     }
-
-    public static final String NBT_SELECTED = "SelectedOption";
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

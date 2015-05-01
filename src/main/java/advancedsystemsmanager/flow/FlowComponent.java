@@ -99,7 +99,51 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public static final int TEXT_SPACE = 135;
     public static final int TEXT_SPACE_SHORT = 65;
     public static final int TEXT_MAX_LENGTH = 31;
+    public static final String NBT_POS_X = "PosX";
+    public static final String NBT_POS_Y = "PosY";
+    public static final String NBT_TYPE = "Type";
+    public static final String NBT_CONNECTION = "Connection";
+    public static final String NBT_CONNECTION_POS = "ConnectionPos";
+    public static final String NBT_CONNECTION_TARGET_COMPONENT = "ConnectionComponent";
+    public static final String NBT_CONNECTION_TARGET_CONNECTION = "ConnectionConnection";
+    public static final String NBT_INTERVAL = "Interval";
+    public static final String NBT_MENUS = "Menus";
+    public static final String NBT_NODES = "Nodes";
+    public static final String NBT_NAME = "Name";
+    public static final String NBT_PARENT = "Parent";
     private static final String NBT_ID = "id";
+    public int x;
+    public int y;
+    public int mouseDragX;
+    public int mouseDragY;
+    public int mouseStartX;
+    public int mouseStartY;
+    public int resetTimer;
+    public boolean isDragging;
+    public boolean isLarge;
+    public List<Menu> menus;
+    public int openMenuId;
+    public ConnectionSet connectionSet;
+    public ICommand type;
+    public TileEntityManager manager;
+    public int id;
+    public Map<Integer, Connection> connections;
+    public int currentInterval;
+    public boolean isEditing;
+    public TextBoxLogic textBox;
+    public String name;
+    public FlowComponent parent;
+    public List<FlowComponent> childrenInputNodes;
+    public List<FlowComponent> childrenOutputNodes;
+    public boolean isInventoryListDirty = true;
+    public boolean isLoading;
+    public String cachedName;
+    public String cachedShortName;
+    public int parentLoadId = -1;
+    public int overrideX = -1;
+    public int overrideY = -1;
+    List<String> errors = new ArrayList<String>();
+
 
     public FlowComponent(TileEntityManager manager, int x, int y, ICommand type)
     {
@@ -127,31 +171,133 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         childrenOutputNodes = new ArrayList<FlowComponent>();
     }
 
-    public int x;
-    public int y;
-    public int mouseDragX;
-    public int mouseDragY;
-    public int mouseStartX;
-    public int mouseStartY;
-    public int resetTimer;
-    public boolean isDragging;
-    public boolean isLarge;
-    public List<Menu> menus;
-    public int openMenuId;
-    public ConnectionSet connectionSet;
-    public ICommand type;
-    public TileEntityManager manager;
-    public int id;
-    public Map<Integer, Connection> connections;
-    public int currentInterval;
-    public boolean isEditing;
-    public TextBoxLogic textBox;
-    public String name;
-    public FlowComponent parent;
-    public List<FlowComponent> childrenInputNodes;
-    public List<FlowComponent> childrenOutputNodes;
-    public boolean isInventoryListDirty = true;
+    public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
+        FlowComponent component = null;
+        try
+        {
+            int x = nbtTagCompound.getShort(NBT_POS_X);
+            int y = nbtTagCompound.getShort(NBT_POS_Y);
+            int typeId = nbtTagCompound.getByte(NBT_TYPE);
+            int id = nbtTagCompound.getByte(NBT_ID);
+            component = new FlowComponent(jam, x, y, id, CommandRegistry.getCommand(typeId));
+            component.isLoading = true;
 
+            if (nbtTagCompound.hasKey(NBT_NAME))
+            {
+                component.name = nbtTagCompound.getString(NBT_NAME);
+            } else
+            {
+                component.name = null;
+            }
+
+            if (nbtTagCompound.hasKey(NBT_PARENT))
+            {
+                component.parentLoadId = nbtTagCompound.getShort(NBT_PARENT);
+            }
+
+            NBTTagList connections = nbtTagCompound.getTagList(NBT_CONNECTION, 10);
+            for (int i = 0; i < connections.tagCount(); i++)
+            {
+                NBTTagCompound connectionTag = connections.getCompoundTagAt(i);
+
+                int componentId;
+                if (version < 9)
+                {
+                    componentId = connectionTag.getByte(NBT_CONNECTION_TARGET_COMPONENT);
+                } else
+                {
+                    componentId = connectionTag.getShort(NBT_CONNECTION_TARGET_COMPONENT);
+                }
+                Connection connection = new Connection(componentId, connectionTag.getByte(NBT_CONNECTION_TARGET_CONNECTION));
+
+                if (connectionTag.hasKey(NBT_NODES))
+                {
+                    connection.getNodes().clear();
+                    NBTTagList nodes = connectionTag.getTagList(NBT_NODES, 10);
+                    for (int j = 0; j < nodes.tagCount(); j++)
+                    {
+                        NBTTagCompound nodeTag = nodes.getCompoundTagAt(j);
+
+                        connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
+                    }
+                }
+
+                component.connections.put((int)connectionTag.getByte(NBT_CONNECTION_POS), connection);
+            }
+
+            if (component.type == CommandRegistry.TRIGGER)
+            {
+                component.currentInterval = nbtTagCompound.getShort(NBT_INTERVAL);
+            }
+
+            NBTTagList menuTagList = nbtTagCompound.getTagList(NBT_MENUS, 10);
+            int menuId = 0;
+            for (int i = 0; i < menuTagList.tagCount(); i++)
+            {
+                NBTTagCompound menuTag = menuTagList.getCompoundTagAt(i);
+
+
+                //added an extra menu to the triggers
+                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 1)
+                {
+                    menuId++;
+                }
+
+                //added a second extra menu to the triggers
+                if (component.type == CommandRegistry.TRIGGER && i == 2 && version < 5)
+                {
+                    menuId++;
+                }
+
+                //added a third extra menu to the triggers
+                if (component.type == CommandRegistry.TRIGGER && i == 0 && version < 6)
+                {
+                    menuId++;
+                }
+
+
+                //added the bud menus to the triggers
+                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 8)
+                {
+                    menuId++;
+                }
+                if (component.type == CommandRegistry.TRIGGER && i == 4 && version < 8)
+                {
+                    menuId++;
+                }
+
+                //added an extra menu to the flow controls
+                if (component.type == CommandRegistry.FLOW_CONTROL && i == 0 && version < 4)
+                {
+                    menuId++;
+                }
+
+                //added two extra menus to the camouflage updater
+                if (component.type == CommandRegistry.CAMOUFLAGE && i == 1 && version < 10)
+                {
+                    menuId += 2;
+                }
+
+                //added crafting priority to the crafter
+                if (component.type == CommandRegistry.AUTO_CRAFTING && i == 1 && version < 11)
+                {
+                    menuId++;
+                }
+
+                component.menus.get(menuId).readFromNBT(menuTag, version, pickup);
+                menuId++;
+            }
+
+            return component;
+        } finally
+        {
+            if (component != null)
+            {
+                component.isLoading = false;
+            }
+        }
+    }
 
     public int getCurrentInterval()
     {
@@ -181,41 +327,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public void setY(int y)
     {
         this.y = y;
-    }
-
-    public ConnectionSet getConnectionSet()
-    {
-        return connectionSet;
-    }
-
-    public boolean isLoading;
-
-    public void setConnectionSet(ConnectionSet connectionSet)
-    {
-        if (this.connections != null && this.connectionSet != null && !isLoading)
-        {
-            int oldLength = this.connectionSet.getConnections().length;
-            int newLength = connectionSet.getConnections().length;
-
-            for (int i = 0; i < Math.min(oldLength, newLength); i++)
-            {
-                Connection connection = connections.get(i);
-                if (connection != null && this.connectionSet.getConnections()[i].isInput() != connectionSet.getConnections()[i].isInput())
-                {
-                    removeConnection(i);
-                }
-            }
-
-            for (int i = newLength; i < oldLength; i++)
-            {
-                Connection connection = connections.get(i);
-                if (connection != null)
-                {
-                    removeConnection(i);
-                }
-            }
-        }
-        this.connectionSet = connectionSet;
     }
 
     public void update(float partial)
@@ -455,68 +566,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         GL11.glPopMatrix();
     }
 
-    public String cachedName;
-    public String cachedShortName;
-
-    public String getShortName(GuiManager gui, String name)
-    {
-        if (!name.equals(cachedName))
-        {
-            cachedShortName = "";
-            for (char c : StatCollector.translateToLocal(name).toCharArray())
-            {
-                if (gui.getStringWidth(cachedShortName + c) > TEXT_SPACE_SHORT)
-                {
-                    break;
-                }
-                cachedShortName += c;
-            }
-        }
-        cachedName = name;
-        return cachedShortName;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public String getName()
-    {
-        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? getType().getName() : name : textBox.getText();
-    }
-
-    List<String> errors = new ArrayList<String>();
-
-    public int[] getConnectionLocationFromId(int id)
-    {
-        int outputCount = 0;
-        int inputCount = 0;
-        int sideCount = 0;
-        for (int i = 0; i < connectionSet.getConnections().length; i++)
-        {
-            ConnectionOption connection = connectionSet.getConnections()[i];
-
-            int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
-            if (location == null)
-            {
-                continue;
-            }
-            if (id == i)
-            {
-                return location;
-            }
-            if (connection.isInput())
-            {
-                inputCount++;
-            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
-            }
-        }
-        return null;
-    }
-
-
     @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
@@ -579,6 +628,207 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                 }
                 gui.drawMouseOver(str, mX, mY);
             }
+        }
+    }
+
+    public int[] getConnectionLocation(ConnectionOption connection, int inputCount, int outputCount, int sideCount)
+    {
+        int id = inputCount + outputCount + sideCount;
+        if (!connection.isInput())
+        {
+            id -= Math.min(connectionSet.getInputCount(), childrenInputNodes.size());
+        }
+
+        if (!connection.isValid(this, id))
+        {
+            return null;
+        }
+
+        int targetX;
+        int targetY;
+
+        if (connection.getType() == ConnectionOption.ConnectionType.SIDE)
+        {
+            targetY = y + (int)(getComponentHeight() * ((sideCount + 0.5) / connectionSet.getSideCount()));
+            targetY -= CONNECTION_SIZE_H / 2;
+            targetX = x + getComponentWidth();
+            return new int[]{targetX, targetY, CONNECTION_SRC_Y_SIDE, CONNECTION_SIZE_H, CONNECTION_SIZE_W};
+        } else
+        {
+            int srcConnectionY;
+            int currentCount;
+            int totalCount;
+
+            if (connection.isInput())
+            {
+                currentCount = inputCount;
+
+                totalCount = connectionSet.getInputCount();
+                if (getConnectionSet() == ConnectionSet.DYNAMIC)
+                {
+                    totalCount = Math.min(totalCount, childrenInputNodes.size());
+                }
+
+                srcConnectionY = 1;
+                targetY = y - CONNECTION_SIZE_H;
+            } else
+            {
+                currentCount = outputCount;
+
+                totalCount = connectionSet.getOutputCount();
+                if (getConnectionSet() == ConnectionSet.DYNAMIC)
+                {
+                    totalCount = Math.min(totalCount, childrenOutputNodes.size());
+                }
+                srcConnectionY = 0;
+                targetY = y + getComponentHeight();
+            }
+
+            targetX = x + (int)(getComponentWidth() * ((currentCount + 0.5) / totalCount));
+            targetX -= CONNECTION_SIZE_W / 2;
+
+            return new int[]{targetX, targetY, CONNECTION_SRC_Y + srcConnectionY * CONNECTION_SIZE_H, CONNECTION_SIZE_W, CONNECTION_SIZE_H};
+        }
+    }
+
+    public ConnectionSet getConnectionSet()
+    {
+        return connectionSet;
+    }
+
+    public void setConnectionSet(ConnectionSet connectionSet)
+    {
+        if (this.connections != null && this.connectionSet != null && !isLoading)
+        {
+            int oldLength = this.connectionSet.getConnections().length;
+            int newLength = connectionSet.getConnections().length;
+
+            for (int i = 0; i < Math.min(oldLength, newLength); i++)
+            {
+                Connection connection = connections.get(i);
+                if (connection != null && this.connectionSet.getConnections()[i].isInput() != connectionSet.getConnections()[i].isInput())
+                {
+                    removeConnection(i);
+                }
+            }
+
+            for (int i = newLength; i < oldLength; i++)
+            {
+                Connection connection = connections.get(i);
+                if (connection != null)
+                {
+                    removeConnection(i);
+                }
+            }
+        }
+        this.connectionSet = connectionSet;
+    }
+
+    public void removeConnection(int id)
+    {
+        Connection connection = connections.get(id);
+
+        addConnection(id, null);
+        if (connection.getComponentId() >= 0)
+        {
+            manager.getFlowItem(connection.getComponentId()).addConnection(connection.getConnectionId(), null);
+        }
+    }
+
+    public void addConnection(int id, Connection connection)
+    {
+        if (getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
+        {
+            DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
+            if (connection != null)
+            {
+                writeConnectionData(dw, id, true, connection.getComponentId(), connection.getConnectionId());
+            } else
+            {
+                writeConnectionData(dw, id, false, 0, 0);
+            }
+            PacketHandler.sendDataToServer(dw);
+        }
+        connections.put(id, connection);
+    }
+
+    public TileEntityManager getManager()
+    {
+        return manager;
+    }
+
+    public void writeConnectionData(DataWriter dw, int i, boolean target, int targetComponent, int targetConnection)
+    {
+        dw.writeBoolean(false);
+        dw.writeData(i, DataBitHelper.CONNECTION_ID);
+        dw.writeBoolean(true); //connection
+        dw.writeBoolean(target);
+        if (target)
+        {
+            dw.writeComponentId(getManager(), targetComponent);
+            dw.writeData(targetConnection, DataBitHelper.CONNECTION_ID);
+        }
+    }
+
+    public int getComponentWidth()
+    {
+        return isLarge ? COMPONENT_SIZE_LARGE_W : COMPONENT_SIZE_W;
+    }
+
+    public int getComponentHeight()
+    {
+        return isLarge ? COMPONENT_SIZE_LARGE_H : COMPONENT_SIZE_H;
+    }
+
+    public int getMenuAreaX()
+    {
+        return x + MENU_X;
+    }
+
+    public int getMenuAreaY(int i)
+    {
+        return y + getMenuItemY(i) + MENU_ITEM_SIZE_H;
+    }
+
+    public int getMenuItemY(int id)
+    {
+
+
+        int ret = MENU_Y;
+        for (int i = 0; i < id; i++)
+        {
+            if (menus.get(i).isVisible())
+            {
+                ret += MENU_ITEM_SIZE_H - 1;
+                if (openMenuId == i)
+                {
+                    ret += getMenuOpenSize() - 1;
+                }
+            }
+        }
+
+
+        return ret;
+    }
+
+    public static int getMenuOpenSize()
+    {
+        return MENU_SIZE_H - MENU_ITEM_CAPACITY * (MENU_ITEM_SIZE_H - 1);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        if (isLarge && isEditing)
+        {
+            textBox.onKeyStroke(gui, c, k);
+            return true;
+        } else if (isLarge && openMenuId != -1)
+        {
+            return menus.get(openMenuId).onKeyStroke(gui, c, k);
+        } else
+        {
+            return false;
         }
     }
 
@@ -787,6 +1037,40 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
     }
 
+    public boolean isVisible()
+    {
+        return isVisible(getManager().getSelectedGroup());
+    }
+
+    public boolean isVisible(FlowComponent selectedComponent)
+    {
+        return (selectedComponent == null && parent == null) || (parent != null && parent.equals(selectedComponent));
+    }
+
+    public String getShortName(GuiManager gui, String name)
+    {
+        if (!name.equals(cachedName))
+        {
+            cachedShortName = "";
+            for (char c : StatCollector.translateToLocal(name).toCharArray())
+            {
+                if (gui.getStringWidth(cachedShortName + c) > TEXT_SPACE_SHORT)
+                {
+                    break;
+                }
+                cachedShortName += c;
+            }
+        }
+        cachedName = name;
+        return cachedShortName;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getName()
+    {
+        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? getType().getName() : name : textBox.getText();
+    }
+
     public boolean checkForLoops(int connectionId, Connection connection)
     {
         return checkForLoops(new ArrayList<Integer>(), this, connectionId, connection);
@@ -842,23 +1126,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         return false;
     }
 
-    public void addConnection(int id, Connection connection)
-    {
-        if (getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
-        {
-            DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-            if (connection != null)
-            {
-                writeConnectionData(dw, id, true, connection.getComponentId(), connection.getConnectionId());
-            } else
-            {
-                writeConnectionData(dw, id, false, 0, 0);
-            }
-            PacketHandler.sendDataToServer(dw);
-        }
-        connections.put(id, connection);
-    }
-
     public void removeAllConnections()
     {
         for (int i = 0; i < connectionSet.getConnections().length; i++)
@@ -868,17 +1135,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 removeConnection(i);
             }
-        }
-    }
-
-    public void removeConnection(int id)
-    {
-        Connection connection = connections.get(id);
-
-        addConnection(id, null);
-        if (connection.getComponentId() >= 0)
-        {
-            manager.getFlowItem(connection.getComponentId()).addConnection(connection.getConnectionId(), null);
         }
     }
 
@@ -902,6 +1158,34 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                 connection.update(mX, mY);
             }
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void followMouse(int mX, int mY)
+    {
+        if (isDragging)
+        {
+            x += mX - mouseDragX;
+            y += mY - mouseDragY;
+
+
+            if (GuiScreen.isShiftKeyDown())
+            {
+                adjustToGrid();
+                mouseDragX = x;
+                mouseDragY = y;
+            } else
+            {
+                mouseDragX = mX;
+                mouseDragY = mY;
+            }
+        }
+    }
+
+    public void adjustToGrid()
+    {
+        x = (x / 10) * 10;
+        y = (y / 10) * 10;
     }
 
     public void onRelease(int mX, int mY, int button)
@@ -941,39 +1225,53 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
     }
 
+    public void writeLocationData()
+    {
+        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
+        writeLocationData(dw);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeLocationData(DataWriter dw)
+    {
+        dw.writeBoolean(true); //component specific
+        dw.writeBoolean(true); //location
+        dw.writeBoolean(true); //position
+        dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
+        dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
+    }
+
+    public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    {
+        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
+        writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
+        PacketHandler.sendDataToServer(dw);
+    }
+
+    public void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    {
+        dw.writeBoolean(false);
+        dw.writeData(connectionId, DataBitHelper.CONNECTION_ID);
+        dw.writeBoolean(false); //nodes
+        dw.writeData(nodeId, DataBitHelper.NODE_ID);
+        if (length != -1)
+        {
+            dw.writeData(length, DataBitHelper.NODE_ID);
+        }
+        dw.writeBoolean(deleted);
+        if (!deleted)
+        {
+            dw.writeBoolean(created);
+            dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
+            dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
+        }
+
+    }
+
     public void postRelease()
     {
         isDragging = false;
     }
-
-    @SideOnly(Side.CLIENT)
-    public void followMouse(int mX, int mY)
-    {
-        if (isDragging)
-        {
-            x += mX - mouseDragX;
-            y += mY - mouseDragY;
-
-
-            if (GuiScreen.isShiftKeyDown())
-            {
-                adjustToGrid();
-                mouseDragX = x;
-                mouseDragY = y;
-            } else
-            {
-                mouseDragX = mX;
-                mouseDragY = mY;
-            }
-        }
-    }
-
-    public void adjustToGrid()
-    {
-        x = (x / 10) * 10;
-        y = (y / 10) * 10;
-    }
-
 
     public void adjustEverythingToGridRaw()
     {
@@ -1087,141 +1385,46 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
     }
 
+    public int[] getConnectionLocationFromId(int id)
+    {
+        int outputCount = 0;
+        int inputCount = 0;
+        int sideCount = 0;
+        for (int i = 0; i < connectionSet.getConnections().length; i++)
+        {
+            ConnectionOption connection = connectionSet.getConnections()[i];
+
+            int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
+            if (location == null)
+            {
+                continue;
+            }
+            if (id == i)
+            {
+                return location;
+            }
+            if (connection.isInput())
+            {
+                inputCount++;
+            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
+            {
+                outputCount++;
+            } else
+            {
+                sideCount++;
+            }
+        }
+        return null;
+    }
 
     public boolean inArrowBounds(int internalX, int internalY)
     {
         return CollisionHelper.inBounds(getComponentWidth() + ARROW_X, ARROW_Y, ARROW_SIZE_W, ARROW_SIZE_H, internalX, internalY);
     }
 
-
     public boolean inMenuArrowBounds(int i, int internalX, int internalY)
     {
         return CollisionHelper.inBounds(MENU_X + MENU_ARROW_X, getMenuItemY(i) + MENU_ARROW_Y, MENU_ARROW_SIZE_W, MENU_ARROW_SIZE_H, internalX, internalY);
-    }
-
-    public int getMenuItemY(int id)
-    {
-
-
-        int ret = MENU_Y;
-        for (int i = 0; i < id; i++)
-        {
-            if (menus.get(i).isVisible())
-            {
-                ret += MENU_ITEM_SIZE_H - 1;
-                if (openMenuId == i)
-                {
-                    ret += getMenuOpenSize() - 1;
-                }
-            }
-        }
-
-
-        return ret;
-    }
-
-
-    public static int getMenuOpenSize()
-    {
-        return MENU_SIZE_H - MENU_ITEM_CAPACITY * (MENU_ITEM_SIZE_H - 1);
-    }
-
-
-    public int getComponentWidth()
-    {
-        return isLarge ? COMPONENT_SIZE_LARGE_W : COMPONENT_SIZE_W;
-    }
-
-    public int getComponentHeight()
-    {
-        return isLarge ? COMPONENT_SIZE_LARGE_H : COMPONENT_SIZE_H;
-    }
-
-    public int[] getConnectionLocation(ConnectionOption connection, int inputCount, int outputCount, int sideCount)
-    {
-        int id = inputCount + outputCount + sideCount;
-        if (!connection.isInput())
-        {
-            id -= Math.min(connectionSet.getInputCount(), childrenInputNodes.size());
-        }
-
-        if (!connection.isValid(this, id))
-        {
-            return null;
-        }
-
-        int targetX;
-        int targetY;
-
-        if (connection.getType() == ConnectionOption.ConnectionType.SIDE)
-        {
-            targetY = y + (int)(getComponentHeight() * ((sideCount + 0.5) / connectionSet.getSideCount()));
-            targetY -= CONNECTION_SIZE_H / 2;
-            targetX = x + getComponentWidth();
-            return new int[]{targetX, targetY, CONNECTION_SRC_Y_SIDE, CONNECTION_SIZE_H, CONNECTION_SIZE_W};
-        } else
-        {
-            int srcConnectionY;
-            int currentCount;
-            int totalCount;
-
-            if (connection.isInput())
-            {
-                currentCount = inputCount;
-
-                totalCount = connectionSet.getInputCount();
-                if (getConnectionSet() == ConnectionSet.DYNAMIC)
-                {
-                    totalCount = Math.min(totalCount, childrenInputNodes.size());
-                }
-
-                srcConnectionY = 1;
-                targetY = y - CONNECTION_SIZE_H;
-            } else
-            {
-                currentCount = outputCount;
-
-                totalCount = connectionSet.getOutputCount();
-                if (getConnectionSet() == ConnectionSet.DYNAMIC)
-                {
-                    totalCount = Math.min(totalCount, childrenOutputNodes.size());
-                }
-                srcConnectionY = 0;
-                targetY = y + getComponentHeight();
-            }
-
-            targetX = x + (int)(getComponentWidth() * ((currentCount + 0.5) / totalCount));
-            targetX -= CONNECTION_SIZE_W / 2;
-
-            return new int[]{targetX, targetY, CONNECTION_SRC_Y + srcConnectionY * CONNECTION_SIZE_H, CONNECTION_SIZE_W, CONNECTION_SIZE_H};
-        }
-    }
-
-
-    public int getMenuAreaX()
-    {
-        return x + MENU_X;
-    }
-
-    public int getMenuAreaY(int i)
-    {
-        return y + getMenuItemY(i) + MENU_ITEM_SIZE_H;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        if (isLarge && isEditing)
-        {
-            textBox.onKeyStroke(gui, c, k);
-            return true;
-        } else if (isLarge && openMenuId != -1)
-        {
-            return menus.get(openMenuId).onKeyStroke(gui, c, k);
-        } else
-        {
-            return false;
-        }
     }
 
     public ICommand getType()
@@ -1232,12 +1435,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public List<Menu> getMenus()
     {
         return menus;
-    }
-
-
-    public TileEntityManager getManager()
-    {
-        return manager;
     }
 
     @Override
@@ -1330,39 +1527,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
     }
 
-
-    public void writeLocationData()
-    {
-        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-        writeLocationData(dw);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeLocationData(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(true); //location
-        dw.writeBoolean(true); //position
-        dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
-        dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
-    }
-
-
-    public void writeParentData(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(true); //location
-        dw.writeBoolean(false); //parent
-        if (parent != null)
-        {
-            dw.writeBoolean(true);
-            dw.writeComponentId(getManager(), parent.getId());
-        } else
-        {
-            dw.writeBoolean(false);
-        }
-    }
-
     public FlowComponent copy()
     {
         FlowComponent copy = new FlowComponent(manager, x, y, id, type);
@@ -1386,53 +1550,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
 
         return copy;
-    }
-
-    public void writeConnectionData(DataWriter dw, int i, boolean target, int targetComponent, int targetConnection)
-    {
-        dw.writeBoolean(false);
-        dw.writeData(i, DataBitHelper.CONNECTION_ID);
-        dw.writeBoolean(true); //connection
-        dw.writeBoolean(target);
-        if (target)
-        {
-            dw.writeComponentId(getManager(), targetComponent);
-            dw.writeData(targetConnection, DataBitHelper.CONNECTION_ID);
-        }
-    }
-
-    public void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
-    {
-        dw.writeBoolean(false);
-        dw.writeData(connectionId, DataBitHelper.CONNECTION_ID);
-        dw.writeBoolean(false); //nodes
-        dw.writeData(nodeId, DataBitHelper.NODE_ID);
-        if (length != -1)
-        {
-            dw.writeData(length, DataBitHelper.NODE_ID);
-        }
-        dw.writeBoolean(deleted);
-        if (!deleted)
-        {
-            dw.writeBoolean(created);
-            dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
-            dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
-        }
-
-    }
-
-    public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
-    {
-        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-        writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void sendClientConnectionNode(ContainerManager container, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
-    {
-        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-        writeConnectionNode(dw, length, connectionId, nodeId, deleted, created, x, y);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     public void refreshData(ContainerManager container, FlowComponent newData)
@@ -1555,11 +1672,51 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
     }
 
+    public void writeParentData(DataWriter dw)
+    {
+        dw.writeBoolean(true); //component specific
+        dw.writeBoolean(true); //location
+        dw.writeBoolean(false); //parent
+        if (parent != null)
+        {
+            dw.writeBoolean(true);
+            dw.writeComponentId(getManager(), parent.getId());
+        } else
+        {
+            dw.writeBoolean(false);
+        }
+    }
+
+    public void sendClientConnectionNode(ContainerManager container, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    {
+        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
+        writeConnectionNode(dw, length, connectionId, nodeId, deleted, created, x, y);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
+
     public int getId()
     {
         return id;
     }
 
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public void sendNameToClient(ContainerManager container)
+    {
+        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
+        writeName(dw);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
+
+    public void writeName(DataWriter dw)
+    {
+        dw.writeBoolean(true); //component specific
+        dw.writeBoolean(false); //name
+        dw.writeString(name, DataBitHelper.NAME_LENGTH);
+    }
 
     public Connection getConnection(int i)
     {
@@ -1596,163 +1753,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         writeName(dw);
         PacketHandler.sendDataToServer(dw);
     }
-
-    public void sendNameToClient(ContainerManager container)
-    {
-        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-        writeName(dw);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void writeName(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(false); //name
-        dw.writeString(name, DataBitHelper.NAME_LENGTH);
-    }
-
-    public static final String NBT_POS_X = "PosX";
-    public static final String NBT_POS_Y = "PosY";
-    public static final String NBT_TYPE = "Type";
-    public static final String NBT_CONNECTION = "Connection";
-    public static final String NBT_CONNECTION_POS = "ConnectionPos";
-    public static final String NBT_CONNECTION_TARGET_COMPONENT = "ConnectionComponent";
-    public static final String NBT_CONNECTION_TARGET_CONNECTION = "ConnectionConnection";
-    public static final String NBT_INTERVAL = "Interval";
-    public static final String NBT_MENUS = "Menus";
-    public static final String NBT_NODES = "Nodes";
-    public static final String NBT_NAME = "Name";
-    public static final String NBT_PARENT = "Parent";
-
-    public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, int version, boolean pickup)
-    {
-        FlowComponent component = null;
-        try
-        {
-            int x = nbtTagCompound.getShort(NBT_POS_X);
-            int y = nbtTagCompound.getShort(NBT_POS_Y);
-            int typeId = nbtTagCompound.getByte(NBT_TYPE);
-            int id = nbtTagCompound.getByte(NBT_ID);
-            component = new FlowComponent(jam, x, y, id, CommandRegistry.getCommand(typeId));
-            component.isLoading = true;
-
-            if (nbtTagCompound.hasKey(NBT_NAME))
-            {
-                component.name = nbtTagCompound.getString(NBT_NAME);
-            } else
-            {
-                component.name = null;
-            }
-
-            if (nbtTagCompound.hasKey(NBT_PARENT))
-            {
-                component.parentLoadId = nbtTagCompound.getShort(NBT_PARENT);
-            }
-
-            NBTTagList connections = nbtTagCompound.getTagList(NBT_CONNECTION, 10);
-            for (int i = 0; i < connections.tagCount(); i++)
-            {
-                NBTTagCompound connectionTag = connections.getCompoundTagAt(i);
-
-                int componentId;
-                if (version < 9)
-                {
-                    componentId = connectionTag.getByte(NBT_CONNECTION_TARGET_COMPONENT);
-                } else
-                {
-                    componentId = connectionTag.getShort(NBT_CONNECTION_TARGET_COMPONENT);
-                }
-                Connection connection = new Connection(componentId, connectionTag.getByte(NBT_CONNECTION_TARGET_CONNECTION));
-
-                if (connectionTag.hasKey(NBT_NODES))
-                {
-                    connection.getNodes().clear();
-                    NBTTagList nodes = connectionTag.getTagList(NBT_NODES, 10);
-                    for (int j = 0; j < nodes.tagCount(); j++)
-                    {
-                        NBTTagCompound nodeTag = nodes.getCompoundTagAt(j);
-
-                        connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
-                    }
-                }
-
-                component.connections.put((int)connectionTag.getByte(NBT_CONNECTION_POS), connection);
-            }
-
-            if (component.type == CommandRegistry.TRIGGER)
-            {
-                component.currentInterval = nbtTagCompound.getShort(NBT_INTERVAL);
-            }
-
-            NBTTagList menuTagList = nbtTagCompound.getTagList(NBT_MENUS, 10);
-            int menuId = 0;
-            for (int i = 0; i < menuTagList.tagCount(); i++)
-            {
-                NBTTagCompound menuTag = menuTagList.getCompoundTagAt(i);
-
-
-                //added an extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 1)
-                {
-                    menuId++;
-                }
-
-                //added a second extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 2 && version < 5)
-                {
-                    menuId++;
-                }
-
-                //added a third extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 0 && version < 6)
-                {
-                    menuId++;
-                }
-
-
-                //added the bud menus to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 8)
-                {
-                    menuId++;
-                }
-                if (component.type == CommandRegistry.TRIGGER && i == 4 && version < 8)
-                {
-                    menuId++;
-                }
-
-                //added an extra menu to the flow controls
-                if (component.type == CommandRegistry.FLOW_CONTROL && i == 0 && version < 4)
-                {
-                    menuId++;
-                }
-
-                //added two extra menus to the camouflage updater
-                if (component.type == CommandRegistry.CAMOUFLAGE && i == 1 && version < 10)
-                {
-                    menuId += 2;
-                }
-
-                //added crafting priority to the crafter
-                if (component.type == CommandRegistry.AUTO_CRAFTING && i == 1 && version < 11)
-                {
-                    menuId++;
-                }
-
-                component.menus.get(menuId).readFromNBT(menuTag, version, pickup);
-                menuId++;
-            }
-
-            return component;
-        } finally
-        {
-            if (component != null)
-            {
-                component.isLoading = false;
-            }
-        }
-    }
-
-    public int parentLoadId = -1;
 
     public void linkParentAfterLoad()
     {
@@ -1836,6 +1836,12 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         return isLarge;
     }
 
+    public void setOpen(boolean b)
+    {
+        isLarge = b;
+        openMenuId = -1;
+    }
+
     public void close()
     {
         isLarge = false;
@@ -1894,6 +1900,12 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     }
 
     @Override
+    public int hashCode()
+    {
+        return id;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -1904,22 +1916,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         if (id != component.id) return false;
 
         return true;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return id;
-    }
-
-    public boolean isVisible()
-    {
-        return isVisible(getManager().getSelectedGroup());
-    }
-
-    public boolean isVisible(FlowComponent selectedComponent)
-    {
-        return (selectedComponent == null && parent == null) || (parent != null && parent.equals(selectedComponent));
     }
 
     public List<FlowComponent> getChildrenOutputNodes()
@@ -1938,7 +1934,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         return ((Integer)id).compareTo((Integer)o.id);
     }
 
-
     public void resetPosition()
     {
         resetTimer = 20;
@@ -1948,7 +1943,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     {
         parentLoadId = i;
     }
-
 
     public boolean isInventoryListDirty()
     {
@@ -1979,12 +1973,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
     }
 
-    public void setOpen(boolean b)
-    {
-        isLarge = b;
-        openMenuId = -1;
-    }
-
     public void setNameEdited(boolean b)
     {
         isEditing = b;
@@ -2006,9 +1994,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     {
         return isEditing;
     }
-
-    public int overrideX = -1;
-    public int overrideY = -1;
 
     public int getOverrideY()
     {
@@ -2043,10 +2028,5 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public void setOpenMenuId(int openMenuId)
     {
         this.openMenuId = openMenuId;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
     }
 }

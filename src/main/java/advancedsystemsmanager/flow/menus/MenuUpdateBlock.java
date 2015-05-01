@@ -24,6 +24,34 @@ import net.minecraft.nbt.NBTTagList;
 
 public class MenuUpdateBlock extends MenuItem
 {
+    public static final int ID_START_X = 1;
+    public static final int ID_START_Y = 1;
+    public static final int ID_TEXT_BOX = 42;
+    public static final int META_START_X = 1;
+    public static final int META_START_Y = 21;
+    public static final int META_SPACING = 17;
+    public static final int META_SETTINGS = 3;
+    public static final int META_BITS = 4;
+    public static final int META_TEXT_BOX_OFFSET_1 = 37;
+    public static final int META_TEXT_BOX_OFFSET_2 = 58;
+    public static final int META_INVERTED_OFFSET = 83;
+    public static final int META_TEXT_X = 3;
+    public static final int META_TEXT_Y = 17;
+    public static final int CHECKBOX_OFFSET = 2;
+    public static final String NBT_USE_ID = "UseId";
+    public static final String NBT_ID = "BlockId";
+    public static final String NBT_INVERTED = "Inverted";
+    public static final String NBT_SETTINGS = "Meta";
+    public static final String NBT_BITS = "Bits";
+    public static final String NBT_LOW = "Low";
+    public static final String NBT_HIGH = "High";
+    public TextBoxNumberList textBoxes;
+    public CheckBoxList checkBoxes;
+    public boolean useId;
+    public boolean idInverted;
+    public MetaSetting[] settings;
+
+
     public MenuUpdateBlock(FlowComponent parent)
     {
         super(parent);
@@ -144,6 +172,10 @@ public class MenuUpdateBlock extends MenuItem
             textBoxes.addTextBox(settings[setting].lowerTextBox = new TextBoxNumber(META_START_X + META_TEXT_BOX_OFFSET_1, META_START_Y + setting * META_SPACING, 2, false)
             {
                 @Override
+                public boolean isVisible()
+                {
+                    return settings[setting].inUse();
+                }                @Override
                 public int getMaxNumber()
                 {
                     return settings[setting].getMaxNumber();
@@ -155,11 +187,7 @@ public class MenuUpdateBlock extends MenuItem
                     sendServerData(setting + 1, 4);
                 }
 
-                @Override
-                public boolean isVisible()
-                {
-                    return settings[setting].inUse();
-                }
+
             });
 
             textBoxes.addTextBox(settings[setting].higherTextBox = new TextBoxNumber(META_START_X + META_TEXT_BOX_OFFSET_2, META_START_Y + setting * META_SPACING, 2, false)
@@ -216,64 +244,48 @@ public class MenuUpdateBlock extends MenuItem
 
     }
 
-    @Override
-    public int getSettingCount()
+    public void sendServerData(int id, int subId)
     {
-        return 1;
+        DataWriter dw = getWriterForServerComponentPacket();
+        writeData(dw, id, subId);
+        PacketHandler.sendDataToServer(dw);
     }
 
-    public class MetaSetting
+    public void writeData(DataWriter dw, int id, int subId)
     {
-        public boolean[] bits = new boolean[META_BITS];
-        public TextBoxNumber lowerTextBox;
-        public TextBoxNumber higherTextBox;
-        public boolean inverted;
+        dw.writeBoolean(false); //no setting specific
+        dw.writeBoolean(true); //other data
+        dw.writeData(id, DataBitHelper.BUD_SYNC_TYPE);
+        dw.writeData(subId, id == 0 ? DataBitHelper.BUD_SYNC_SUB_TYPE_SHORT : DataBitHelper.BUD_SYNC_SUB_TYPE_LONG);
 
-        public boolean inUse()
+        if (id == 0)
         {
-            return selectedBits() > 0;
-        }
-
-        public int selectedBits()
-        {
-            int count = 0;
-            for (boolean bit : bits)
+            if (subId == 0)
             {
-                if (bit)
-                {
-                    count++;
-                }
+                dw.writeBoolean(useId);
+            } else if (subId == 2)
+            {
+                dw.writeBoolean(idInverted);
             }
-
-            return count;
-        }
-
-        public int getMaxNumber()
+        } else
         {
-            return (int)Math.pow(2, selectedBits()) - 1;
+            id--;
+            MetaSetting setting = settings[id];
+            if (subId < 4)
+            {
+                dw.writeBoolean(setting.bits[subId]);
+            } else if (subId == 4)
+            {
+                dw.writeData(setting.lowerTextBox.getNumber(), DataBitHelper.BLOCK_META);
+            } else if (subId == 5)
+            {
+                dw.writeData(setting.higherTextBox.getNumber(), DataBitHelper.BLOCK_META);
+            } else if (subId == 6)
+            {
+                dw.writeBoolean(setting.inverted);
+            }
         }
     }
-
-    public TextBoxNumberList textBoxes;
-    public CheckBoxList checkBoxes;
-
-
-    public static final int ID_START_X = 1;
-    public static final int ID_START_Y = 1;
-    public static final int ID_TEXT_BOX = 42;
-
-    public static final int META_START_X = 1;
-    public static final int META_START_Y = 21;
-    public static final int META_SPACING = 17;
-    public static final int META_SETTINGS = 3;
-    public static final int META_BITS = 4;
-    public static final int META_TEXT_BOX_OFFSET_1 = 37;
-    public static final int META_TEXT_BOX_OFFSET_2 = 58;
-    public static final int META_INVERTED_OFFSET = 83;
-    public static final int META_TEXT_X = 3;
-    public static final int META_TEXT_Y = 17;
-
-    public static final int CHECKBOX_OFFSET = 2;
 
     public boolean useId()
     {
@@ -296,15 +308,114 @@ public class MenuUpdateBlock extends MenuItem
         return settings;
     }
 
-    public boolean useId;
-    public boolean idInverted;
-    public MetaSetting[] settings;
-
-
     @Override
     public String getName()
     {
         return Names.UPDATE_BLOCK_MENU;
+    }
+
+    @Override
+    public void onClick(int mX, int mY, int button)
+    {
+        if (!isEditing() && !isSearching())
+        {
+            textBoxes.onClick(mX, mY, button);
+            checkBoxes.onClick(mX, mY);
+            if (useId)
+            {
+                super.onClick(mX, mY, button);
+            }
+        } else
+        {
+            super.onClick(mX, mY, button);
+        }
+    }
+
+    @Override
+    public void refreshData(ContainerManager container, Menu newData)
+    {
+        super.refreshData(container, newData);
+
+        MenuUpdateBlock newDataUpdate = (MenuUpdateBlock)newData;
+
+        if (useId != newDataUpdate.useId)
+        {
+            useId = newDataUpdate.useId;
+            sendClientData(container, 0, 0);
+        }
+
+        if (idInverted != newDataUpdate.idInverted)
+        {
+            idInverted = newDataUpdate.idInverted;
+            sendClientData(container, 0, 2);
+        }
+
+        for (int i = 0; i < settings.length; i++)
+        {
+            int id = i + 1;
+
+            MetaSetting setting = settings[i];
+            MetaSetting newSetting = newDataUpdate.settings[i];
+
+            for (int j = 0; j < setting.bits.length; j++)
+            {
+                if (setting.bits[j] != newSetting.bits[j])
+                {
+                    setting.bits[j] = newSetting.bits[j];
+                    sendClientData(container, id, j);
+                }
+            }
+
+            if (setting.lowerTextBox.getNumber() != newSetting.lowerTextBox.getNumber())
+            {
+                setting.lowerTextBox.setNumber(newSetting.lowerTextBox.getNumber());
+                sendClientData(container, id, 4);
+            }
+
+            if (setting.higherTextBox.getNumber() != newSetting.higherTextBox.getNumber())
+            {
+                setting.higherTextBox.setNumber(newSetting.higherTextBox.getNumber());
+                sendClientData(container, id, 5);
+            }
+
+            if (setting.inverted != newSetting.inverted)
+            {
+                setting.inverted = newSetting.inverted;
+                sendClientData(container, id, 6);
+            }
+        }
+    }
+
+    public void sendClientData(ContainerManager container, int id, int subId)
+    {
+        DataWriter dw = getWriterForClientComponentPacket(container);
+        writeData(dw, id, subId);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return getParent().getConnectionSet() == ConnectionSet.BUD;
+    }
+
+    @Override
+    public void initRadioButtons()
+    {
+        //no radio buttons
+    }
+
+    @Override
+    public int getSettingCount()
+    {
+        return 1;
+    }
+
+    @Override
+    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
+    {
+        dw.writeBoolean(false);
+        super.writeRadioButtonRefreshState(dw, value);
     }
 
     @SideOnly(Side.CLIENT)
@@ -337,20 +448,15 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void onClick(int mX, int mY, int button)
+    public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        if (!isEditing() && !isSearching())
-        {
-            textBoxes.onClick(mX, mY, button);
-            checkBoxes.onClick(mX, mY);
-            if (useId)
-            {
-                super.onClick(mX, mY, button);
-            }
-        } else
-        {
-            super.onClick(mX, mY, button);
-        }
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @SideOnly(Side.CLIENT)
@@ -364,18 +470,6 @@ public class MenuUpdateBlock extends MenuItem
         {
             return super.onKeyStroke(gui, c, k);
         }
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -441,70 +535,6 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        super.refreshData(container, newData);
-
-        MenuUpdateBlock newDataUpdate = (MenuUpdateBlock)newData;
-
-        if (useId != newDataUpdate.useId)
-        {
-            useId = newDataUpdate.useId;
-            sendClientData(container, 0, 0);
-        }
-
-        if (idInverted != newDataUpdate.idInverted)
-        {
-            idInverted = newDataUpdate.idInverted;
-            sendClientData(container, 0, 2);
-        }
-
-        for (int i = 0; i < settings.length; i++)
-        {
-            int id = i + 1;
-
-            MetaSetting setting = settings[i];
-            MetaSetting newSetting = newDataUpdate.settings[i];
-
-            for (int j = 0; j < setting.bits.length; j++)
-            {
-                if (setting.bits[j] != newSetting.bits[j])
-                {
-                    setting.bits[j] = newSetting.bits[j];
-                    sendClientData(container, id, j);
-                }
-            }
-
-            if (setting.lowerTextBox.getNumber() != newSetting.lowerTextBox.getNumber())
-            {
-                setting.lowerTextBox.setNumber(newSetting.lowerTextBox.getNumber());
-                sendClientData(container, id, 4);
-            }
-
-            if (setting.higherTextBox.getNumber() != newSetting.higherTextBox.getNumber())
-            {
-                setting.higherTextBox.setNumber(newSetting.higherTextBox.getNumber());
-                sendClientData(container, id, 5);
-            }
-
-            if (setting.inverted != newSetting.inverted)
-            {
-                setting.inverted = newSetting.inverted;
-                sendClientData(container, id, 6);
-            }
-        }
-    }
-
-    public static final String NBT_USE_ID = "UseId";
-    public static final String NBT_ID = "BlockId";
-    public static final String NBT_INVERTED = "Inverted";
-
-    public static final String NBT_SETTINGS = "Meta";
-    public static final String NBT_BITS = "Bits";
-    public static final String NBT_LOW = "Low";
-    public static final String NBT_HIGH = "High";
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
         if (version >= 11)
@@ -566,28 +596,6 @@ public class MenuUpdateBlock extends MenuItem
         nbtTagCompound.setTag(NBT_SETTINGS, list);
     }
 
-
-    public void sendClientData(ContainerManager container, int id, int subId)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id, subId);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void sendServerData(int id, int subId)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, id, subId);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    @Override
-    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
-    {
-        dw.writeBoolean(false);
-        super.writeRadioButtonRefreshState(dw, value);
-    }
-
     @Override
     public void readNonSettingData(DataReader dr)
     {
@@ -634,53 +642,35 @@ public class MenuUpdateBlock extends MenuItem
         }
     }
 
-    public void writeData(DataWriter dw, int id, int subId)
+    public class MetaSetting
     {
-        dw.writeBoolean(false); //no setting specific
-        dw.writeBoolean(true); //other data
-        dw.writeData(id, DataBitHelper.BUD_SYNC_TYPE);
-        dw.writeData(subId, id == 0 ? DataBitHelper.BUD_SYNC_SUB_TYPE_SHORT : DataBitHelper.BUD_SYNC_SUB_TYPE_LONG);
+        public boolean[] bits = new boolean[META_BITS];
+        public TextBoxNumber lowerTextBox;
+        public TextBoxNumber higherTextBox;
+        public boolean inverted;
 
-        if (id == 0)
+        public boolean inUse()
         {
-            if (subId == 0)
-            {
-                dw.writeBoolean(useId);
-            } else if (subId == 2)
-            {
-                dw.writeBoolean(idInverted);
-            }
-        } else
-        {
-            id--;
-            MetaSetting setting = settings[id];
-            if (subId < 4)
-            {
-                dw.writeBoolean(setting.bits[subId]);
-            } else if (subId == 4)
-            {
-                dw.writeData(setting.lowerTextBox.getNumber(), DataBitHelper.BLOCK_META);
-            } else if (subId == 5)
-            {
-                dw.writeData(setting.higherTextBox.getNumber(), DataBitHelper.BLOCK_META);
-            } else if (subId == 6)
-            {
-                dw.writeBoolean(setting.inverted);
-            }
+            return selectedBits() > 0;
         }
-    }
 
+        public int selectedBits()
+        {
+            int count = 0;
+            for (boolean bit : bits)
+            {
+                if (bit)
+                {
+                    count++;
+                }
+            }
 
-    @Override
-    public boolean isVisible()
-    {
-        return getParent().getConnectionSet() == ConnectionSet.BUD;
-    }
+            return count;
+        }
 
-
-    @Override
-    public void initRadioButtons()
-    {
-        //no radio buttons
+        public int getMaxNumber()
+        {
+            return (int)Math.pow(2, selectedBits()) - 1;
+        }
     }
 }

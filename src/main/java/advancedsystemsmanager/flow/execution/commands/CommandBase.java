@@ -45,19 +45,35 @@ public abstract class CommandBase<Type> implements ICommand
         this.type = type;
     }
 
-    @Override
+    public List<SystemBlock> getContainers(TileEntityManager manager, MenuContainer container)
+    {
+        List<SystemBlock> result = new ArrayList<SystemBlock>();
+        for (SystemBlock block : manager.getConnectedInventories())
+            if (container.selectedInventories.contains(block.getId())) result.add(block);
+        return result;
+    }    @Override
     public int getId()
     {
         return id;
     }
 
-    @Override
+    public List<Setting<Type>> getValidSettings(List<Setting<Type>> oldSettings)
+    {
+        List<Setting<Type>> result = new ArrayList<Setting<Type>>();
+        for (Setting<Type> setting : oldSettings) if (setting.isValid()) result.add(setting);
+        return result;
+    }    @Override
     public ConnectionSet[] getSets()
     {
         return connectionSets;
     }
 
-    @Override
+    public Setting<Type> isValid(List<Setting<Type>> settings, Type check)
+    {
+        for (Setting<Type> setting : settings)
+            if (setting.isContentEqual(check)) return setting;
+        return null;
+    }    @Override
     public String getName()
     {
         return name;
@@ -109,24 +125,9 @@ public abstract class CommandBase<Type> implements ICommand
         return connections;
     }
 
-    public List<SystemBlock> getContainers(TileEntityManager manager, MenuContainer container)
-    {
-        List<SystemBlock> result = new ArrayList<SystemBlock>();
-        for (SystemBlock block: manager.getConnectedInventories()) if (container.selectedInventories.contains(block.getId())) result.add(block);
-        return result;
-    }
 
-    public List<Setting<Type>> getValidSettings(List<Setting<Type>> oldSettings)
-    {
-        List<Setting<Type>> result = new ArrayList<Setting<Type>>();
-        for (Setting<Type> setting : oldSettings) if (setting.isValid()) result.add(setting);
-        return result;
-    }
 
-    public Setting<Type> isValid(List<Setting<Type>> settings, Type check)
-    {
-        for (Setting<Type> setting : settings)
-            if (setting.isContentEqual(check)) return setting;
-        return null;
-    }
+
+
+
 }

@@ -43,14 +43,6 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        //pretend the meta is 3
-        return getIconFromSideAndMeta(side, addAdvancedMeta(3, meta));
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
         int meta = world.getBlockMetadata(x, y, z);
@@ -59,10 +51,39 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta)
+    {
+        //pretend the meta is 3
+        return getIconFromSideAndMeta(side, addAdvancedMeta(3, meta));
+    }
+
+    @SideOnly(Side.CLIENT)
     private IIcon getIconFromSideAndMeta(int side, int meta)
     {
         return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
         //return side == (getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length) ? isAdvanced(meta) ? advancedActiveIcon : activeIcon : isAdvanced(meta) ? advancedInactiveIcon : inactiveIcon;
+    }
+
+    public boolean isAdvanced(int meta)
+    {
+        return (meta & 8) != 0;
+    }
+
+    public int getSideMeta(int meta)
+    {
+        return meta & 7;
+    }
+
+    private int addAdvancedMeta(int meta, int advancedMeta)
+    {
+        return meta | (advancedMeta & 8);
+    }
+
+    @Override
+    public int damageDropped(int meta)
+    {
+        return getAdvancedMeta(meta);
     }
 
     @Override
@@ -87,30 +108,9 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
         list.add(new ItemStack(item, 1, 8));
     }
 
-    public boolean isAdvanced(int meta)
-    {
-        return (meta & 8) != 0;
-    }
-
-    public int getSideMeta(int meta)
-    {
-        return meta & 7;
-    }
-
-    private int addAdvancedMeta(int meta, int advancedMeta)
-    {
-        return meta | (advancedMeta & 8);
-    }
-
     private int getAdvancedMeta(int meta)
     {
         return addAdvancedMeta(0, meta);
-    }
-
-    @Override
-    public int damageDropped(int meta)
-    {
-        return getAdvancedMeta(meta);
     }
 
 }

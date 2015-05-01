@@ -14,6 +14,8 @@ import java.util.List;
 
 public class LiquidSetting extends Setting<Fluid>
 {
+    public static final String NBT_FLUID_ID = "FluidId";
+    public static final String NBT_FLUID_AMOUNT = "Amount";
     public Fluid fluid;
     public int amount;
 
@@ -55,6 +57,12 @@ public class LiquidSetting extends Setting<Fluid>
     }
 
     @Override
+    public int getDefaultAmount()
+    {
+        return 1000;
+    }
+
+    @Override
     public int getAmount()
     {
         return amount;
@@ -71,7 +79,6 @@ public class LiquidSetting extends Setting<Fluid>
     {
         return fluid != null;
     }
-
 
     @Override
     public void writeData(DataWriter dw)
@@ -90,15 +97,6 @@ public class LiquidSetting extends Setting<Fluid>
     {
         fluid = ((LiquidSetting)setting).fluid;
     }
-
-    @Override
-    public int getDefaultAmount()
-    {
-        return 1000;
-    }
-
-    public static final String NBT_FLUID_ID = "FluidId";
-    public static final String NBT_FLUID_AMOUNT = "Amount";
 
     @Override
     public void load(NBTTagCompound settingTag)

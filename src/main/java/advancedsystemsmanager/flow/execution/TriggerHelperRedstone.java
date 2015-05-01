@@ -24,15 +24,6 @@ public class TriggerHelperRedstone extends TriggerHelper
     }
 
     @Override
-    public boolean isBlockPowered(FlowComponent component, int power)
-    {
-        MenuRedstoneStrength menuStrength = (MenuRedstoneStrength)component.getMenus().get(strengthId);
-        boolean inRange = menuStrength.getLow() <= power && power <= menuStrength.getHigh();
-
-        return inRange != menuStrength.isInverted();
-    }
-
-    @Override
     public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
     {
         if (isTriggerPowered(item, true))
@@ -43,6 +34,15 @@ public class TriggerHelperRedstone extends TriggerHelper
         {
             valid.add(ConnectionOption.REDSTONE_LOW);
         }
+    }
+
+    @Override
+    public boolean isBlockPowered(FlowComponent component, int power)
+    {
+        MenuRedstoneStrength menuStrength = (MenuRedstoneStrength)component.getMenus().get(strengthId);
+        boolean inRange = menuStrength.getLow() <= power && power <= menuStrength.getHigh();
+
+        return inRange != menuStrength.isInverted();
     }
 
     public void onRedstoneTrigger(FlowComponent item, TileEntityReceiver inputTrigger)

@@ -14,19 +14,6 @@ public class ThreadSafeHandler
 {
     private static List<SearchItems> handle = new ArrayList<SearchItems>();
 
-    @SubscribeEvent
-    public void renderEvent(RenderWorldLastEvent e)
-    {
-        if (handle.size() > 0)
-        {
-            for (SearchItems search : handle)
-            {
-                search.setResult();
-            }
-            handle.clear();
-        }
-    }
-
     public static void handle(SearchItems search)
     {
         SearchItems existing;
@@ -43,5 +30,18 @@ public class ThreadSafeHandler
             }
         }
         handle.add(search);
+    }
+
+    @SubscribeEvent
+    public void renderEvent(RenderWorldLastEvent e)
+    {
+        if (handle.size() > 0)
+        {
+            for (SearchItems search : handle)
+            {
+                search.setResult();
+            }
+            handle.clear();
+        }
     }
 }

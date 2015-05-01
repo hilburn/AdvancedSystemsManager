@@ -57,7 +57,7 @@ public class ItemDuplicator extends ItemBase
             {
                 if (stack.hasTagCompound())
                 {
-                    ((TileEntityManager)te).readContentFromNBT(stack.getTagCompound(),false);
+                    ((TileEntityManager)te).readContentFromNBT(stack.getTagCompound(), false);
                     stack.setTagCompound(null);
                 } else
                 {

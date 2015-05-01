@@ -24,11 +24,6 @@ public class MenuLiquidCondition extends MenuLiquid implements IConditionStuffMe
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.IF_ANY));
     }
 
-    public boolean requiresAll()
-    {
-        return isFirstRadioButtonSelected();
-    }
-
     @Override
     public void addErrors(List<String> errors)
     {
@@ -41,5 +36,10 @@ public class MenuLiquidCondition extends MenuLiquid implements IConditionStuffMe
         }
 
         errors.add(Names.NO_CONDITION_ERROR);
+    }
+
+    public boolean requiresAll()
+    {
+        return isFirstRadioButtonSelected();
     }
 }

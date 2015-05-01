@@ -21,17 +21,17 @@ public class MenuCamouflage extends MenuContainer
     }
 
     @Override
-    public void initRadioButtons()
-    {
-        //nothing here
-    }
-
-    @Override
     public void addErrors(List<String> errors)
     {
         if (selectedInventories.isEmpty())
         {
             errors.add(Names.NO_CAMOUFLAGE_BLOCKS_ERROR);
         }
+    }
+
+    @Override
+    public void initRadioButtons()
+    {
+        //nothing here
     }
 }

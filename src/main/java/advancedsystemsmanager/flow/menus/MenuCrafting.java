@@ -54,6 +54,37 @@ public class MenuCrafting extends MenuItem
         return Names.CRAFTING_MENU;
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void onClick(int mX, int mY, int button)
+    {
+        super.onClick(mX, mY, button);
+        if (!isEditing() && !isSearching() && resultItem.getItem() != null)
+        {
+            if (button == 1 && CollisionHelper.inBounds(getResultX(), getResultY(), ITEM_SIZE, ITEM_SIZE, mX, mY))
+            {
+                scrollControllerSelected.onClick(resultItem, mX, mY, 1);
+            }
+        }
+    }
+
+    @Override
+    public void initRadioButtons()
+    {
+        //no radio buttons
+    }
+
+    @Override
+    public int getSettingCount()
+    {
+        return 9;
+    }
+
+    @Override
+    public void onSettingContentChange()
+    {
+        resultItem.setItem(dummy.getResult());
+    }
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -81,21 +112,6 @@ public class MenuCrafting extends MenuItem
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void onClick(int mX, int mY, int button)
-    {
-        super.onClick(mX, mY, button);
-        if (!isEditing() && !isSearching() && resultItem.getItem() != null)
-        {
-            if (button == 1 && CollisionHelper.inBounds(getResultX(), getResultY(), ITEM_SIZE, ITEM_SIZE, mX, mY))
-            {
-                scrollControllerSelected.onClick(resultItem, mX, mY, 1);
-            }
-        }
-    }
-
-
     public int getResultX()
     {
         return ITEM_X + ITEM_SIZE_WITH_MARGIN * 3;
@@ -105,26 +121,6 @@ public class MenuCrafting extends MenuItem
     {
         return scrollControllerSelected.getScrollingStartY() + ITEM_SIZE_WITH_MARGIN;
     }
-
-    @Override
-    public int getSettingCount()
-    {
-        return 9;
-    }
-
-
-    @Override
-    public void initRadioButtons()
-    {
-        //no radio buttons
-    }
-
-    @Override
-    public void onSettingContentChange()
-    {
-        resultItem.setItem(dummy.getResult());
-    }
-
 
     public CraftingDummy getDummy()
     {

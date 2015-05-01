@@ -20,8 +20,25 @@ import java.util.List;
 public class SettingsScreen implements IInterfaceRenderer
 {
 
+    private static final int CHECK_BOX_WIDTH = 100;
+    private static final int START_X = 10;
+    private static final int START_SETTINGS_X = 380;
+    private static final int MARGIN_X = 30;
+    private static final int START_Y = 20;
+    private static final int MAX_Y = 250;
+    private static final int BUTTON_SRC_X = 242;
+    private static final int BUTTON_SRC_Y = 0;
+    private static final int BUTTON_SIZE = 14;
+    private static final int BUTTON_SIZE_INNER = 12;
     private TileEntityManager manager;
     private List<Button> buttons;
+    private CheckBoxList checkBoxes;
+    private String cachedString;
+    private String localization = Names.CLOSE_GROUP_LABEL;
+    private int currentX;
+    private int currentY;
+    private int offsetY;
+    private GuiManager cachedGui;
 
     public SettingsScreen(final TileEntityManager manager)
     {
@@ -36,49 +53,6 @@ public class SettingsScreen implements IInterfaceRenderer
                 manager.specialRenderer = null;
             }
         });
-    }
-
-    private static final int CHECK_BOX_WIDTH = 100;
-    private static final int START_X = 10;
-    private static final int START_SETTINGS_X = 380;
-    private static final int MARGIN_X = 30;
-    private static final int START_Y = 20;
-    private static final int MAX_Y = 250;
-
-    private class CheckBoxSetting extends CheckBox
-    {
-        private String key;
-        private String name;
-        private CheckBoxSetting(String name)
-        {
-            super(null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
-            key = "gui.asm.Settings." + name;
-            this.name = name;
-            setTextWidth(CHECK_BOX_WIDTH);
-        }
-
-        @Override
-        public boolean getValue()
-        {
-            return Settings.getSetting(name);
-        }
-
-        @Override
-        public void setValue(boolean val)
-        {
-            Settings.setSetting(name, val);
-        }
-
-        @Override
-        public String getName()
-        {
-            return key;
-        }
-
-        @Override
-        public void onUpdate()
-        {
-        }
     }
 
     private int getXAndGenerateY(String str)
@@ -98,13 +72,25 @@ public class SettingsScreen implements IInterfaceRenderer
         return currentX;
     }
 
-    private CheckBoxList checkBoxes;
-    private String cachedString;
-    private String localization = Names.CLOSE_GROUP_LABEL;
-    private int currentX;
-    private int currentY;
-    private int offsetY;
-    private GuiManager cachedGui;
+    @Override
+    public void draw(GuiManager gui, int mX, int mY)
+    {
+        if (cachedString == null || !StatCollector.translateToLocal(localization).equals(cachedString))
+        {
+            addCheckboxes(gui);
+        }
+
+        gui.drawString(Names.PREFERENCES, START_X - 2, 6, 0x404040);
+        if (Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode)
+        {
+            gui.drawString(Names.SETTINGS, START_SETTINGS_X - 2, 6, 0x404040);
+        }
+        checkBoxes.draw(gui, mX, mY);
+        for (Button button : buttons)
+        {
+            button.draw(gui, mX, mY);
+        }
+    }
 
     private void addCheckboxes(GuiManager gui)
     {
@@ -128,15 +114,15 @@ public class SettingsScreen implements IInterfaceRenderer
         checkBoxes.addCheckBox(new CheckBoxSetting("limitless")
         {
             @Override
-            public void setValue(boolean val)
-            {
-                Settings.setLimitless(manager, val);
-            }
-
-            @Override
             public boolean getValue()
             {
                 return Settings.isLimitless(manager);
+            }
+
+            @Override
+            public void setValue(boolean val)
+            {
+                Settings.setLimitless(manager, val);
             }
 
             @Override
@@ -145,26 +131,6 @@ public class SettingsScreen implements IInterfaceRenderer
                 return Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode;
             }
         });
-    }
-
-    @Override
-    public void draw(GuiManager gui, int mX, int mY)
-    {
-        if (cachedString == null || !StatCollector.translateToLocal(localization).equals(cachedString))
-        {
-            addCheckboxes(gui);
-        }
-
-        gui.drawString(Names.PREFERENCES, START_X - 2, 6, 0x404040);
-        if (Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode)
-        {
-            gui.drawString(Names.SETTINGS, START_SETTINGS_X - 2, 6, 0x404040);
-        }
-        checkBoxes.draw(gui, mX, mY);
-        for (Button button : buttons)
-        {
-            button.draw(gui, mX, mY);
-        }
     }
 
     @Override
@@ -214,11 +180,42 @@ public class SettingsScreen implements IInterfaceRenderer
 
     }
 
+    private class CheckBoxSetting extends CheckBox
+    {
+        private String key;
+        private String name;
 
-    private static final int BUTTON_SRC_X = 242;
-    private static final int BUTTON_SRC_Y = 0;
-    private static final int BUTTON_SIZE = 14;
-    private static final int BUTTON_SIZE_INNER = 12;
+        private CheckBoxSetting(String name)
+        {
+            super(null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
+            key = "gui.asm.Settings." + name;
+            this.name = name;
+            setTextWidth(CHECK_BOX_WIDTH);
+        }
+
+        @Override
+        public boolean getValue()
+        {
+            return Settings.getSetting(name);
+        }
+
+        @Override
+        public void setValue(boolean val)
+        {
+            Settings.setSetting(name, val);
+        }
+
+        @Override
+        public String getName()
+        {
+            return key;
+        }
+
+        @Override
+        public void onUpdate()
+        {
+        }
+    }
 
     private abstract class Button
     {

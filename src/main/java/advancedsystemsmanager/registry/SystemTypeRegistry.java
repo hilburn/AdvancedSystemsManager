@@ -19,18 +19,6 @@ import java.util.List;
 
 public class SystemTypeRegistry
 {
-    private static final List<ISystemType> types = new ArrayList<ISystemType>();
-
-    public static void register(ISystemType type)
-    {
-        types.add(type);
-    }
-
-    public static List<ISystemType> getTypes()
-    {
-        return types;
-    }
-
     public static final SystemType INVENTORY = new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
     {
         @Override
@@ -42,7 +30,7 @@ public class SystemTypeRegistry
         @Override
         public IInventory getType(TileEntity tileEntity)
         {
-            return tileEntity instanceof IInventory ? (IInventory) tileEntity : null;
+            return tileEntity instanceof IInventory ? (IInventory)tileEntity : null;
         }
     };
     public static final SystemType TANK = new SystemType<IFluidHandler>(Names.TYPE_TANK, false)
@@ -56,7 +44,7 @@ public class SystemTypeRegistry
         @Override
         public IFluidHandler getType(TileEntity tileEntity)
         {
-            return tileEntity instanceof IFluidHandler ? (IFluidHandler) tileEntity : ((IInternalTank)tileEntity).getTank();
+            return tileEntity instanceof IFluidHandler ? (IFluidHandler)tileEntity : ((IInternalTank)tileEntity).getTank();
         }
     };
     public static final SystemType EMITTER = new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER, false)
@@ -107,6 +95,17 @@ public class SystemTypeRegistry
             return tileEntity instanceof TileEntitySignUpdater;
         }
     };
+    private static final List<ISystemType> types = new ArrayList<ISystemType>();
+
+    public static void register(ISystemType type)
+    {
+        types.add(type);
+    }
+
+    public static List<ISystemType> getTypes()
+    {
+        return types;
+    }
 
     public static abstract class SystemType<Type> implements ISystemType<Type>
     {
@@ -119,7 +118,11 @@ public class SystemTypeRegistry
             this.group = group;
         }
 
-        public boolean isGroup()
+        @Override
+        public String toString()
+        {
+            return name;
+        }        public boolean isGroup()
         {
             return group;
         }
@@ -127,7 +130,7 @@ public class SystemTypeRegistry
         @Override
         public Type getType(TileEntity tileEntity)
         {
-            return (Type) tileEntity;
+            return (Type)tileEntity;
         }
 
         @Override
@@ -136,10 +139,6 @@ public class SystemTypeRegistry
             return name;
         }
 
-        @Override
-        public String toString()
-        {
-            return name;
-        }
+
     }
 }

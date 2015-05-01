@@ -22,28 +22,11 @@ public class PacketHandler
 {
     public static final double BLOCK_UPDATE_RANGE = 128;
 
-    public static void sendDataToPlayer(ICrafting crafting, DataWriter dw)
-    {
-        if (crafting instanceof EntityPlayerMP)
-        {
-            EntityPlayerMP player = (EntityPlayerMP)crafting;
-
-            dw.sendPlayerPacket(player);
-        }
-    }
-
     public static void sendDataToServer(DataWriter dw)
     {
         dw.sendServerPacket();
         dw.close();
     }
-
-    public static void sendDataToListeningClients(ContainerBase container, DataWriter dw)
-    {
-        dw.sendPlayerPackets(container);
-        dw.close();
-    }
-
 
     public static void sendAllData(Container container, ICrafting crafting, ITileEntityInterface te)
     {
@@ -56,6 +39,27 @@ public class PacketHandler
 
         sendDataToPlayer(crafting, dw);
         dw.close();
+    }
+
+    public static void sendDataToPlayer(ICrafting crafting, DataWriter dw)
+    {
+        if (crafting instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP player = (EntityPlayerMP)crafting;
+
+            dw.sendPlayerPacket(player);
+        }
+    }
+
+    public static DataWriter getWriterForUpdate(Container container)
+    {
+        DataWriter dw = new DataWriter();
+
+        dw.writeBoolean(true); //use container
+        dw.writeByte(container.windowId);
+        dw.writeBoolean(true); //updated data
+
+        return dw;
     }
 
 
@@ -71,26 +75,12 @@ public class PacketHandler
         }
     }*/
 
-    public static DataWriter getWriterForUpdate(Container container)
+    @SideOnly(Side.CLIENT)
+    public static DataWriter getWriterForServerActionPacket()
     {
-        DataWriter dw = new DataWriter();
+        DataWriter dw = getBaseWriterForServerPacket();
 
-        dw.writeBoolean(true); //use container
-        dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
-
-        return dw;
-    }
-
-
-    private static DataWriter getWriterForSpecificData(Container container)
-    {
-        DataWriter dw = new DataWriter();
-
-        dw.writeBoolean(true); //use container
-        dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
-        dw.writeBoolean(false); //not new
+        dw.writeBoolean(true); //action
 
         return dw;
     }
@@ -112,6 +102,44 @@ public class PacketHandler
         }
     }
 
+    public static void sendUpdateInventoryPacket(ContainerManager container)
+    {
+        DataWriter dw = PacketHandler.getWriterForSpecificData(container);
+        createNonComponentPacket(dw);
+        dw.writeBoolean(true);
+        sendDataToListeningClients(container, dw);
+    }
+
+    public static void sendDataToListeningClients(ContainerBase container, DataWriter dw)
+    {
+        dw.sendPlayerPackets(container);
+        dw.close();
+    }
+
+    private static DataWriter getWriterForSpecificData(Container container)
+    {
+        DataWriter dw = new DataWriter();
+
+        dw.writeBoolean(true); //use container
+        dw.writeByte(container.windowId);
+        dw.writeBoolean(true); //updated data
+        dw.writeBoolean(false); //not new
+
+        return dw;
+    }
+
+    private static void createNonComponentPacket(DataWriter dw)
+    {
+        dw.writeBoolean(false); //this is a packet that has nothing to do with a specific FlowComponent
+    }
+
+    public static DataWriter getWriterForServerComponentPacket(FlowComponent component, Menu menu)
+    {
+        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        createComponentPacket(dw, component, menu);
+        return dw;
+    }
+
     @SideOnly(Side.CLIENT)
     public static DataWriter getWriterForServerPacket()
     {
@@ -120,21 +148,6 @@ public class PacketHandler
         dw.writeBoolean(false); //no action
 
         return dw;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static DataWriter getWriterForServerActionPacket()
-    {
-        DataWriter dw = getBaseWriterForServerPacket();
-
-        dw.writeBoolean(true); //action
-
-        return dw;
-    }
-
-    private static void createNonComponentPacket(DataWriter dw)
-    {
-        dw.writeBoolean(false); //this is a packet that has nothing to do with a specific FlowComponent
     }
 
     private static void createComponentPacket(DataWriter dw, FlowComponent component, Menu menu)
@@ -152,21 +165,6 @@ public class PacketHandler
         }
     }
 
-    public static void sendUpdateInventoryPacket(ContainerManager container)
-    {
-        DataWriter dw = PacketHandler.getWriterForSpecificData(container);
-        createNonComponentPacket(dw);
-        dw.writeBoolean(true);
-        sendDataToListeningClients(container, dw);
-    }
-
-    public static DataWriter getWriterForServerComponentPacket(FlowComponent component, Menu menu)
-    {
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
-        createComponentPacket(dw, component, menu);
-        return dw;
-    }
-
     public static DataWriter getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
     {
         DataWriter dw = PacketHandler.getWriterForSpecificData(container);
@@ -174,6 +172,27 @@ public class PacketHandler
         return dw;
     }
 
+    public static DataWriter getButtonPacketWriter()
+    {
+        DataWriter dw = getWriterForServerPacket();
+        createNonComponentPacket(dw);
+        return dw;
+    }
+
+    public static void sendNewFlowComponent(ContainerManager container, FlowComponent component)
+    {
+        DataWriter dw = new DataWriter();
+
+        dw.writeBoolean(true); //use container
+        dw.writeByte(container.windowId);
+        dw.writeBoolean(true); //updated data
+        dw.writeBoolean(true); //new data;
+
+        writeAllComponentData(dw, component);
+        PacketHandler.sendDataToListeningClients(container, dw);
+
+        dw.close();
+    }
 
     public static void writeAllComponentData(DataWriter dw, FlowComponent flowComponent)
     {
@@ -214,29 +233,6 @@ public class PacketHandler
         }
 
         flowComponent.getManager().updateVariables();
-    }
-
-
-    public static DataWriter getButtonPacketWriter()
-    {
-        DataWriter dw = getWriterForServerPacket();
-        createNonComponentPacket(dw);
-        return dw;
-    }
-
-    public static void sendNewFlowComponent(ContainerManager container, FlowComponent component)
-    {
-        DataWriter dw = new DataWriter();
-
-        dw.writeBoolean(true); //use container
-        dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
-        dw.writeBoolean(true); //new data;
-
-        writeAllComponentData(dw, component);
-        PacketHandler.sendDataToListeningClients(container, dw);
-
-        dw.close();
     }
 
     public static void sendRemovalPacket(ContainerManager container, int idToRemove)

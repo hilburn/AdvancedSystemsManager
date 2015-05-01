@@ -20,16 +20,16 @@ public class NameDataUpdateMessage implements IMessage, IMessageHandler<NameData
     {
     }
 
-    public NameDataUpdateMessage(int dim, BlockCoord coord)
-    {
-        this.dimId = dim;
-        this.blockCoord = coord;
-    }
-
     public NameDataUpdateMessage(int dim, BlockCoord coord, boolean remove)
     {
         this(dim, coord);
         this.remove = remove;
+    }
+
+    public NameDataUpdateMessage(int dim, BlockCoord coord)
+    {
+        this.dimId = dim;
+        this.blockCoord = coord;
     }
 
     @Override

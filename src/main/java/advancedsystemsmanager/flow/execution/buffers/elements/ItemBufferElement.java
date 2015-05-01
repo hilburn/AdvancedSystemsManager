@@ -54,12 +54,6 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
     }
 
     @Override
-    public Key<ItemStack> getKey()
-    {
-        return new Key.ItemKey(content);
-    }
-
-    @Override
     public ItemBufferElement getSplitElement(int elementAmount, int id, boolean fair)
     {
         ItemBufferElement element = new ItemBufferElement(this.id, this.inventory, this.slot);
@@ -75,5 +69,11 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
         }
         element.amount = amount;
         return element;
+    }
+
+    @Override
+    public Key<ItemStack> getKey()
+    {
+        return new Key.ItemKey(content);
     }
 }

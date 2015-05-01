@@ -71,6 +71,11 @@ public class TextBoxLogic
         return text;
     }
 
+    public void setText(String text)
+    {
+        this.text = text;
+    }
+
     public int getCursorPosition(GuiManager gui)
     {
         if (updatedCursor)
@@ -80,11 +85,6 @@ public class TextBoxLogic
         }
 
         return cursorPosition;
-    }
-
-    public void setText(String text)
-    {
-        this.text = text;
     }
 
     @SideOnly(Side.CLIENT)
@@ -121,17 +121,16 @@ public class TextBoxLogic
         updatedCursor = true;
     }
 
+    public void setTextAndCursor(String s)
+    {
+        setText(s);
+        resetCursor();
+    }
 
     public void resetCursor()
     {
         cursor = text.length();
         updatedCursor = true;
-    }
-
-    public void setTextAndCursor(String s)
-    {
-        setText(s);
-        resetCursor();
     }
 
     public void setMult(float mult)

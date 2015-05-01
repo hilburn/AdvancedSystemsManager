@@ -31,39 +31,67 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
 
     private static final String FAKE_PLAYER_NAME = "[asm_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
+    private static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
+    private static final String NBT_DIRECTION = "Direction";
+    private static final int UPDATE_BUFFER_DISTANCE = 5;
     private List<ItemStack> inventory;
     private List<ItemStack> inventoryCache;
     private boolean broken;
     private int placeDirection;
     private boolean blocked;
+    private boolean missingPlaceDirection;
+    private boolean hasUpdatedData;
 
-
-    private List<ItemStack> getInventory()
+    @Override
+    public void updateEntity()
     {
-        if (inventory == null)
+        if (missingPlaceDirection)
+        {
+            setPlaceDirection(getBlockMetadata());
+            missingPlaceDirection = false;
+        }
+        if (worldObj.isRemote)
+        {
+            keepClientDataUpdated();
+        }
+
+        if (inventory != null)
         {
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
 
-            int x = xCoord + direction.offsetX;
-            int y = yCoord + direction.offsetY;
-            int z = zCoord + direction.offsetZ;
-            Block block = worldObj.getBlock(x, y, z);
-            if (canBreakBlock(block, x, y, z))
+
+            for (ItemStack itemStack : getInventoryForDrop())
             {
-                inventory = block.getDrops(worldObj, x, y, z, worldObj.getBlockMetadata(x, y, z), 0);
-            }
-            if (inventory == null)
-            {
-                inventory = new ArrayList<ItemStack>();
-            }
-            inventoryCache = new ArrayList<ItemStack>();
-            for (ItemStack itemStack : inventory)
-            {
-                inventoryCache.add(itemStack.copy());
+                List<ItemStack> items = placeItem(itemStack);
+                if (items != null && !items.isEmpty())
+                {
+                    for (ItemStack item : items)
+                    {
+                        double x = xCoord + 0.5 + direction.offsetX * 0.75;
+                        double y = yCoord + 0.5 + direction.offsetY * 0.75;
+                        double z = zCoord + 0.5 + direction.offsetZ * 0.75;
+
+
+                        if (direction.offsetY == 0)
+                        {
+                            y -= 0.1;
+                        }
+
+                        EntityItem entityitem = new EntityItem(worldObj, x, y, z, item);
+
+                        entityitem.motionX = direction.offsetX * 0.1;
+                        entityitem.motionY = direction.offsetY * 0.1;
+                        entityitem.motionZ = direction.offsetZ * 0.1;
+
+                        entityitem.delayBeforeCanPickup = 40;
+                        worldObj.spawnEntityInWorld(entityitem);
+                    }
+                }
             }
         }
-
-        return inventory;
+        inventory = null;
+        inventoryCache = null;
+        broken = false;
     }
 
     private List<ItemStack> placeItem(ItemStack itemstack)
@@ -131,59 +159,6 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
         return items;
     }
 
-    @Override
-    public void updateEntity()
-    {
-        if (missingPlaceDirection)
-        {
-            setPlaceDirection(getBlockMetadata());
-            missingPlaceDirection = false;
-        }
-        if (worldObj.isRemote)
-        {
-            keepClientDataUpdated();
-        }
-
-        if (inventory != null)
-        {
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
-
-
-            for (ItemStack itemStack : getInventoryForDrop())
-            {
-                List<ItemStack> items = placeItem(itemStack);
-                if (items != null && !items.isEmpty())
-                {
-                    for (ItemStack item : items)
-                    {
-                        double x = xCoord + 0.5 + direction.offsetX * 0.75;
-                        double y = yCoord + 0.5 + direction.offsetY * 0.75;
-                        double z = zCoord + 0.5 + direction.offsetZ * 0.75;
-
-
-                        if (direction.offsetY == 0)
-                        {
-                            y -= 0.1;
-                        }
-
-                        EntityItem entityitem = new EntityItem(worldObj, x, y, z, item);
-
-                        entityitem.motionX = direction.offsetX * 0.1;
-                        entityitem.motionY = direction.offsetY * 0.1;
-                        entityitem.motionZ = direction.offsetZ * 0.1;
-
-                        entityitem.delayBeforeCanPickup = 40;
-                        worldObj.spawnEntityInWorld(entityitem);
-                    }
-                }
-            }
-        }
-        inventory = null;
-        inventoryCache = null;
-        broken = false;
-    }
-
-
     private List<ItemStack> getInventoryForDrop()
     {
         List<ItemStack> ret = new ArrayList<ItemStack>();
@@ -231,9 +206,106 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     }
 
     @Override
+    public void markDirty()
+    {
+        super.markDirty();
+
+        if (inventory != null && !broken)
+        {
+            boolean match = true;
+            for (int i = 0; i < inventory.size(); i++)
+            {
+                ItemStack itemStack = inventory.get(i);
+                ItemStack itemStackCopy = inventoryCache.get(i);
+
+                if (itemStackCopy != null && (itemStack == null || Item.getIdFromItem(itemStack.getItem()) != Item.getIdFromItem(itemStackCopy.getItem()) || itemStack.getItemDamage() != itemStackCopy.getItemDamage() || !ItemStack.areItemStackTagsEqual(itemStack, itemStackCopy) || itemStack.stackSize < itemStackCopy.stackSize))
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (!match)
+            {
+                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+
+                int x = xCoord + direction.offsetX;
+                int y = yCoord + direction.offsetY;
+                int z = zCoord + direction.offsetZ;
+
+                Block block = worldObj.getBlock(x, y, z);
+
+
+                if (canBreakBlock(block, x, y, z))
+                {
+                    broken = true;
+                    int meta = worldObj.getBlockMetadata(x, y, z);
+                    block.breakBlock(worldObj, x, y, z, block, meta);
+                    worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
+                    worldObj.setBlockToAir(x, y, z);
+                }
+
+            }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void keepClientDataUpdated()
+    {
+        if (isPartOfCluster())
+        {
+            return;
+        }
+
+        double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+
+        if (distance > Math.pow(PacketHandler.BLOCK_UPDATE_RANGE, 2))
+        {
+            hasUpdatedData = false;
+        } else if (!hasUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
+        {
+            hasUpdatedData = true;
+            PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 0);
+        }
+    }
+
+    @Override
     public int getSizeInventory()
     {
         return getInventory().size() + 1;
+    }
+
+    private List<ItemStack> getInventory()
+    {
+        if (inventory == null)
+        {
+            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+
+            int x = xCoord + direction.offsetX;
+            int y = yCoord + direction.offsetY;
+            int z = zCoord + direction.offsetZ;
+            Block block = worldObj.getBlock(x, y, z);
+            if (canBreakBlock(block, x, y, z))
+            {
+                inventory = block.getDrops(worldObj, x, y, z, worldObj.getBlockMetadata(x, y, z), 0);
+            }
+            if (inventory == null)
+            {
+                inventory = new ArrayList<ItemStack>();
+            }
+            inventoryCache = new ArrayList<ItemStack>();
+            for (ItemStack itemStack : inventory)
+            {
+                inventoryCache.add(itemStack.copy());
+            }
+        }
+
+        return inventory;
+    }
+
+    private boolean canBreakBlock(Block block, int x, int y, int z)
+    {
+        return block != null && Block.getIdFromBlock(block) != Block.getIdFromBlock(Blocks.bedrock) && block.getBlockHardness(worldObj, x, y, z) >= 0;
     }
 
     @Override
@@ -276,7 +348,11 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
 
     }
 
-    private static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
+    @Override
+    public ItemStack getStackInSlotOnClosing(int i)
+    {
+        return null;
+    }
 
     @Override
     public void setInventorySlotContents(int id, ItemStack itemstack)
@@ -290,13 +366,6 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
             inventoryCache.add(null);
         }
     }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int i)
-    {
-        return null;
-    }
-
 
     @Override
     public String getInventoryName()
@@ -341,65 +410,6 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     }
 
     @Override
-    public void markDirty()
-    {
-        super.markDirty();
-
-        if (inventory != null && !broken)
-        {
-            boolean match = true;
-            for (int i = 0; i < inventory.size(); i++)
-            {
-                ItemStack itemStack = inventory.get(i);
-                ItemStack itemStackCopy = inventoryCache.get(i);
-
-                if (itemStackCopy != null && (itemStack == null || Item.getIdFromItem(itemStack.getItem()) != Item.getIdFromItem(itemStackCopy.getItem()) || itemStack.getItemDamage() != itemStackCopy.getItemDamage() || !ItemStack.areItemStackTagsEqual(itemStack, itemStackCopy) || itemStack.stackSize < itemStackCopy.stackSize))
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            if (!match)
-            {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
-
-                int x = xCoord + direction.offsetX;
-                int y = yCoord + direction.offsetY;
-                int z = zCoord + direction.offsetZ;
-
-                Block block = worldObj.getBlock(x, y, z);
-
-
-                if (canBreakBlock(block, x, y, z))
-                {
-                    broken = true;
-                    int meta = worldObj.getBlockMetadata(x, y, z);
-                    block.breakBlock(worldObj, x, y, z, block, meta);
-                    worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (meta << 12));
-                    worldObj.setBlockToAir(x, y, z);
-                }
-
-            }
-        }
-    }
-
-    private boolean canBreakBlock(Block block, int x, int y, int z)
-    {
-        return block != null && Block.getIdFromBlock(block) != Block.getIdFromBlock(Blocks.bedrock) && block.getBlockHardness(worldObj, x, y, z) >= 0;
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
-    }
-
-    private static final String NBT_DIRECTION = "Direction";
-
-    private boolean missingPlaceDirection;
-
-    @Override
     protected void readContentFromNBT(NBTTagCompound tagCompound)
     {
         if (tagCompound.hasKey(NBT_DIRECTION))
@@ -423,27 +433,10 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
         tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
     }
 
-    private static final int UPDATE_BUFFER_DISTANCE = 5;
-    private boolean hasUpdatedData;
-
-    @SideOnly(Side.CLIENT)
-    private void keepClientDataUpdated()
+    @Override
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        if (isPartOfCluster())
-        {
-            return;
-        }
-
-        double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-
-        if (distance > Math.pow(PacketHandler.BLOCK_UPDATE_RANGE, 2))
-        {
-            hasUpdatedData = false;
-        } else if (!hasUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
-        {
-            hasUpdatedData = true;
-            PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 0);
-        }
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }
 
     @Override

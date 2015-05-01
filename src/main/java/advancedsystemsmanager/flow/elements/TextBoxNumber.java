@@ -57,6 +57,16 @@ public class TextBoxNumber
         this.number = number;
     }
 
+    public int getMaxNumber()
+    {
+        return -1;
+    }
+
+    public int getMinNumber()
+    {
+        return 0;
+    }
+
     public boolean isVisible()
     {
         return true;
@@ -74,16 +84,6 @@ public class TextBoxNumber
     public int getWidth()
     {
         return wide ? TEXT_BOX_SIZE_W_WIDE : TEXT_BOX_SIZE_W;
-    }
-
-    public int getMaxNumber()
-    {
-        return -1;
-    }
-
-    public int getMinNumber()
-    {
-        return 0;
     }
 
     public final boolean allowNegative()

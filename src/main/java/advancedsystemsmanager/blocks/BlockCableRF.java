@@ -24,17 +24,17 @@ public class BlockCableRF extends BlockTileBase
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
+    public IIcon getIcon(IBlockAccess iBlockAccess, int x, int y, int z, int side)
     {
+        TileEntity te = iBlockAccess.getTileEntity(x, y, z);
+        if (te instanceof TileEntityRFNode) return getIcon((TileEntityRFNode)te, side);
         return icons[3];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess iBlockAccess, int x, int y, int z, int side)
+    public IIcon getIcon(int side, int meta)
     {
-        TileEntity te = iBlockAccess.getTileEntity(x, y, z);
-        if (te instanceof TileEntityRFNode) return getIcon((TileEntityRFNode)te, side);
         return icons[3];
     }
 

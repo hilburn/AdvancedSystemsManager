@@ -16,6 +16,8 @@ import java.util.List;
 
 public class TileEntityBUD extends TileEntityClusterElement implements ISystemListener, ITriggerNode
 {
+    private static final String NBT_SIDES = "Sides";
+    private static final String NBT_DATA = "Data";
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();
     private int[] oldData = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private int[] data = new int[ForgeDirection.VALID_DIRECTIONS.length];
@@ -48,19 +50,6 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
         makeOld();
     }
 
-
-    @Override
-    public int[] getData()
-    {
-        return data;
-    }
-
-    @Override
-    public int[] getOldData()
-    {
-        return oldData;
-    }
-
     public void updateData()
     {
         if (worldObj != null)
@@ -83,8 +72,17 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
         oldData = data;
     }
 
-    private static final String NBT_SIDES = "Sides";
-    private static final String NBT_DATA = "Data";
+    @Override
+    public int[] getData()
+    {
+        return data;
+    }
+
+    @Override
+    public int[] getOldData()
+    {
+        return oldData;
+    }
 
     @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)

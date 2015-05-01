@@ -20,6 +20,13 @@ import net.minecraft.nbt.NBTTagCompound;
 public class MenuResult extends Menu
 {
 
+    public static final int RADIO_X = 5;
+    public static final int RADIO_Y = 5;
+    public static final int RADIO_MARGIN = 13;
+    public static final String NBT_SELECTED = "SelectedOption";
+    public ConnectionSet[] sets;
+    public RadioButtonList radioButtons;
+
     public MenuResult(FlowComponent parent)
     {
         super(parent);
@@ -28,14 +35,6 @@ public class MenuResult extends Menu
 
         radioButtons = new RadioButtonList()
         {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                DataWriter dw = getWriterForServerComponentPacket();
-                writeData(dw, selectedOption);
-                PacketHandler.sendDataToServer(dw);
-            }
-
             @Override
             public void setSelectedOption(int selectedOption)
             {
@@ -54,6 +53,14 @@ public class MenuResult extends Menu
                 {
                     getParent().setParent(getParent().getParent());
                 }
+            }
+
+            @Override
+            public void updateSelectedOption(int selectedOption)
+            {
+                DataWriter dw = getWriterForServerComponentPacket();
+                writeData(dw, selectedOption);
+                PacketHandler.sendDataToServer(dw);
             }
         };
 
@@ -74,12 +81,10 @@ public class MenuResult extends Menu
         }
     }
 
-    public static final int RADIO_X = 5;
-    public static final int RADIO_Y = 5;
-    public static final int RADIO_MARGIN = 13;
-
-    public ConnectionSet[] sets;
-    public RadioButtonList radioButtons;
+    public void writeData(DataWriter dw, int val)
+    {
+        dw.writeData(val, DataBitHelper.MENU_CONNECTION_TYPE_ID);
+    }
 
     @Override
     public String getName()
@@ -153,25 +158,6 @@ public class MenuResult extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        readTheData(dr);
-    }
-
-    public void readTheData(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.MENU_CONNECTION_TYPE_ID));
-    }
-
-    public void writeData(DataWriter dw, int val)
-    {
-        dw.writeData(val, DataBitHelper.MENU_CONNECTION_TYPE_ID);
-    }
-
-
-    public static final String NBT_SELECTED = "SelectedOption";
-
-    @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_SELECTED));
@@ -183,10 +169,20 @@ public class MenuResult extends Menu
         nbtTagCompound.setByte(NBT_SELECTED, (byte)radioButtons.getSelectedOption());
     }
 
-
     @Override
     public boolean isVisible()
     {
         return sets.length > 1;
+    }
+
+    public void readTheData(DataReader dr)
+    {
+        radioButtons.setSelectedOption(dr.readData(DataBitHelper.MENU_CONNECTION_TYPE_ID));
+    }
+
+    @Override
+    public void readNetworkComponent(DataReader dr)
+    {
+        readTheData(dr);
     }
 }

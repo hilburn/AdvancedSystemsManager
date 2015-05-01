@@ -19,7 +19,15 @@ public abstract class CommandDuplicator implements ISubCommand
         defaultTagCompound.setTag("ench", new NBTTagList());
     }
 
-    public static ItemStack getDuplicator(ICommandSender sender)
+    public static NBTTagCompound stripBaseNBT(NBTTagCompound tagCompound)
+    {
+        for (String key : keys)
+        {
+            if (tagCompound.hasKey(key) && tagCompound.getTag(key).equals(defaultTagCompound.getTag(key)))
+                tagCompound.removeTag(key);
+        }
+        return tagCompound;
+    }    public static ItemStack getDuplicator(ICommandSender sender)
     {
         if (sender instanceof EntityPlayerMP)
         {
@@ -30,7 +38,14 @@ public abstract class CommandDuplicator implements ISubCommand
         return null;
     }
 
-    @Override
+    public static NBTTagCompound unstripBaseNBT(NBTTagCompound tagCompound)
+    {
+        for (String key : keys)
+        {
+            if (!tagCompound.hasKey(key)) tagCompound.setTag(key, defaultTagCompound.getTag(key));
+        }
+        return tagCompound;
+    }    @Override
     public void handleCommand(ICommandSender sender, String[] arguments)
     {
         if (!isVisible(sender))
@@ -47,24 +62,9 @@ public abstract class CommandDuplicator implements ISubCommand
         }
     }
 
-    public static NBTTagCompound stripBaseNBT(NBTTagCompound tagCompound)
-    {
-        for (String key : keys)
-        {
-            if (tagCompound.hasKey(key) && tagCompound.getTag(key).equals(defaultTagCompound.getTag(key)))
-                tagCompound.removeTag(key);
-        }
-        return tagCompound;
-    }
 
-    public static NBTTagCompound unstripBaseNBT(NBTTagCompound tagCompound)
-    {
-        for (String key : keys)
-        {
-            if (!tagCompound.hasKey(key)) tagCompound.setTag(key, defaultTagCompound.getTag(key));
-        }
-        return tagCompound;
-    }
+
+
 
     public abstract void doCommand(ItemStack duplicator, EntityPlayerMP sender, String[] arguments);
 

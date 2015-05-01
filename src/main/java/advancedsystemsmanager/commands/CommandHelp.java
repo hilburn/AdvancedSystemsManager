@@ -12,10 +12,17 @@ import java.util.List;
 public class CommandHelp implements ISubCommand
 {
 
-    public static CommandHelp instance = new CommandHelp();
     public static final String PREFIX = "\u00A7";//§
     public static final String YELLOW = PREFIX + "e";
     public static final String WHITE = PREFIX + "f";
+    public static CommandHelp instance = new CommandHelp();
+
+    @Override
+    public int getPermissionLevel()
+    {
+
+        return -1;
+    }
 
     /* ISubCommand */
     @Override
@@ -23,13 +30,6 @@ public class CommandHelp implements ISubCommand
     {
 
         return "help";
-    }
-
-    @Override
-    public int getPermissionLevel()
-    {
-
-        return -1;
     }
 
     @Override

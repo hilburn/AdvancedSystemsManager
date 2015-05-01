@@ -22,17 +22,17 @@ public class BlockCable extends BlockBase implements ICable
     }
 
     @Override
-    public void onBlockAdded(World world, int x, int y, int z)
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        super.onBlockAdded(world, x, y, z);
+        super.onNeighborBlockChange(world, x, y, z, block);
 
         updateInventories(world, x, y, z);
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    public void onBlockAdded(World world, int x, int y, int z)
     {
-        super.onNeighborBlockChange(world, x, y, z, block);
+        super.onBlockAdded(world, x, y, z);
 
         updateInventories(world, x, y, z);
     }

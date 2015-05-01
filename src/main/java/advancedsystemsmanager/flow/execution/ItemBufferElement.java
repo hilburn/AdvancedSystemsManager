@@ -26,6 +26,8 @@ public class ItemBufferElement implements IItemBufferElement
     public int sharedBy;
     public boolean fairShare;
     public int shareId;
+    public Iterator<SlotStackInventoryHolder> iterator;
+
 
     public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList, SlotStackInventoryHolder target)
     {
@@ -33,7 +35,6 @@ public class ItemBufferElement implements IItemBufferElement
         addTarget(target);
         sharedBy = 1;
     }
-
 
     public ItemBufferElement(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, boolean useWhiteList)
     {
@@ -43,6 +44,14 @@ public class ItemBufferElement implements IItemBufferElement
         this.useWhiteList = useWhiteList;
         holders = new ArrayList<SlotStackInventoryHolder>();
 
+    }
+
+    public void addTarget(SlotStackInventoryHolder target)
+    {
+        holders.add(target);
+
+        totalStackSize += target.getSizeLeft();
+        currentStackSize = totalStackSize;
     }
 
     public boolean addTarget(FlowComponent owner, Setting setting, SlotInventoryHolder inventoryHolder, SlotStackInventoryHolder target)
@@ -57,14 +66,6 @@ public class ItemBufferElement implements IItemBufferElement
         }
     }
 
-    public void addTarget(SlotStackInventoryHolder target)
-    {
-        holders.add(target);
-
-        totalStackSize += target.getSizeLeft();
-        currentStackSize = totalStackSize;
-    }
-
     public Setting getSetting()
     {
         return setting;
@@ -74,8 +75,6 @@ public class ItemBufferElement implements IItemBufferElement
     {
         return holders;
     }
-
-    public Iterator<SlotStackInventoryHolder> iterator;
 
     @Override
     public void prepareSubElements()
@@ -99,12 +98,6 @@ public class ItemBufferElement implements IItemBufferElement
     public void removeSubElement()
     {
         iterator.remove();
-    }
-
-    @Override
-    public void releaseSubElements()
-    {
-        iterator = null;
     }
 
     public int retrieveItemCount(int desiredItemCount)
@@ -143,6 +136,12 @@ public class ItemBufferElement implements IItemBufferElement
     public void decreaseStackSize(int itemsToMove)
     {
         currentStackSize -= itemsToMove * (useWhiteList ? sharedBy : 1);
+    }
+
+    @Override
+    public void releaseSubElements()
+    {
+        iterator = null;
     }
 
     public ItemStack getItemStack()

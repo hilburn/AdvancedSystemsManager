@@ -40,16 +40,16 @@ public class BlockCableSign extends BlockTileBase
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side, int meta)
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        return getIconFromSideAndMeta(side, 3);
+        return getIconFromSideAndMeta(side, world.getBlockMetadata(x, y, z));
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    public IIcon getIcon(int side, int meta)
     {
-        return getIconFromSideAndMeta(side, world.getBlockMetadata(x, y, z));
+        return getIconFromSideAndMeta(side, 3);
     }
 
     @SideOnly(Side.CLIENT)

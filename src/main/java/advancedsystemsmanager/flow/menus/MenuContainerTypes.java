@@ -24,6 +24,14 @@ import java.util.Set;
 
 public class MenuContainerTypes extends Menu
 {
+    public static final int CHECK_BOX_X = 5;
+    public static final int CHECK_BOX_Y = 5;
+    public static final int CHECK_BOX_SPACING_X = 55;
+    public static final int CHECK_BOX_SPACING_Y = 12;
+    public static final String NBT_CHECKED = "Checked";
+    public List<ISystemType> types;
+    public boolean[] checked;
+    public CheckBoxList checkBoxes;
     public MenuContainerTypes(FlowComponent parent)
     {
         super(parent);
@@ -80,17 +88,6 @@ public class MenuContainerTypes extends Menu
     {
         return Names.CONTAINER_TYPE_MENU;
     }
-
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 5;
-    public static final int CHECK_BOX_SPACING_X = 55;
-    public static final int CHECK_BOX_SPACING_Y = 12;
-
-
-    public List<ISystemType> types;
-    public boolean[] checked;
-    public CheckBoxList checkBoxes;
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -168,8 +165,6 @@ public class MenuContainerTypes extends Menu
         }
     }
 
-    public static final String NBT_CHECKED = "Checked";
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
@@ -201,16 +196,6 @@ public class MenuContainerTypes extends Menu
         checked[id] = dr.readBoolean();
     }
 
-    public boolean[] getChecked()
-    {
-        return checked;
-    }
-
-    public List<ISystemType> getTypes()
-    {
-        return types;
-    }
-
     public Set<ISystemType> getValidTypes()
     {
         Set<ISystemType> types = new HashSet<ISystemType>();
@@ -221,6 +206,16 @@ public class MenuContainerTypes extends Menu
                 types.add(getTypes().get(i));
             }
         }
+        return types;
+    }
+
+    public boolean[] getChecked()
+    {
+        return checked;
+    }
+
+    public List<ISystemType> getTypes()
+    {
         return types;
     }
 }

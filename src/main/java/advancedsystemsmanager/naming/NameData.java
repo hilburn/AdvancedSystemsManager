@@ -45,14 +45,14 @@ public class NameData extends WorldSavedData
         tagCompound.setTag("l", list);
     }
 
-    public String get(BlockCoord blockCoord)
-    {
-        return names.get(blockCoord);
-    }
-
     public void put(BlockCoord blockCoord)
     {
         names.put(blockCoord, blockCoord.name);
+    }
+
+    public String get(BlockCoord blockCoord)
+    {
+        return names.get(blockCoord);
     }
 
     public void remove(BlockCoord blockCoord)

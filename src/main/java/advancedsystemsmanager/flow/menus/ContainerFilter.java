@@ -384,6 +384,11 @@ public class ContainerFilter
             resetDefault();
         }
 
+        public void resetDefault()
+        {
+            setNumber(defaultNumber);
+        }
+
         @Override
         public boolean isVisible()
         {
@@ -397,6 +402,12 @@ public class ContainerFilter
         }
 
         @Override
+        public int getMinNumber()
+        {
+            return negative ? -128 : super.getMinNumber();
+        }
+
+        @Override
         public float getTextSize()
         {
             return negative ? 0.7F : super.getTextSize();
@@ -406,17 +417,6 @@ public class ContainerFilter
         public int getTextY()
         {
             return negative ? 4 : super.getTextY();
-        }
-
-        @Override
-        public int getMinNumber()
-        {
-            return negative ? -128 : super.getMinNumber();
-        }
-
-        public void resetDefault()
-        {
-            setNumber(defaultNumber);
         }
     }
 }

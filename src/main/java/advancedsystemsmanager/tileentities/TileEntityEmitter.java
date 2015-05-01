@@ -1,7 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-
-import advancedsystemsmanager.api.IRedstoneNode;
+import advancedsystemsmanager.api.IRedstoneEmitter;
 import advancedsystemsmanager.flow.menus.MenuPulse;
 import advancedsystemsmanager.flow.menus.MenuRedstoneOutput;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;
@@ -22,14 +21,24 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileEntityEmitter extends TileEntityClusterElement implements IPacketBlock, IRedstoneNode
+public class TileEntityEmitter extends TileEntityClusterElement implements IPacketBlock, IRedstoneEmitter
 {
 
+    private static final String NBT_SIDES = "Sides";
+    private static final String NBT_STRENGTH = "Strength";
+    private static final String NBT_STRONG = "Strong";
+    private static final String NBT_TICK = "Tick";
+    private static final String NBT_PULSES = "Pulses";
+    private static final int UPDATE_BUFFER_DISTANCE = 5;
     private int[] strengths;
     private boolean[] strong;
-
     private int[] updatedStrength;
     private boolean[] updatedStrong;
+    private List<PulseTimer>[] pulseTimers;
+    private boolean hasUpdatedThisTick;
+    private List<WorldCoordinate> scheduledToUpdate = new ArrayList<WorldCoordinate>();
+    private boolean hasUpdatedData;
+
 
     public TileEntityEmitter()
     {
@@ -52,20 +61,9 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         return strong[side];
     }
 
-
     public boolean hasStrongSignalAtOppositeSide(int side)
     {
         return strong[getOpposite(side)];
-    }
-
-    public int getStrengthFromSide(int side)
-    {
-        return strengths[side];
-    }
-
-    public int getStrengthFromOppositeSide(int side)
-    {
-        return getStrengthFromSide(getOpposite(side));
     }
 
     private int getOpposite(int side)
@@ -73,6 +71,15 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         return ForgeDirection.getOrientation(side).getOpposite().ordinal();
     }
 
+    public int getStrengthFromOppositeSide(int side)
+    {
+        return getStrengthFromSide(getOpposite(side));
+    }
+
+    public int getStrengthFromSide(int side)
+    {
+        return strengths[side];
+    }
 
     public void updateState(MenuRedstoneSidesEmitter sides, MenuRedstoneOutput output, MenuPulse pulse)
     {
@@ -170,7 +177,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         }
     }
 
-
     private void updateSideState(int side, MenuRedstoneOutput output)
     {
         int strength = updatedStrength[side];
@@ -209,7 +215,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         updatedStrength[side] = strength;
     }
 
-
     private void notifyUpdate(int x, int y, int z, boolean spread)
     {
         if (worldObj.getBlock(x, y, z) != BlockRegistry.blockCable && (x != xCoord || y != yCoord || z != zCoord))
@@ -227,13 +232,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             }
         }
     }
-
-
-    private static final String NBT_SIDES = "Sides";
-    private static final String NBT_STRENGTH = "Strength";
-    private static final String NBT_STRONG = "Strong";
-    private static final String NBT_TICK = "Tick";
-    private static final String NBT_PULSES = "Pulses";
 
     @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)
@@ -259,7 +257,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             }
         }
     }
-
 
     @Override
     public void writeContentToNBT(NBTTagCompound nbtTagCompound)
@@ -292,6 +289,11 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         nbtTagCompound.setTag(NBT_SIDES, sidesTag);
     }
 
+    @Override
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.SHOULD_CHECK_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_STRONG_POWER);
+    }
 
     @Override
     public void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id)
@@ -339,16 +341,11 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         }
     }
 
-
     @Override
     public int infoBitLength(boolean onServer)
     {
         return 0; //won't use the id
     }
-
-    private List<PulseTimer>[] pulseTimers;
-    private boolean hasUpdatedThisTick;
-    private List<WorldCoordinate> scheduledToUpdate = new ArrayList<WorldCoordinate>();
 
     @Override
     public void updateEntity()
@@ -410,9 +407,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         }
     }
 
-    private static final int UPDATE_BUFFER_DISTANCE = 5;
-    private boolean hasUpdatedData;
-
     @SideOnly(Side.CLIENT)
     private void keepClientDataUpdated()
     {
@@ -437,12 +431,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     public int[] getPower()
     {
         return updatedStrength;
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.SHOULD_CHECK_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_STRONG_POWER);
     }
 
     private class PulseTimer

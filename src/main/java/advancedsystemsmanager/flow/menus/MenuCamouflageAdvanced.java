@@ -9,17 +9,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class MenuCamouflageAdvanced extends Menu
 {
-    public MenuCamouflageAdvanced(FlowComponent parent)
-    {
-        super(parent);
-    }
-
     public static final int ERROR_X = 115;
     public static final int ERROR_Y = 2;
     public static final int ERROR_SIZE_W = 2;
     public static final int ERROR_SIZE_H = 10;
     public static final int ERROR_SRC_X = 44;
     public static final int ERROR_SRC_Y = 212;
+    public MenuCamouflageAdvanced(FlowComponent parent)
+    {
+        super(parent);
+    }
 
     @SideOnly(Side.CLIENT)
     @Override

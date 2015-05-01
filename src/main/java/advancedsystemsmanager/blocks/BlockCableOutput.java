@@ -35,13 +35,6 @@ public class BlockCableOutput extends BlockTileBase
         blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
     }
 
-
-    @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return icons[0];
-    }
-
     @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
@@ -53,6 +46,11 @@ public class BlockCableOutput extends BlockTileBase
         return blockIcon;
     }
 
+    @Override
+    public IIcon getIcon(int side, int meta)
+    {
+        return icons[0];
+    }
 
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
@@ -63,6 +61,12 @@ public class BlockCableOutput extends BlockTileBase
             return te.getStrengthFromOppositeSide(side);
         }
         return 0;
+    }
+
+    @Override
+    public boolean canProvidePower()
+    {
+        return true;
     }
 
     @Override
@@ -77,20 +81,14 @@ public class BlockCableOutput extends BlockTileBase
         return 0;
     }
 
-    private TileEntityEmitter getTileEntity(IBlockAccess world, int x, int y, int z)
-    {
-        return TileEntityCluster.getTileEntity(TileEntityEmitter.class, world, x, y, z);
-    }
-
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
         return true;
     }
 
-    @Override
-    public boolean canProvidePower()
+    private TileEntityEmitter getTileEntity(IBlockAccess world, int x, int y, int z)
     {
-        return true;
+        return TileEntityCluster.getTileEntity(TileEntityEmitter.class, world, x, y, z);
     }
 }

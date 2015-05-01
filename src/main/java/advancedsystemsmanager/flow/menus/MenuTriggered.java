@@ -20,10 +20,9 @@ import java.util.EnumSet;
 public abstract class MenuTriggered extends Menu
 {
 
-    public TextBoxNumberList textBoxes = new TextBoxNumberList();
-
     public static final String NBT_DELAY = "Delay";
     public static final String NBT_COUNTDOWN = "Counter";
+    public TextBoxNumberList textBoxes = new TextBoxNumberList();
     public int counter;
 
     public MenuTriggered(FlowComponent parent)
@@ -47,18 +46,18 @@ public abstract class MenuTriggered extends Menu
         this.textBoxes.onClick(mX, mY, button);
     }
 
-    @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
-    {
-        return this.textBoxes.onKeyStroke(gui, c, k);
-    }
-
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
     }
 
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return this.textBoxes.onKeyStroke(gui, c, k);
     }
 
     public void writeData(DataWriter dw)
@@ -93,15 +92,6 @@ public abstract class MenuTriggered extends Menu
         }
     }
 
-    public void readNetworkComponent(DataReader dr)
-    {
-        readData(dr);
-    }
-
-    public abstract int getDelay();
-
-    public abstract void setDelay(int val);
-
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
         this.setDelay(nbtTagCompound.getInteger(NBT_DELAY));
@@ -114,9 +104,18 @@ public abstract class MenuTriggered extends Menu
         nbtTagCompound.setInteger(NBT_COUNTDOWN, this.counter);
     }
 
+    public abstract int getDelay();
+
+    public abstract void setDelay(int val);
+
     public int getMin()
     {
         return 1;
+    }
+
+    public void readNetworkComponent(DataReader dr)
+    {
+        readData(dr);
     }
 
     public void setCountdown()
@@ -136,11 +135,6 @@ public abstract class MenuTriggered extends Menu
         }
     }
 
-    public boolean remove()
-    {
-        return false;
-    }
-
     public void act()
     {
         getParent().getManager().activateTrigger(getParent(), getConnectionSets());
@@ -153,4 +147,9 @@ public abstract class MenuTriggered extends Menu
     }
 
     public abstract EnumSet<ConnectionOption> getConnectionSets();
+
+    public boolean remove()
+    {
+        return false;
+    }
 }
