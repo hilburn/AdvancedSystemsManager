@@ -7,12 +7,10 @@ import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.ItemBufferElement;
-import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuInventory;
-import advancedsystemsmanager.flow.menus.MenuItem;
-import advancedsystemsmanager.flow.menus.MenuTargetInventory;
+import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -32,7 +30,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuInventory(component));
+        menus.add(new MenuContainer(component, SystemTypeRegistry.INVENTORY));
         menus.add(new MenuTargetInventory(component));
         menus.add(new MenuItem(component));
     }

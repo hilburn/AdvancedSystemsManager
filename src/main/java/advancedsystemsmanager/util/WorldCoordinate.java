@@ -2,6 +2,7 @@ package advancedsystemsmanager.util;
 
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class WorldCoordinate implements Comparable<WorldCoordinate>
 {
@@ -19,6 +20,11 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
         this.y = y;
         this.z = z;
         this.depth = depth;
+    }
+
+    public WorldCoordinate(WorldCoordinate original, ForgeDirection offset)
+    {
+        this(original.getX() + offset.offsetX, original.getY() + offset.offsetY, original.getZ() + offset.offsetY, original.getDepth() + 1);
     }
 
     @Override

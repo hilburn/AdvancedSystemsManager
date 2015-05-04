@@ -6,12 +6,14 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -23,6 +25,9 @@ public class ItemRemoteAccessor extends ItemBase
     public static final String Y = "y";
     public static final String Z = "z";
     public static final String WORLD = "world";
+
+    @SideOnly(Side.CLIENT)
+    private IIcon[] icons = new IIcon[2];
 
     public ItemRemoteAccessor()
     {
@@ -43,6 +48,8 @@ public class ItemRemoteAccessor extends ItemBase
             {
                 if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
                     FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
+                else
+                    stack.setTagCompound(null);
             }
         }
         return super.onItemRightClick(stack, world, player);
@@ -55,6 +62,22 @@ public class ItemRemoteAccessor extends ItemBase
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register)
+    {
+        icons[0] = register.registerIcon(getIconString());
+        icons[1] = register.registerIcon(getIconString()+"_advanced");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int damage)
+    {
+        return icons[damage % 2];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
     @SuppressWarnings(value = "unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_)
     {
@@ -63,17 +86,17 @@ public class ItemRemoteAccessor extends ItemBase
             if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != stack.getTagCompound().getByte("World"))
             {
                 list.add("§cWrong Dimension");
-            } else
-            {
-                int x = stack.getTagCompound().getInteger(X);
-                int y = stack.getTagCompound().getInteger(Y);
-                int z = stack.getTagCompound().getInteger(Z);
-                list.add("Linked to Manager at:");
-                list.add("x: " + x + " y: " + y + " z: " + z);
             }
+            int x = stack.getTagCompound().getInteger(X);
+            int y = stack.getTagCompound().getInteger(Y);
+            int z = stack.getTagCompound().getInteger(Z);
+            list.add("Linked to Manager at:");
+            list.add("x: " + x + " y: " + y + " z: " + z);
+            list.add(DimensionManager.getProvider(stack.getTagCompound().getByte("World")).getDimensionName());
         }
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings(value = "unchecked")
     public void getSubItems(Item item, CreativeTabs tab, List list)

@@ -6,6 +6,10 @@ import advancedsystemsmanager.api.IRedstoneReceiver;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.execution.IInternalInventory;
 import advancedsystemsmanager.api.execution.IInternalTank;
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButton;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
@@ -19,7 +23,8 @@ import java.util.List;
 
 public class SystemTypeRegistry
 {
-    public static final SystemType INVENTORY = new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
+    private static final List<ISystemType> types = new ArrayList<ISystemType>();
+    public static final ISystemType INVENTORY = register(new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
@@ -32,8 +37,8 @@ public class SystemTypeRegistry
         {
             return tileEntity instanceof IInventory ? (IInventory)tileEntity : null;
         }
-    };
-    public static final SystemType TANK = new SystemType<IFluidHandler>(Names.TYPE_TANK, false)
+    });
+    public static final ISystemType TANK = register(new SystemType<IFluidHandler>(Names.TYPE_TANK, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
@@ -46,60 +51,123 @@ public class SystemTypeRegistry
         {
             return tileEntity instanceof IFluidHandler ? (IFluidHandler)tileEntity : ((IInternalTank)tileEntity).getTank();
         }
-    };
-    public static final SystemType EMITTER = new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER, false)
+    });
+    public static final ISystemType EMITTER = register(new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof IRedstoneEmitter;
         }
-    };
-    public static final SystemType RECEIVER = new SystemType<IRedstoneReceiver>(Names.TYPE_RECEIVER, false)
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+        }
+    });
+    public static final ISystemType RECEIVER = register(new SystemType<IRedstoneReceiver>(Names.TYPE_RECEIVER, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof IRedstoneReceiver;
         }
-    };
-    public static final SystemType NODE = new SystemType<IRedstoneNode>(Names.TYPE_NODE, true)
+
+        @Override
+        public int getDefaultRadioButton()
+        {
+            return 2;
+        }
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+            radioButtonsMulti.add(new RadioButton(0, Names.RUN_SHARED_ONCE));
+            radioButtonsMulti.add(new RadioButton(1, Names.REQUIRE_ALL_TARGETS));
+            radioButtonsMulti.add(new RadioButton(2, Names.REQUIRE_ONE_TARGET));
+        }
+
+        @Override
+        public boolean isVisible(FlowComponent parent)
+        {
+            return parent.getConnectionSet() == ConnectionSet.REDSTONE;
+        }
+    });
+    public static final ISystemType NODE = register(new SystemType<IRedstoneNode>(Names.TYPE_NODE, true)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof IRedstoneNode;
         }
-    };
-    public static final SystemType BUD = new SystemType<TileEntityBUD>(Names.TYPE_BUD, false)
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+            radioButtonsMulti.add(new RadioButton(0, Names.RUN_SHARED_ONCE));
+            radioButtonsMulti.add(new RadioButton(1, Names.REQUIRE_ALL_TARGETS));
+            radioButtonsMulti.add(new RadioButton(2, Names.REQUIRE_ONE_TARGET));
+        }
+
+        @Override
+        public int getDefaultRadioButton()
+        {
+            return 2;
+        }
+    });
+    public static final ISystemType BUD = register(new SystemType<TileEntityBUD>(Names.TYPE_BUD, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntityBUD;
         }
-    };
-    public static final SystemType CAMOUFLAGE = new SystemType<TileEntityCamouflage>(Names.TYPE_CAMOUFLAGE, false)
+
+        @Override
+        public boolean isVisible(FlowComponent parent)
+        {
+            return parent.getConnectionSet() == ConnectionSet.BUD;
+        }
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+            radioButtonsMulti.add(new RadioButton(0, Names.REQUIRE_ALL_TARGETS));
+            radioButtonsMulti.add(new RadioButton(1, Names.REQUIRE_ONE_TARGET));
+        }
+    });
+    public static final ISystemType CAMOUFLAGE = register(new SystemType<TileEntityCamouflage>(Names.TYPE_CAMOUFLAGE, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntityCamouflage;
         }
-    };
-    public static final SystemType SIGN = new SystemType<TileEntitySignUpdater>(Names.TYPE_SIGN, false)
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+        }
+    });
+    public static final ISystemType SIGN = register(new SystemType<TileEntitySignUpdater>(Names.TYPE_SIGN, false)
     {
         @Override
         public boolean isInstance(TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntitySignUpdater;
         }
-    };
-    private static final List<ISystemType> types = new ArrayList<ISystemType>();
 
-    public static void register(ISystemType type)
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+            super.initRadioButtons(radioButtonsMulti);
+        }
+    });
+
+    public static ISystemType register(ISystemType type)
     {
         types.add(type);
+        return type;
     }
 
     public static List<ISystemType> getTypes()
@@ -110,6 +178,7 @@ public class SystemTypeRegistry
     public static abstract class SystemType<Type> implements ISystemType<Type>
     {
         private String name;
+
         private boolean group;
 
         private SystemType(String name, boolean group)
@@ -127,6 +196,7 @@ public class SystemTypeRegistry
             return group;
         }
 
+
         @Override
         public Type getType(TileEntity tileEntity)
         {
@@ -139,6 +209,32 @@ public class SystemTypeRegistry
             return name;
         }
 
+        @Override
+        public void addErrors(List<String> errors, MenuContainer container)
+        {
+            if (container.selectedInventories.isEmpty() && container.isVisible())
+            {
+                errors.add(name + "Error");
+            }
+        }
 
+        @Override
+        public boolean isVisible(FlowComponent parent)
+        {
+            return true;
+        }
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+            radioButtonsMulti.add(new RadioButton(0, Names.RUN_SHARED_ONCE));
+            radioButtonsMulti.add(new RadioButton(1, Names.RUN_ONE_PER_TARGET));
+        }
+
+        @Override
+        public int getDefaultRadioButton()
+        {
+            return 0;
+        }
     }
 }

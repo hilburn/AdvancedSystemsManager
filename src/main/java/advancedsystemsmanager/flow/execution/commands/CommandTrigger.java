@@ -5,6 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class CommandTrigger extends CommandBase
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuReceivers(component));
-        menus.add(new MenuBUDs(component));
+        menus.add(new MenuContainer(component, SystemTypeRegistry.RECEIVER));
+        menus.add(new MenuContainer(component, SystemTypeRegistry.BUD));
         menus.add(new MenuInterval(component));
         menus.add(new MenuRedstoneSidesTrigger(component));
         menus.add(new MenuRedstoneStrength(component));

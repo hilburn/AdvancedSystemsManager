@@ -1,6 +1,5 @@
 package advancedsystemsmanager.blocks;
 
-
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;

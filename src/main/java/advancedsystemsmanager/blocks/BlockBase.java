@@ -1,16 +1,25 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
+import cofh.api.block.IDismantleable;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
 
-public class BlockBase extends Block
+import java.util.ArrayList;
+
+@Optional.Interface(iface = "cofh.api.block.IDismantleable", modid = Mods.COFH_BLOCK)
+public class BlockBase extends Block implements IDismantleable
 {
     @SideOnly(Side.CLIENT)
     protected IIcon[] icons;
@@ -65,5 +74,24 @@ public class BlockBase extends Block
             for (int i = 0; i < icons.length; i++)
                 icons[i] = register.registerIcon(getTextureName() + (i > 0 ? "_" + i : ""));
         }
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_BLOCK)
+    public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock)
+    {
+        ArrayList<ItemStack> list = getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+        world.setBlockToAir(x, y, z);
+        if (!returnBlock)
+            for (ItemStack item : list)
+                dropBlockAsItem(world, x, y, z, item);
+        return list;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_BLOCK)
+    public boolean canDismantle(EntityPlayer entityPlayer, World world, int x, int y, int z)
+    {
+        return entityPlayer.isSneaking();
     }
 }

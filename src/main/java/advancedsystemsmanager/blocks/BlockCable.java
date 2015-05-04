@@ -8,11 +8,9 @@ import advancedsystemsmanager.util.WorldCoordinate;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class BlockCable extends BlockBase implements ICable
 {
@@ -48,7 +46,7 @@ public class BlockCable extends BlockBase implements ICable
     public void updateInventories(World world, int blockX, int blockY, int blockZ)
     {
         List<WorldCoordinate> visited = new ArrayList<WorldCoordinate>();
-
+        List<TileEntityManager> managers = new ArrayList<TileEntityManager>();
         Queue<WorldCoordinate> queue = new PriorityQueue<WorldCoordinate>();
         WorldCoordinate start = new WorldCoordinate(blockX, blockY, blockZ, 0);
         queue.add(start);
@@ -58,40 +56,35 @@ public class BlockCable extends BlockBase implements ICable
         {
             WorldCoordinate element = queue.poll();
 
-            for (int x = -1; x <= 1; x++)
+            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                for (int y = -1; y <= 1; y++)
-                {
-                    for (int z = -1; z <= 1; z++)
-                    {
-                        if (Math.abs(x) + Math.abs(y) + Math.abs(z) == 1)
-                        {
-                            WorldCoordinate target = new WorldCoordinate(element.getX() + x, element.getY() + y, element.getZ() + z, element.getDepth() + 1);
+                WorldCoordinate target = new WorldCoordinate(element, direction);
 
-                            if (!visited.contains(target))
-                            {
-                                visited.add(target);
-                                //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
-                                Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
-                                int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
-                                if (block == BlockRegistry.blockManager)
-                                {
-                                    TileEntity tileEntity = world.getTileEntity(target.getX(), target.getY(), target.getZ());
-                                    if (tileEntity != null && tileEntity instanceof TileEntityManager)
-                                    {
-                                        ((TileEntityManager)tileEntity).updateInventories();
-                                    }
-                                } else if (isCable(block, meta) /*&& target.getDepth() < TileEntityManager.MAX_CABLE_LENGTH*/)
-                                {
-                                    queue.add(target);
-                                }
-                                //}
-                            }
+                if (!visited.contains(target))
+                {
+                    visited.add(target);
+                    //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
+                    Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
+                    int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
+                    if (block == BlockRegistry.blockManager)
+                    {
+                        TileEntity tileEntity = world.getTileEntity(target.getX(), target.getY(), target.getZ());
+                        if (tileEntity != null && tileEntity instanceof TileEntityManager)
+                        {
+                            managers.add((TileEntityManager)tileEntity);
                         }
+                    } else if (isCable(block, meta) /*&& target.getDepth() < TileEntityManager.MAX_CABLE_LENGTH*/)
+                    {
+                        queue.add(target);
+                        ((ICable)block).getConnectedCables(world, target, visited, queue);
                     }
+                    //}
                 }
             }
-
+        }
+        for (TileEntityManager manager : managers)
+        {
+            manager.updateInventories();
         }
     }
 
@@ -104,5 +97,25 @@ public class BlockCable extends BlockBase implements ICable
     public boolean isCable(int meta)
     {
         return true;
+    }
+
+    @Override
+    public void getConnectedCables(World world, WorldCoordinate coordinate, List<WorldCoordinate> visited, Queue<WorldCoordinate> cables)
+    {
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+        {
+            WorldCoordinate target = new WorldCoordinate(coordinate, direction);
+
+            if (!visited.contains(target))
+            {
+                visited.add(target);
+                Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
+                int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
+                if (isCable(block, meta))
+                {
+                    cables.add(target);
+                }
+            }
+        }
     }
 }

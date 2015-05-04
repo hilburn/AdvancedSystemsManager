@@ -41,6 +41,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
 
@@ -63,7 +64,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public static final int MAX_CONNECTED_INVENTORIES = 1023;
     private static final String NBT_MAX_ID = "maxID";
     private static final String NBT_TIMER = "Timer";
-    private static final String NBT_COMPONENTS = "Components";
+    public static final String NBT_COMPONENTS = "Components";
     private static final String NBT_VARIABLES = "Variables";
     public List<FlowComponent> triggers;
     public ManagerButtonList buttons;
@@ -307,42 +308,31 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         {
             WorldCoordinate element = queue.poll();
 
-            for (int x = -1; x <= 1; x++)
+            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                for (int y = -1; y <= 1; y++)
+                WorldCoordinate target = new WorldCoordinate(element.getX() + direction.offsetX, element.getY() + direction.offsetY, element.getZ() + direction.offsetY, element.getDepth() + 1);
+
+                if (!visited.contains(target) && (Settings.isLimitless(this) || inventories.size() < MAX_CONNECTED_INVENTORIES))
                 {
-                    for (int z = -1; z <= 1; z++)
+                    visited.add(target);
+                    TileEntity te = worldObj.getTileEntity(target.getX(), target.getY(), target.getZ());
+
+                    if (te instanceof TileEntityCluster)
                     {
-                        if (Math.abs(x) + Math.abs(y) + Math.abs(z) == 1)
+
+                        for (TileEntityClusterElement tileEntityClusterElement : ((TileEntityCluster)te).getElements())
                         {
-                            WorldCoordinate target = new WorldCoordinate(element.getX() + x, element.getY() + y, element.getZ() + z, element.getDepth() + 1);
-
-                            if (!visited.contains(target) && (Settings.isLimitless(this) || inventories.size() < MAX_CONNECTED_INVENTORIES))
-                            {
-                                visited.add(target);
-                                TileEntity te = worldObj.getTileEntity(target.getX(), target.getY(), target.getZ());
-
-                                if (te instanceof TileEntityCluster)
-                                {
-
-                                    for (TileEntityClusterElement tileEntityClusterElement : ((TileEntityCluster)te).getElements())
-                                    {
-                                        ((TileEntityCluster)te).setWorldObject(tileEntityClusterElement);
-                                        addInventory(tileEntityClusterElement, target);
-                                    }
-                                } else
-                                {
-                                    addInventory(te, target);
-                                }
-
-
-                                if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
-                                {
-                                    queue.add(target);
-                                }
-                            }
+                            ((TileEntityCluster)te).setWorldObject(tileEntityClusterElement);
+                            addInventory(tileEntityClusterElement, target);
                         }
+                    } else
+                    {
+                        addInventory(te, target);
+                    }
 
+                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
+                    {
+                        queue.add(target);
                     }
                 }
             }
@@ -432,7 +422,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     menuInventory.setSelectedInventories(getNewSelection(oldCoordinates, oldSelection, true));
                 }
             }
-
         }
 
         for (Variable variable : variables)

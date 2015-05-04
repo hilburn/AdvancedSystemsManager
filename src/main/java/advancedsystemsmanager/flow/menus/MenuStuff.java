@@ -23,8 +23,6 @@ import java.util.List;
 
 public abstract class MenuStuff<Type> extends Menu
 {
-
-
     public static final int RADIO_BUTTON_X_LEFT = 5;
     public static final int RADIO_BUTTON_X_RIGHT = 65;
     public static final int RADIO_BUTTON_Y = 5;

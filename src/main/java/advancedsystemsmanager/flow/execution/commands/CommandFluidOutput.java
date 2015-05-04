@@ -8,6 +8,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -72,7 +73,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuTank(component));
+        menus.add(new MenuContainer(component, SystemTypeRegistry.TANK));
         menus.add(new MenuTargetTank(component));
         menus.add(new MenuLiquid(component, false));
     }

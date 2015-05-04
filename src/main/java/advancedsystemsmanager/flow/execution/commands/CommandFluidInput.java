@@ -6,12 +6,10 @@ import advancedsystemsmanager.api.execution.IInternalTank;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.FluidBufferElement;
-import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuLiquid;
-import advancedsystemsmanager.flow.menus.MenuTank;
-import advancedsystemsmanager.flow.menus.MenuTargetTank;
+import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -34,7 +32,7 @@ public class CommandFluidInput extends CommandInput<Fluid>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuTank(component));
+        menus.add(new MenuContainer(component, SystemTypeRegistry.TANK));
         menus.add(new MenuTargetTank(component));
         menus.add(new MenuLiquid(component));
     }

@@ -12,15 +12,6 @@ public class MenuRFOutput extends MenuRF
         super(parent, StevesEnum.RF_RECEIVER);
     }
 
-    public String getName()
-    {
-        return Names.TYPE_RF_OUTPUT;
-    }
-
-    public void initRadioButtons()
-    {
-    }
-
     @Override
     public void readNetworkComponent(DataReader dr)
     {

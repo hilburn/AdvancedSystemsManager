@@ -13,6 +13,7 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemBlock;
@@ -31,7 +32,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
-public abstract class MenuContainer extends Menu
+public class MenuContainer extends Menu
 {
     public static final int BACK_SRC_X = 46;
     public static final int BACK_SRC_Y = 52;
@@ -71,17 +72,17 @@ public abstract class MenuContainer extends Menu
     public List<IContainerSelection> inventories;
     public RadioButtonList radioButtonsMulti;
     public ScrollController<IContainerSelection> scrollController;
-    public ISystemType validType;
+    public ISystemType type;
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
     public List<Button> buttons;
     public List<Variable> filterVariables;
     public boolean clientUpdate; //ugly quick way to fix client/server issue
 
-    public MenuContainer(FlowComponent parent, ISystemType validType)
+    public MenuContainer(FlowComponent parent, ISystemType type)
     {
         super(parent);
-        this.validType = validType;
+        this.type = type;
 
         selectedInventories = new ArrayList<Integer>();
         filterVariables = new ArrayList<Variable>();
@@ -97,6 +98,7 @@ public abstract class MenuContainer extends Menu
         };
 
         initRadioButtons();
+        radioButtonsMulti.setSelectedOption(getDefaultRadioButton());
 
         scrollController = new ScrollController<IContainerSelection>(getDefaultSearch())
         {
@@ -521,12 +523,6 @@ public abstract class MenuContainer extends Menu
         return ret;
     }
 
-    public void initRadioButtons()
-    {
-        radioButtonsMulti.add(new RadioButtonInventory(0, Names.RUN_SHARED_ONCE));
-        radioButtonsMulti.add(new RadioButtonInventory(1, Names.RUN_ONE_PER_TARGET));
-    }
-
     public void writeRadioButtonData(DataWriter dw, int option)
     {
         dw.writeBoolean(true);
@@ -585,7 +581,7 @@ public abstract class MenuContainer extends Menu
 
     public Set<ISystemType> getValidTypes()
     {
-        return new HashSet<ISystemType>(Arrays.asList(validType));
+        return new HashSet<ISystemType>(Arrays.asList(type));
     }
 
     public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
@@ -977,6 +973,34 @@ public abstract class MenuContainer extends Menu
         }
     }
 
+    @Override
+    public String getName()
+    {
+        return type.getName()+"Menu";
+    }
+
+    @Override
+    public void addErrors(List<String> errors)
+    {
+        type.addErrors(errors, this);
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return type.isVisible(getParent());
+    }
+
+    public void initRadioButtons()
+    {
+        type.initRadioButtons(radioButtonsMulti);
+    }
+
+    public int getDefaultRadioButton()
+    {
+        return type.getDefaultRadioButton();
+    }
+
     public List<Integer> getSelectedInventories()
     {
         return selectedInventories;
@@ -1002,15 +1026,6 @@ public abstract class MenuContainer extends Menu
         Page(Page parent)
         {
             this.parent = parent;
-        }
-    }
-
-    public class RadioButtonInventory extends RadioButton
-    {
-
-        public RadioButtonInventory(int id, String text)
-        {
-            super(RADIO_BUTTON_MULTI_X, RADIO_BUTTON_MULTI_Y + id * RADIO_BUTTON_SPACING, text);
         }
     }
 

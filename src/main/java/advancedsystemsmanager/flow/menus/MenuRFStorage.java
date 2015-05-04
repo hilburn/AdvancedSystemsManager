@@ -17,24 +17,6 @@ public class MenuRFStorage extends MenuContainer
         super(parent, StevesEnum.RF_CONNECTION);
     }
 
-    public String getName()
-    {
-        return Names.TYPE_RF;
-    }
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        if (this.selectedInventories.isEmpty() && this.isVisible())
-        {
-            errors.add(Names.NO_RF_ERROR);
-        }
-    }
-
-    public void initRadioButtons()
-    {
-    }
-
     @Override
     public Set<ISystemType> getValidTypes()
     {

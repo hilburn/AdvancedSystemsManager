@@ -5,6 +5,7 @@ import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
+import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -26,6 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 
 public class BlockCableCluster extends BlockCamouflageBase implements ICable
@@ -272,5 +274,11 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     public boolean isCable(int meta)
     {
         return isAdvanced(meta);
+    }
+
+    @Override
+    public void getConnectedCables(World world, WorldCoordinate coordinate, List<WorldCoordinate> visited, Queue<WorldCoordinate> cables)
+    {
+        BlockRegistry.blockCable.getConnectedCables(world, coordinate, visited, cables);
     }
 }
