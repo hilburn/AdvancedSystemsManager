@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.IRedstoneEmitter;
+import advancedsystemsmanager.api.tileentities.IRedstoneEmitter;
 import advancedsystemsmanager.flow.menus.MenuPulse;
 import advancedsystemsmanager.flow.menus.MenuRedstoneOutput;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;

@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network;
 
-import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;

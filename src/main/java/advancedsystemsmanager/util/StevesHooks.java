@@ -48,9 +48,9 @@ public class StevesHooks
             ItemStack stack = ((IDeepStorageUnit)tileEntity).getStoredItemType();
             String contains = "\n";
             if (stack == null || stack.isItemEqual(Null.NULL_STACK))
-                contains += StatCollector.translateToLocal("stevesaddons.idsucompat.isEmpty");
+                contains += StatCollector.translateToLocal("asm.idsucompat.isEmpty");
             else
-                contains += StatCollector.translateToLocalFormatted("stevesaddons.idsucompat.contains", stack.getDisplayName());
+                contains += StatCollector.translateToLocalFormatted("asm.idsucompat.contains", stack.getDisplayName());
             result += contains;
         } else if (tileEntity instanceof IFluidHandler)
         {
@@ -65,8 +65,8 @@ public class StevesHooks
                     tankInfo += info.fluid.getLocalizedName() + (i++ < fluidTankInfo.length ? ", " : "");
                 }
             }
-            if (tankInfo.isEmpty()) result += "\n" + StatCollector.translateToLocal("stevesaddons.idsucompat.isEmpty");
-            else result += "\n" + StatCollector.translateToLocalFormatted("stevesaddons.idsucompat.contains", tankInfo);
+            if (tankInfo.isEmpty()) result += "\n" + StatCollector.translateToLocal("asm.idsucompat.isEmpty");
+            else result += "\n" + StatCollector.translateToLocalFormatted("asm.idsucompat.contains", tankInfo);
         }
         return result;
     }
@@ -124,9 +124,9 @@ public class StevesHooks
         return clazz.isInstance(entity) || entity instanceof IHiddenTank && clazz == IFluidHandler.class || entity instanceof IHiddenInventory && clazz == IInventory.class || clazz == IEnergyConnection.class && (entity instanceof IEnergyProvider || entity instanceof IEnergyReceiver);
     }
 
-    public static boolean containerAdvancedSearch(SystemBlock block, String search)
+    public static boolean containerAdvancedSearch(SystemCoord block, String search)
     {
-        TileEntity tileEntity = block.getTileEntity();
+        TileEntity tileEntity = block.tileEntity;
         String toSearch = getLabel(tileEntity);
         Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
         return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(getContentString(tileEntity)).find();

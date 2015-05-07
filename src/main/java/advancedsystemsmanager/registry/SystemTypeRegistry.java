@@ -1,8 +1,8 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.IRedstoneEmitter;
-import advancedsystemsmanager.api.IRedstoneNode;
-import advancedsystemsmanager.api.IRedstoneReceiver;
+import advancedsystemsmanager.api.tileentities.IRedstoneEmitter;
+import advancedsystemsmanager.api.tileentities.IRedstoneNode;
+import advancedsystemsmanager.api.tileentities.IRedstoneReceiver;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.execution.IInternalInventory;
 import advancedsystemsmanager.api.execution.IInternalTank;

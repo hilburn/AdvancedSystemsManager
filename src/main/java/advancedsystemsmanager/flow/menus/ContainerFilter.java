@@ -6,6 +6,7 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ContainerFilter
     public TextBoxNumberList textBoxes;
     public RadioButtonList radioButtonsSelection;
     public ScrollController<Variable> scrollControllerVariable;
-    public List<Integer> filterVariableSelection;
+    public List<Long> filterVariableSelection;
     public RadioButtonList radioButtonVariable;
 
     public CheckBox invertFilterMatch;
@@ -63,7 +64,7 @@ public class ContainerFilter
     {
         checkBoxes = new CheckBoxList();
 
-        filterVariableSelection = new ArrayList<Integer>();
+        filterVariableSelection = new ArrayList<Long>();
 
         MenuContainer.Page[] subFilterPages = {MenuContainer.Page.POSITION, MenuContainer.Page.DISTANCE, MenuContainer.Page.SELECTION, MenuContainer.Page.VARIABLE};
         String[] subFilterLabels = {Names.FILTER_POSITION_LABEL, Names.FILTER_DISTANCE_LABEL, Names.FILTER_SELECTION_LABEL, Names.FILTER_VARIABLE_LABEL};
@@ -142,7 +143,7 @@ public class ContainerFilter
             {
                 if (filterVariableSelection.contains(variable.getId()))
                 {
-                    filterVariableSelection.remove((Integer)variable.getId());
+                    filterVariableSelection.remove(variable.getId());
                 } else
                 {
                     filterVariableSelection.add(variable.getId());
@@ -191,7 +192,7 @@ public class ContainerFilter
         return radioButtonVariable.getSelectedOption() == 1;
     }
 
-    public boolean matches(TileEntityManager manager, List<Integer> selectedInventories, SystemBlock block)
+    public boolean matches(TileEntityManager manager, List<Long> selectedInventories, SystemCoord block)
     {
         boolean filterMatch = true;
 
@@ -218,16 +219,16 @@ public class ContainerFilter
                                 switch (j)
                                 {
                                     case 0:
-                                        value = block.getTileEntity().xCoord - manager.xCoord;
+                                        value = block.tileEntity.xCoord - manager.xCoord;
                                         break;
                                     case 1:
-                                        value = block.getTileEntity().yCoord - manager.yCoord;
+                                        value = block.tileEntity.yCoord - manager.yCoord;
                                         break;
                                     case 2:
-                                        value = block.getTileEntity().zCoord - manager.zCoord;
+                                        value = block.tileEntity.zCoord - manager.zCoord;
                                         break;
                                     case 3:
-                                        value = block.getCableDistance();
+                                        value = block.depth;
                                         break;
                                     case 4:
                                         value = block.getDistance(manager);

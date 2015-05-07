@@ -1,6 +1,5 @@
 package advancedsystemsmanager.util;
 
-import advancedsystemsmanager.api.IJsonWritable;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -9,8 +8,6 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -21,18 +18,51 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SystemBlock implements IContainerSelection<GuiManager>, Comparable<SystemBlock>, IJsonWritable
+public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection<GuiManager>
 {
-    private TileEntity tileEntity;
-    private Set<ISystemType> types;
-    private int id;
-    private int depth;
+    public int x, y, z, depth, dim;
+    public long key;
+    public Set<ISystemType> types;
+    public TileEntity tileEntity;
 
-    public SystemBlock(TileEntity tileEntity, int depth)
+    public SystemCoord(int x, int y, int z)
     {
-        this.tileEntity = tileEntity;
-        types = new HashSet<ISystemType>();
+        this(x, y, z, 0, 0);
+    }
+
+    public SystemCoord(int x, int y, int z, int dim)
+    {
+        this(x, y, z, dim, 0);
+    }
+
+    public SystemCoord(int x, int y, int z, int dim, int depth)
+    {
+        this(x, y, z, dim, 0, null);
+    }
+
+    public SystemCoord(WorldCoordinate coordinate)
+    {
+        this(coordinate.getTileEntity(), coordinate);
+    }
+
+    public SystemCoord(TileEntity te, WorldCoordinate coordinate)
+    {
+        this(coordinate.getX(), coordinate.getY(), coordinate.getZ(), te == null ? 0 : te.getWorldObj().provider.dimensionId, coordinate.getDepth(), te);
+    }
+
+    public SystemCoord(int x, int y, int z, int dim, int depth, TileEntity tileEntity)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.dim = dim;
         this.depth = depth;
+        this.tileEntity = tileEntity;
+        this.types = new HashSet<ISystemType>();
+        this.key = ((long)(x & 0xFFFFFFFF))<<40;
+        this.key |= ((long)z & 0xFFFFFFFF)<<16;
+        this.key |= ((long)y & 0xFF)<<8;
+        this.key |= dim & 0xFF;
     }
 
     public void addType(ISystemType type)
@@ -63,20 +93,37 @@ public class SystemBlock implements IContainerSelection<GuiManager>, Comparable<
         return type == null || types.contains(type) || (type == SystemTypeRegistry.NODE && (types.contains(SystemTypeRegistry.RECEIVER) || types.contains(SystemTypeRegistry.EMITTER)));
     }
 
-    public TileEntity getTileEntity()
+    @Override
+    public boolean equals(Object o)
     {
-        return tileEntity;
+        if (this == o) return true;
+        if (!(o instanceof SystemCoord)) return false;
+
+        SystemCoord that = (SystemCoord)o;
+
+        return x == that.x && y == that.y && z == that.z;
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = 173 + x;
+        result = 31 * result + z;
+        result = 31 * result + y;
+        return result;
+    }
+
+    @Override
+    public int compareTo(SystemCoord o)
+    {
+        return depth == o.depth ? x == o.x && y == o.y && z == o.z ? Integer.compare(dim, o.dim) : Long.compare(key, o.key) : depth < o.depth ? -1 : 1;
     }
 
     @Override
     public long getId()
     {
-        return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
+        return key;
     }
 
     @Override
@@ -94,12 +141,11 @@ public class SystemBlock implements IContainerSelection<GuiManager>, Comparable<
 
         str += "\n" + StatCollector.translateToLocalFormatted(Names.LOCATION, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
         int distance = getDistance(gui.getManager());
-        str += "\n" + StatCollector.translateToLocalFormatted(distance == 1 ? Names.BLOCK_AWAY : Names.BLOCKS_AWAY, distance);
-        str += "\n" + StatCollector.translateToLocalFormatted(depth == 1 ? Names.CABLE_AWAY : Names.CABLES_AWAY, depth);
+        str += "\n" + StatCollector.translateToLocalFormatted(distance > 1 ? Names.BLOCKS_AWAY : Names.BLOCK_AWAY, distance);
+        str += "\n" + StatCollector.translateToLocalFormatted(depth > 1 ? Names.CABLES_AWAY : Names.CABLE_AWAY, depth);
 
         return str;
     }
-
 
     public int getDistance(TileEntityManager manager)
     {
@@ -142,26 +188,6 @@ public class SystemBlock implements IContainerSelection<GuiManager>, Comparable<
     @SideOnly(Side.CLIENT)
     public boolean isPartOfVariable(Variable variable)
     {
-        return variable.isValid() && ((MenuContainer)variable.getDeclaration().getMenus().get(2)).getSelectedInventories().contains(id);
-    }
-
-    public int getDepth()
-    {
-        return depth;
-    }
-
-    @Override
-    public JsonObject writeToJson()
-    {
-        JsonObject object = new JsonObject();
-        object.add("Position", new JsonPrimitive(tileEntity.xCoord + ", " + tileEntity.yCoord + ", " + tileEntity.zCoord));
-        object.add("Name", new JsonPrimitive(new GuiManager(null, null).getBlockName(tileEntity)));
-        return object;
-    }
-
-    @Override
-    public int compareTo(SystemBlock o)
-    {
-        return depth == o.depth ? 0 : depth < o.depth ? -1 : 1;
+        return variable.isValid() && ((MenuContainer)variable.getDeclaration().getMenus().get(2)).getSelectedInventories().contains(key);
     }
 }

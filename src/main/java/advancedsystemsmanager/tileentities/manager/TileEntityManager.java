@@ -1,8 +1,8 @@
 package advancedsystemsmanager.tileentities.manager;
 
-import advancedsystemsmanager.api.ISystemListener;
+import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.Connection;
@@ -15,7 +15,6 @@ import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuInterval;
 import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
@@ -29,11 +28,12 @@ import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
-import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -70,10 +70,10 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public ManagerButtonList buttons;
     public boolean justSentServerComponentRemovalPacket;
     public TIntObjectHashMap<FlowComponent> components;
+    public TLongObjectHashMap<SystemCoord> network;
     public FlowComponent selectedGroup;
     @SideOnly(Side.CLIENT)
     public IInterfaceRenderer specialRenderer;
-    List<SystemBlock> inventories = new ArrayList<SystemBlock>();
     private Connection currentlyConnecting;
     private List<FlowComponent> zLevelRenderingList;
     private Variable[] variables;
@@ -92,6 +92,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         removedIds = new ArrayList<Integer>();
         variables = new Variable[VariableColor.values().length];
         components = new TIntObjectHashMap<FlowComponent>();
+        network = new TLongObjectHashMap<SystemCoord>();
         for (int i = 0; i < variables.length; i++)
         {
             variables[i] = new Variable(i);
@@ -143,9 +144,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return components.get(i);
     }
 
-    public List<SystemBlock> getConnectedInventories()
+    public TLongObjectHashMap<SystemCoord> getNetwork()
     {
-        return inventories;
+        return network;
+    }
+
+    public List<SystemCoord> getConnectedInventories()
+    {
+        List<SystemCoord> result = new ArrayList<SystemCoord>(network.valueCollection());
+        Collections.sort(result);
+        return result;
     }
 
     public Connection getCurrentlyConnecting()
@@ -172,9 +180,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void activateTrigger(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
     {
         updateFirst();
-        for (SystemBlock inventory : inventories)
+        for (SystemCoord inventory : network.valueCollection())
         {
-            if (inventory.getTileEntity().isInvalid())
+            if (inventory.tileEntity.isInvalid())
             {
                 updateInventories();
                 break;
@@ -281,6 +289,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
+    private boolean findNewSelectedComponent(int id)
+    {
+        if (components.containsKey(id))
+        {
+            selectedGroup = components.get(id);
+            return true;
+        }
+        return false;
+    }
+
     public List<FlowComponent> getZLevelRenderingList()
     {
         return zLevelRenderingList;
@@ -289,16 +307,18 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void updateInventories()
     {
         usingUnlimitedInventories = false;
-        WorldCoordinate[] oldCoordinates = new WorldCoordinate[inventories.size()];
-        for (int i = 0; i < oldCoordinates.length; i++)
+        WorldCoordinate[] oldCoordinates = new WorldCoordinate[network.size()];
+        int i = 0;
+        for (SystemCoord coord : network.valueCollection())
         {
-            TileEntity inventory = inventories.get(i).getTileEntity();
-            oldCoordinates[i] = new WorldCoordinate(inventory.xCoord, inventory.yCoord, inventory.zCoord);
+            TileEntity inventory = coord.tileEntity;
+            oldCoordinates[i] = new WorldCoordinate(coord.x, coord.y, coord.z);
             oldCoordinates[i].setTileEntity(inventory);
+            i++;
         }
 
         List<WorldCoordinate> visited = new ArrayList<WorldCoordinate>();
-        inventories.clear();
+        network.clear();
         Queue<WorldCoordinate> queue = new PriorityQueue<WorldCoordinate>();
         WorldCoordinate start = new WorldCoordinate(xCoord, yCoord, zCoord, 0);
         queue.add(start);
@@ -310,13 +330,19 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                WorldCoordinate target = new WorldCoordinate(element.getX() + direction.offsetX, element.getY() + direction.offsetY, element.getZ() + direction.offsetY, element.getDepth() + 1);
+                WorldCoordinate target = new WorldCoordinate(element.getX() + direction.offsetX, element.getY() + direction.offsetY, element.getZ() + direction.offsetZ, element.getDepth() + 1);
 
-                if (!visited.contains(target) && (Settings.isLimitless(this) || inventories.size() < MAX_CONNECTED_INVENTORIES))
+                if (!visited.contains(target) && (Settings.isLimitless(this) || network.size() < MAX_CONNECTED_INVENTORIES))
                 {
                     visited.add(target);
-                    TileEntity te = worldObj.getTileEntity(target.getX(), target.getY(), target.getZ());
 
+                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
+                    {
+                        queue.add(target);
+                    }
+
+                    TileEntity te = worldObj.getTileEntity(target.getX(), target.getY(), target.getZ());
+                    if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
 
@@ -329,11 +355,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     {
                         addInventory(te, target);
                     }
-
-                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
-                    {
-                        queue.add(target);
-                    }
                 }
             }
 
@@ -345,47 +366,27 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             {
                 if (oldCoordinate.getTileEntity() instanceof ISystemListener)
                 {
-                    boolean found = false;
-                    for (SystemBlock inventory : inventories)
-                    {
-                        if (oldCoordinate.getX() == inventory.getTileEntity().xCoord && oldCoordinate.getY() == inventory.getTileEntity().yCoord && oldCoordinate.getZ() == inventory.getTileEntity().zCoord)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
+                    SystemCoord find = new SystemCoord(oldCoordinate);
 
-                    if (!found)
+                    if (!network.containsKey(find.key))
                     {
                         ((ISystemListener)oldCoordinate.getTileEntity()).removed(this);
                     }
                 }
             }
-
-            if (!worldObj.isRemote)
-            {
-                updateInventorySelection(oldCoordinates);
-            } else
-            {
-                for (FlowComponent item : getFlowItems())
-                {
-                    item.setInventoryListDirty(true);
-                }
-            }
         }
-
 
         firstInventoryUpdate = false;
     }
 
     private void addInventory(TileEntity te, WorldCoordinate target)
     {
-        SystemBlock connection = new SystemBlock(te, target.getDepth());
+        SystemCoord connection = new SystemCoord(te, target);
         boolean isValidConnection = false;
 
         for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
-            if (connectionBlockType.isInstance(connection.getTileEntity()))
+            if (connectionBlockType.isInstance(connection.tileEntity))
             {
                 isValidConnection = true;
                 connection.addType(connectionBlockType);
@@ -394,98 +395,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
         if (isValidConnection)
         {
-            connection.setId(variables.length + inventories.size());
-
-            if (target.getDepth() >= MAX_CABLE_LENGTH || inventories.size() >= MAX_CONNECTED_INVENTORIES)
+            if (target.getDepth() >= MAX_CABLE_LENGTH || network.size() >= MAX_CONNECTED_INVENTORIES)
             {
                 usingUnlimitedInventories = true;
             }
-            inventories.add(connection);
-            if (connection.getTileEntity() instanceof ISystemListener)
+            network.put(connection.key, connection);
+            if (connection.tileEntity instanceof ISystemListener)
             {
-                ((ISystemListener)connection.getTileEntity()).added(this);
+                ((ISystemListener)connection.tileEntity).added(this);
             }
         }
-    }
-
-    private void updateInventorySelection(WorldCoordinate[] oldCoordinates)
-    {
-        for (FlowComponent item : getFlowItems())
-        {
-            for (Menu menu : item.getMenus())
-            {
-                if (menu instanceof MenuContainer)
-                {
-                    MenuContainer menuInventory = (MenuContainer)menu;
-
-                    List<Integer> oldSelection = menuInventory.getSelectedInventories();
-                    menuInventory.setSelectedInventories(getNewSelection(oldCoordinates, oldSelection, true));
-                }
-            }
-        }
-
-        for (Variable variable : variables)
-        {
-            variable.setContainers(getNewSelection(oldCoordinates, variable.getContainers(), false));
-        }
-    }
-
-    private List<Integer> getNewSelection(WorldCoordinate[] oldCoordinates, List<Integer> oldSelection, boolean hasVariables)
-    {
-
-        List<Integer> newSelection = new ArrayList<Integer>();
-
-        for (int i = 0; i < oldSelection.size(); i++)
-        {
-            int selection = oldSelection.get(i);
-            if (hasVariables && selection >= 0 && selection < 16)
-            {
-                newSelection.add(selection);
-            } else
-            {
-                if (hasVariables)
-                {
-                    selection -= variables.length;
-                }
-
-                if (selection >= 0 && selection < oldCoordinates.length)
-                {
-                    WorldCoordinate coordinate = oldCoordinates[selection];
-
-                    for (int j = 0; j < inventories.size(); j++)
-                    {
-                        TileEntity inventory = inventories.get(j).getTileEntity();
-                        if (coordinate.getX() == inventory.xCoord && coordinate.getY() == inventory.yCoord && coordinate.getZ() == inventory.zCoord && inventory.getClass().equals(coordinate.getTileEntity().getClass()))
-                        {
-                            int id = j + (hasVariables ? variables.length : 0);
-                            if (!newSelection.contains(id))
-                            {
-                                newSelection.add(id);
-                            }
-
-                            break;
-                        }
-                    }
-
-                }
-            }
-        }
-
-        return newSelection;
-    }
-
-    private boolean findNewSelectedComponent(int id)
-    {
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getId() == id)
-            {
-                selectedGroup = item;
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void readAllComponentData(DataReader dr)
@@ -796,5 +715,15 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         String name = component.getComponentName();
         if (name == null) name = component.getType().getName();
         return name;
+    }
+
+    public boolean hasInventory(long key)
+    {
+        return network.containsKey(key);
+    }
+
+    public SystemCoord getInventory(long selected)
+    {
+        return network.get(selected);
     }
 }

@@ -1,6 +1,6 @@
 package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;

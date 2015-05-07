@@ -1,7 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
 
-import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.ClusterRegistry;

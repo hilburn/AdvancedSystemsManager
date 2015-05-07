@@ -37,7 +37,7 @@ public class Variable implements IContainerSelection<GuiManager>
     }
 
     @Override
-    public int getId()
+    public long getId()
     {
         return id;
     }

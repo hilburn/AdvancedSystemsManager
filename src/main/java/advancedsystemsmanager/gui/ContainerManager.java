@@ -5,8 +5,10 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import advancedsystemsmanager.util.WorldCoordinate;
 import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -20,7 +22,7 @@ public class ContainerManager extends ContainerBase
 {
     private TileEntityManager manager;
     private TIntObjectHashMap<FlowComponent> oldComponents;
-    private List<WorldCoordinate> oldInventories;
+    private TLongObjectHashMap<SystemCoord> oldInventories;
     private int oldIdIndexToRemove;
 
     public ContainerManager(TileEntityManager manager, InventoryPlayer player)
@@ -41,11 +43,7 @@ public class ContainerManager extends ContainerBase
             oldComponents.put(component.getId(), component.copy());
         }
         manager.updateInventories();
-        oldInventories = new ArrayList<WorldCoordinate>();
-        for (SystemBlock connection : manager.getConnectedInventories())
-        {
-            oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
-        }
+        oldInventories = new TLongObjectHashMap<SystemCoord>(manager.getNetwork());
         oldIdIndexToRemove = manager.getRemovedIds().size();
     }
 
@@ -81,10 +79,9 @@ public class ContainerManager extends ContainerBase
 
             if (!hasInventoriesChanged)
             {
-                for (int i = 0; i < oldInventories.size(); i++)
+                for (long key : oldInventories.keys())
                 {
-                    TileEntity tileEntity = manager.getConnectedInventories().get(i).getTileEntity();
-                    if (oldInventories.get(i).equals(new WorldCoordinate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord)))
+                    if (!manager.hasInventory(key))
                     {
                         hasInventoriesChanged = true;
                         break;
@@ -96,10 +93,7 @@ public class ContainerManager extends ContainerBase
             if (hasInventoriesChanged)
             {
                 oldInventories.clear();
-                for (SystemBlock connection : manager.getConnectedInventories())
-                {
-                    oldInventories.add(new WorldCoordinate(connection.getTileEntity().xCoord, connection.getTileEntity().yCoord, connection.getTileEntity().zCoord));
-                }
+                oldInventories.putAll(manager.getNetwork());
                 PacketHandler.sendUpdateInventoryPacket(this);
             }
         }

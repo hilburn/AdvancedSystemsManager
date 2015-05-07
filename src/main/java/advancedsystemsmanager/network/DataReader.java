@@ -17,8 +17,6 @@ public class DataReader
     private int bitCountBuffer;
     private boolean idRead;
     private int idBits;
-    private boolean invRead;
-    private int invBits;
 
     DataReader(byte[] data)
     {
@@ -108,6 +106,39 @@ public class DataReader
         return data;
     }
 
+    public long readLongData(int bitCount)
+    {
+        long data = 0;
+        int readBits = 0;
+
+        while (true)
+        {
+            int bitsLeft = bitCount - readBits;
+            if (bitCountBuffer >= bitsLeft)
+            {
+                data |= (byteBuffer & ((1 << bitsLeft) - 1)) << readBits;
+                byteBuffer >>>= bitsLeft;
+                bitCountBuffer -= bitsLeft;
+                readBits += bitsLeft;
+                break;
+            } else
+            {
+                data |= byteBuffer << readBits;
+                readBits += bitCountBuffer;
+
+                try
+                {
+                    byteBuffer = stream.read();
+                } catch (IOException ignored)
+                {
+                    byteBuffer = 0;
+                }
+                bitCountBuffer = 8;
+            }
+        }
+        return data;
+    }
+
     public NBTTagCompound readNBT()
     {
         if (readBoolean())
@@ -149,22 +180,11 @@ public class DataReader
         return readData(idBits);
     }
 
-    public int readInventoryId()
+    public long readInventoryId()
     {
-        if (!invRead)
-        {
-            if (readBoolean())
-            {
-                invBits = readData(DataBitHelper.BIT_COUNT);
-            } else
-            {
-                invBits = DataBitHelper.MENU_INVENTORY_SELECTION.getBitCount();
-            }
+        int invBits = DataBitHelper.MENU_INVENTORY_SELECTION.getBitCount();
 
-            invRead = true;
-        }
-
-        return readData(invBits);
+        return readLongData(invBits);
     }
 
 }

@@ -14,6 +14,12 @@ public class WorldCoordinate implements Comparable<WorldCoordinate>
         this(x, y, z, 0);
     }
 
+    public WorldCoordinate(SystemCoord coord)
+    {
+        this(coord.x, coord.y, coord.z, coord.depth);
+        this.tileEntity = coord.tileEntity;
+    }
+
     public WorldCoordinate(int x, int y, int z, int depth)
     {
         this.x = x;

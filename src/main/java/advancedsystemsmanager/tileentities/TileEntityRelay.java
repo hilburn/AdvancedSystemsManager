@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.gui.ContainerRelay;
 import advancedsystemsmanager.gui.GuiRelay;
 import advancedsystemsmanager.network.DataBitHelper;

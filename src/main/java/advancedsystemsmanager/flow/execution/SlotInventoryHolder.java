@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.execution;
 
 
-import advancedsystemsmanager.api.IRedstoneNode;
-import advancedsystemsmanager.api.ITriggerNode;
+import advancedsystemsmanager.api.tileentities.IRedstoneNode;
+import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.tileentities.*;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;

@@ -5,6 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.List;
 
@@ -17,9 +18,9 @@ public abstract class MenuRF extends MenuContainer
 
     public boolean isSelected(TileEntityRFNode node)
     {
-        for (SystemBlock block : getParent().getManager().getConnectedInventories())
+        for (SystemCoord block : getParent().getManager().getConnectedInventories())
         {
-            if (block.getTileEntity() == node) return getSelectedInventories().contains(block.getId());
+            if (block.tileEntity == node) return getSelectedInventories().contains(block.getId());
         }
         return false;
     }
@@ -37,10 +38,10 @@ public abstract class MenuRF extends MenuContainer
     {
         if (!getParent().getManager().getWorldObj().isRemote)
         {
-            for (SystemBlock connection : getParent().getManager().getConnectedInventories())
+            for (SystemCoord connection : getParent().getManager().getConnectedInventories())
             {
-                if (connection.getTileEntity() instanceof TileEntityRFNode)
-                    ((TileEntityRFNode)connection.getTileEntity()).update(getParent());
+                if (connection.tileEntity instanceof TileEntityRFNode)
+                    ((TileEntityRFNode)connection.tileEntity).update(getParent());
             }
         }
     }

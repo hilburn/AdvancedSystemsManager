@@ -11,6 +11,7 @@ import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -44,15 +45,15 @@ public class CommandFluidInput extends CommandInput<Fluid>
     }
 
     @Override
-    protected List<IBufferElement<Fluid>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus)
+    protected List<IBufferElement<Fluid>> getBufferSubElements(int id, List<SystemCoord> blocks, List<Menu> menus)
     {
         MenuTargetTank target = (MenuTargetTank)menus.get(1);
         MenuLiquid settings = (MenuLiquid)menus.get(2);
         List<Setting<Fluid>> validSettings = getValidSettings(settings.getSettings());
         List<IBufferElement<Fluid>> subElements = new ArrayList<IBufferElement<Fluid>>();
-        for (SystemBlock block : blocks)
+        for (SystemCoord block : blocks)
         {
-            TileEntity entity = block.getTileEntity();
+            TileEntity entity = block.tileEntity;
             if (entity instanceof IInternalTank)
             {
                 subElements.addAll(((IInternalTank)entity).getSubElements(id, settings));

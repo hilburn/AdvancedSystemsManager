@@ -1,7 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.ISystemListener;
-import advancedsystemsmanager.api.ITriggerNode;
+import advancedsystemsmanager.api.tileentities.ISystemListener;
+import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;

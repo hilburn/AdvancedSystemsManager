@@ -1,6 +1,6 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.api.ICable;
+import advancedsystemsmanager.api.tileentities.ICable;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

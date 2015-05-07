@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public interface IContainerSelection<Gui extends GuiScreen>
 {
-    int getId();
+    long getId();
 
     @SideOnly(Side.CLIENT)
     void draw(Gui gui, int x, int y);

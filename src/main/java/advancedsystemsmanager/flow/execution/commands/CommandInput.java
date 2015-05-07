@@ -8,6 +8,7 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
 
     protected abstract IBuffer getNewBuffer();
 
-    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus);
+    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<SystemCoord> blocks, List<Menu> menus);
 
     protected void addToBuffer(List<IBufferElement<Type>> subElements, IBuffer<Type> buffer)
     {

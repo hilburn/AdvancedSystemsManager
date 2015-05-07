@@ -11,6 +11,7 @@ import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -45,13 +46,15 @@ public abstract class CommandBase<Type> implements ICommand
         this.type = type;
     }
 
-    public List<SystemBlock> getContainers(TileEntityManager manager, MenuContainer container)
+    public List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
     {
-        List<SystemBlock> result = new ArrayList<SystemBlock>();
-        for (SystemBlock block : manager.getConnectedInventories())
-            if (container.selectedInventories.contains(block.getId())) result.add(block);
+        List<SystemCoord> result = new ArrayList<SystemCoord>();
+        for (long selected : container.getSelectedInventories())
+            result.add(manager.getInventory(selected));
         return result;
-    }    @Override
+    }
+
+    @Override
     public int getId()
     {
         return id;
@@ -62,7 +65,9 @@ public abstract class CommandBase<Type> implements ICommand
         List<Setting<Type>> result = new ArrayList<Setting<Type>>();
         for (Setting<Type> setting : oldSettings) if (setting.isValid()) result.add(setting);
         return result;
-    }    @Override
+    }
+
+    @Override
     public ConnectionSet[] getSets()
     {
         return connectionSets;

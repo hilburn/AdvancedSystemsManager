@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api;
+package advancedsystemsmanager.api.tileentities;
 
 public interface IRedstoneReceiver extends IRedstoneNode
 {

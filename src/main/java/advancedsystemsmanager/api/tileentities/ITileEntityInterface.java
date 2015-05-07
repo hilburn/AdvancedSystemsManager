@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api;
+package advancedsystemsmanager.api.tileentities;
 
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;

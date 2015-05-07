@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api;
+package advancedsystemsmanager.api.tileentities;
 
 import advancedsystemsmanager.util.WorldCoordinate;
 import net.minecraft.world.World;

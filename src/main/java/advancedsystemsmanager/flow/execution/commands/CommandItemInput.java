@@ -12,6 +12,7 @@ import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -49,15 +50,15 @@ public class CommandItemInput extends CommandInput<ItemStack>
     }
 
     @Override
-    protected List<IBufferElement<ItemStack>> getBufferSubElements(int id, List<SystemBlock> blocks, List<Menu> menus)
+    protected List<IBufferElement<ItemStack>> getBufferSubElements(int id, List<SystemCoord> blocks, List<Menu> menus)
     {
         MenuTargetInventory target = (MenuTargetInventory)menus.get(1);
         MenuItem settings = (MenuItem)menus.get(2);
         List<Setting<ItemStack>> validSettings = getValidSettings(settings.settings);
         List<IBufferElement<ItemStack>> subElements = new ArrayList<IBufferElement<ItemStack>>();
-        for (SystemBlock block : blocks)
+        for (SystemCoord block : blocks)
         {
-            TileEntity entity = block.getTileEntity();
+            TileEntity entity = block.tileEntity;
             if (entity instanceof IInternalInventory)
             {
                 subElements.addAll(((IInternalInventory)entity).getSubElements(id, settings));

@@ -123,9 +123,45 @@ public class DataWriter
         writeData(data, bitCount.getBitCount());
     }
 
+    public void writeData(long data, int bitCount)
+    {
+        long mask = (1 << bitCount) - 1;
+
+        data &= mask;
+
+        while (true)
+        {
+            if (bitCountBuffer + bitCount >= 8)
+            {
+                int bitsToAdd = 8 - bitCountBuffer;
+                int addMask = (1 << bitsToAdd) - 1;
+                int addData = (int) (data & addMask);
+                data >>>= bitsToAdd;
+                addData <<= bitCountBuffer;
+                byteBuffer |= addData;
+
+                try
+                {
+                    stream.write(byteBuffer);
+                } catch (IOException ignored)
+                {
+                }
+
+                byteBuffer = 0;
+                bitCount -= bitsToAdd;
+                bitCountBuffer = 0;
+            } else
+            {
+                byteBuffer |= data << bitCountBuffer;
+                bitCountBuffer += bitCount;
+                break;
+            }
+        }
+    }
+
     public void writeData(int data, int bitCount)
     {
-        long mask = (long)Math.pow(2, bitCount) - 1;
+        long mask = (1 << bitCount) - 1;
 
         data &= mask;
 
@@ -207,23 +243,12 @@ public class DataWriter
         writeData(id, idBits);
     }
 
-    public void writeInventoryId(TileEntityManager manager, int id)
+    public void writeInventoryId(TileEntityManager manager, long id)
     {
         if (!invWritten)
         {
             manager.updateFirst();
-            if (Settings.isLimitless(manager) && manager.getConnectedInventories().size() > TileEntityManager.MAX_CONNECTED_INVENTORIES)
-            {
-                writeBoolean(true);
-                int count = manager.getConnectedInventories().size();
-                invBits = (int)(Math.log10(count + 1) / Math.log10(2)) + 1;
-                writeData(invBits, DataBitHelper.BIT_COUNT);
-            } else
-            {
-                writeBoolean(false);
-                invBits = DataBitHelper.MENU_INVENTORY_SELECTION.getBitCount();
-            }
-
+            invBits = DataBitHelper.MENU_INVENTORY_SELECTION.getBitCount();
             invWritten = true;
         }
 

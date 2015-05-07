@@ -23,6 +23,7 @@ import advancedsystemsmanager.tileentities.TileEntityCreative;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -81,7 +82,7 @@ public class CommandExecutor
         } else
         {
             ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
-            List<SystemBlock> inventories = manager.getConnectedInventories();
+            List<SystemCoord> inventories = manager.getConnectedInventories();
             Variable[] variables = manager.getVariables();
 
             int i;
@@ -92,7 +93,7 @@ public class CommandExecutor
                 if (selected.isValid())
                 {
 
-                    for (int val : menuContainer.getSelectedInventories())
+                    for (long val : menuContainer.getSelectedInventories())
                     {
                         if (val == i)
                         {
@@ -116,8 +117,8 @@ public class CommandExecutor
 
             for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
             {
-                int var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
-                addContainer(inventories, ret, var14, menuContainer, type, SystemTypeRegistry.getTypes());
+                long var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
+                addContainer(inventories, ret, (int)var14, menuContainer, type, SystemTypeRegistry.getTypes());
             }
 
             if (ret.isEmpty())
@@ -130,14 +131,14 @@ public class CommandExecutor
         }
     }
 
-    public static void addContainer(List<SystemBlock> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
+    public static void addContainer(List<SystemCoord> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
     {
         if (selected >= 0 && selected < inventories.size())
         {
-            SystemBlock connection = inventories.get(selected);
-            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
+            SystemCoord connection = inventories.get(selected);
+            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.tileEntity.isInvalid() && !containsTe(ret, connection.tileEntity))
             {
-                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
+                ret.add(new SlotInventoryHolder(selected, connection.tileEntity, menuContainer.getOption()));
             }
         }
     }
@@ -1491,7 +1492,7 @@ public class CommandExecutor
                 idList = this.applyOrder(idList, menuOrder);
             }
 
-            List<SystemBlock> inventories1 = this.manager.getConnectedInventories();
+            List<SystemCoord> inventories1 = this.manager.getConnectedInventories();
             Set<ISystemType> validTypes1 = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
 
             for (int id : idList)
@@ -1516,13 +1517,13 @@ public class CommandExecutor
             List<Integer> selection = this.applyOrder(list.getContainers(), orderMenu);
             Set<ISystemType> validTypes = typesMenu.getValidTypes();
             validTypes.addAll(((MenuContainerTypes)element.getDeclaration().getMenus().get(1)).getValidTypes());
-            List<SystemBlock> inventories = this.manager.getConnectedInventories();
+            List<SystemCoord> inventories = this.manager.getConnectedInventories();
 
             for (int selected : selection)
             {
                 if (selected >= 0 && selected < inventories.size())
                 {
-                    SystemBlock inventory = inventories.get(selected);
+                    SystemCoord inventory = inventories.get(selected);
                     if (inventory.isOfAnyType(validTypes))
                     {
                         element.clearContainers();

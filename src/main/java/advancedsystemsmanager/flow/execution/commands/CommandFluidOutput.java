@@ -10,6 +10,7 @@ import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,9 +36,9 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
         List<Integer> validSides = new ArrayList<Integer>();
         for (int i = 0; i < ((MenuTargetTank)component.getMenus().get(1)).activatedDirections.length; i++)
             if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
-        for (SystemBlock block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
+        for (SystemCoord block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
         {
-            IFluidHandler tank = block.getTileEntity() instanceof IInternalTank ? ((IInternalTank)block.getTileEntity()).getTank() : (IFluidHandler)block.getTileEntity();
+            IFluidHandler tank = block.tileEntity instanceof IInternalTank ? ((IInternalTank)block.tileEntity).getTank() : (IFluidHandler)block.tileEntity;
             Iterator<Map.Entry<Key<Fluid>, IBufferElement<Fluid>>> iterator = buffer.getOrderedIterator();
             while (iterator.hasNext())
             {

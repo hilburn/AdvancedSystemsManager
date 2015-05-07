@@ -1,8 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.IRedstoneReceiver;
-import advancedsystemsmanager.api.ISystemListener;
-import advancedsystemsmanager.api.ITriggerNode;
+import advancedsystemsmanager.api.tileentities.IRedstoneReceiver;
+import advancedsystemsmanager.api.tileentities.ISystemListener;
+import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.nbt.NBTTagCompound;

@@ -13,10 +13,10 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemBlock;
+import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -68,10 +68,10 @@ public class MenuContainer extends Menu
     //ugly way to make sure the filter controller isn't updating multiple times
     public static boolean hasUpdated;
     public Page currentPage;
-    public List<Integer> selectedInventories;
-    public List<IContainerSelection> inventories;
+    public List<Long> selectedInventories;
+    public List<IContainerSelection<GuiManager>> inventories;
     public RadioButtonList radioButtonsMulti;
-    public ScrollController<IContainerSelection> scrollController;
+    public ScrollController<IContainerSelection<GuiManager>> scrollController;
     public ISystemType type;
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
@@ -84,7 +84,7 @@ public class MenuContainer extends Menu
         super(parent);
         this.type = type;
 
-        selectedInventories = new ArrayList<Integer>();
+        selectedInventories = new ArrayList<Long>();
         filterVariables = new ArrayList<Variable>();
         radioButtonsMulti = new RadioButtonList()
         {
@@ -100,23 +100,23 @@ public class MenuContainer extends Menu
         initRadioButtons();
         radioButtonsMulti.setSelectedOption(getDefaultRadioButton());
 
-        scrollController = new ScrollController<IContainerSelection>(getDefaultSearch())
+        scrollController = new ScrollController<IContainerSelection<GuiManager>>(getDefaultSearch())
         {
             public boolean locked;
             public int lockedX;
             public int lockedY;
             @SideOnly(Side.CLIENT)
             public ToolTip cachedTooltip;
-            public int cachedId;
-            public IContainerSelection cachedContainer;
+            public long cachedId;
+            public IContainerSelection<GuiManager> cachedContainer;
             public boolean keepCache;
 
             @Override
-            public List<IContainerSelection> updateSearch(String search, boolean all)
+            public List<IContainerSelection<GuiManager>> updateSearch(String search, boolean all)
             {
                 if (search.equals("") || !clientUpdate || cachedInterface == null)
                 {
-                    return new ArrayList<IContainerSelection>();
+                    return new ArrayList<IContainerSelection<GuiManager>>();
                 }
 
                 if (inventories == null)
@@ -126,26 +126,26 @@ public class MenuContainer extends Menu
 
                 if (search.equals(".var"))
                 {
-                    return new ArrayList<IContainerSelection>(filterVariables);
+                    return new ArrayList<IContainerSelection<GuiManager>>(filterVariables);
                 }
 
 
                 boolean noFilter = search.equals(".nofilter");
                 boolean selected = search.equals(".selected");
 
-                List<IContainerSelection> ret = new ArrayList<IContainerSelection>(inventories);
+                List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>(inventories);
 
-                Iterator<IContainerSelection> iterator = ret.iterator();
+                Iterator<IContainerSelection<GuiManager>> iterator = ret.iterator();
                 while (iterator.hasNext())
                 {
-                    IContainerSelection element = iterator.next();
+                    IContainerSelection<GuiManager> element = iterator.next();
 
                     if (selected && selectedInventories.contains(element.getId()))
                     {
                         continue;
                     } else if (!element.isVariable())
                     {
-                        SystemBlock block = (SystemBlock)element;
+                        SystemCoord block = (SystemCoord)element;
                         if (noFilter)
                         {
                             continue;
@@ -165,7 +165,7 @@ public class MenuContainer extends Menu
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void onClick(IContainerSelection iContainerSelection, int mX, int mY, int button)
+            public void onClick(IContainerSelection<GuiManager> iContainerSelection, int mX, int mY, int button)
             {
                 if (GuiScreen.isShiftKeyDown() && mX != -1 && mY != -1)
                 {
@@ -186,14 +186,14 @@ public class MenuContainer extends Menu
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void draw(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, boolean hover)
+            public void draw(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int x, int y, boolean hover)
             {
                 drawContainer(gui, iContainerSelection, selectedInventories, x, y, hover);
             }
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int mX, int mY)
             {
                 drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
             }
@@ -220,7 +220,7 @@ public class MenuContainer extends Menu
             }
 
             @SideOnly(Side.CLIENT)
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int x, int y, int mX, int mY)
             {
                 boolean isBlock = !iContainerSelection.isVariable();
 
@@ -230,7 +230,7 @@ public class MenuContainer extends Menu
                     {
                         cachedContainer = iContainerSelection;
                         cachedTooltip = new ToolTip(gui, (SystemBlock)iContainerSelection);
-                        cachedId = iContainerSelection.getId();
+                        cachedId = (int)iContainerSelection.getId();
                     }
                     keepCache = true;
 
@@ -496,7 +496,7 @@ public class MenuContainer extends Menu
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawContainer(GuiManager gui, IContainerSelection iContainerSelection, List<Integer> selected, int x, int y, boolean hover)
+    public void drawContainer(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, List<Long> selected, int x, int y, boolean hover)
     {
         int srcInventoryX = selected.contains(iContainerSelection.getId()) ? 1 : 0;
         int srcInventoryY = hover ? 1 : 0;
@@ -505,16 +505,13 @@ public class MenuContainer extends Menu
         iContainerSelection.draw(gui, x, y);
     }
 
-    public List<String> getMouseOverForContainer(IContainerSelection iContainerSelection, List<Integer> selected)
+    public List<String> getMouseOverForContainer(IContainerSelection<GuiManager> iContainerSelection, List<Long> selected)
     {
         List<String> ret = new ArrayList<String>();
         if (cachedInterface != null)
         {
             String[] desc = iContainerSelection.getDescription(cachedInterface).split("\n");
-            for (String s : desc)
-            {
-                ret.add(s);
-            }
+            Collections.addAll(ret, desc);
             if (selected.contains(iContainerSelection.getId()))
             {
                 ret.add(Color.GREEN + StatCollector.translateToLocal(Names.SELECTED));
@@ -529,25 +526,25 @@ public class MenuContainer extends Menu
         dw.writeData(option, DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
     }
 
-    public void setSelectedInventoryAndSync(int val, boolean select)
+    public void setSelectedInventoryAndSync(long val, boolean select)
     {
         DataWriter dw = getWriterForServerComponentPacket();
         writeData(dw, val, select);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, int id, boolean select)
+    public void writeData(DataWriter dw, long id, boolean select)
     {
         dw.writeBoolean(false);
         dw.writeInventoryId(getParent().getManager(), id);
         dw.writeBoolean(select);
     }
 
-    public List<IContainerSelection> getInventories(TileEntityManager manager)
+    public List<IContainerSelection<GuiManager>> getInventories(TileEntityManager manager)
     {
         Set<ISystemType> validTypes = getValidTypes();
-        List<SystemBlock> tempInventories = manager.getConnectedInventories();
-        List<IContainerSelection> ret = new ArrayList<IContainerSelection>();
+        List<SystemCoord> tempInventories = manager.getConnectedInventories();
+        List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>();
         filterVariables.clear();
 
         for (int i = 0; i < manager.getVariables().length; i++)
@@ -560,7 +557,7 @@ public class MenuContainer extends Menu
             }
         }
 
-        for (SystemBlock tempInventory : tempInventories)
+        for (SystemCoord tempInventory : tempInventories)
         {
             if (tempInventory.isOfAnyType(validTypes))
             {
@@ -787,7 +784,7 @@ public class MenuContainer extends Menu
     {
         dw.writeData(getOption(), DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
         dw.writeInventoryId(getParent().getManager(), selectedInventories.size());
-        for (int selectedInventory : selectedInventories)
+        for (long selectedInventory : selectedInventories)
         {
             dw.writeInventoryId(getParent().getManager(), selectedInventory);
 
@@ -799,7 +796,7 @@ public class MenuContainer extends Menu
     {
         setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
         selectedInventories.clear();
-        int count = dr.readInventoryId();
+        long count = dr.readInventoryId();
         for (int i = 0; i < count; i++)
         {
 
@@ -813,7 +810,7 @@ public class MenuContainer extends Menu
     {
         setOption(((MenuContainer)menu).getOption());
         selectedInventories.clear();
-        for (int selectedInventory : ((MenuContainer)menu).selectedInventories)
+        for (long selectedInventory : ((MenuContainer)menu).selectedInventories)
         {
             selectedInventories.add(selectedInventory);
         }
@@ -836,7 +833,7 @@ public class MenuContainer extends Menu
         int count = newDataInv.selectedInventories.size();
         for (int i = 0; i < count; i++)
         {
-            int id = newDataInv.selectedInventories.get(i);
+            long id = newDataInv.selectedInventories.get(i);
             if (!selectedInventories.contains(id))
             {
                 selectedInventories.add(id);
@@ -847,7 +844,7 @@ public class MenuContainer extends Menu
 
         for (int i = selectedInventories.size() - 1; i >= 0; i--)
         {
-            int id = selectedInventories.get(i);
+            long id = selectedInventories.get(i);
             if (!newDataInv.selectedInventories.contains(id))
             {
                 selectedInventories.remove(i);
@@ -856,7 +853,7 @@ public class MenuContainer extends Menu
         }
     }
 
-    public void sendClientData(ContainerManager container, int id, boolean select)
+    public void sendClientData(ContainerManager container, long id, boolean select)
     {
         DataWriter dw = getWriterForClientComponentPacket(container);
         writeData(dw, id, select);
@@ -867,33 +864,20 @@ public class MenuContainer extends Menu
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
     {
         selectedInventories.clear();
-        //in earlier version one could only select one inventory
-        if (version < 2)
+        if (!pickup)
         {
-            selectedInventories.add((int)nbtTagCompound.getShort(NBT_SELECTION));
-            setOption(0);
-        } else
-        {
-            if (!pickup)
+            NBTTagList tagList = nbtTagCompound.getTagList(NBT_SELECTION, 10);
+
+            for (int i = 0; i < tagList.tagCount(); i++)
             {
-                NBTTagList tagList = nbtTagCompound.getTagList(NBT_SELECTION, 10);
+                NBTTagCompound selectionTag = tagList.getCompoundTagAt(i);
 
-                for (int i = 0; i < tagList.tagCount(); i++)
-                {
-                    NBTTagCompound selectionTag = tagList.getCompoundTagAt(i);
+                long id = selectionTag.getLong(NBT_SELECTION_ID);
 
-                    int id = (int)selectionTag.getShort(NBT_SELECTION_ID);
-
-                    //variables now use the 16 first ids
-                    if (version < 7)
-                    {
-                        id += VariableColor.values().length;
-                    }
-                    selectedInventories.add(id);
-                }
+                selectedInventories.add(id);
             }
-            setOption(nbtTagCompound.getByte(NBT_SHARED));
         }
+        setOption(nbtTagCompound.getByte(NBT_SHARED));
     }
 
     @Override
@@ -903,11 +887,11 @@ public class MenuContainer extends Menu
 
         if (!pickup)
         {
-            for (int i = 0; i < selectedInventories.size(); i++)
+            for (long selectedInventory : selectedInventories)
             {
                 NBTTagCompound selectionTag = new NBTTagCompound();
 
-                selectionTag.setShort(NBT_SELECTION_ID, (short)(int)selectedInventories.get(i));
+                selectionTag.setLong(NBT_SELECTION_ID, selectedInventory);
                 tagList.appendTag(selectionTag);
             }
         }
@@ -962,13 +946,13 @@ public class MenuContainer extends Menu
             setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
         } else
         {
-            int id = dr.readInventoryId();
+            long id = dr.readInventoryId();
             if (dr.readBoolean())
             {
                 selectedInventories.add(id);
             } else
             {
-                selectedInventories.remove((Integer)id);
+                selectedInventories.remove(id);
             }
         }
     }
@@ -1001,12 +985,12 @@ public class MenuContainer extends Menu
         return type.getDefaultRadioButton();
     }
 
-    public List<Integer> getSelectedInventories()
+    public List<Long> getSelectedInventories()
     {
         return selectedInventories;
     }
 
-    public void setSelectedInventories(List<Integer> selectedInventories)
+    public void setSelectedInventories(List<Long> selectedInventories)
     {
         this.selectedInventories = selectedInventories;
     }
