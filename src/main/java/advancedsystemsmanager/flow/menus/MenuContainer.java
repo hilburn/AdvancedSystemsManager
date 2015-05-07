@@ -782,11 +782,10 @@ public class MenuContainer extends Menu
     public void writeData(DataWriter dw)
     {
         dw.writeData(getOption(), DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
-        dw.writeInventoryId(getParent().getManager(), selectedInventories.size());
+        dw.writeData(selectedInventories.size(), 16);
         for (long selectedInventory : selectedInventories)
         {
             dw.writeInventoryId(getParent().getManager(), selectedInventory);
-
         }
     }
 
@@ -795,12 +794,10 @@ public class MenuContainer extends Menu
     {
         setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
         selectedInventories.clear();
-        long count = dr.readInventoryId();
+        int count = dr.readData(16);
         for (int i = 0; i < count; i++)
         {
-
             selectedInventories.add(dr.readInventoryId());
-
         }
     }
 

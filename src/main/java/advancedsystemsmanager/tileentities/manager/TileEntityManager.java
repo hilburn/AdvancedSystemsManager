@@ -314,6 +314,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj.provider.dimensionId, 0, this);
         queue.add(start);
         visited.add(start);
+        addInventory(start);
 
         while (!queue.isEmpty())
         {
@@ -376,7 +377,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         target.types = new HashSet<ISystemType>();
         for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
-            if (connectionBlockType.isInstance(target.tileEntity))
+            if (connectionBlockType.isInstance(this, target.tileEntity))
             {
                 isValidConnection = true;
                 target.addType(connectionBlockType);

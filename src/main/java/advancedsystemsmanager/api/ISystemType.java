@@ -3,13 +3,14 @@ package advancedsystemsmanager.api;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.menus.MenuContainer;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
 public interface ISystemType<Type>
 {
-    public boolean isInstance(TileEntity tileEntity);
+    public boolean isInstance(TileEntityManager manager, TileEntity tileEntity);
 
     public Type getType(TileEntity tileEntity);
 

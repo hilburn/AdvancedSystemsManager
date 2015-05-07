@@ -23,7 +23,6 @@ import java.util.List;
 
 public class TileEntityEmitter extends TileEntityClusterElement implements IPacketBlock, IRedstoneEmitter
 {
-
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_STRENGTH = "Strength";
     private static final String NBT_STRONG = "Strong";

@@ -14,6 +14,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntitySignUpdater;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -27,7 +28,7 @@ public class SystemTypeRegistry
     public static final ISystemType INVENTORY = register(new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof IInventory || tileEntity instanceof IInternalInventory;
         }
@@ -41,7 +42,7 @@ public class SystemTypeRegistry
     public static final ISystemType TANK = register(new SystemType<IFluidHandler>(Names.TYPE_TANK, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof IFluidHandler || tileEntity instanceof IInternalTank;
         }
@@ -55,7 +56,7 @@ public class SystemTypeRegistry
     public static final ISystemType EMITTER = register(new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof IRedstoneEmitter;
         }
@@ -68,9 +69,9 @@ public class SystemTypeRegistry
     public static final ISystemType RECEIVER = register(new SystemType<IRedstoneReceiver>(Names.TYPE_RECEIVER, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
-            return tileEntity instanceof IRedstoneReceiver;
+            return tileEntity instanceof IRedstoneReceiver || manager == tileEntity;
         }
 
         @Override
@@ -96,7 +97,7 @@ public class SystemTypeRegistry
     public static final ISystemType NODE = register(new SystemType<IRedstoneNode>(Names.TYPE_NODE, true)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof IRedstoneNode;
         }
@@ -118,7 +119,7 @@ public class SystemTypeRegistry
     public static final ISystemType BUD = register(new SystemType<TileEntityBUD>(Names.TYPE_BUD, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntityBUD;
         }
@@ -139,7 +140,7 @@ public class SystemTypeRegistry
     public static final ISystemType CAMOUFLAGE = register(new SystemType<TileEntityCamouflage>(Names.TYPE_CAMOUFLAGE, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntityCamouflage;
         }
@@ -152,7 +153,7 @@ public class SystemTypeRegistry
     public static final ISystemType SIGN = register(new SystemType<TileEntitySignUpdater>(Names.TYPE_SIGN, false)
     {
         @Override
-        public boolean isInstance(TileEntity tileEntity)
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntitySignUpdater;
         }

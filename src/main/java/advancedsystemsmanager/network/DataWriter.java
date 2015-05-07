@@ -125,7 +125,7 @@ public class DataWriter
 
     public void writeData(long data, int bitCount)
     {
-        long mask = (1 << bitCount) - 1;
+        long mask = bitCount < 64 ? (1 << bitCount) - 1 : -1;
 
         data &= mask;
 
@@ -170,7 +170,7 @@ public class DataWriter
             if (bitCountBuffer + bitCount >= 8)
             {
                 int bitsToAdd = 8 - bitCountBuffer;
-                int addMask = (int)Math.pow(2, bitsToAdd) - 1;
+                int addMask = (1 << bitsToAdd) - 1;
                 int addData = data & addMask;
                 data >>>= bitsToAdd;
                 addData <<= bitCountBuffer;
