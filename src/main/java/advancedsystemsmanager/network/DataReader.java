@@ -81,7 +81,7 @@ public class DataReader
             int bitsLeft = bitCount - readBits;
             if (bitCountBuffer >= bitsLeft)
             {
-                data |= (byteBuffer & ((int)Math.pow(2, bitsLeft) - 1)) << readBits;
+                data |= (byteBuffer & ((1 << bitsLeft) - 1)) << readBits;
                 byteBuffer >>>= bitsLeft;
                 bitCountBuffer -= bitsLeft;
                 readBits += bitsLeft;
