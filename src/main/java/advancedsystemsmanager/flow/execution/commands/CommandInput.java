@@ -7,7 +7,6 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.List;

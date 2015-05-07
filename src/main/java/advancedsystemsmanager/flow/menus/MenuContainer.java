@@ -15,7 +15,6 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.StevesHooks;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -229,7 +228,7 @@ public class MenuContainer extends Menu
                     if (cachedTooltip == null || cachedId != iContainerSelection.getId())
                     {
                         cachedContainer = iContainerSelection;
-                        cachedTooltip = new ToolTip(gui, (SystemBlock)iContainerSelection);
+                        cachedTooltip = new ToolTip(gui, (SystemCoord)iContainerSelection);
                         cachedId = (int)iContainerSelection.getId();
                     }
                     keepCache = true;
@@ -265,15 +264,15 @@ public class MenuContainer extends Menu
                 List<String> lockedSuffix;
 
                 @SideOnly(Side.CLIENT)
-                public ToolTip(GuiManager gui, SystemBlock block)
+                public ToolTip(GuiManager gui, SystemCoord block)
                 {
                     items = new ItemStack[ForgeDirection.VALID_DIRECTIONS.length];
                     itemTexts = new List[ForgeDirection.VALID_DIRECTIONS.length];
 
-                    World world = block.getTileEntity().getWorldObj();
-                    int x = block.getTileEntity().xCoord;
-                    int y = block.getTileEntity().yCoord;
-                    int z = block.getTileEntity().zCoord;
+                    World world = block.tileEntity.getWorldObj();
+                    int x = block.tileEntity.xCoord;
+                    int y = block.tileEntity.yCoord;
+                    int z = block.tileEntity.zCoord;
 
                     for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
                     {
@@ -589,7 +588,7 @@ public class MenuContainer extends Menu
             Set<ISystemType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
             for (ISystemType type : validTypes)
             {
-                if (SystemBlock.isOfType(variableValidTypes, type))
+                if (SystemCoord.isOfType(variableValidTypes, type))
                 {
                     return true;
                 }

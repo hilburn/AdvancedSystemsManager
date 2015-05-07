@@ -9,7 +9,6 @@ import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;

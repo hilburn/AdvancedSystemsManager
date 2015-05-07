@@ -4,7 +4,6 @@ import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.List;

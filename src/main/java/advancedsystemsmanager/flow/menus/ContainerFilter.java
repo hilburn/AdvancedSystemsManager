@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.ArrayList;

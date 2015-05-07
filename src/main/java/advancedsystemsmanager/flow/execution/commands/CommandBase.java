@@ -10,7 +10,6 @@ import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.util.ResourceLocation;
 

@@ -4,19 +4,12 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
-import advancedsystemsmanager.util.WorldCoordinate;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
-import net.minecraft.tileentity.TileEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class ContainerManager extends ContainerBase
 {

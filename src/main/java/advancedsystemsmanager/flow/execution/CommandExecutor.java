@@ -22,7 +22,6 @@ import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.SystemBlock;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
