@@ -569,22 +569,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        if (isLarge)
-        {
-            for (int i = 0; i < menus.size(); i++)
-            {
-                Menu menu = menus.get(i);
-
-                if (menu.isVisible() && i == openMenuId)
-                {
-                    GL11.glPushMatrix();
-                    GL11.glTranslatef(getMenuAreaX(), getMenuAreaY(i), 0);
-                    menu.drawMouseOver(gui, mX - getMenuAreaX(), mY - getMenuAreaY(i));
-                    GL11.glPopMatrix();
-                }
-            }
-        }
-
         int outputCount = 0;
         int inputCount = 0;
         int sideCount = 0;
@@ -610,6 +594,22 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
             {
                 gui.drawMouseOver(connection.getName(this, (connection.isInput() ? inputCount : outputCount) - 1), mX, mY);
+            }
+        }
+
+        if (isLarge)
+        {
+            for (int i = 0; i < menus.size(); i++)
+            {
+                Menu menu = menus.get(i);
+
+                if (menu.isVisible() && i == openMenuId)
+                {
+                    GL11.glPushMatrix();
+                    GL11.glTranslatef(getMenuAreaX(), getMenuAreaY(i), 0);
+                    menu.drawMouseOver(gui, mX - getMenuAreaX(), mY - getMenuAreaY(i));
+                    GL11.glPopMatrix();
+                }
             }
         }
 

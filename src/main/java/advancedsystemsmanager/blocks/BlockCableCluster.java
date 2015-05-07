@@ -5,7 +5,7 @@ import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.util.WorldCoordinate;
+import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -277,7 +277,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     }
 
     @Override
-    public void getConnectedCables(World world, WorldCoordinate coordinate, List<WorldCoordinate> visited, Queue<WorldCoordinate> cables)
+    public void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables)
     {
         BlockRegistry.blockCable.getConnectedCables(world, coordinate, visited, cables);
     }

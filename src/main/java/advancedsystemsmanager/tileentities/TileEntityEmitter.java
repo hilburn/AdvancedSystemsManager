@@ -7,7 +7,7 @@ import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
-import advancedsystemsmanager.util.WorldCoordinate;
+import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -36,7 +36,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     private boolean[] updatedStrong;
     private List<PulseTimer>[] pulseTimers;
     private boolean hasUpdatedThisTick;
-    private List<WorldCoordinate> scheduledToUpdate = new ArrayList<WorldCoordinate>();
+    private List<SystemCoord> scheduledToUpdate = new ArrayList<SystemCoord>();
     private boolean hasUpdatedData;
 
 
@@ -170,7 +170,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         int y = yCoord + direction.offsetY;
         int z = zCoord + direction.offsetZ;
 
-        WorldCoordinate coordinate = new WorldCoordinate(x, y, z);
+        SystemCoord coordinate = new SystemCoord(x, y, z);
         if (!scheduledToUpdate.contains(coordinate))
         {
             scheduledToUpdate.add(coordinate);
@@ -360,16 +360,16 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             if (hasUpdatedThisTick)
             {
                 hasUpdatedThisTick = false;
-                List<WorldCoordinate> coordinates = new ArrayList<WorldCoordinate>(scheduledToUpdate);
+                List<SystemCoord> coordinates = new ArrayList<SystemCoord>(scheduledToUpdate);
                 scheduledToUpdate.clear();
                 for (int i = 0; i < strengths.length; i++)
                 {
                     strengths[i] = updatedStrength[i];
                     strong[i] = updatedStrong[i];
                 }
-                for (WorldCoordinate coordinate : coordinates)
+                for (SystemCoord coordinate : coordinates)
                 {
-                    notifyUpdate(coordinate.getX(), coordinate.getY(), coordinate.getZ(), true);
+                    notifyUpdate(coordinate.x, coordinate.y, coordinate.z, true);
                 }
             }
         }

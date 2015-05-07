@@ -34,9 +34,9 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
-    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 100;
+    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 60;
     public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
-    public static int Z_LEVEL_COMPONENT_START = 750;
+    public static int Z_LEVEL_COMPONENT_START = 450;
     public static int Z_LEVEL_OPEN_MAXIMUM = 5;
     private long lastTicks;
     private AnimationController controller;
@@ -122,6 +122,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
         xSize = GUI_WIDTH;
         ySize = GUI_HEIGHT;
+        this.zLevel = 0;
 
         this.manager = manager;
         Keyboard.enableRepeatEvents(true);

@@ -29,7 +29,6 @@ import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
-import advancedsystemsmanager.util.WorldCoordinate;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -307,53 +306,47 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public void updateInventories()
     {
         usingUnlimitedInventories = false;
-        WorldCoordinate[] oldCoordinates = new WorldCoordinate[network.size()];
-        int i = 0;
-        for (SystemCoord coord : network.valueCollection())
-        {
-            TileEntity inventory = coord.tileEntity;
-            oldCoordinates[i] = new WorldCoordinate(coord.x, coord.y, coord.z);
-            oldCoordinates[i].setTileEntity(inventory);
-            i++;
-        }
+        SystemCoord[] oldCoordinates = network.values(new SystemCoord[network.size()]);
 
-        List<WorldCoordinate> visited = new ArrayList<WorldCoordinate>();
+        List<SystemCoord> visited = new ArrayList<SystemCoord>();
         network.clear();
-        Queue<WorldCoordinate> queue = new PriorityQueue<WorldCoordinate>();
-        WorldCoordinate start = new WorldCoordinate(xCoord, yCoord, zCoord, 0);
+        Queue<SystemCoord> queue = new PriorityQueue<SystemCoord>();
+        SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj.provider.dimensionId, 0, this);
         queue.add(start);
         visited.add(start);
 
         while (!queue.isEmpty())
         {
-            WorldCoordinate element = queue.poll();
+            SystemCoord element = queue.poll();
 
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                WorldCoordinate target = new WorldCoordinate(element.getX() + direction.offsetX, element.getY() + direction.offsetY, element.getZ() + direction.offsetZ, element.getDepth() + 1);
+                SystemCoord target = new SystemCoord(element, direction);
 
                 if (!visited.contains(target) && (Settings.isLimitless(this) || network.size() < MAX_CONNECTED_INVENTORIES))
                 {
                     visited.add(target);
 
-                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.getX(), target.getY(), target.getZ()), worldObj.getBlockMetadata(target.getX(), target.getY(), target.getZ())))
+                    if ((Settings.isLimitless(this) || element.depth < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.x, target.y, target.z), worldObj.getBlockMetadata(target.x, target.y, target.z)))
                     {
                         queue.add(target);
                     }
 
-                    TileEntity te = worldObj.getTileEntity(target.getX(), target.getY(), target.getZ());
+                    TileEntity te = worldObj.getTileEntity(target.x, target.y, target.z);
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
-
                         for (TileEntityClusterElement tileEntityClusterElement : ((TileEntityCluster)te).getElements())
                         {
                             ((TileEntityCluster)te).setWorldObject(tileEntityClusterElement);
-                            addInventory(tileEntityClusterElement, target);
+                            SystemCoord coord = target.copy();
+                            coord.setTileEntity(tileEntityClusterElement);
+                            addInventory(target);
                         }
                     } else
                     {
-                        addInventory(te, target);
+                        target.setTileEntity(te);
+                        addInventory(target);
                     }
                 }
             }
@@ -362,47 +355,44 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
         if (!firstInventoryUpdate)
         {
-            for (WorldCoordinate oldCoordinate : oldCoordinates)
+            for (SystemCoord oldCoordinate : oldCoordinates)
             {
-                if (oldCoordinate.getTileEntity() instanceof ISystemListener)
+                if (oldCoordinate.tileEntity instanceof ISystemListener)
                 {
-                    SystemCoord find = new SystemCoord(oldCoordinate);
-
-                    if (!network.containsKey(find.key))
+                    if (!network.containsKey(oldCoordinate.key))
                     {
-                        ((ISystemListener)oldCoordinate.getTileEntity()).removed(this);
+                        ((ISystemListener)oldCoordinate.tileEntity).removed(this);
                     }
                 }
             }
         }
-
         firstInventoryUpdate = false;
     }
 
-    private void addInventory(TileEntity te, WorldCoordinate target)
+    private void addInventory(SystemCoord target)
     {
-        SystemCoord connection = new SystemCoord(te, target);
         boolean isValidConnection = false;
 
+        target.types = new HashSet<ISystemType>();
         for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
-            if (connectionBlockType.isInstance(connection.tileEntity))
+            if (connectionBlockType.isInstance(target.tileEntity))
             {
                 isValidConnection = true;
-                connection.addType(connectionBlockType);
+                target.addType(connectionBlockType);
             }
         }
 
         if (isValidConnection)
         {
-            if (target.getDepth() >= MAX_CABLE_LENGTH || network.size() >= MAX_CONNECTED_INVENTORIES)
+            if (target.depth >= MAX_CABLE_LENGTH || network.size() >= MAX_CONNECTED_INVENTORIES)
             {
                 usingUnlimitedInventories = true;
             }
-            network.put(connection.key, connection);
-            if (connection.tileEntity instanceof ISystemListener)
+            network.put(target.key, target);
+            if (target.tileEntity instanceof ISystemListener)
             {
-                ((ISystemListener)connection.tileEntity).added(this);
+                ((ISystemListener)target.tileEntity).added(this);
             }
         }
     }

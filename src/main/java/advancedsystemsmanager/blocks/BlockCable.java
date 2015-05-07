@@ -4,7 +4,7 @@ import advancedsystemsmanager.api.tileentities.ICable;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.WorldCoordinate;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -45,30 +45,30 @@ public class BlockCable extends BlockBase implements ICable
 
     public void updateInventories(World world, int blockX, int blockY, int blockZ)
     {
-        List<WorldCoordinate> visited = new ArrayList<WorldCoordinate>();
+        List<SystemCoord> visited = new ArrayList<SystemCoord>();
         List<TileEntityManager> managers = new ArrayList<TileEntityManager>();
-        Queue<WorldCoordinate> queue = new PriorityQueue<WorldCoordinate>();
-        WorldCoordinate start = new WorldCoordinate(blockX, blockY, blockZ, 0);
+        Queue<SystemCoord> queue = new PriorityQueue<SystemCoord>();
+        SystemCoord start = new SystemCoord(blockX, blockY, blockZ, 0);
         queue.add(start);
         visited.add(start);
 
         while (!queue.isEmpty())
         {
-            WorldCoordinate element = queue.poll();
+            SystemCoord element = queue.poll();
 
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                WorldCoordinate target = new WorldCoordinate(element, direction);
+                SystemCoord target = new SystemCoord(element, direction);
 
                 if (!visited.contains(target))
                 {
                     visited.add(target);
                     //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
-                    Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
-                    int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
+                    Block block = world.getBlock(target.x, target.y, target.z);
+                    int meta = world.getBlockMetadata(target.x, target.y, target.z);
                     if (block == BlockRegistry.blockManager)
                     {
-                        TileEntity tileEntity = world.getTileEntity(target.getX(), target.getY(), target.getZ());
+                        TileEntity tileEntity = world.getTileEntity(target.x, target.y, target.z);
                         if (tileEntity != null && tileEntity instanceof TileEntityManager)
                         {
                             managers.add((TileEntityManager)tileEntity);
@@ -100,17 +100,17 @@ public class BlockCable extends BlockBase implements ICable
     }
 
     @Override
-    public void getConnectedCables(World world, WorldCoordinate coordinate, List<WorldCoordinate> visited, Queue<WorldCoordinate> cables)
+    public void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables)
     {
         for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
         {
-            WorldCoordinate target = new WorldCoordinate(coordinate, direction);
-
+            SystemCoord target = new SystemCoord(coordinate, direction);
+            //target.setTileEntity(world.getTileEntity(target.x, target. y, target.z));
             if (!visited.contains(target))
             {
                 visited.add(target);
-                Block block = world.getBlock(target.getX(), target.getY(), target.getZ());
-                int meta = world.getBlockMetadata(target.getX(), target.getY(), target.getZ());
+                Block block = world.getBlock(target.x, target.y, target.z);
+                int meta = world.getBlockMetadata(target.x, target.y, target.z);
                 if (isCable(block, meta))
                 {
                     cables.add(target);

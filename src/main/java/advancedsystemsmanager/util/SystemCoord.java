@@ -6,16 +6,18 @@ import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
+import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection<GuiManager>
@@ -30,6 +32,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         this(x, y, z, 0, 0);
     }
 
+    public SystemCoord(SystemCoord coord, ForgeDirection dir)
+    {
+        this(coord.x + dir.offsetX, coord.y + dir.offsetY, coord.z + dir.offsetZ, coord.dim, coord.depth + 1);
+    }
+
     public SystemCoord(int x, int y, int z, int dim)
     {
         this(x, y, z, dim, 0);
@@ -37,17 +44,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public SystemCoord(int x, int y, int z, int dim, int depth)
     {
-        this(x, y, z, dim, 0, null);
-    }
-
-    public SystemCoord(WorldCoordinate coordinate)
-    {
-        this(coordinate.getTileEntity(), coordinate);
-    }
-
-    public SystemCoord(TileEntity te, WorldCoordinate coordinate)
-    {
-        this(coordinate.getX(), coordinate.getY(), coordinate.getZ(), te == null ? 0 : te.getWorldObj().provider.dimensionId, coordinate.getDepth(), te);
+        this(x, y, z, dim, depth, null);
     }
 
     public SystemCoord(int x, int y, int z, int dim, int depth, TileEntity tileEntity)
@@ -58,11 +55,13 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         this.dim = dim;
         this.depth = depth;
         this.tileEntity = tileEntity;
-        this.types = new HashSet<ISystemType>();
-        this.key = ((long)(x & 0xFFFFFFFF))<<40;
-        this.key |= ((long)z & 0xFFFFFFFF)<<16;
-        this.key |= ((long)y & 0xFF)<<8;
-        this.key |= dim & 0xFF;
+        setKey();
+    }
+
+    private void setKey()
+    {
+        this.key = ((long)x & 0xFFFFFF)<<40 | ((long)z & 0xFFFFFF)<<16 | ((long)y & 0xFF)<<8 | dim & 0xFF;
+        if (tileEntity instanceof TileEntityClusterElement) key |= (ClusterRegistry.get((TileEntityClusterElement)tileEntity).getId() & 0xF) << 4;
     }
 
     public void addType(ISystemType type)
@@ -189,5 +188,16 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     public boolean isPartOfVariable(Variable variable)
     {
         return variable.isValid() && ((MenuContainer)variable.getDeclaration().getMenus().get(2)).getSelectedInventories().contains(key);
+    }
+
+    public SystemCoord copy()
+    {
+        return new SystemCoord(x, y, z, dim, depth, tileEntity);
+    }
+
+    public void setTileEntity(TileEntity tileEntity)
+    {
+        this.tileEntity = tileEntity;
+        setKey();
     }
 }

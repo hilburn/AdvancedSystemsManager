@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.util.WorldCoordinate;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -10,5 +10,5 @@ public interface ICable
 {
     boolean isCable(int meta);
 
-    void getConnectedCables(World world, WorldCoordinate coordinate, List<WorldCoordinate> visited, Queue<WorldCoordinate> cables);
+    void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables);
 }

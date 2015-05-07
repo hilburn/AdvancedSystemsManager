@@ -229,7 +229,7 @@ public class MenuContainer extends Menu
                     {
                         cachedContainer = iContainerSelection;
                         cachedTooltip = new ToolTip(gui, (SystemCoord)iContainerSelection);
-                        cachedId = (int)iContainerSelection.getId();
+                        cachedId = iContainerSelection.getId();
                     }
                     keepCache = true;
 

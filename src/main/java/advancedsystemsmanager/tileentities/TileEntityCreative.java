@@ -1,5 +1,10 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IInternalInventory;
+import advancedsystemsmanager.flow.execution.ConditionSettingChecker;
+import advancedsystemsmanager.flow.menus.MenuItem;
+import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,13 +16,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
 
 
-public class TileEntityCreative extends TileEntityClusterElement implements IInventory, IFluidHandler
+public class TileEntityCreative extends TileEntityClusterElement implements IInternalInventory, IFluidHandler
 {
-
-
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
     {
@@ -55,80 +61,32 @@ public class TileEntityCreative extends TileEntityClusterElement implements IInv
     }
 
     @Override
-    public int getSizeInventory()
-    {
-        return 1;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int i)
-    {
-        return null;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int i, int j)
-    {
-        return null;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int i)
-    {
-        return null;
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack)
-    {
-
-    }
-
-    @Override
-    public String getInventoryName()
-    {
-        return Names.CABLE_CREATIVE;
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return false;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
-    {
-        return false;
-    }
-
-    @Override
-    public void openInventory()
-    {
-
-    }
-
-    @Override
-    public void closeInventory()
-    {
-
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack)
-    {
-        return true;
-    }
-
-    @Override
     protected EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.noneOf(ClusterMethodRegistration.class);
+    }
+
+    @Override
+    public int getAmountToInsert(ItemStack stack)
+    {
+        return 0;
+    }
+
+    @Override
+    public void insertItemStack(ItemStack stack)
+    {
+    }
+
+    @Override
+    public List<IBufferElement<ItemStack>> getSubElements(int id, MenuItem menuItem)
+    {
+        //TODO: Things
+        return null;
+    }
+
+    @Override
+    public void isItemValid(Collection<Setting> settings, Map<Integer, ConditionSettingChecker> conditionSettingCheckerMap)
+    {
+        //TODO: Things
     }
 }

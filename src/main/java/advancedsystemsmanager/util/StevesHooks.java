@@ -61,7 +61,7 @@ public class StevesHooks
             {
                 for (FluidTankInfo info : fluidTankInfo)
                 {
-                    if (info.fluid == null || info.fluid.getFluid() == null) return result;
+                    if (info.fluid == null || info.fluid.getFluid() == null) continue;
                     tankInfo += info.fluid.getLocalizedName() + (i++ < fluidTankInfo.length ? ", " : "");
                 }
             }

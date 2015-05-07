@@ -242,8 +242,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             }
 
 
-            this.zLevel = 300.0F;
-            itemRender.zLevel = 300.0F;
+            this.zLevel = 500.0F;
+            itemRender.zLevel = 500.0F;
             int j1 = -267386864;
             this.drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, j1, j1);
             this.drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, j1, j1);
@@ -470,7 +470,9 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(32826);
         GL11.glEnable(2903);
         GL11.glEnable(2896);
-        itemRender.zLevel = 1.0F;
+        float zLevel = this.zLevel;
+        itemRender.zLevel = 500.0F;
+        this.zLevel = 500.0F;
 
         try
         {
@@ -487,7 +489,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             }
         } finally
         {
-            itemRender.zLevel = 0.0F;
+            itemRender.zLevel = zLevel;
+            this.zLevel = zLevel;
             bindTexture(this.getComponentResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(2896);
