@@ -12,8 +12,10 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -257,7 +259,7 @@ public class MenuSignText extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         NBTTagList list = nbtTagCompound.getTagList(NBT_LINES, 10);
         for (int i = 0; i < list.tagCount(); i++)
@@ -308,20 +310,6 @@ public class MenuSignText extends Menu
     public void onGuiClosed()
     {
         update(IDLE_TIME);
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        int id = dr.readData(DataBitHelper.LINE_ID);
-        if (dr.readBoolean())
-        {
-            setTextPostSync(id, dr.readString(DataBitHelper.LINE_LENGTH));
-            textBoxes[id].updateCursor();
-        } else
-        {
-            update[id] = dr.readBoolean();
-        }
     }
 
     public boolean shouldUpdate(int id)

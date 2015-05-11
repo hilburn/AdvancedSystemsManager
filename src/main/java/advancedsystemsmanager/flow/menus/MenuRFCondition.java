@@ -13,6 +13,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -158,7 +159,7 @@ public class MenuRFCondition extends Menu
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         this.textBox.setNumber(nbtTagCompound.getInteger("textBox"));
         this.triggerBelow = nbtTagCompound.getBoolean("Inverted");
@@ -180,16 +181,6 @@ public class MenuRFCondition extends Menu
         return true;
     }
 
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            this.textBox.setNumber(dr.readData(32));
-        } else
-        {
-            this.triggerBelow = dr.readBoolean();
-        }
-    }
 
     public boolean isLessThan()
     {
@@ -200,4 +191,5 @@ public class MenuRFCondition extends Menu
     {
         return this.textBox.getNumber();
     }
+
 }

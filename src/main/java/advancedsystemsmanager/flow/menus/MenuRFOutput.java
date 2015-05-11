@@ -2,8 +2,7 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.reference.Names;
+import io.netty.buffer.ByteBuf;
 
 public class MenuRFOutput extends MenuRF
 {
@@ -13,7 +12,7 @@ public class MenuRFOutput extends MenuRF
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readNetworkComponent(ByteBuf dr)
     {
         super.readNetworkComponent(dr);
         updateConnectedNodes();

@@ -11,6 +11,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Comparator;
@@ -281,7 +282,7 @@ public class MenuListOrder extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         all = nbtTagCompound.getBoolean(NBT_ALL);
         textBox.setNumber(nbtTagCompound.getByte(NBT_AMOUNT));
@@ -299,22 +300,22 @@ public class MenuListOrder extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readNetworkComponent(ByteBuf dr)
     {
-        UpdateType type = UpdateType.values()[dr.readData(DataBitHelper.ORDER_TYPES)];
+        UpdateType type = UpdateType.values()[dr.readByte()];
         switch (type)
         {
             case USE_ALL:
                 all = dr.readBoolean();
                 break;
             case AMOUNT:
-                textBox.setNumber(dr.readData(DataBitHelper.ORDER_AMOUNT));
+                textBox.setNumber(dr.readByte());
                 break;
             case REVERSED:
                 reversed = dr.readBoolean();
                 break;
             case TYPE:
-                radioButtons.setSelectedOption(dr.readData(DataBitHelper.ORDER_TYPES));
+                radioButtons.setSelectedOption(dr.readByte());
         }
 
     }

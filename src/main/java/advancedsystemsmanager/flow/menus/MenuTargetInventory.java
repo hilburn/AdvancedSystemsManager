@@ -13,6 +13,7 @@ import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
@@ -191,21 +192,6 @@ public class MenuTargetInventory extends MenuTarget
         textBoxes.draw(gui, mX, mY);
     }
 
-    @Override
-    public void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i)
-    {
-        int data = dr.readData(header.getBits());
-        switch (header)
-        {
-            case START_OR_TANK_DATA:
-                startRange[i] = data;
-                refreshAdvancedComponent();
-                break;
-            case END:
-                endRange[i] = data;
-                refreshAdvancedComponent();
-        }
-    }
 
     @SideOnly(Side.CLIENT)
     @Override

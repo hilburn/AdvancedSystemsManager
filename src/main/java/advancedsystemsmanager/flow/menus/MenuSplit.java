@@ -260,7 +260,7 @@ public class MenuSplit extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         setSplit(nbtTagCompound.getBoolean(NBT_SPLIT));
         if (useSplit())
@@ -296,23 +296,4 @@ public class MenuSplit extends Menu
     {
         radioButtons.setSelectedOption(val ? 1 : 0);
     }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        int id = dr.readData(DataBitHelper.MENU_SPLIT_DATA_ID);
-        switch (id)
-        {
-            case 0:
-                setSplit(dr.readBoolean());
-                break;
-            case 1:
-                setFair(dr.readBoolean());
-                break;
-            case 2:
-                setEmpty(dr.readBoolean());
-                break;
-        }
-    }
-
 }

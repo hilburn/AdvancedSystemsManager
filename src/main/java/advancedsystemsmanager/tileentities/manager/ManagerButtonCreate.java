@@ -10,6 +10,7 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -24,21 +25,21 @@ public class ManagerButtonCreate extends ManagerButton
     }
 
     @Override
-    public void onClick(DataReader dr)
+    public void onClickReader(ByteBuf buf)
     {
         if (Settings.isLimitless(manager) || manager.getFlowItems().size() < TileEntityManager.MAX_COMPONENT_AMOUNT)
         {
             FlowComponent component = new FlowComponent(manager, 50, 50, type);
 
-            boolean hasParent = dr.readBoolean();
+            boolean hasParent = buf.readBoolean();
             if (hasParent)
             {
-                component.setParent(manager.getFlowItem(dr.readComponentId()));
+                component.setParent(manager.getFlowItem(buf.readInt()));
             }
 
-            boolean autoSide = dr.readBoolean();
-            boolean autoBlackList = dr.readBoolean();
-            boolean moveFirst = dr.readBoolean();
+            boolean autoSide = buf.readBoolean();
+            boolean autoBlackList = buf.readBoolean();
+            boolean moveFirst = buf.readBoolean();
             boolean isInput = type.getCommandType() == ICommand.CommandType.INPUT;
             boolean isOutput = type.getCommandType() == ICommand.CommandType.OUTPUT;
             if (autoSide)
@@ -77,25 +78,27 @@ public class ManagerButtonCreate extends ManagerButton
     }
 
     @Override
-    public boolean onClick(DataWriter dw)
+    public boolean validClick()
+    {
+        return true;
+    }
+
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
     {
         if (manager.selectedGroup != null)
         {
-            dw.writeBoolean(true);
-            dw.writeComponentId(manager, manager.selectedGroup.getId());
+            buf.writeBoolean(true);
+            buf.writeInt(manager.selectedGroup.getId());
         } else
         {
-            dw.writeBoolean(false);
+            buf.writeBoolean(false);
         }
 
-        //these are written for all different types, that's because the type itself doesn't really know what menus
-        //it will use, this will create a super tiny overhead (each setting is a bit) and could be eliminated with
-        //some semi-ugly code, I decided this approach was fine
-        dw.writeBoolean(Settings.isAutoSide());
-        dw.writeBoolean(Settings.isAutoBlacklist());
-        dw.writeBoolean(Settings.isPriorityMoveFirst());
-
-        return true;
+        buf.writeBoolean(Settings.isAutoSide());
+        buf.writeBoolean(Settings.isAutoBlacklist());
+        buf.writeBoolean(Settings.isPriorityMoveFirst());
     }
 
     @Override

@@ -134,23 +134,6 @@ public class MenuLiquid extends MenuStuff<Fluid>
     }
 
     @Override
-    public void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting)
-    {
-        LiquidSetting liquidSetting = (LiquidSetting)setting;
-
-        switch (header)
-        {
-            case SET_ITEM:
-                liquidSetting.setLiquidFromId(dr.readData(DataBitHelper.MENU_FLUID_ID));
-
-                if (isEditing())
-                {
-                    updateTextBoxes();
-                }
-        }
-    }
-
-    @Override
     public void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting)
     {
         LiquidSetting liquidSetting = (LiquidSetting)setting;

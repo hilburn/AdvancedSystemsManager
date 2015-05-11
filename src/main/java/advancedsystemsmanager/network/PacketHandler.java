@@ -1,5 +1,6 @@
 package advancedsystemsmanager.network;
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -35,7 +36,7 @@ public class PacketHandler
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
         dw.writeBoolean(false); //all data
-        te.writeAllData(dw);
+        //te.writeNetworkComponent(dw);
 
         sendDataToPlayer(crafting, dw);
         dw.close();

@@ -13,7 +13,7 @@ import net.minecraft.inventory.ICrafting;
 
 public class ContainerManager extends ContainerBase
 {
-    private TileEntityManager manager;
+    public TileEntityManager manager;
     private TIntObjectHashMap<FlowComponent> oldComponents;
     private TLongObjectHashMap<SystemCoord> oldInventories;
     private int oldIdIndexToRemove;

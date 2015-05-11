@@ -14,6 +14,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -583,7 +584,7 @@ public abstract class MenuStuff<Type> extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         setFirstRadioButtonSelected(nbtTagCompound.getBoolean(NBT_RADIO_SELECTION));
 
@@ -689,75 +690,6 @@ public abstract class MenuStuff<Type> extends Menu
     public void setFirstRadioButtonSelected(boolean value)
     {
         radioButtons.setSelectedOption(value ? 0 : 1);
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        boolean useSetting = dr.readBoolean();
-
-        if (useSetting)
-        {
-            int settingId = dr.readData(DataBitHelper.MENU_ITEM_SETTING_ID);
-            Setting setting = settings.get(settingId);
-            int headerId = dr.readData(DataBitHelper.MENU_ITEM_TYPE_HEADER);
-            DataTypeHeader header = getHeaderFromId(headerId);
-
-            switch (header)
-            {
-                case CLEAR:
-                    setting.clear();
-                    selectedSetting = null;
-                    break;
-                case USE_AMOUNT:
-                    if (setting.isAmountSpecific())
-                    {
-                        setting.setLimitedByAmount(dr.readBoolean());
-                        if (!setting.isLimitedByAmount() && setting.isValid())
-                        {
-                            setting.setDefaultAmount();
-                        }
-                    }
-                    break;
-                case AMOUNT:
-                    if (setting.isAmountSpecific() && setting.isValid())
-                    {
-                        setting.setAmount(dr.readData(getAmountBitLength()));
-                        if (isEditing())
-                        {
-                            updateTextBoxes();
-                        }
-                    }
-                    break;
-                default:
-                    readSpecificHeaderData(dr, header, setting);
-
-            }
-
-            onSettingContentChange();
-        } else
-        {
-            readNonSettingData(dr);
-        }
-    }
-
-    public void readNonSettingData(DataReader dr)
-    {
-        setFirstRadioButtonSelected(dr.readBoolean());
-    }
-
-    public abstract void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting);
-
-    public DataTypeHeader getHeaderFromId(int id)
-    {
-        for (DataTypeHeader header : DataTypeHeader.values())
-        {
-            if (id == header.id)
-            {
-                return header;
-            }
-        }
-        return null;
     }
 
     public List<Setting<Type>> getSettings()

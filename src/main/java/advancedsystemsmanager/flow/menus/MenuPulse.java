@@ -12,7 +12,10 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.nio.ByteBuffer;
 
 public class MenuPulse extends Menu
 {
@@ -292,7 +295,7 @@ public class MenuPulse extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         usePulse = nbtTagCompound.getBoolean(NBT_USE_PULSE);
         if (usePulse)
@@ -315,32 +318,6 @@ public class MenuPulse extends Menu
             nbtTagCompound.setByte(NBT_TYPE, (byte)radioButtons.getSelectedOption());
             nbtTagCompound.setByte(NBT_SECOND, (byte)secondsTextBox.getNumber());
             nbtTagCompound.setByte(NBT_TICK, (byte)ticksTextBox.getNumber());
-        }
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        ComponentSyncType type = ComponentSyncType.values()[dr.readData(DataBitHelper.PULSE_COMPONENT_TYPES)];
-
-        switch (type)
-        {
-            case CHECK_BOX:
-                usePulse = dr.readBoolean();
-                if (!usePulse)
-                {
-                    setDefault();
-                }
-                break;
-            case RADIO_BUTTON:
-                radioButtons.setSelectedOption(dr.readData(DataBitHelper.PULSE_TYPES));
-                break;
-            case TEXT_BOX_1:
-                secondsTextBox.setNumber(dr.readData(DataBitHelper.PULSE_SECONDS));
-                break;
-            case TEXT_BOX_2:
-                ticksTextBox.setNumber(dr.readData(DataBitHelper.PULSE_TICKS));
-
         }
     }
 
@@ -376,7 +353,7 @@ public class MenuPulse extends Menu
         @Override
         public String toString()
         {
-            return name.toString();
+            return name;
         }
 
         public String getName()

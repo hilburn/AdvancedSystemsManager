@@ -113,11 +113,6 @@ public abstract class MenuTriggered extends Menu
         return 1;
     }
 
-    public void readNetworkComponent(DataReader dr)
-    {
-        readData(dr);
-    }
-
     public void setCountdown()
     {
         if (isVisible())

@@ -15,6 +15,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -186,14 +187,10 @@ public abstract class MenuRedstoneSides extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        //Forgot to save it in earlier versions
-        if (version >= 3)
-        {
-            selection = nbtTagCompound.getByte(NBT_ACTIVE);
-            setFirstOption(nbtTagCompound.getBoolean(NBT_ALL));
-        }
+        selection = nbtTagCompound.getByte(NBT_ACTIVE);
+        setFirstOption(nbtTagCompound.getBoolean(NBT_ALL));
     }
 
     @Override
@@ -209,18 +206,6 @@ public abstract class MenuRedstoneSides extends Menu
         if (isVisible() && selection == 0)
         {
             errors.add(Names.NO_REDSTONE_SIDES_ERROR);
-        }
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            setFirstOption(dr.readBoolean());
-        } else
-        {
-            selection = dr.readData(DataBitHelper.MENU_REDSTONE_SETTING);
         }
     }
 

@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;

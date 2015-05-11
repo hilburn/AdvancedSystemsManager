@@ -14,6 +14,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -316,7 +317,7 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         inUse = nbtTagCompound.getBoolean(NBT_USE);
         if (inUse)
@@ -374,27 +375,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
     public String getWarningText()
     {
         return Names.BOUNDS_WARNING;
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        int id = dr.readData(DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
-        if (id == 0)
-        {
-            inUse = dr.readBoolean();
-            if (inUse)
-            {
-                useCollision = dr.readBoolean();
-                fullCollision = dr.readBoolean();
-            } else
-            {
-                loadDefault();
-            }
-        } else
-        {
-            textBoxes.getTextBox(id - 1).setNumber(dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS));
-        }
     }
 
     public class TextBoxRange extends TextBoxNumber

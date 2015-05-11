@@ -4,6 +4,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.StevesEnum;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.reference.Names;
+import io.netty.buffer.ByteBuf;
 
 public class MenuRFInput extends MenuRF
 {
@@ -13,9 +14,9 @@ public class MenuRFInput extends MenuRF
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readNetworkComponent(ByteBuf buf)
     {
-        super.readNetworkComponent(dr);
+        super.readNetworkComponent(buf);
         updateConnectedNodes();
     }
 }

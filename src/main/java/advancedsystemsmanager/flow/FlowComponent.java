@@ -3,6 +3,7 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
+import advancedsystemsmanager.api.network.INetworkReader;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
@@ -15,8 +16,10 @@ import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -144,6 +147,10 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public int overrideY = -1;
     List<String> errors = new ArrayList<String>();
 
+    public FlowComponent(TileEntityManager manager, ICommand type)
+    {
+        this(manager, 50, 50, type);
+    }
 
     public FlowComponent(TileEntityManager manager, int x, int y, ICommand type)
     {
@@ -171,7 +178,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         childrenOutputNodes = new ArrayList<FlowComponent>();
     }
 
-    public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, boolean pickup)
     {
         FlowComponent component = null;
         try
@@ -179,7 +186,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             int x = nbtTagCompound.getShort(NBT_POS_X);
             int y = nbtTagCompound.getShort(NBT_POS_Y);
             int typeId = nbtTagCompound.getByte(NBT_TYPE);
-            int id = nbtTagCompound.getByte(NBT_ID);
+            int id = nbtTagCompound.getInteger(NBT_ID);
             component = new FlowComponent(jam, x, y, id, CommandRegistry.getCommand(typeId));
             component.isLoading = true;
 
@@ -193,7 +200,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
             if (nbtTagCompound.hasKey(NBT_PARENT))
             {
-                component.parentLoadId = nbtTagCompound.getShort(NBT_PARENT);
+                component.parentLoadId = nbtTagCompound.getInteger(NBT_PARENT);
             }
 
             NBTTagList connections = nbtTagCompound.getTagList(NBT_CONNECTION, 10);
@@ -201,14 +208,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 NBTTagCompound connectionTag = connections.getCompoundTagAt(i);
 
-                int componentId;
-                if (version < 9)
-                {
-                    componentId = connectionTag.getByte(NBT_CONNECTION_TARGET_COMPONENT);
-                } else
-                {
-                    componentId = connectionTag.getShort(NBT_CONNECTION_TARGET_COMPONENT);
-                }
+                int componentId = connectionTag.getShort(NBT_CONNECTION_TARGET_COMPONENT);
                 Connection connection = new Connection(componentId, connectionTag.getByte(NBT_CONNECTION_TARGET_CONNECTION));
 
                 if (connectionTag.hasKey(NBT_NODES))
@@ -237,55 +237,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 NBTTagCompound menuTag = menuTagList.getCompoundTagAt(i);
 
-
-                //added an extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 1)
-                {
-                    menuId++;
-                }
-
-                //added a second extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 2 && version < 5)
-                {
-                    menuId++;
-                }
-
-                //added a third extra menu to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 0 && version < 6)
-                {
-                    menuId++;
-                }
-
-
-                //added the bud menus to the triggers
-                if (component.type == CommandRegistry.TRIGGER && i == 1 && version < 8)
-                {
-                    menuId++;
-                }
-                if (component.type == CommandRegistry.TRIGGER && i == 4 && version < 8)
-                {
-                    menuId++;
-                }
-
-                //added an extra menu to the flow controls
-                if (component.type == CommandRegistry.FLOW_CONTROL && i == 0 && version < 4)
-                {
-                    menuId++;
-                }
-
-                //added two extra menus to the camouflage updater
-                if (component.type == CommandRegistry.CAMOUFLAGE && i == 1 && version < 10)
-                {
-                    menuId += 2;
-                }
-
-                //added crafting priority to the crafter
-                if (component.type == CommandRegistry.AUTO_CRAFTING && i == 1 && version < 11)
-                {
-                    menuId++;
-                }
-
-                component.menus.get(menuId).readFromNBT(menuTag, version, pickup);
+                component.menus.get(menuId).readFromNBT(menuTag, pickup);
                 menuId++;
             }
 
@@ -823,13 +775,8 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         {
             textBox.onKeyStroke(gui, c, k);
             return true;
-        } else if (isLarge && openMenuId != -1)
-        {
-            return menus.get(openMenuId).onKeyStroke(gui, c, k);
         } else
-        {
-            return false;
-        }
+            return isLarge && openMenuId != -1 && menus.get(openMenuId).onKeyStroke(gui, c, k);
     }
 
     public boolean onClick(int mX, int mY, int button)
@@ -1273,7 +1220,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         isDragging = false;
     }
 
-    public void adjustEverythingToGridRaw()
+    public void adjustEverythingToGridraw()
     {
         if (true) return;  //TODO work in progress
         adjustToGrid();
@@ -1438,22 +1385,22 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readNetworkComponent(ByteBuf buf)
     {
         //might need some clean up
-        if (dr.readBoolean())
+        if (buf.readBoolean())
         {
-            if (dr.readBoolean())
+            if (buf.readBoolean())
             {
-                if (dr.readBoolean())
+                if (buf.readBoolean())
                 {
-                    x = dr.readData(DataBitHelper.FLOW_CONTROL_X);
-                    y = dr.readData(DataBitHelper.FLOW_CONTROL_Y);
+                    x = buf.readShort();
+                    y = buf.readShort();
                 } else
                 {
-                    if (dr.readBoolean())
+                    if (buf.readBoolean())
                     {
-                        setParent(getManager().getFlowItem(dr.readComponentId()));
+                        setParent(getManager().getFlowItem(buf.readInt()));
                     } else
                     {
                         setParent(null);
@@ -1462,18 +1409,18 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
 
             } else
             {
-                name = dr.readString(DataBitHelper.NAME_LENGTH);
+                name = ByteBufUtils.readUTF8String(buf);
             }
         } else
         {
-            int connectionId = dr.readData(DataBitHelper.CONNECTION_ID);
-            if (dr.readBoolean())
+            int connectionId = buf.readByte();
+            if (buf.readBoolean())
             {
                 Connection connection;
-                if (dr.readBoolean())
+                if (buf.readBoolean())
                 {
-                    int targetComponentId = dr.readComponentId();
-                    int targetConnectionId = dr.readData(DataBitHelper.CONNECTION_ID);
+                    int targetComponentId = buf.readInt();
+                    int targetConnectionId = buf.readByte();
 
                     connection = new Connection(targetComponentId, targetConnectionId);
                 } else
@@ -1486,17 +1433,17 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 Connection connection = connections.get(connectionId);
 
-                int id = dr.readData(DataBitHelper.NODE_ID);
+                int id = buf.readByte();
                 int length = -1;
                 if (manager.getWorldObj().isRemote)
                 {
-                    length = dr.readData(DataBitHelper.NODE_ID);
+                    length = buf.readByte();
                 }
-                boolean deleted = dr.readBoolean();
+                boolean deleted = buf.readBoolean();
                 boolean created = false;
                 if (!deleted)
                 {
-                    created = dr.readBoolean();
+                    created = buf.readBoolean();
                 }
                 if (id >= 0 && ((created && id == connection.getNodes().size()) || id < connection.getNodes().size()))
                 {
@@ -1518,8 +1465,8 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                             node = connection.getNodes().get(id);
                         }
 
-                        node.setX(dr.readData(DataBitHelper.FLOW_CONTROL_X));
-                        node.setY(dr.readData(DataBitHelper.FLOW_CONTROL_Y));
+                        node.setX(buf.readShort());
+                        node.setY(buf.readShort());
                     }
 
                 }
@@ -1778,7 +1725,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
         }
         if (parent != null)
         {
-            nbtTagCompound.setShort(NBT_PARENT, (short)parent.getId());
+            nbtTagCompound.setInteger(NBT_PARENT, parent.getId());
         }
         NBTTagList connections = new NBTTagList();
         for (int i = 0; i < connectionSet.getConnections().length; i++)
@@ -1789,7 +1736,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
             {
                 NBTTagCompound connectionTag = new NBTTagCompound();
                 connectionTag.setByte(NBT_CONNECTION_POS, (byte)i);
-                connectionTag.setShort(NBT_CONNECTION_TARGET_COMPONENT, (short)connection.getComponentId());
+                connectionTag.setInteger(NBT_CONNECTION_TARGET_COMPONENT, connection.getComponentId());
                 connectionTag.setByte(NBT_CONNECTION_TARGET_CONNECTION, (byte)connection.getConnectionId());
 
 

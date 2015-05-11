@@ -1,6 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.network.*;
@@ -10,6 +11,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.Minecraft;
@@ -293,29 +295,11 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readAllData(DataReader dr, EntityPlayer player)
+    public void readData(ByteBuf buf, EntityPlayer player)
     {
         if (interfaceObject != null)
         {
-            interfaceObject.readAllData(dr, player);
-        }
-    }
-
-    @Override
-    public void readUpdatedData(DataReader dr, EntityPlayer player)
-    {
-        if (interfaceObject != null)
-        {
-            interfaceObject.readUpdatedData(dr, player);
-        }
-    }
-
-    @Override
-    public void writeAllData(DataWriter dw)
-    {
-        if (interfaceObject != null)
-        {
-            interfaceObject.writeAllData(dw);
+            interfaceObject.readData(buf, player);
         }
     }
 
@@ -476,6 +460,15 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         }
 
         return bytes;
+    }
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        if (interfaceObject != null)
+        {
+            interfaceObject.writeNetworkComponent(buf);
+        }
     }
 
     private class Pair

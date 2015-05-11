@@ -237,7 +237,7 @@ public class MenuRedstoneStrength extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         lowTextBox.setNumber(nbtTagCompound.getByte(NBT_LOW));
         highTextBox.setNumber(nbtTagCompound.getByte(NBT_HIGH));
@@ -280,18 +280,6 @@ public class MenuRedstoneStrength extends Menu
         return highTextBox.getNumber();
     }
 
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            TextBoxNumber textBox = dr.readBoolean() ? highTextBox : lowTextBox;
-            textBox.setNumber(dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG));
-        } else
-        {
-            inverted = dr.readBoolean();
-        }
-    }
 
     public boolean isInverted()
     {

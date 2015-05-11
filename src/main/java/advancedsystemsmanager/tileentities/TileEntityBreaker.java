@@ -1,6 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;

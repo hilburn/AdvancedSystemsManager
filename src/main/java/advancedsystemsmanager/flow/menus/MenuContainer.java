@@ -18,6 +18,7 @@ import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -857,7 +858,7 @@ public class MenuContainer extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         selectedInventories.clear();
         if (!pickup)
@@ -932,25 +933,6 @@ public class MenuContainer extends Menu
     public boolean hasMultipleInventories()
     {
         return selectedInventories.size() > 1 || (selectedInventories.size() > 0 && selectedInventories.get(0) < VariableColor.values().length);
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
-        } else
-        {
-            long id = dr.readInventoryId();
-            if (dr.readBoolean())
-            {
-                selectedInventories.add(id);
-            } else
-            {
-                selectedInventories.remove(id);
-            }
-        }
     }
 
     @Override

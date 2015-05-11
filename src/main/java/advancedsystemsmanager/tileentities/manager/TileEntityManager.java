@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
+import advancedsystemsmanager.api.network.INetworkReader;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
@@ -7,20 +8,17 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.Point;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
-import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuInterval;
 import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
-import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
@@ -29,10 +27,12 @@ import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -217,26 +217,26 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    public void readGenericData(DataReader dr)
+    public void readGenericData(ByteBuf buf)
     {
         if (worldObj.isRemote)
         {
-            if (dr.readBoolean())
+            if (buf.readBoolean())
             {
                 updateInventories();
             } else
             {
-                removeFlowComponent(dr.readComponentId());
+                removeFlowComponent(buf.readInt());
             }
         } else
         {
-            int buttonId = dr.readData(DataBitHelper.GUI_BUTTON_ID);
+            int buttonId = buf.readByte();
             if (buttonId >= 0 && buttonId < buttons.size())
             {
                 IManagerButton button = buttons.get(buttonId);
                 if (button.isVisible())
                 {
-                    button.onClick(dr);
+                    button.writeNetworkComponent(buf);
                 }
             }
         }
@@ -261,29 +261,73 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readAllData(DataReader dr, EntityPlayer player)
+    public void readData(ByteBuf buf, EntityPlayer player)
     {
-        updateInventories();
-        int flowControlCount = dr.readComponentId();
-        components.clear();
-        getZLevelRenderingList().clear();
-        for (int i = 0; i < flowControlCount; i++)
+        if (buf.readBoolean())
         {
-            readAllComponentData(dr);
-        }
-        for (FlowComponent item : getFlowItems())
-        {
-            item.linkParentAfterLoad();
-        }
-
-        if (Settings.isAutoCloseGroup())
-        {
-            selectedGroup = null;
-        } else
-        {
-            while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+            updateInventories();
+            int flowControlCount = buf.readInt();
+            components.clear();
+            getZLevelRenderingList().clear();
+            for (int i = 0; i < flowControlCount; i++)
             {
-                selectedGroup = selectedGroup.getParent();
+                NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
+                addNewComponent(FlowComponent.readFromNBT(this, tagCompound, false));
+            }
+            for (FlowComponent item : getFlowItems())
+            {
+                item.linkParentAfterLoad();
+            }
+
+            if (Settings.isAutoCloseGroup())
+            {
+                selectedGroup = null;
+            } else
+            {
+                while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+                {
+                    selectedGroup = selectedGroup.getParent();
+                }
+            }
+        }else
+        {
+            if (!worldObj.isRemote && buf.readBoolean())
+            {
+                boolean val = buf.readBoolean();
+                if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
+                {
+                    Settings.setLimitless(this, val);
+                }
+                //TODO use ids for different actions
+            /*System.out.println("ACTION");
+            for (FlowComponent item : items) {
+                item.adjustEverythingToGridRaw();
+            }
+            for (FlowComponent item : items) {
+                item.adjustEverythingToGridFine();
+            } */
+                return;
+            }
+
+            boolean isNew = worldObj.isRemote && buf.readBoolean();
+            if (isNew)
+            {
+                addNewComponent(new FlowComponent(this, CommandRegistry.getCommand(buf.readByte())));
+            } else
+            {
+                boolean isSpecificComponent = buf.readBoolean();
+                if (isSpecificComponent)
+                {
+                    INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
+
+                    if (nr != null)
+                    {
+                        nr.readNetworkComponent(buf);
+                    }
+                } else
+                {
+                    readGenericData(buf);
+                }
             }
         }
     }
@@ -398,55 +442,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    private void readAllComponentData(DataReader dr)
-    {
-        int x = dr.readData(DataBitHelper.FLOW_CONTROL_X);
-        int y = dr.readData(DataBitHelper.FLOW_CONTROL_Y);
-        int type = dr.readData(DataBitHelper.FLOW_CONTROL_TYPE_ID);
-        int id = dr.readComponentId();
-
-        FlowComponent flowComponent = new FlowComponent(this, x, y, id, CommandRegistry.getCommand(type));
-        flowComponent.setComponentName(dr.readString(DataBitHelper.NAME_LENGTH));
-
-        boolean hasParent = dr.readBoolean();
-        if (hasParent)
-        {
-            flowComponent.setParentLoadId(dr.readComponentId());
-        } else
-        {
-            flowComponent.setParentLoadId(-1);
-        }
-
-        for (Menu menu : flowComponent.getMenus())
-        {
-            menu.readData(dr);
-        }
-
-        flowComponent.clearConnections();
-        for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-        {
-            boolean hasConnection = dr.readBoolean();
-
-            if (hasConnection)
-            {
-                Connection connection = new Connection(dr.readComponentId(), dr.readData(DataBitHelper.CONNECTION_ID));
-                flowComponent.setConnection(i, connection);
-
-
-                int length = dr.readData(DataBitHelper.NODE_ID);
-                for (int j = 0; j < length; j++)
-                {
-                    connection.getNodes().add(new Point(dr.readData(DataBitHelper.FLOW_CONTROL_X), dr.readData(DataBitHelper.FLOW_CONTROL_Y)));
-                }
-            }
-        }
-
-        getZLevelRenderingList().add(0, flowComponent);
-        addNewComponent(flowComponent);
-        flowComponent.linkParentAfterLoad();
-        updateVariables();
-    }
-
     public boolean addNewComponent(FlowComponent component)
     {
         return components.put(component.getId(), component) != null;
@@ -469,60 +464,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    @Override
-    public void readUpdatedData(DataReader dr, EntityPlayer player)
-    {
-        if (!worldObj.isRemote && dr.readBoolean())
-        {
-            boolean val = dr.readBoolean();
-            if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
-            {
-                Settings.setLimitless(this, val);
-            }
-            //TODO use ids for different actions
-            /*System.out.println("ACTION");
-            for (FlowComponent item : items) {
-                item.adjustEverythingToGridRaw();
-            }
-            for (FlowComponent item : items) {
-                item.adjustEverythingToGridFine();
-            } */
-            return;
-        }
-
-        boolean isNew = worldObj.isRemote && dr.readBoolean();
-        if (isNew)
-        {
-            readAllComponentData(dr);
-        } else
-        {
-            boolean isSpecificComponent = dr.readBoolean();
-            if (isSpecificComponent)
-            {
-
-                INetworkReader nr = getNetworkReaderForComponentPacket(dr, this);
-
-                if (nr != null)
-                {
-                    nr.readNetworkComponent(dr);
-                }
-            } else
-            {
-                readGenericData(dr);
-            }
-        }
-    }
-
-    @Override
-    public void writeAllData(DataWriter dw)
-    {
-        dw.writeComponentId(this, components.size());
-        for (FlowComponent flowComponent : getFlowItems())
-        {
-            PacketHandler.writeAllComponentData(dw, flowComponent);
-        }
-    }
-
     public int getNextFreeID()
     {
         while (components.containsKey(++maxID) || maxID < 0) if (maxID < 0) maxID = 0;
@@ -534,16 +475,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
     }
 
-    private INetworkReader getNetworkReaderForComponentPacket(DataReader dr, TileEntityManager jam)
+    private INetworkReader getNetworkReaderForComponentPacket(ByteBuf buf, TileEntityManager manager)
     {
 
-        int componentId = dr.readComponentId();
+        int componentId = buf.readInt();
 
-        FlowComponent component = jam.getFlowItem(componentId);
+        FlowComponent component = manager.getFlowItem(componentId);
 
-        if (dr.readBoolean())
+        if (buf.readBoolean())
         {
-            int menuId = dr.readData(DataBitHelper.FLOW_CONTROL_MENU_COUNT);
+            int menuId = buf.readByte();
             if (menuId >= 0 && menuId < component.getMenus().size())
             {
                 return component.getMenus().get(menuId);
@@ -670,7 +611,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         for (int i = 0; i < components.tagCount(); i++)
         {
             NBTTagCompound component = components.getCompoundTagAt(i);
-            FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, 12, pickup);
+            FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, pickup);
             this.components.put(flowComponent.getId(), flowComponent);
         }
 
@@ -716,5 +657,17 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public SystemCoord getInventory(long selected)
     {
         return network.get(selected);
+    }
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        buf.writeInt(components.size());
+        for (FlowComponent flowComponent : components.valueCollection())
+        {
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            flowComponent.writeToNBT(tagCompound, false);
+            ByteBufUtils.writeTag(buf, tagCompound);
+        }
     }
 }

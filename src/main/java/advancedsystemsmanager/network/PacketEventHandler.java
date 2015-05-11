@@ -1,5 +1,6 @@
 package advancedsystemsmanager.network;
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.gui.ContainerBase;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -32,10 +33,10 @@ public class PacketEventHandler
             {
                 if (dr.readBoolean())
                 {
-                    ((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
+                    //((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
                 } else
                 {
-                    ((ContainerBase)container).getTileEntity().readAllData(dr, player);
+                    //((ContainerBase)container).getTileEntity().readAllData(dr, player);
                 }
 
             }
@@ -71,7 +72,7 @@ public class PacketEventHandler
 
             if (container != null && container.windowId == containerId && container instanceof ContainerBase)
             {
-                ((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
+                //((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
                 ((TileEntity)((ContainerBase)container).getTileEntity()).markDirty();
             }
         } else

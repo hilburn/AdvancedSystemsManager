@@ -15,6 +15,7 @@ import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuResult extends Menu
@@ -133,7 +134,7 @@ public class MenuResult extends Menu
     @Override
     public void readData(DataReader dr)
     {
-        readTheData(dr);
+        //readTheData(dr);
     }
 
     @Override
@@ -158,7 +159,7 @@ public class MenuResult extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_SELECTED));
     }
@@ -175,14 +176,4 @@ public class MenuResult extends Menu
         return sets.length > 1;
     }
 
-    public void readTheData(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.MENU_CONNECTION_TYPE_ID));
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        readTheData(dr);
-    }
 }

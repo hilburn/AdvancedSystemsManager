@@ -13,6 +13,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -292,7 +293,7 @@ public class MenuVariable extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         setSelectedVariable(nbtTagCompound.getByte(NBT_VARIABLE));
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_MODE));
@@ -317,28 +318,6 @@ public class MenuVariable extends Menu
         } else if (isDeclaration() && variable.getDeclaration().getId() != getParent().getId())
         {
             errors.add(Names.ALREADY_DECLARED_ERROR);
-        }
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            if (dr.readBoolean())
-            {
-                setSelectedVariable(dr.readData(DataBitHelper.VARIABLE_TYPE));
-            } else
-            {
-                radioButtons.setSelectedOption(dr.readData(DataBitHelper.CONTAINER_MODE));
-            }
-        } else
-        {
-            executed = dr.readBoolean();
-            if (!getParent().getManager().getWorldObj().isRemote)
-            {
-                getVariable().setExecuted(executed);
-            }
         }
     }
 

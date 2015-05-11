@@ -9,6 +9,7 @@ import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -155,7 +156,7 @@ public class MenuGroup extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -167,15 +168,21 @@ public class MenuGroup extends Menu
     }
 
     @Override
-    public void readNetworkComponent(DataReader dr)
+    public void readNetworkComponent(ByteBuf dr)
     {
-        if (!getParent().getManager().getWorldObj().isRemote)
-        {
-            int id = dr.readComponentId();
-            FlowComponent component = getParent().getManager().getFlowItem(id);
-            boolean moveCluster = dr.readBoolean();
+        super.readNetworkComponent(dr);
+//        if (!getParent().getManager().getWorldObj().isRemote)
+//        {
+//            int id = dr.readInt();
+//            FlowComponent component = getParent().getManager().getFlowItem(id);
+//            boolean moveCluster = dr.readBoolean();
+//            moveComponents(component, getParent(), moveCluster);
+//        }
+    }
 
-            moveComponents(component, getParent(), moveCluster);
-        }
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        super.writeNetworkComponent(buf);
     }
 }

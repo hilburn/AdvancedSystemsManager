@@ -178,7 +178,7 @@ public class MenuVariableLoop extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         selectedList = nbtTagCompound.getByte(NBT_LIST);
         selectedElement = nbtTagCompound.getByte(NBT_ELEMENT);
@@ -213,19 +213,5 @@ public class MenuVariableLoop extends Menu
     public Variable getElementVariable()
     {
         return getParent().getManager().getVariables()[selectedElement];
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        boolean useList = dr.readBoolean();
-        int val = dr.readData(DataBitHelper.VARIABLE_TYPE);
-        if (useList)
-        {
-            selectedList = val;
-        } else
-        {
-            selectedElement = val;
-        }
     }
 }

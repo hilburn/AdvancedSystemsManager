@@ -98,24 +98,4 @@ public class MenuTargetRF extends MenuTarget
     {
 
     }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        super.readNetworkComponent(dr);
-        if (!getParent().getManager().getWorldObj().isRemote)
-        {
-            Menu menu = getParent().getMenus().get(0);
-            if (menu instanceof MenuRF)
-            {
-                ((MenuRF)menu).updateConnectedNodes();
-            }
-        }
-    }
-
-    @Override
-    public void readAdvancedNetworkComponent(DataReader dataReader, DataTypeHeader dataTypeHeader, int i)
-    {
-
-    }
 }

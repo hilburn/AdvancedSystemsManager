@@ -166,7 +166,7 @@ public class MenuContainerTypes extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         short data = nbtTagCompound.getShort(NBT_CHECKED);
         for (int i = 0; i < checked.length; i++)
@@ -189,12 +189,6 @@ public class MenuContainerTypes extends Menu
         nbtTagCompound.setShort(NBT_CHECKED, data);
     }
 
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        int id = dr.readData(DataBitHelper.CONTAINER_TYPE);
-        checked[id] = dr.readBoolean();
-    }
 
     public Set<ISystemType> getValidTypes()
     {

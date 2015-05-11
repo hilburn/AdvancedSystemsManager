@@ -12,6 +12,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -104,7 +105,7 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_SETTING));
     }
@@ -128,12 +129,6 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     public String getWarningText()
     {
         return Names.INSIDE_WARNING;
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.CAMOUFLAGE_INSIDE));
     }
 
     public InsideSetType getCurrentType()

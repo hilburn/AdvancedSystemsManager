@@ -146,13 +146,6 @@ public class MenuTargetTank extends MenuTarget
         radioButtons.draw(gui, mX, mY);
     }
 
-    @Override
-    public void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i)
-    {
-        onlyFull[i] = dr.readBoolean();
-        refreshAdvancedComponent();
-    }
-
     public boolean requireEmpty(int side)
     {
         return !onlyFull[side];

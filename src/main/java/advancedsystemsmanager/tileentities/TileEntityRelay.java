@@ -14,8 +14,10 @@ import advancedsystemsmanager.util.Utils;
 import advancedsystemsmanager.wrappers.InventoryWrapper;
 import advancedsystemsmanager.wrappers.InventoryWrapperHorse;
 import advancedsystemsmanager.wrappers.InventoryWrapperPlayer;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -677,28 +679,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void readAllData(DataReader dr, EntityPlayer player)
+    public void readData(ByteBuf buf, EntityPlayer player)
     {
-        owner = dr.readString(DataBitHelper.NAME_LENGTH);
-        if (owner == null)
-        {
-            owner = "Unknown";
-        }
-        creativeMode = dr.readBoolean();
-        doesListRequireOp = dr.readBoolean();
-        int length = dr.readData(DataBitHelper.PERMISSION_ID);
-        permissions.clear();
-
-        for (int i = 0; i < length; i++)
-        {
-            UserPermission permission = new UserPermission(dr.readString(DataBitHelper.NAME_LENGTH));
-            permission.setActive(dr.readBoolean());
-            permission.setOp(dr.readBoolean());
-            permissions.add(permission);
-        }
+        readContentFromNBT(ByteBufUtils.readTag(buf));
     }
 
-    @Override
     public void readUpdatedData(DataReader dr, EntityPlayer player)
     {
         if (!worldObj.isRemote)
@@ -706,7 +691,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             boolean action = dr.readBoolean();
             if (action)
             {
-
                 return;
             }
         }
@@ -785,22 +769,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             creativeMode = dr.readBoolean();
             doesListRequireOp = dr.readBoolean();
         }
-    }
-
-    @Override
-    public void writeAllData(DataWriter dw)
-    {
-        dw.writeString(owner, DataBitHelper.NAME_LENGTH);
-        dw.writeBoolean(creativeMode);
-        dw.writeBoolean(doesListRequireOp);
-        dw.writeData(permissions.size(), DataBitHelper.PERMISSION_ID);
-        for (UserPermission permission : permissions)
-        {
-            dw.writeString(permission.getName(), DataBitHelper.NAME_LENGTH);
-            dw.writeBoolean(permission.isActive());
-            dw.writeBoolean(permission.isOp());
-        }
-
     }
 
     public void updateData(ContainerRelay container)
@@ -939,5 +907,13 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     protected EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
+    }
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        writeContentToNBT(tagCompound);
+        ByteBufUtils.writeTag(buf, tagCompound);
     }
 }

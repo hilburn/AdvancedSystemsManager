@@ -113,7 +113,7 @@ public class MenuCraftingPriority extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_SELECTED));
     }
@@ -122,12 +122,6 @@ public class MenuCraftingPriority extends Menu
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         nbtTagCompound.setByte(NBT_SELECTED, (byte)radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readBoolean() ? 0 : 1);
     }
 
     public boolean shouldPrioritizeCrafting()

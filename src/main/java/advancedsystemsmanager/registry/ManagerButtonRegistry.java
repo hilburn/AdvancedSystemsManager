@@ -12,6 +12,7 @@ import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
 import advancedsystemsmanager.tileentities.manager.ManagerButton;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;
@@ -39,16 +40,21 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
         {
             @Override
-            public void onClick(DataReader dr)
+            public void onClickReader(ByteBuf buf)
             {
 
             }
 
             @Override
-            public boolean onClick(DataWriter dw)
+            public boolean validClick()
+            {
+                return false;
+            }
+
+            @Override
+            public void writeNetworkComponent(ByteBuf buf)
             {
                 Settings.openMenu(manager);
-                return false;
             }
         });
 
@@ -65,16 +71,24 @@ public class ManagerButtonRegistry
                     }
                 }
                 return false;
-            }            @Override
-            public void onClick(DataReader dr)
+            }
+
+            @Override
+            public void onClickReader(ByteBuf buf)
             {
-                int id = dr.readComponentId();
+                int id = buf.readInt();
                 FlowComponent component = manager.getFlowItem(id);
-                boolean moveCluster = dr.readBoolean();
+                boolean moveCluster = buf.readBoolean();
                 if (component.getParent() != null)
                 {
                     MenuGroup.moveComponents(component, component.getParent().getParent(), moveCluster);
                 }
+            }
+
+            @Override
+            public boolean validClick()
+            {
+                return true;
             }
 
             @Override
@@ -88,8 +102,10 @@ public class ManagerButtonRegistry
                     }
                 }
                 return super.getMouseOver();
-            }            @Override
-            public boolean onClick(DataWriter dw)
+            }
+
+            @Override
+            public void writeNetworkComponent(ByteBuf buf)
             {
                 for (FlowComponent item : manager.getFlowItems())
                 {
@@ -97,16 +113,15 @@ public class ManagerButtonRegistry
                     {
                         //For the server only
                         manager.justSentServerComponentRemovalPacket = true;
-                        dw.writeComponentId(manager, item.getId());
-                        dw.writeBoolean(GuiScreen.isShiftKeyDown());
+                        buf.writeInt(item.getId());
+                        buf.writeBoolean(GuiScreen.isShiftKeyDown());
                         item.resetPosition();
-                        return true;
+                        return;
                     }
                 }
 
                 //Client only
                 manager.selectedGroup = manager.selectedGroup.getParent();
-                return false;
             }
 
             @Override
@@ -114,10 +129,6 @@ public class ManagerButtonRegistry
             {
                 return manager.selectedGroup != null;
             }
-
-
-
-
         });
     }
 

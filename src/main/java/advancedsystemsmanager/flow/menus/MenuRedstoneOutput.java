@@ -15,6 +15,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuRedstoneOutput extends Menu
@@ -201,7 +202,7 @@ public class MenuRedstoneOutput extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         textBox.setNumber(nbtTagCompound.getByte(NBT_NUMBER));
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_TYPE));
@@ -222,20 +223,6 @@ public class MenuRedstoneOutput extends Menu
     public Settings getSelectedSetting()
     {
         return Settings.values()[radioButtons.getSelectedOption()];
-    }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        boolean isNumber = dr.readBoolean();
-        if (isNumber)
-        {
-            textBox.setNumber(dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG));
-        } else
-        {
-            int type = dr.readData(DataBitHelper.MENU_REDSTONE_OUTPUT_TYPE);
-            radioButtons.setSelectedOption(type);
-        }
     }
 
     public static enum Settings

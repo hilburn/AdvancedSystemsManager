@@ -1,6 +1,8 @@
-package advancedsystemsmanager.network;
+package advancedsystemsmanager.api.network;
 
 
+import advancedsystemsmanager.network.DataReader;
+import advancedsystemsmanager.network.DataWriter;
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface IPacketBlock

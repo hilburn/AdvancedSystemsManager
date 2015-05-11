@@ -10,6 +10,7 @@ import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.settings.Settings;
+import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,25 +30,39 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
-            public void onClick(DataReader dr)
+            public void onClickReader(ByteBuf buf)
             {
-                int idToRemove = dr.readComponentId();
-                manager.removeFlowComponent(idToRemove);
+                int idToRemove = buf.readInt();
+                if (idToRemove != -1)
+                    manager.removeFlowComponent(idToRemove);
             }
 
             @Override
-            public boolean onClick(DataWriter dw)
+            public boolean validClick()
+            {
+                for (FlowComponent item : manager.getFlowItems())
+                {
+                    if (item.isBeingMoved())
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void writeNetworkComponent(ByteBuf buf)
             {
                 manager.justSentServerComponentRemovalPacket = true;
                 for (FlowComponent item : manager.getFlowItems())
                 {
                     if (item.isBeingMoved())
                     {
-                        dw.writeComponentId(manager, item.getId());
-                        return true;
+                        buf.writeInt(item.getId());
+                        return;
                     }
                 }
-                return false;
+                buf.writeInt(-1);
             }
 
             @Override
@@ -62,22 +77,34 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             public String getMouseOver()
             {
                 return !Settings.isLimitless(manager) && manager.getFlowItems().size() >= 511 ? Names.MAXIMUM_COMPONENT_ERROR : super.getMouseOver();
-            }            @Override
-            public void onClick(DataReader dataReader)
+            }
+
+            @Override
+            public void onClickReader(ByteBuf buf)
             {
                 if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
                 {
-                    int id = dataReader.readComponentId();
-                    Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
-                    FlowComponent item;
-                    do
+                    int id = buf.readInt();
+                    if (id != -1)
                     {
-                        if (!itr.hasNext()) return;
-                        item = itr.next();
-                    } while (item.getId() != id);
-                    Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager.getFlowItems(), item, Settings.isLimitless(manager));
-                    manager.getFlowItems().addAll(added);
+                        FlowComponent item = manager.getFlowItem(id);
+                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager.getFlowItems(), item, Settings.isLimitless(manager));
+                        manager.getFlowItems().addAll(added);
+                    }
                 }
+            }
+
+            @Override
+            public boolean validClick()
+            {
+                for (FlowComponent item : manager.getFlowItems())
+                {
+                    if (item.isBeingMoved())
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             @Override
@@ -87,17 +114,17 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public boolean onClick(DataWriter dataWriter)
+            public void writeNetworkComponent(ByteBuf buf)
             {
-                Iterator<FlowComponent> itr = manager.getFlowItems().iterator();
-                FlowComponent item;
-                do
+                for (FlowComponent item : manager.getFlowItems())
                 {
-                    if (!itr.hasNext()) return false;
-                    item = itr.next();
-                } while (!item.isBeingMoved());
-                dataWriter.writeComponentId(manager, item.getId());
-                return true;
+                    if (item.isBeingMoved())
+                    {
+                        buf.writeInt(item.getId());
+                        return;
+                    }
+                }
+                buf.writeInt(-1);
             }
 
 

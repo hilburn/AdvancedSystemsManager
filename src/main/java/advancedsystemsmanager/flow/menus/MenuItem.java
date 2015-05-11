@@ -15,6 +15,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -293,43 +294,6 @@ public class MenuItem extends MenuStuff<ItemStack>
     public DataBitHelper getAmountBitLength()
     {
         return DataBitHelper.MENU_ITEM_AMOUNT;
-    }
-
-    @Override
-    public void readSpecificHeaderData(DataReader dr, DataTypeHeader header, Setting setting)
-    {
-        ItemSetting itemSetting = (ItemSetting)setting;
-
-        switch (header)
-        {
-            case SET_ITEM:
-                int id = dr.readData(DataBitHelper.MENU_ITEM_ID);
-                int dmg = dr.readData(DataBitHelper.MENU_ITEM_META);
-
-                itemSetting.setItem(new ItemStack(Item.getItemById(id), 1, dmg));
-                itemSetting.getItem().setTagCompound(dr.readNBT());
-
-                if (isEditing())
-                {
-                    updateTextBoxes();
-                }
-
-                break;
-            case USE_FUZZY:
-                itemSetting.setFuzzyMode(FuzzyMode.values()[dr.readData(DataBitHelper.FUZZY_MODE)]);
-                break;
-            case META:
-                if (setting.isValid())
-                {
-                    itemSetting.getItem().setItemDamage(dr.readData(DataBitHelper.MENU_ITEM_META));
-                    if (isEditing())
-                    {
-                        damageValueTextBox.setNumber(itemSetting.getItem().getItemDamage());
-                    }
-                }
-                break;
-
-        }
     }
 
     @Override

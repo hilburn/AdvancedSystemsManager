@@ -535,16 +535,10 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        if (version >= 11)
-        {
-            super.readFromNBT(nbtTagCompound, version, pickup);
-        } else
-        {
-            ItemSetting setting = (ItemSetting)getSettings().get(0);
-            setting.setItem(new ItemStack(Item.getItemById(nbtTagCompound.getShort(NBT_ID))));
-        }
+        super.readFromNBT(nbtTagCompound, pickup);
+
         useId = nbtTagCompound.getBoolean(NBT_USE_ID);
 
         idInverted = nbtTagCompound.getBoolean(NBT_INVERTED);
@@ -594,52 +588,6 @@ public class MenuUpdateBlock extends MenuItem
             list.appendTag(settingTag);
         }
         nbtTagCompound.setTag(NBT_SETTINGS, list);
-    }
-
-    @Override
-    public void readNonSettingData(DataReader dr)
-    {
-        if (dr.readBoolean())
-        {
-            int id = dr.readData(DataBitHelper.BUD_SYNC_TYPE);
-            if (id == 0)
-            {
-                int subId = dr.readData(DataBitHelper.BUD_SYNC_SUB_TYPE_SHORT);
-                if (subId == 0)
-                {
-                    useId = dr.readBoolean();
-                } else if (subId == 2)
-                {
-                    idInverted = dr.readBoolean();
-                }
-            } else
-            {
-                id--;
-                MetaSetting setting = settings[id];
-                int subId = dr.readData(DataBitHelper.BUD_SYNC_SUB_TYPE_LONG);
-                if (subId < 4)
-                {
-                    setting.bits[subId] = dr.readBoolean();
-                    if (!setting.bits[subId])
-                    {
-                        setting.lowerTextBox.setNumber(setting.lowerTextBox.getNumber());
-                        setting.higherTextBox.setNumber(setting.higherTextBox.getNumber());
-                    }
-                } else if (subId == 4)
-                {
-                    setting.lowerTextBox.setNumber(dr.readData(DataBitHelper.BLOCK_META));
-                } else if (subId == 5)
-                {
-                    setting.higherTextBox.setNumber(dr.readData(DataBitHelper.BLOCK_META));
-                } else if (subId == 6)
-                {
-                    setting.inverted = dr.readBoolean();
-                }
-            }
-        } else
-        {
-            super.readNonSettingData(dr);
-        }
     }
 
     public class MetaSetting

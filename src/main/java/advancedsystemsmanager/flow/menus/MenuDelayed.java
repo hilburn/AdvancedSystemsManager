@@ -125,9 +125,8 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        super.readFromNBT(nbtTagCompound, version, pickup);
         if (this.isVisible() && this.counter >= 0) StevesHooks.registerTicker(getParent(), this);
         buttonList.setSelectedOption(nbtTagCompound.getBoolean(NBT_RESTART) ? 0 : 1);
     }

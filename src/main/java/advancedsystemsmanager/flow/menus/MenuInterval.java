@@ -135,7 +135,7 @@ public class MenuInterval extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         setInterval(nbtTagCompound.getShort(NBT_INTERVAL));
     }
@@ -161,11 +161,4 @@ public class MenuInterval extends Menu
     {
         interval.setNumber(val);
     }
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
-    }
-
 }

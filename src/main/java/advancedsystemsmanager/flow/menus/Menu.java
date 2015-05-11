@@ -1,22 +1,24 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.api.network.INetworkWriter;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.network.INetworkReader;
+import advancedsystemsmanager.api.network.INetworkReader;
 import advancedsystemsmanager.network.PacketHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 
-public abstract class Menu implements INetworkReader
+public abstract class Menu implements INetworkReader, INetworkWriter
 {
-
 
     public FlowComponent parent;
     public int id;
@@ -75,7 +77,7 @@ public abstract class Menu implements INetworkReader
         return id;
     }
 
-    public abstract void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup);
+    public abstract void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup);
 
     public abstract void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup);
 
@@ -98,5 +100,19 @@ public abstract class Menu implements INetworkReader
 
     public void onGuiClosed()
     {
+    }
+
+    @Override
+    public void readNetworkComponent(ByteBuf buf)
+    {
+        readFromNBT(ByteBufUtils.readTag(buf), false);
+    }
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        writeToNBT(tagCompound, false);
+        ByteBufUtils.writeTag(buf, tagCompound);
     }
 }

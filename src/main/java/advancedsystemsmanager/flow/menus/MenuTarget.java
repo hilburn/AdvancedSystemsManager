@@ -13,6 +13,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -22,7 +23,6 @@ import java.util.List;
 
 public abstract class MenuTarget extends Menu
 {
-
 
     public static final int DIRECTION_SIZE_W = 31;
     public static final int DIRECTION_SIZE_H = 12;
@@ -310,7 +310,7 @@ public abstract class MenuTarget extends Menu
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         NBTTagList directionTagList = nbtTagCompound.getTagList(NBT_DIRECTIONS, 10);
 
@@ -364,44 +364,6 @@ public abstract class MenuTarget extends Menu
 
     @SideOnly(Side.CLIENT)
     public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
-
-    @Override
-    public void readNetworkComponent(DataReader dr)
-    {
-        int direction = dr.readData(DataBitHelper.MENU_TARGET_DIRECTION_ID);
-        int headerId = dr.readData(DataBitHelper.MENU_TARGET_TYPE_HEADER);
-        DataTypeHeader header = getHeaderFromId(headerId);
-
-        switch (header)
-        {
-            case ACTIVATE:
-                activatedDirections[direction] = dr.readData(header.bits) != 0;
-                break;
-            case USE_ADVANCED_SETTING:
-                useRangeForDirections[direction] = dr.readData(header.bits) != 0;
-                if (!useAdvancedSetting(direction))
-                {
-                    resetAdvancedSetting(direction);
-                }
-                break;
-            default:
-                readAdvancedNetworkComponent(dr, header, direction);
-        }
-    }
-
-    public abstract void readAdvancedNetworkComponent(DataReader dr, DataTypeHeader header, int i);
-
-    public DataTypeHeader getHeaderFromId(int id)
-    {
-        for (DataTypeHeader header : DataTypeHeader.values())
-        {
-            if (id == header.id)
-            {
-                return header;
-            }
-        }
-        return null;
-    }
 
     public void writeData(DataTypeHeader header, int data)
     {
