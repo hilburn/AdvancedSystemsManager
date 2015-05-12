@@ -36,11 +36,12 @@ import java.util.List;
 public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
     private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
-    protected Container container;
+    protected ContainerBase container;
 
-    public GuiBase(Container container)
+    public GuiBase(ContainerBase container)
     {
         super(container);
+        this.container = container;
     }
 
     public static ResourceLocation registerTexture(String name)

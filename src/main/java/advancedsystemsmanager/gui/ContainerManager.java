@@ -1,9 +1,11 @@
 package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.network.MessageHandler;
+import advancedsystemsmanager.network.message.ContainerMessage;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 
@@ -22,7 +24,8 @@ public class ContainerManager extends ContainerBase
     {
         super.addCraftingToCrafters(player);
 
-        PacketHandler.sendAllData(this, player, manager);
+        if (player instanceof EntityPlayerMP && !manager.getWorldObj().isRemote)
+            MessageHandler.INSTANCE.sendTo(new ContainerMessage(manager), (EntityPlayerMP)player);
     }
 
     @Override

@@ -219,27 +219,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void readGenericData(ByteBuf buf)
     {
-        if (worldObj.isRemote)
-        {
-            if (buf.readBoolean())
-            {
-                updateInventories();
-            } else
-            {
-                removeFlowComponent(buf.readInt());
-            }
-        } else
-        {
-            int buttonId = buf.readByte();
-            if (buttonId >= 0 && buttonId < buttons.size())
-            {
-                IManagerButton button = buttons.get(buttonId);
-                if (button.isVisible())
-                {
-                    button.writeNetworkComponent(buf);
-                }
-            }
-        }
+
     }
 
     public List<Integer> getRemovedIds()
@@ -272,7 +252,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             for (int i = 0; i < flowControlCount; i++)
             {
                 NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
-                addNewComponent(FlowComponent.readFromNBT(this, tagCompound, false));
+                FlowComponent component  = FlowComponent.readFromNBT(this, tagCompound, false);
+                addNewComponent(component);
+                if (worldObj.isRemote) zLevelRenderingList.add(component);
             }
             for (FlowComponent item : getFlowItems())
             {
@@ -291,7 +273,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             }
         }else
         {
-            if (!worldObj.isRemote && buf.readBoolean())
+            if (buf.readBoolean() && !worldObj.isRemote)
             {
                 boolean val = buf.readBoolean();
                 if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
@@ -309,14 +291,12 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 return;
             }
 
-            boolean isNew = worldObj.isRemote && buf.readBoolean();
-            if (isNew)
+            if (buf.readBoolean() && worldObj.isRemote)
             {
                 addNewComponent(new FlowComponent(this, CommandRegistry.getCommand(buf.readByte())));
             } else
             {
-                boolean isSpecificComponent = buf.readBoolean();
-                if (isSpecificComponent)
+                if (buf.readBoolean())
                 {
                     INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
 
@@ -326,7 +306,27 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     }
                 } else
                 {
-                    readGenericData(buf);
+                    if (buf.readBoolean() && worldObj.isRemote)
+                    {
+                        if (buf.readBoolean())
+                        {
+                            updateInventories();
+                        } else
+                        {
+                            removeFlowComponent(buf.readInt());
+                        }
+                    } else
+                    {
+                        int buttonId = buf.readByte();
+                        if (buttonId >= 0 && buttonId < buttons.size())
+                        {
+                            IManagerButton button = buttons.get(buttonId);
+                            if (button.isVisible())
+                            {
+                                button.onClickReader(buf);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -662,6 +662,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @Override
     public void writeNetworkComponent(ByteBuf buf)
     {
+        buf.writeBoolean(true);
         buf.writeInt(components.size());
         for (FlowComponent flowComponent : components.valueCollection())
         {

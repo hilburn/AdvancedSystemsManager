@@ -12,10 +12,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 
-public class ContainerMessage implements IMessage, IMessageHandler<ContainerMessage, IMessage>
+public class ContainerMessage implements IBufferMessage, IMessageHandler<ContainerMessage, IMessage>
 {
     protected INetworkWriter writer;
     protected ByteBuf buf;
+
+    public ContainerMessage()
+    {
+    }
 
     public ContainerMessage(INetworkWriter writer)
     {
@@ -58,5 +62,11 @@ public class ContainerMessage implements IMessage, IMessageHandler<ContainerMess
     {
         container.getTileEntity().readData(message.buf, player);
         return null;
+    }
+
+    @Override
+    public ByteBuf getBuffer()
+    {
+        return buf;
     }
 }

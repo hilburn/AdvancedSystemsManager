@@ -3,7 +3,6 @@ package advancedsystemsmanager.api.gui;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.network.message.ButtonMessage;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;

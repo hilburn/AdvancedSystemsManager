@@ -781,6 +781,45 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             return isLarge && openMenuId != -1 && menus.get(openMenuId).onKeyStroke(gui, c, k);
     }
 
+    public INetworkSync clicked(int mX, int mY)
+    {
+        if (CollisionHelper.inBounds(x, y, getComponentWidth(), getComponentHeight(), mX, mY))
+        {
+            int internalX = mX - x;
+            int internalY = mY - y;
+
+            if (inArrowBounds(internalX, internalY) || (Settings.isLargeOpenHitBox() && internalY < COMPONENT_SIZE_H))
+            {
+                if (!isLarge && type == CommandRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
+                {
+                    return null;
+                } else
+                {
+                    return this;
+                }
+            } else if (isLarge)
+            {
+                for (int i = 0; i < menus.size(); i++)
+                {
+                    Menu menu = menus.get(i);
+
+                    if (menu.isVisible())
+                    {
+                        if (inMenuArrowBounds(i, internalX, internalY) || (Settings.isLargeOpenHitBoxMenu() && internalY >= getMenuItemY(i) && internalY <= getMenuItemY(i) + MENU_ITEM_SIZE_H))
+                        {
+                            return menu;
+                        }
+                    }
+                }
+
+            }
+            return this;
+        } else
+        {
+            return this;
+        }
+    }
+
     public boolean onClick(int mX, int mY, int button)
     {
         if (CollisionHelper.inBounds(x, y, getComponentWidth(), getComponentHeight(), mX, mY))
@@ -854,6 +893,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                         }
                     }
                 }
+
             }
             return true;
         } else
@@ -980,7 +1020,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     }
                 }
             }
-
             return false;
         }
     }
@@ -1142,6 +1181,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 mouseDragX = mX;
                 mouseDragY = mY;
             }
+            needsSync = true;
         }
     }
 

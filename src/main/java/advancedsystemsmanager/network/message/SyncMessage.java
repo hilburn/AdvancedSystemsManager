@@ -1,6 +1,7 @@
 package advancedsystemsmanager.network.message;
 
 import advancedsystemsmanager.api.network.INetworkSync;
+import advancedsystemsmanager.api.network.INetworkWriter;
 import advancedsystemsmanager.gui.ContainerBase;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,12 +13,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 
-public class SyncMessage implements IMessage, IMessageHandler<SyncMessage, IMessage>
+public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage, IMessage>
 {
-    public INetworkSync sync;
+    public INetworkWriter sync;
     public ByteBuf buf;
 
-    public SyncMessage(INetworkSync sync)
+    public SyncMessage()
+    {
+    }
+
+    public SyncMessage(INetworkWriter sync)
     {
         this.sync = sync;
     }
@@ -31,7 +36,13 @@ public class SyncMessage implements IMessage, IMessageHandler<SyncMessage, IMess
     @Override
     public void toBytes(ByteBuf buf)
     {
-        sync.writeNetworkComponent(buf);
+        if (this.buf == null)
+        {
+            sync.writeNetworkComponent(buf);
+        }else
+        {
+            buf.writeBytes(this.buf.copy());
+        }
     }
 
     @Override
@@ -43,7 +54,7 @@ public class SyncMessage implements IMessage, IMessageHandler<SyncMessage, IMess
             Container container = player.openContainer;
             if (container instanceof ContainerBase)
             {
-                ((ContainerBase)container).updateClient(message);
+                ((ContainerBase)container).updateClient(message, player);
             }
         }
         else
@@ -55,7 +66,12 @@ public class SyncMessage implements IMessage, IMessageHandler<SyncMessage, IMess
                 ((ContainerBase)container).updateServer(message, player);
             }
         }
-
         return null;
+    }
+
+    @Override
+    public ByteBuf getBuffer()
+    {
+        return buf.copy();
     }
 }

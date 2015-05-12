@@ -48,7 +48,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     private boolean useMouseOver = true;
 
     private TileEntityManager manager;
-    public ContainerManager containerManager;
 
     public INetworkSync selectedComponent;
     public IGuiElement<GuiManager> hoverComponent;
@@ -124,7 +123,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     public GuiManager(TileEntityManager manager, InventoryPlayer player)
     {
         super(new ContainerManager(manager, player));
-
         xSize = GUI_WIDTH;
         ySize = GUI_HEIGHT;
         this.zLevel = 0;
@@ -302,7 +300,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             {
                 itr.remove();
                 manager.getZLevelRenderingList().add(0, itemBase);
-                setSelected(itemBase);
+                setSelected(itemBase.clicked(x, y));
                 break;
             }
         }
@@ -479,14 +477,14 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     {
         if (this.selectedComponent != selected)
         {
-            containerManager.syncNetworkElement(selectedComponent, true);
+            container.syncNetworkElement(selectedComponent, true);
         }
         this.selectedComponent = selected;
     }
 
     public void updateSelected()
     {
-        containerManager.syncNetworkElement(selectedComponent, false);
+        container.syncNetworkElement(selectedComponent, false);
     }
 
     private abstract class SecretCode

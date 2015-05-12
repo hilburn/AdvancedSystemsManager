@@ -3,7 +3,11 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.network.MessageHandler;
+import advancedsystemsmanager.network.message.IBufferMessage;
 import advancedsystemsmanager.network.message.SyncMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -26,27 +30,27 @@ public abstract class ContainerBase extends Container
 
     public void syncNetworkElement(INetworkSync element, boolean loseFocus)
     {
-        if (element.needsSync() && (crafters.size() > 1 || loseFocus))
+        if (element != null && element.needsSync() && (crafters.size() > 1 || loseFocus))
         {
             MessageHandler.INSTANCE.sendToServer(new SyncMessage(element));
         }
     }
 
-    public void updateServer(SyncMessage message, EntityPlayerMP player)
+    public void updateServer(IBufferMessage message, EntityPlayerMP player)
     {
         for (Object crafter : crafters)
         {
             if (crafter instanceof EntityPlayerMP)
             {
-                if (!crafter.equals(player)) MessageHandler.INSTANCE.sendTo(message, player);
+                MessageHandler.INSTANCE.sendTo(message, player);
             }
         }
-        te.readData(message.buf, player);
+        te.readData(message.getBuffer(), player);
     }
 
-    public void updateClient(SyncMessage message)
+    public void updateClient(IBufferMessage message, EntityPlayer player)
     {
-
+        te.readData(message.getBuffer(), player);
     }
 
     public ITileEntityInterface getTileEntity()
