@@ -1,6 +1,8 @@
 package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.animation.AnimationController;
+import advancedsystemsmanager.api.gui.IGuiElement;
+import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataWriter;
@@ -46,9 +48,12 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     private boolean useMouseOver = true;
 
     private TileEntityManager manager;
+    public ContainerManager containerManager;
+
+    public INetworkSync selectedComponent;
+    public IGuiElement<GuiManager> hoverComponent;
 
     private List<SecretCode> codes = new ArrayList<SecretCode>();
-
     {
         codes.add(new SecretCode("animate")
         {
@@ -297,6 +302,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             {
                 itr.remove();
                 manager.getZLevelRenderingList().add(0, itemBase);
+                setSelected(itemBase);
                 break;
             }
         }
@@ -325,12 +331,10 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             return;
         }
 
-        for (FlowComponent itemBase : manager.getZLevelRenderingList())
+        if (selectedComponent instanceof FlowComponent)
         {
-            if (itemBase.isVisible())
-            {
-                itemBase.onDrag(x, y);
-            }
+            FlowComponent dragged = (FlowComponent)selectedComponent;
+            dragged.onDrag(x, y);
         }
     }
 
@@ -356,25 +360,15 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             manager.buttons.onClick(x, y, true);
         }
 
-        if (!manager.justSentServerComponentRemovalPacket)
+        if (selectedComponent instanceof FlowComponent)
         {
-            for (FlowComponent itemBase : manager.getZLevelRenderingList())
+            FlowComponent released = (FlowComponent)selectedComponent;
+            if (!manager.justSentServerComponentRemovalPacket)
             {
-                if (itemBase.isVisible())
-                {
-                    itemBase.onRelease(x, y, button);
-                }
+                released.onRelease(x, y, button);
             }
+            released.postRelease();
         }
-
-        for (FlowComponent itemBase : manager.getZLevelRenderingList())
-        {
-            if (itemBase.isVisible())
-            {
-                itemBase.postRelease();
-            }
-        }
-
     }
 
     @Override
@@ -430,6 +424,8 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             flowComponent.onGuiClosed();
         }
 
+        setSelected(null);
+
         super.onGuiClosed();
     }
 
@@ -477,6 +473,20 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     public TileEntityManager getManager()
     {
         return manager;
+    }
+
+    public void setSelected(INetworkSync selected)
+    {
+        if (this.selectedComponent != selected)
+        {
+            containerManager.syncNetworkElement(selectedComponent, true);
+        }
+        this.selectedComponent = selected;
+    }
+
+    public void updateSelected()
+    {
+        containerManager.syncNetworkElement(selectedComponent, false);
     }
 
     private abstract class SecretCode

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.api.network.INetworkWriter;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
@@ -17,10 +18,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 
-public abstract class Menu implements INetworkReader, INetworkWriter
+public abstract class Menu implements INetworkSync
 {
-
     public FlowComponent parent;
+    boolean needSync;
     public int id;
 
     public Menu(FlowComponent parent)
@@ -111,8 +112,21 @@ public abstract class Menu implements INetworkReader, INetworkWriter
     @Override
     public void writeNetworkComponent(ByteBuf buf)
     {
+        buf.writeByte(id);
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeToNBT(tagCompound, false);
         ByteBufUtils.writeTag(buf, tagCompound);
+    }
+
+    @Override
+    public boolean needsSync()
+    {
+        return needSync;
+    }
+
+    @Override
+    public void setSynced()
+    {
+        needSync = false;
     }
 }

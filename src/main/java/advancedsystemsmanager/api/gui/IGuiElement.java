@@ -10,14 +10,14 @@ public interface IGuiElement<Gui extends GuiScreen>
     public abstract void draw(Gui gui, int mouseX, int mouseY, int zLevel);
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawMouseOver(Gui gui, int mouseX, int mouseY);
+    void drawMouseOver(Gui gui, int mouseX, int mouseY);
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(Gui gui, char character, int key);
+    boolean onKeyStroke(Gui gui, char character, int key);
 
     @SideOnly(Side.CLIENT)
-    public boolean onClick(int mouseX, int mouseY, int button);
+    boolean onClick(int mouseX, int mouseY, int button);
 
     @SideOnly(Side.CLIENT)
-    public boolean isVisible();
+    boolean isVisible();
 }

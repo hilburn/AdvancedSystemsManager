@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 
 public class ContainerMessage implements IMessage, IMessageHandler<ContainerMessage, IMessage>
@@ -48,8 +49,14 @@ public class ContainerMessage implements IMessage, IMessageHandler<ContainerMess
         Container container = player.openContainer;
         if (container instanceof ContainerBase)
         {
-            ((ContainerBase)container).getTileEntity().readData(message.buf, player);
+            return onMessage(message, (ContainerBase)container, player);
         }
+        return null;
+    }
+
+    public IMessage onMessage(ContainerMessage message, ContainerBase container, EntityPlayer player)
+    {
+        container.getTileEntity().readData(message.buf, player);
         return null;
     }
 }

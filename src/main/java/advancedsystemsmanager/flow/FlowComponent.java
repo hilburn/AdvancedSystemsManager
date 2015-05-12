@@ -4,6 +4,7 @@ package advancedsystemsmanager.flow;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.INetworkReader;
+import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
@@ -28,7 +29,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
-public class FlowComponent implements INetworkReader, Comparable<FlowComponent>, IGuiElement<GuiManager>
+public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, INetworkSync
 {
     public static final int COMPONENT_SRC_X = 0;
     public static final int COMPONENT_SRC_Y = 0;
@@ -124,6 +125,7 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public int resetTimer;
     public boolean isDragging;
     public boolean isLarge;
+    public boolean needsSync;
     public List<Menu> menus;
     public int openMenuId;
     public ConnectionSet connectionSet;
@@ -852,7 +854,6 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
                         }
                     }
                 }
-
             }
             return true;
         } else
@@ -987,6 +988,21 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public boolean isVisible()
     {
         return isVisible(getManager().getSelectedGroup());
+    }
+
+    @Override
+    public boolean needsSync()
+    {
+        if (needsSync) return true;
+        for (Menu menu : menus) if (menu.needsSync()) return true;
+        return false;
+    }
+
+    @Override
+    public void setSynced()
+    {
+        needsSync = false;
+        for (Menu menu : menus) menu.setSynced();
     }
 
     public boolean isVisible(FlowComponent selectedComponent)
@@ -1975,5 +1991,13 @@ public class FlowComponent implements INetworkReader, Comparable<FlowComponent>,
     public void setOpenMenuId(int openMenuId)
     {
         this.openMenuId = openMenuId;
+    }
+
+    @Override
+    public void writeNetworkComponent(ByteBuf buf)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        writeToNBT(tagCompound, false);
+        ByteBufUtils.writeTag(buf, tagCompound);
     }
 }
