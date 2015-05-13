@@ -305,7 +305,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             }
         }
 
-
         if (useButtons)
         {
             manager.buttons.onClick(x, y, button);
@@ -422,7 +421,8 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             flowComponent.onGuiClosed();
         }
 
-        setSelected(null);
+        if (selectedComponent != null)
+            container.sendFinalUpdate(selectedComponent);
 
         super.onGuiClosed();
     }

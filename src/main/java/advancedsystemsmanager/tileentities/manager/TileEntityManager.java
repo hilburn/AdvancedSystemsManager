@@ -243,92 +243,86 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @Override
     public void readData(ByteBuf buf, EntityPlayer player)
     {
-        if (buf.readBoolean())
+        switch(buf.readByte())
         {
-            updateInventories();
-            int flowControlCount = buf.readInt();
-            components.clear();
-            getZLevelRenderingList().clear();
-            for (int i = 0; i < flowControlCount; i++)
-            {
-                NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
-                FlowComponent component  = FlowComponent.readFromNBT(this, tagCompound, false);
-                addNewComponent(component);
-                if (worldObj.isRemote) zLevelRenderingList.add(component);
-            }
-            for (FlowComponent item : getFlowItems())
-            {
-                item.linkParentAfterLoad();
-            }
-
-            if (Settings.isAutoCloseGroup())
-            {
-                selectedGroup = null;
-            } else
-            {
-                while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+            case 0:
+                updateInventories();
+                int flowControlCount = buf.readInt();
+                components.clear();
+                getZLevelRenderingList().clear();
+                for (int i = 0; i < flowControlCount; i++)
                 {
-                    selectedGroup = selectedGroup.getParent();
+                    NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
+                    FlowComponent component  = FlowComponent.readFromNBT(this, tagCompound, false);
+                    addNewComponent(component);
+                    if (worldObj.isRemote) zLevelRenderingList.add(component);
                 }
-            }
-        }else
-        {
-            if (buf.readBoolean() && !worldObj.isRemote)
-            {
-                boolean val = buf.readBoolean();
-                if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
+                for (FlowComponent item : getFlowItems())
                 {
-                    Settings.setLimitless(this, val);
+                    item.linkParentAfterLoad();
                 }
-                //TODO use ids for different actions
-            /*System.out.println("ACTION");
-            for (FlowComponent item : items) {
-                item.adjustEverythingToGridRaw();
-            }
-            for (FlowComponent item : items) {
-                item.adjustEverythingToGridFine();
-            } */
-                return;
-            }
 
-            if (buf.readBoolean() && worldObj.isRemote)
-            {
-                addNewComponent(new FlowComponent(this, CommandRegistry.getCommand(buf.readByte())));
-            } else
-            {
-                if (buf.readBoolean())
+                if (Settings.isAutoCloseGroup())
                 {
-                    INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
-
-                    if (nr != null)
-                    {
-                        nr.readNetworkComponent(buf);
-                    }
+                    selectedGroup = null;
                 } else
                 {
-                    if (buf.readBoolean() && worldObj.isRemote)
+                    while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
                     {
-                        if (buf.readBoolean())
-                        {
-                            updateInventories();
-                        } else
-                        {
-                            removeFlowComponent(buf.readInt());
-                        }
-                    } else
-                    {
-                        int buttonId = buf.readByte();
-                        if (buttonId >= 0 && buttonId < buttons.size())
-                        {
-                            IManagerButton button = buttons.get(buttonId);
-                            if (button.isVisible())
-                            {
-                                button.onClickReader(buf);
-                            }
-                        }
+                        selectedGroup = selectedGroup.getParent();
                     }
                 }
-            }
+                break;
+            case 1:
+                if (!worldObj.isRemote)
+                {
+                    boolean val = buf.readBoolean();
+                    if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
+                    {
+                        Settings.setLimitless(this, val);
+                    }
+                    /*System.out.println("ACTION");
+                    for (FlowComponent item : items) {
+                        item.adjustEverythingToGridRaw();
+                    }
+                    for (FlowComponent item : items) {
+                        item.adjustEverythingToGridFine();
+                    } */
+                }
+                break;
+            case 2:
+                if (worldObj.isRemote)
+                {
+                    addNewComponent(new FlowComponent(this, CommandRegistry.getCommand(buf.readByte())));
+                }
+                break;
+            case 3:
+                INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
+
+                if (nr != null)
+                {
+                    nr.readNetworkComponent(buf);
+                }
+                break;
+            case 4:
+                if (worldObj.isRemote && buf.readBoolean())
+                {
+                    updateInventories();
+                } else
+                {
+                    removeFlowComponent(buf.readInt());
+                }
+                break;
+            case 5:
+                int buttonId = buf.readByte();
+                if (buttonId >= 0 && buttonId < buttons.size())
+                {
+                    IManagerButton button = buttons.get(buttonId);
+                    if (button.isVisible())
+                    {
+                        button.onClickReader(buf);
+                    }
+                }
         }
     }
 
@@ -485,16 +479,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         if (buf.readBoolean())
         {
             int menuId = buf.readByte();
-            if (menuId >= 0 && menuId < component.getMenus().size())
-            {
-                return component.getMenus().get(menuId);
-            }
-        } else
-        {
-            return component;
+            return component.getMenus().get(menuId % component.getMenus().size());
         }
-
-        return null;
+        return component;
     }
 
     public Variable[] getVariables()
@@ -662,7 +649,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @Override
     public void writeNetworkComponent(ByteBuf buf)
     {
-        buf.writeBoolean(true);
+        buf.writeByte(0);
         buf.writeInt(components.size());
         for (FlowComponent flowComponent : components.valueCollection())
         {

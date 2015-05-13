@@ -3,7 +3,6 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
-import advancedsystemsmanager.api.network.INetworkReader;
 import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
@@ -180,7 +179,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         childrenOutputNodes = new ArrayList<FlowComponent>();
     }
 
-    public static FlowComponent readFromNBT(TileEntityManager jam, NBTTagCompound nbtTagCompound, boolean pickup)
+    public static FlowComponent readFromNBT(TileEntityManager manager, NBTTagCompound nbtTagCompound, boolean pickup)
     {
         FlowComponent component = null;
         try
@@ -189,7 +188,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             int y = nbtTagCompound.getShort(NBT_POS_Y);
             int typeId = nbtTagCompound.getByte(NBT_TYPE);
             int id = nbtTagCompound.getInteger(NBT_ID);
-            component = new FlowComponent(jam, x, y, id, CommandRegistry.getCommand(typeId));
+            component = new FlowComponent(manager, x, y, id, CommandRegistry.getCommand(typeId));
             component.isLoading = true;
 
             if (nbtTagCompound.hasKey(NBT_NAME))
@@ -1443,91 +1442,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @Override
     public void readNetworkComponent(ByteBuf buf)
     {
-        //might need some clean up
-        if (buf.readBoolean())
-        {
-            if (buf.readBoolean())
-            {
-                if (buf.readBoolean())
-                {
-                    x = buf.readShort();
-                    y = buf.readShort();
-                } else
-                {
-                    if (buf.readBoolean())
-                    {
-                        setParent(getManager().getFlowItem(buf.readInt()));
-                    } else
-                    {
-                        setParent(null);
-                    }
-                }
-
-            } else
-            {
-                name = ByteBufUtils.readUTF8String(buf);
-            }
-        } else
-        {
-            int connectionId = buf.readByte();
-            if (buf.readBoolean())
-            {
-                Connection connection;
-                if (buf.readBoolean())
-                {
-                    int targetComponentId = buf.readInt();
-                    int targetConnectionId = buf.readByte();
-
-                    connection = new Connection(targetComponentId, targetConnectionId);
-                } else
-                {
-                    connection = null;
-                }
-
-                connections.put(connectionId, connection);
-            } else if (connections.get(connectionId) != null)
-            {
-                Connection connection = connections.get(connectionId);
-
-                int id = buf.readByte();
-                int length = -1;
-                if (manager.getWorldObj().isRemote)
-                {
-                    length = buf.readByte();
-                }
-                boolean deleted = buf.readBoolean();
-                boolean created = false;
-                if (!deleted)
-                {
-                    created = buf.readBoolean();
-                }
-                if (id >= 0 && ((created && id == connection.getNodes().size()) || id < connection.getNodes().size()))
-                {
-                    if (deleted)
-                    {
-                        connection.getNodes().remove(id);
-                    } else
-                    {
-                        Point node;
-                        if (created)
-                        {
-                            node = new Point();
-                            if (connection.getNodes().size() < MAX_NODES && (!manager.getWorldObj().isRemote || length > connection.getNodes().size()))
-                            {
-                                connection.getNodes().add(id, node);
-                            }
-                        } else
-                        {
-                            node = connection.getNodes().get(id);
-                        }
-
-                        node.setX(buf.readShort());
-                        node.setY(buf.readShort());
-                    }
-
-                }
-            }
-        }
+         refreshData(readFromNBT(manager, ByteBufUtils.readTag(buf), false));
     }
 
     public FlowComponent copy()
@@ -1555,124 +1470,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return copy;
     }
 
-    public void refreshData(ContainerManager container, FlowComponent newData)
+    public void refreshData(FlowComponent newData)
     {
-        if (x != newData.x || y != newData.y)
-        {
-            x = newData.x;
-            y = newData.y;
-
-            DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-            writeLocationData(dw);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        if (((parent == null) != (newData.parent == null)) || (parent != null && parent.getId() != newData.parent.getId()))
-        {
-            if (newData.parent == null)
-            {
-                setParent(null);
-            } else
-            {
-                setParent(getManager().getFlowItem(newData.parent.getId()));
-            }
-
-            DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-            writeParentData(dw);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        for (int i = 0; i < connectionSet.getConnections().length; i++)
-        {
-            if (newData.connections.get(i) == null && connections.get(i) != null)
-            {
-                connections.put(i, null);
-                DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-                writeConnectionData(dw, i, false, 0, 0);
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
-
-            if (newData.connections.get(i) != null && (connections.get(i) == null || newData.connections.get(i).getComponentId() != connections.get(i).getComponentId() || newData.connections.get(i).getConnectionId() != connections.get(i).getConnectionId()))
-            {
-                connections.put(i, newData.connections.get(i).copy());
-                DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-                writeConnectionData(dw, i, true, connections.get(i).getComponentId(), connections.get(i).getConnectionId());
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
-            Connection connection = connections.get(i);
-            Connection newConnection = newData.connections.get(i);
-            if (connection != null && newConnection != null)
-            {
-                boolean deleted = connection.getNodes().size() > newConnection.getNodes().size();
-                boolean created = connection.getNodes().size() < newConnection.getNodes().size();
-
-                if (deleted)
-                {
-                    boolean hasDeleted = false;
-                    for (int j = 0; j < newConnection.getNodes().size(); j++)
-                    {
-                        Point node = connection.getNodes().get(j);
-                        Point newNode = newConnection.getNodes().get(j);
-
-                        if (node.getX() != newNode.getX() || node.getY() != newNode.getY())
-                        {
-                            sendClientConnectionNode(container, newConnection.getNodes().size(), i, j, true, false, 0, 0);
-                            hasDeleted = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasDeleted)
-                    {
-                        sendClientConnectionNode(container, newConnection.getNodes().size(), i, newConnection.getNodes().size(), true, false, 0, 0);
-                    }
-                } else
-                {
-                    boolean updated = false;
-                    for (int j = 0; j < connection.getNodes().size(); j++)
-                    {
-                        Point node = connection.getNodes().get(j);
-                        Point newNode = newConnection.getNodes().get(j);
-
-                        if (node.getX() != newNode.getX() || node.getY() != newNode.getY())
-                        {
-                            updated = true;
-                            if (created)
-                            {
-                                Point nextNode = newConnection.getNodes().get(j + 1);
-                                if (node.getX() == nextNode.getX() && node.getY() == nextNode.getY())
-                                {
-                                    sendClientConnectionNode(container, newConnection.getNodes().size(), i, j, false, true, newNode.getX(), newNode.getY());
-                                    break;
-                                }
-                            }
-                            sendClientConnectionNode(container, newConnection.getNodes().size(), i, j, false, false, newNode.getX(), newNode.getY());
-                            break;
-                        }
-                    }
-
-                    if (!updated && created)
-                    {
-                        int nodeId = connection.getNodes().size();
-                        sendClientConnectionNode(container, newConnection.getNodes().size(), i, nodeId, false, true, newConnection.getNodes().get(nodeId).getX(), newConnection.getNodes().get(nodeId).getY());
-                    }
-                }
-
-                connections.put(i, newConnection.copy());
-            }
-        }
-
-        if ((newData.name == null && name != null) || (newData.name != null && name == null) || (newData != null && name != null && !newData.name.equals(name)))
-        {
-            name = newData.name;
-
-            sendNameToClient(container);
-        }
-
-        for (int i = 0; i < menus.size(); i++)
-        {
-            menus.get(i).refreshData(container, newData.menus.get(i));
-        }
+        x = newData.x;
+        y = newData.y;
+        setParent(newData.parent);
+        connections = newData.connections;
+        name = newData.name;
+        menus = newData.menus;
     }
 
     public void writeParentData(DataWriter dw)
@@ -1820,10 +1625,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
 
         NBTTagList menuTagList = new NBTTagList();
-        for (int i = 0; i < menus.size(); i++)
+        for (Menu menu : menus)
         {
-            Menu menu = menus.get(i);
-
             NBTTagCompound menuTag = new NBTTagCompound();
 
             menu.writeToNBT(menuTag, pickup);
@@ -1916,9 +1719,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         FlowComponent component = (FlowComponent)o;
 
-        if (id != component.id) return false;
+        return id == component.id;
 
-        return true;
     }
 
     public List<FlowComponent> getChildrenOutputNodes()
@@ -2036,6 +1838,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @Override
     public void writeNetworkComponent(ByteBuf buf)
     {
+        buf.writeInt(getId());
+        buf.writeBoolean(false);
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeToNBT(tagCompound, false);
         ByteBufUtils.writeTag(buf, tagCompound);

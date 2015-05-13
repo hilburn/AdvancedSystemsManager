@@ -16,17 +16,14 @@ public class ButtonMessage extends SyncMessage
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public int getID()
     {
-        if (this.buf == null)
-        {
-            buf.writeBoolean(false); //Not Sync All Data
-            buf.writeBoolean(false); //Not handle settings
-            buf.writeBoolean(false); //Not new component message
-            buf.writeBoolean(false); //Not specific component
-            buf.writeBoolean(false); //Not client only shit
-            buf.writeByte(id);
-        }
-        super.toBytes(buf);
+        return 5;
+    }
+
+    @Override
+    public void writeExtraData(ByteBuf buf)
+    {
+        buf.writeByte(id);
     }
 }

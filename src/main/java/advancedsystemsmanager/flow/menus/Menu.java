@@ -112,6 +112,8 @@ public abstract class Menu implements INetworkSync
     @Override
     public void writeNetworkComponent(ByteBuf buf)
     {
+        buf.writeInt(parent.getId());
+        buf.writeBoolean(true);
         buf.writeByte(id);
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeToNBT(tagCompound, false);

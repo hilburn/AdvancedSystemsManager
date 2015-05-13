@@ -6,12 +6,15 @@ import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.IBufferMessage;
 import advancedsystemsmanager.network.message.SyncMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
@@ -61,5 +64,11 @@ public abstract class ContainerBase extends Container
     public List<ICrafting> getCrafters()
     {
         return crafters;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void sendFinalUpdate(INetworkSync element)
+    {
+        MessageHandler.INSTANCE.sendToServer(new SyncMessage((TileEntity)te, element));
     }
 }
