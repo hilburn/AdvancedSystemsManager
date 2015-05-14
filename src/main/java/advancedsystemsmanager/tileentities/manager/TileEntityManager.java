@@ -324,6 +324,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     }
                 }
         }
+        if (!this.worldObj.isRemote) this.worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this);
     }
 
     private boolean findNewSelectedComponent(int id)
@@ -438,7 +439,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public boolean addNewComponent(FlowComponent component)
     {
-        return components.put(component.getId(), component) != null;
+        boolean result = components.put(component.getId(), component) != null;
+        if (worldObj.isRemote) zLevelRenderingList.add(0, component);
+        return result;
     }
 
     public void updateVariables()
