@@ -113,50 +113,14 @@ public class DataWriter
         }
     }
 
-    public void writeByte(int data)
-    {
-        writeData(data, 8);
-    }
-
     public void writeData(int data, DataBitHelper bitCount)
     {
         writeData(data, bitCount.getBitCount());
     }
 
-    public void writeData(long data, int bitCount)
+    public void writeByte(int data)
     {
-        long mask = bitCount < 64 ? (1 << bitCount) - 1 : -1;
-
-        data &= mask;
-
-        while (true)
-        {
-            if (bitCountBuffer + bitCount >= 8)
-            {
-                int bitsToAdd = 8 - bitCountBuffer;
-                int addMask = (1 << bitsToAdd) - 1;
-                int addData = (int) (data & addMask);
-                data >>>= bitsToAdd;
-                addData <<= bitCountBuffer;
-                byteBuffer |= addData;
-
-                try
-                {
-                    stream.write(byteBuffer);
-                } catch (IOException ignored)
-                {
-                }
-
-                byteBuffer = 0;
-                bitCount -= bitsToAdd;
-                bitCountBuffer = 0;
-            } else
-            {
-                byteBuffer |= data << bitCountBuffer;
-                bitCountBuffer += bitCount;
-                break;
-            }
-        }
+        writeData(data, 8);
     }
 
     public void writeData(int data, int bitCount)
@@ -253,6 +217,42 @@ public class DataWriter
         }
 
         writeData(id, invBits);
+    }
+
+    public void writeData(long data, int bitCount)
+    {
+        long mask = bitCount < 64 ? (1 << bitCount) - 1 : -1;
+
+        data &= mask;
+
+        while (true)
+        {
+            if (bitCountBuffer + bitCount >= 8)
+            {
+                int bitsToAdd = 8 - bitCountBuffer;
+                int addMask = (1 << bitsToAdd) - 1;
+                int addData = (int)(data & addMask);
+                data >>>= bitsToAdd;
+                addData <<= bitCountBuffer;
+                byteBuffer |= addData;
+
+                try
+                {
+                    stream.write(byteBuffer);
+                } catch (IOException ignored)
+                {
+                }
+
+                byteBuffer = 0;
+                bitCount -= bitsToAdd;
+                bitCountBuffer = 0;
+            } else
+            {
+                byteBuffer |= data << bitCountBuffer;
+                bitCountBuffer += bitCount;
+                break;
+            }
+        }
     }
 
     void close()

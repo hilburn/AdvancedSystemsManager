@@ -7,7 +7,9 @@ public class ButtonMessage extends SyncMessage
 {
     int id;
 
-    public ButtonMessage(){}
+    public ButtonMessage()
+    {
+    }
 
     public ButtonMessage(IManagerButton managerButton, int id)
     {

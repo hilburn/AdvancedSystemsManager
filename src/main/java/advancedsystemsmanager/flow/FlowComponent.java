@@ -7,7 +7,6 @@ import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.*;
@@ -692,15 +691,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         if (getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
         {
-            DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-            if (connection != null)
-            {
-                writeConnectionData(dw, id, true, connection.getComponentId(), connection.getConnectionId());
-            } else
-            {
-                writeConnectionData(dw, id, false, 0, 0);
-            }
-            PacketHandler.sendDataToServer(dw);
+            needsSync = true;
         }
         connections.put(id, connection);
     }
@@ -708,19 +699,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public TileEntityManager getManager()
     {
         return manager;
-    }
-
-    public void writeConnectionData(DataWriter dw, int i, boolean target, int targetComponent, int targetConnection)
-    {
-        dw.writeBoolean(false);
-        dw.writeData(i, DataBitHelper.CONNECTION_ID);
-        dw.writeBoolean(true); //connection
-        dw.writeBoolean(target);
-        if (target)
-        {
-            dw.writeComponentId(getManager(), targetComponent);
-            dw.writeData(targetConnection, DataBitHelper.CONNECTION_ID);
-        }
     }
 
     public int getComponentWidth()
@@ -745,8 +723,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public int getMenuItemY(int id)
     {
-
-
         int ret = MENU_Y;
         for (int i = 0; i < id; i++)
         {
@@ -843,8 +819,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 {
                     name = null;
                 }
-                sendNameToServer();
                 textBox.setText(null);
+                needsSync = true;
             } else if (isLarge && isEditing && CollisionHelper.inBounds(EDIT_X_SMALL, EDIT_Y_BOT, EDIT_SIZE_SMALL, EDIT_SIZE_SMALL, internalX, internalY))
             {
                 isEditing = false;
@@ -1040,7 +1016,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public void setSynced()
     {
         needsSync = false;
-        for (Menu menu : menus) menu.setSynced();
     }
 
     public boolean isVisible(FlowComponent selectedComponent)
@@ -1477,29 +1452,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         setParent(newData.parent);
         connections = newData.connections;
         name = newData.name;
-        menus = newData.menus;
-    }
-
-    public void writeParentData(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(true); //location
-        dw.writeBoolean(false); //parent
-        if (parent != null)
-        {
-            dw.writeBoolean(true);
-            dw.writeComponentId(getManager(), parent.getId());
-        } else
-        {
-            dw.writeBoolean(false);
-        }
-    }
-
-    public void sendClientConnectionNode(ContainerManager container, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
-    {
-        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-        writeConnectionNode(dw, length, connectionId, nodeId, deleted, created, x, y);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     public int getId()
@@ -1512,19 +1464,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         this.id = id;
     }
 
-    public void sendNameToClient(ContainerManager container)
-    {
-        DataWriter dw = PacketHandler.getWriterForClientComponentPacket(container, this, null);
-        writeName(dw);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void writeName(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(false); //name
-        dw.writeString(name, DataBitHelper.NAME_LENGTH);
-    }
 
     public Connection getConnection(int i)
     {
@@ -1555,13 +1494,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    public void sendNameToServer()
-    {
-        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-        writeName(dw);
-        PacketHandler.sendDataToServer(dw);
-    }
-
     public void linkParentAfterLoad()
     {
         if (parentLoadId != -1)
@@ -1588,6 +1520,29 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         {
             nbtTagCompound.setInteger(NBT_PARENT, parent.getId());
         }
+
+        nbtTagCompound.setTag(NBT_CONNECTION, getConnectionNBT());
+
+        if (type == CommandRegistry.TRIGGER)
+        {
+            nbtTagCompound.setShort(NBT_INTERVAL, (short)currentInterval);
+        }
+
+        NBTTagList menuTagList = new NBTTagList();
+        for (Menu menu : menus)
+        {
+            NBTTagCompound menuTag = new NBTTagCompound();
+
+            menu.writeToNBT(menuTag, pickup);
+
+            menuTagList.appendTag(menuTag);
+
+        }
+        nbtTagCompound.setTag(NBT_MENUS, menuTagList);
+    }
+
+    public NBTTagList getConnectionNBT()
+    {
         NBTTagList connections = new NBTTagList();
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
@@ -1617,24 +1572,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 connections.appendTag(connectionTag);
             }
         }
-        nbtTagCompound.setTag(NBT_CONNECTION, connections);
-
-        if (type == CommandRegistry.TRIGGER)
-        {
-            nbtTagCompound.setShort(NBT_INTERVAL, (short)currentInterval);
-        }
-
-        NBTTagList menuTagList = new NBTTagList();
-        for (Menu menu : menus)
-        {
-            NBTTagCompound menuTag = new NBTTagCompound();
-
-            menu.writeToNBT(menuTag, pickup);
-
-            menuTagList.appendTag(menuTag);
-
-        }
-        nbtTagCompound.setTag(NBT_MENUS, menuTagList);
+        return connections;
     }
 
     public boolean isOpen()
@@ -1842,6 +1780,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         buf.writeBoolean(false);
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeToNBT(tagCompound, false);
+        tagCompound.removeTag(NBT_MENUS);
         ByteBufUtils.writeTag(buf, tagCompound);
     }
 }

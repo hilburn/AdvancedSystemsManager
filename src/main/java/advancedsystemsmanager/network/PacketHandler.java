@@ -111,12 +111,6 @@ public class PacketHandler
         sendDataToListeningClients(container, dw);
     }
 
-    public static void sendDataToListeningClients(ContainerBase container, DataWriter dw)
-    {
-        dw.sendPlayerPackets(container);
-        dw.close();
-    }
-
     private static DataWriter getWriterForSpecificData(Container container)
     {
         DataWriter dw = new DataWriter();
@@ -132,6 +126,12 @@ public class PacketHandler
     private static void createNonComponentPacket(DataWriter dw)
     {
         dw.writeBoolean(false); //this is a packet that has nothing to do with a specific FlowComponent
+    }
+
+    public static void sendDataToListeningClients(ContainerBase container, DataWriter dw)
+    {
+        dw.sendPlayerPackets(container);
+        dw.close();
     }
 
     public static DataWriter getWriterForServerComponentPacket(FlowComponent component, Menu menu)

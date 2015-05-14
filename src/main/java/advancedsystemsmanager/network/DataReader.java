@@ -61,14 +61,14 @@ public class DataReader
         }
     }
 
-    public int readByte()
-    {
-        return readData(8);
-    }
-
     public int readData(DataBitHelper bitCount)
     {
         return readData(bitCount.getBitCount());
+    }
+
+    public int readByte()
+    {
+        return readData(8);
     }
 
     public int readData(int bitCount)
@@ -103,39 +103,6 @@ public class DataReader
         }
 
 
-        return data;
-    }
-
-    public long readLongData(int bitCount)
-    {
-        long data = 0;
-        int readBits = 0;
-
-        while (true)
-        {
-            int bitsLeft = bitCount - readBits;
-            if (bitCountBuffer >= bitsLeft)
-            {
-                data |= (byteBuffer & ((1 << bitsLeft) - 1)) << readBits;
-                byteBuffer >>>= bitsLeft;
-                bitCountBuffer -= bitsLeft;
-                readBits += bitsLeft;
-                break;
-            } else
-            {
-                data |= byteBuffer << readBits;
-                readBits += bitCountBuffer;
-
-                try
-                {
-                    byteBuffer = stream.read();
-                } catch (IOException ignored)
-                {
-                    byteBuffer = 0;
-                }
-                bitCountBuffer = 8;
-            }
-        }
         return data;
     }
 
@@ -185,6 +152,39 @@ public class DataReader
         int invBits = DataBitHelper.MENU_INVENTORY_SELECTION.getBitCount();
 
         return readLongData(invBits);
+    }
+
+    public long readLongData(int bitCount)
+    {
+        long data = 0;
+        int readBits = 0;
+
+        while (true)
+        {
+            int bitsLeft = bitCount - readBits;
+            if (bitCountBuffer >= bitsLeft)
+            {
+                data |= (byteBuffer & ((1 << bitsLeft) - 1)) << readBits;
+                byteBuffer >>>= bitsLeft;
+                bitCountBuffer -= bitsLeft;
+                readBits += bitsLeft;
+                break;
+            } else
+            {
+                data |= byteBuffer << readBits;
+                readBits += bitCountBuffer;
+
+                try
+                {
+                    byteBuffer = stream.read();
+                } catch (IOException ignored)
+                {
+                    byteBuffer = 0;
+                }
+                bitCountBuffer = 8;
+            }
+        }
+        return data;
     }
 
 }

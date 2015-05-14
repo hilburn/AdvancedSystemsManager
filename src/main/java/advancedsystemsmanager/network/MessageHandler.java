@@ -22,6 +22,7 @@ public class MessageHandler
         register(SearchRegistryGenerateMessage.class, Side.CLIENT);
         register(SyncMessage.class, Side.CLIENT);
         register(SyncMessage.class, Side.SERVER);
+        register(FinalSyncMessage.class, Side.SERVER);
         register(ContainerMessage.class, Side.CLIENT);
         register(ButtonMessage.class, Side.SERVER);
         register(ButtonMessage.class, Side.CLIENT);
