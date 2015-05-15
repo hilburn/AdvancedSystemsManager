@@ -40,7 +40,7 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
         {
             @Override
-            public void onClickReader(ByteBuf buf)
+            public void readData(ByteBuf buf)
             {
 
             }
@@ -74,7 +74,7 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void onClickReader(ByteBuf buf)
+            public void readData(ByteBuf buf)
             {
                 int id = buf.readInt();
                 FlowComponent component = manager.getFlowItem(id);

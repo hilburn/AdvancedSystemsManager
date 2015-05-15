@@ -95,7 +95,7 @@ public abstract class Menu implements INetworkSync
     }
 
     @Override
-    public void readNetworkComponent(ByteBuf buf)
+    public void readData(ByteBuf buf)
     {
         readFromNBT(ByteBufUtils.readTag(buf), false);
     }

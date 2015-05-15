@@ -185,13 +185,6 @@ public class MenuRedstoneStrength extends Menu
         inverted = menuStrength.inverted;
     }
 
-    public void sendClientData(ContainerManager container, int id)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {

@@ -4,5 +4,5 @@ import io.netty.buffer.ByteBuf;
 
 public interface INetworkReader
 {
-    void readNetworkComponent(ByteBuf buf);
+    void readData(ByteBuf buf);
 }

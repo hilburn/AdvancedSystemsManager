@@ -791,13 +791,6 @@ public class MenuContainer extends Menu
         }
     }
 
-    public void sendClientData(ContainerManager container, long id, boolean select)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id, select);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {

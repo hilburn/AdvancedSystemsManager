@@ -5,6 +5,8 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.util.SystemCoord;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ public abstract class MenuRF extends MenuContainer
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addErrors(List<String> errors)
     {
         if (this.selectedInventories.isEmpty() && this.isVisible())

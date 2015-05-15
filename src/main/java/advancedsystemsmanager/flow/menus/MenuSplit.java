@@ -164,7 +164,6 @@ public class MenuSplit extends Menu
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -180,13 +179,11 @@ public class MenuSplit extends Menu
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -196,13 +193,6 @@ public class MenuSplit extends Menu
         setSplit(menuSplit.useSplit());
         setFair(menuSplit.useFair());
         setEmpty(menuSplit.useEmpty());
-    }
-
-    public void sendClientData(ContainerManager container, int id)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     @Override

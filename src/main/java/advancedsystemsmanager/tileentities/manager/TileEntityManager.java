@@ -291,27 +291,18 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 }
                 break;
             case 2:
-                if (worldObj.isRemote)
-                {
-                    addNewComponent(new FlowComponent(this, CommandRegistry.getCommand(buf.readByte())));
-                }
-                break;
-            case 3:
                 INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
 
                 if (nr != null)
                 {
-                    nr.readNetworkComponent(buf);
+                    nr.readData(buf);
                 }
                 break;
+            case 3:
+                updateInventories();
+                break;
             case 4:
-                if (worldObj.isRemote && buf.readBoolean())
-                {
-                    updateInventories();
-                } else
-                {
-                    removeFlowComponent(buf.readInt());
-                }
+                removeFlowComponent(buf.readInt());
                 break;
             case 5:
                 int buttonId = buf.readByte();
@@ -320,7 +311,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     IManagerButton button = buttons.get(buttonId);
                     if (button.isVisible())
                     {
-                        button.onClickReader(buf);
+                        button.readData(buf);
                     }
                 }
         }

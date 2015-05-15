@@ -12,9 +12,9 @@ public class MenuRFInput extends MenuRF
     }
 
     @Override
-    public void readNetworkComponent(ByteBuf buf)
+    public void readData(ByteBuf buf)
     {
-        super.readNetworkComponent(buf);
+        super.readData(buf);
         updateConnectedNodes();
     }
 }

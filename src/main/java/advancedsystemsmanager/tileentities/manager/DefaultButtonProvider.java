@@ -30,7 +30,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
-            public void onClickReader(ByteBuf buf)
+            public void readData(ByteBuf buf)
             {
                 int idToRemove = buf.readInt();
                 if (idToRemove != -1)
@@ -80,7 +80,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void onClickReader(ByteBuf buf)
+            public void readData(ByteBuf buf)
             {
                 if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
                 {

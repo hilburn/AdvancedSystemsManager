@@ -25,7 +25,7 @@ public class ManagerButtonCreate extends ManagerButton
     }
 
     @Override
-    public void onClickReader(ByteBuf buf)
+    public void readData(ByteBuf buf)
     {
         if (Settings.isLimitless(manager) || manager.getFlowItems().size() < TileEntityManager.MAX_COMPONENT_AMOUNT)
         {

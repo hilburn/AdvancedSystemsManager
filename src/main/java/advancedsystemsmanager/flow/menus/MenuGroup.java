@@ -146,9 +146,9 @@ public class MenuGroup extends Menu
     }
 
     @Override
-    public void readNetworkComponent(ByteBuf dr)
+    public void readData(ByteBuf dr)
     {
-        super.readNetworkComponent(dr);
+        super.readData(dr);
 //        if (!getParent().getManager().getWorldObj().isRemote)
 //        {
 //            int id = dr.readInt();

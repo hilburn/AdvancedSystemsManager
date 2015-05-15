@@ -13,7 +13,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 
 public class MenuListOrder extends Menu
@@ -225,13 +228,6 @@ public class MenuListOrder extends Menu
         radioButtons.setSelectedOption(menuOrder.radioButtons.getSelectedOption());
     }
 
-    public void sendClientData(ContainerManager container, UpdateType type)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, type);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
@@ -250,30 +246,9 @@ public class MenuListOrder extends Menu
         nbtTagCompound.setByte(NBT_ORDER, (byte)radioButtons.getSelectedOption());
     }
 
-    @Override
-    public void readNetworkComponent(ByteBuf dr)
-    {
-        UpdateType type = UpdateType.values()[dr.readByte()];
-        switch (type)
-        {
-            case USE_ALL:
-                all = dr.readBoolean();
-                break;
-            case AMOUNT:
-                textBox.setNumber(dr.readByte());
-                break;
-            case REVERSED:
-                reversed = dr.readBoolean();
-                break;
-            case TYPE:
-                radioButtons.setSelectedOption(dr.readByte());
-        }
-
-    }
-
     public Comparator<? super Integer> getComparator()
     {
-        return reversed ? getOrder().reversedComparator : getOrder().comparator;
+        return getOrder().comparator;
     }
 
     public boolean isReversed()
@@ -301,30 +276,52 @@ public class MenuListOrder extends Menu
             {
                 return o1 < o2 ? -1 : 1;
             }
-        }),
-        RANDOM(Names.ORDER_RANDOM, null);
+        })
+                {
+                    @Override
+                    protected void sort(List<Integer> inventories)
+                    {
+                        Collections.sort(inventories, comparator);
+                    }
+                },
+        RANDOM(Names.ORDER_RANDOM, null)
+                {
+                    @Override
+                    protected void sort(List<Integer> inventories)
+                    {
+                        Collections.shuffle(inventories);
+                    }
+                };
 
         public String name;
         public Comparator<Integer> comparator;
-        public Comparator<Integer> reversedComparator;
 
         LoopOrder(String name, final Comparator<Integer> comparator)
         {
             this.name = name;
             this.comparator = comparator;
-            if (comparator != null)
-            {
-                reversedComparator = new Comparator<Integer>()
-                {
-                    @Override
-                    public int compare(Integer o1, Integer o2)
-                    {
-                        return comparator.compare(o2, o1);
-                    }
-                };
-            }
         }
 
+        public List<Integer> applyOrder(List<Integer> inventories, MenuListOrder menu)
+        {
+            ArrayList<Integer> ret = new ArrayList<Integer>(inventories);
+            sort(ret);
+            if (menu.isReversed()) Collections.reverse(ret);
+            if (!menu.useAll())
+            {
+                int len = menu.getAmount();
+
+                while (ret.size() > len)
+                {
+                    ret.remove(ret.size() - 1);
+                }
+            }
+            return ret;
+        }
+
+        protected void sort(List<Integer> inventories)
+        {
+        }
 
         @Override
         public String toString()

@@ -1387,7 +1387,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     }
 
     @Override
-    public void readNetworkComponent(ByteBuf buf)
+    public void readData(ByteBuf buf)
     {
         refreshData(readFromNBT(manager, ByteBufUtils.readTag(buf), false));
     }
