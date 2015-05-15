@@ -8,13 +8,11 @@ import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -60,6 +58,7 @@ public abstract class MenuStuff<Type> extends Menu
     public TextBoxNumberList numberTextBoxes;
     public RadioButtonList radioButtons;
     public CheckBoxList checkBoxes;
+
     public MenuStuff(FlowComponent parent, Class<? extends Setting> settingClass)
     {
         super(parent);
@@ -450,58 +449,6 @@ public abstract class MenuStuff<Type> extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(isFirstRadioButtonSelected());
-        for (Setting setting : settings)
-        {
-            dw.writeBoolean(setting.isValid());
-            if (setting.isValid())
-            {
-                setting.writeData(dw);
-                if (setting.isAmountSpecific())
-                {
-                    dw.writeBoolean(setting.isLimitedByAmount());
-                    if (setting.isLimitedByAmount())
-                    {
-                        dw.writeData(setting.getAmount(), getAmountBitLength());
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setFirstRadioButtonSelected(dr.readBoolean());
-        for (Setting setting : settings)
-        {
-            if (!dr.readBoolean())
-            {
-                setting.clear();
-            } else
-            {
-                setting.readData(dr);
-                if (setting.isAmountSpecific())
-                {
-                    setting.setLimitedByAmount(dr.readBoolean());
-
-                    if (setting.isLimitedByAmount())
-                    {
-                        setting.setAmount(dr.readData(getAmountBitLength()));
-                    } else
-                    {
-                        setting.setDefaultAmount();
-                    }
-                }
-            }
-        }
-
-        onSettingContentChange();
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuStuff<Type> menuItem = (MenuStuff<Type>)menu;
@@ -521,56 +468,6 @@ public abstract class MenuStuff<Type> extends Menu
                 {
                     settings.get(i).setLimitedByAmount(menuItem.settings.get(i).isLimitedByAmount());
                     settings.get(i).setAmount(menuItem.settings.get(i).getAmount());
-                }
-            }
-        }
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        if (((MenuStuff)newData).isFirstRadioButtonSelected() != isFirstRadioButtonSelected())
-        {
-            setFirstRadioButtonSelected(((MenuStuff)newData).isFirstRadioButtonSelected());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(false); //no specific setting
-            writeRadioButtonRefreshState(dw, isFirstRadioButtonSelected());
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        for (int i = 0; i < settings.size(); i++)
-        {
-            Setting setting = settings.get(i);
-            Setting newSetting = ((MenuStuff<Type>)newData).settings.get(i);
-
-            if (!newSetting.isValid() && setting.isValid())
-            {
-                setting.clear();
-                writeClientData(container, DataTypeHeader.CLEAR, setting);
-            }
-
-            if (newSetting.isValid() && (!setting.isValid() || !setting.isContentEqual(newSetting)))
-            {
-                setting.copyFrom(newSetting);
-                writeClientData(container, DataTypeHeader.SET_ITEM, setting);
-            }
-
-            if (setting.isAmountSpecific())
-            {
-                if (newSetting.isLimitedByAmount() != setting.isLimitedByAmount())
-                {
-                    setting.setLimitedByAmount(newSetting.isLimitedByAmount());
-                    writeClientData(container, DataTypeHeader.USE_AMOUNT, setting);
-                }
-
-                if (newSetting.isValid() && setting.isValid())
-                {
-                    if (newSetting.getAmount() != setting.getAmount())
-                    {
-                        setting.setAmount(newSetting.getAmount());
-                        writeClientData(container, DataTypeHeader.AMOUNT, setting);
-                    }
                 }
             }
         }

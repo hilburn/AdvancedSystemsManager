@@ -7,7 +7,6 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -68,24 +67,6 @@ public class MenuTargetTank extends MenuTarget
                 writeData(DataTypeHeader.USE_ADVANCED_SETTING, useAdvancedSetting(selectedDirectionId) ? 0 : 1);
             }
         };
-    }
-
-    @Override
-    public void writeAdvancedSetting(DataWriter dw, int i)
-    {
-        dw.writeBoolean(onlyFull[i]);
-    }
-
-    @Override
-    public void readAdvancedSetting(DataReader dr, int i)
-    {
-        onlyFull[i] = dr.readBoolean();
-    }
-
-    @Override
-    public void resetAdvancedSetting(int i)
-    {
-        onlyFull[i] = false;
     }
 
     @Override

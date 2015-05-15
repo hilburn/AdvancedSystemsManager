@@ -77,7 +77,9 @@ public abstract class CommandBase<Type> implements ICommand
         for (Setting<Type> setting : settings)
             if (setting.isContentEqual(check)) return setting;
         return null;
-    }    @Override
+    }
+
+    @Override
     public String getName()
     {
         return name;
@@ -128,10 +130,6 @@ public abstract class CommandBase<Type> implements ICommand
         }
         return connections;
     }
-
-
-
-
 
 
 }

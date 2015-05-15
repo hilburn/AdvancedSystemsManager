@@ -4,12 +4,14 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.elements.*;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.flow.elements.ScrollController;
+import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.gui.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -18,7 +20,6 @@ import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -780,29 +781,6 @@ public class MenuContainer extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(getOption(), DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
-        dw.writeData(selectedInventories.size(), 16);
-        for (long selectedInventory : selectedInventories)
-        {
-            dw.writeInventoryId(getParent().getManager(), selectedInventory);
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setOption(dr.readData(DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE));
-        selectedInventories.clear();
-        int count = dr.readData(16);
-        for (int i = 0; i < count; i++)
-        {
-            selectedInventories.add(dr.readInventoryId());
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         setOption(((MenuContainer)menu).getOption());
@@ -810,43 +788,6 @@ public class MenuContainer extends Menu
         for (long selectedInventory : ((MenuContainer)menu).selectedInventories)
         {
             selectedInventories.add(selectedInventory);
-        }
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuContainer newDataInv = ((MenuContainer)newData);
-
-        if (newDataInv.getOption() != getOption())
-        {
-            setOption(newDataInv.getOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            writeRadioButtonData(dw, getOption());
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        int count = newDataInv.selectedInventories.size();
-        for (int i = 0; i < count; i++)
-        {
-            long id = newDataInv.selectedInventories.get(i);
-            if (!selectedInventories.contains(id))
-            {
-                selectedInventories.add(id);
-                sendClientData(container, id, true);
-            }
-
-        }
-
-        for (int i = selectedInventories.size() - 1; i >= 0; i--)
-        {
-            long id = selectedInventories.get(i);
-            if (!newDataInv.selectedInventories.contains(id))
-            {
-                selectedInventories.remove(i);
-                sendClientData(container, id, false);
-            }
         }
     }
 
@@ -938,7 +879,7 @@ public class MenuContainer extends Menu
     @Override
     public String getName()
     {
-        return type.getName()+"Menu";
+        return type.getName() + "Menu";
     }
 
     @Override

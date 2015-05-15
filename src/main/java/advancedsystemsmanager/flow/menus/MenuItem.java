@@ -5,17 +5,14 @@ import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.FuzzyMode;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -262,32 +259,6 @@ public class MenuItem extends MenuStuff<ItemStack>
             amountTextBox.setNumber(selectedSetting.getAmount());
         }
         damageValueTextBox.setNumber(getSelectedSetting().getItem().getItemDamage());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        super.refreshData(container, newData);
-        for (int i = 0; i < settings.size(); i++)
-        {
-            ItemSetting setting = (ItemSetting)settings.get(i);
-            ItemSetting newSetting = (ItemSetting)((MenuStuff)newData).settings.get(i);
-            if (newSetting.getFuzzyMode() != setting.getFuzzyMode())
-            {
-                setting.setFuzzyMode(newSetting.getFuzzyMode());
-                writeClientData(container, DataTypeHeader.USE_FUZZY, setting);
-            }
-
-            if (newSetting.isValid() && setting.isValid())
-            {
-                if (newSetting.getItem().getItemDamage() != setting.getItem().getItemDamage())
-                {
-                    setting.getItem().setItemDamage(newSetting.getItem().getItemDamage());
-                    writeClientData(container, DataTypeHeader.META, setting);
-                }
-
-            }
-        }
     }
 
     @Override

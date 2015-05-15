@@ -7,13 +7,9 @@ import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
@@ -81,26 +77,6 @@ public class MenuTargetInventory extends MenuTarget
                 writeData(DataTypeHeader.USE_ADVANCED_SETTING, useAdvancedSetting(selectedDirectionId) ? 0 : 1);
             }
         };
-    }
-
-    @Override
-    public void writeAdvancedSetting(DataWriter dw, int i)
-    {
-        dw.writeData(startRange[i], DataBitHelper.MENU_TARGET_RANGE);
-        dw.writeData(endRange[i], DataBitHelper.MENU_TARGET_RANGE);
-    }
-
-    @Override
-    public void readAdvancedSetting(DataReader dr, int i)
-    {
-        startRange[i] = dr.readData(DataBitHelper.MENU_TARGET_RANGE);
-        endRange[i] = dr.readData(DataBitHelper.MENU_TARGET_RANGE);
-    }
-
-    @Override
-    public void resetAdvancedSetting(int i)
-    {
-        startRange[i] = endRange[i] = 0;
     }
 
     @Override

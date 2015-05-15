@@ -4,10 +4,8 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.elements.VariableDisplay;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -130,51 +128,10 @@ public class MenuVariableLoop extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(selectedList, DataBitHelper.VARIABLE_TYPE);
-        dw.writeData(selectedElement, DataBitHelper.VARIABLE_TYPE);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        selectedList = dr.readData(DataBitHelper.VARIABLE_TYPE);
-        selectedElement = dr.readData(DataBitHelper.VARIABLE_TYPE);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         selectedList = ((MenuVariableLoop)menu).selectedList;
         selectedElement = ((MenuVariableLoop)menu).selectedElement;
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuVariableLoop newDataLoop = (MenuVariableLoop)newData;
-
-        if (selectedList != newDataLoop.selectedList)
-        {
-            selectedList = newDataLoop.selectedList;
-            sendClientData(container, true);
-        }
-
-        if (selectedElement != newDataLoop.selectedElement)
-        {
-            selectedElement = newDataLoop.selectedElement;
-            sendClientData(container, false);
-        }
-    }
-
-    public void sendClientData(ContainerManager container, boolean useList)
-    {
-        int val = useList ? selectedList : selectedElement;
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        dw.writeBoolean(useList);
-        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     @Override

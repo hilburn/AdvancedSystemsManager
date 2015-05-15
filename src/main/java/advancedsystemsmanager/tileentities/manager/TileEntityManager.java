@@ -324,7 +324,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     }
                 }
         }
-        if (!this.worldObj.isRemote) this.worldObj.markTileEntityChunkModified(xCoord, yCoord, zCoord, this);
+        if (!this.worldObj.isRemote) this.markDirty();
     }
 
     private boolean findNewSelectedComponent(int id)

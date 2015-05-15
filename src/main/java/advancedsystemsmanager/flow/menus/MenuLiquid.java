@@ -7,7 +7,6 @@ import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -77,7 +76,9 @@ public class MenuLiquid extends MenuStuff<Fluid>
     public String getName()
     {
         return Names.LIQUIDS_MENU;
-    }    @SideOnly(Side.CLIENT)
+    }
+
+    @SideOnly(Side.CLIENT)
     @Override
     public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
     {
@@ -91,7 +92,9 @@ public class MenuLiquid extends MenuStuff<Fluid>
     public LiquidSetting getSelectedSetting()
     {
         return (LiquidSetting)selectedSetting;
-    }    @SideOnly(Side.CLIENT)
+    }
+
+    @SideOnly(Side.CLIENT)
     @Override
     public void drawResultObject(GuiManager gui, Object obj, int x, int y)
     {
@@ -143,10 +146,6 @@ public class MenuLiquid extends MenuStuff<Fluid>
                 dw.writeData(liquidSetting.getLiquidId(), DataBitHelper.MENU_FLUID_ID);
         }
     }
-
-
-
-
 
 
     @SideOnly(Side.CLIENT)

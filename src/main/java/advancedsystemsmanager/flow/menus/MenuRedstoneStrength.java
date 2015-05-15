@@ -8,7 +8,6 @@ import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -177,22 +176,6 @@ public class MenuRedstoneStrength extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(lowTextBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
-        dw.writeData(highTextBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
-        dw.writeBoolean(inverted);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        lowTextBox.setNumber(dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG));
-        highTextBox.setNumber(dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG));
-        inverted = dr.readBoolean();
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuRedstoneStrength menuStrength = (MenuRedstoneStrength)menu;
@@ -200,33 +183,6 @@ public class MenuRedstoneStrength extends Menu
         lowTextBox.setNumber(menuStrength.lowTextBox.getNumber());
         highTextBox.setNumber(menuStrength.highTextBox.getNumber());
         inverted = menuStrength.inverted;
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuRedstoneStrength newDataStrength = (MenuRedstoneStrength)newData;
-
-        if (lowTextBox.getNumber() != newDataStrength.lowTextBox.getNumber())
-        {
-            lowTextBox.setNumber(newDataStrength.lowTextBox.getNumber());
-
-            sendClientData(container, 0);
-        }
-
-        if (highTextBox.getNumber() != newDataStrength.highTextBox.getNumber())
-        {
-            highTextBox.setNumber(newDataStrength.highTextBox.getNumber());
-
-            sendClientData(container, 1);
-        }
-
-        if (inverted != newDataStrength.inverted)
-        {
-            inverted = newDataStrength.inverted;
-
-            sendClientData(container, 2);
-        }
     }
 
     public void sendClientData(ContainerManager container, int id)

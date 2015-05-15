@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -217,24 +216,6 @@ public class MenuListOrder extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(all);
-        dw.writeData(textBox.getNumber(), DataBitHelper.ORDER_AMOUNT);
-        dw.writeBoolean(reversed);
-        dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.ORDER_TYPES);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        all = dr.readBoolean();
-        textBox.setNumber(dr.readData(DataBitHelper.ORDER_AMOUNT));
-        reversed = dr.readBoolean();
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.ORDER_TYPES));
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuListOrder menuOrder = ((MenuListOrder)menu);
@@ -242,36 +223,6 @@ public class MenuListOrder extends Menu
         textBox.setNumber(menuOrder.textBox.getNumber());
         reversed = menuOrder.reversed;
         radioButtons.setSelectedOption(menuOrder.radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuListOrder newDataOrder = (MenuListOrder)newData;
-
-        if (all != newDataOrder.all)
-        {
-            all = newDataOrder.all;
-            sendClientData(container, UpdateType.USE_ALL);
-        }
-
-        if (textBox.getNumber() != newDataOrder.textBox.getNumber())
-        {
-            textBox.setNumber(newDataOrder.textBox.getNumber());
-        }
-
-        if (reversed != newDataOrder.reversed)
-        {
-            reversed = newDataOrder.reversed;
-            sendClientData(container, UpdateType.REVERSED);
-        }
-
-        if (radioButtons.getSelectedOption() != newDataOrder.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataOrder.radioButtons.getSelectedOption());
-
-            sendClientData(container, UpdateType.TYPE);
-        }
     }
 
     public void sendClientData(ContainerManager container, UpdateType type)

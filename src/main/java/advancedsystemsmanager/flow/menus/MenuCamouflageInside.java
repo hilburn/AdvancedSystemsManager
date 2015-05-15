@@ -3,16 +3,13 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -72,36 +69,9 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.CAMOUFLAGE_INSIDE);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.CAMOUFLAGE_INSIDE));
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         radioButtons.setSelectedOption(((MenuCamouflageInside)menu).radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuCamouflageInside newDataInside = (MenuCamouflageInside)newData;
-
-        if (radioButtons.getSelectedOption() != newDataInside.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataInside.radioButtons.getSelectedOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.CAMOUFLAGE_INSIDE);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

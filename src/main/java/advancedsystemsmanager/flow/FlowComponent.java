@@ -9,7 +9,8 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.network.DataBitHelper;
+import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -919,7 +920,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                             {
                                 int id = reversed ? selected.getNodes().size() : 0;
                                 selected.addAndSelectNode(mX, mY, id);
-                                component.sendConnectionNode(connectionId, id, false, true, mX, mY);
+                                needsSync = true;
                             }
                         }
                     } else
@@ -982,11 +983,10 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                 {
                                     if (GuiScreen.isShiftKeyDown())
                                     {
-                                        sendConnectionNode(i, j, true, false, 0, 0);
+                                        needsSync = true;
                                     } else if (selected.getNodes().size() < MAX_NODES && selected.getSelectedNode() == null)
                                     {
-                                        selected.addAndSelectNode(mX, mY, j + 1);
-                                        sendConnectionNode(i, j + 1, false, true, mX, mY);
+                                        needsSync = true;
                                     }
                                 }
                                 return true;
@@ -1168,11 +1168,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public void onRelease(int mX, int mY, int button)
     {
         followMouse(mX, mY);
-        if (isDragging)
-        {
-            writeLocationData();
-        }
-
 
         for (int i = 0; i < menus.size(); i++)
         {
@@ -1192,7 +1187,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     if (node.equals(connection.getSelectedNode()))
                     {
                         connection.update(mX, mY);
-                        sendConnectionNode(i, j, false, false, node.getX(), node.getY());
+                        needsSync = true;
                         connection.setSelectedNode(null);
                         return;
                     }
@@ -1200,29 +1195,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             }
         }
 
-    }
-
-    public void writeLocationData()
-    {
-        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-        writeLocationData(dw);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeLocationData(DataWriter dw)
-    {
-        dw.writeBoolean(true); //component specific
-        dw.writeBoolean(true); //location
-        dw.writeBoolean(true); //position
-        dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
-        dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
-    }
-
-    public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
-    {
-        DataWriter dw = PacketHandler.getWriterForServerComponentPacket(this, null);
-        writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
@@ -1417,7 +1389,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @Override
     public void readNetworkComponent(ByteBuf buf)
     {
-         refreshData(readFromNBT(manager, ByteBufUtils.readTag(buf), false));
+        refreshData(readFromNBT(manager, ByteBufUtils.readTag(buf), false));
     }
 
     public FlowComponent copy()

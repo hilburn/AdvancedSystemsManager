@@ -25,7 +25,9 @@ public class CraftingDummy extends InventoryCrafting
         inventoryWidth = 3;
 
         this.crafting = crafting;
-    }    @Override
+    }
+
+    @Override
     public int getSizeInventory()
     {
         return 9;
@@ -41,7 +43,9 @@ public class CraftingDummy extends InventoryCrafting
         {
             this.overrideMap = null;
         }
-    }    @Override
+    }
+
+    @Override
     public ItemStack getStackInSlot(int id)
     {
         if (overrideMap != null && overrideMap.get(id) != null && overrideMap.get(id).stackSize > 0)
@@ -57,7 +61,9 @@ public class CraftingDummy extends InventoryCrafting
     {
         IRecipe recipe = getRecipe();
         return recipe == null ? null : recipe.getCraftingResult(this);
-    }    @Override
+    }
+
+    @Override
     public ItemStack getStackInRowAndColumn(int par1, int par2)
     {
         if (par1 >= 0 && par1 < this.inventoryWidth)
@@ -83,7 +89,9 @@ public class CraftingDummy extends InventoryCrafting
         }
 
         return null;
-    }    @Override
+    }
+
+    @Override
     public ItemStack getStackInSlotOnClosing(int par1)
     {
         return null;
@@ -99,7 +107,9 @@ public class CraftingDummy extends InventoryCrafting
         ItemStack itemStack = recipe.getCraftingResult(this);
         this.overrideMap = null;
         return result.isEqualForCommandExecutor(itemStack);
-    }    @Override
+    }
+
+    @Override
     public ItemStack decrStackSize(int par1, int par2)
     {
         return null;
@@ -111,14 +121,6 @@ public class CraftingDummy extends InventoryCrafting
     {
         return;
     }
-
-
-
-
-
-
-
-
 
 
 }

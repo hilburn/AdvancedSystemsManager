@@ -7,10 +7,8 @@ import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -18,7 +16,6 @@ import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -175,7 +172,9 @@ public class MenuUpdateBlock extends MenuItem
                 public boolean isVisible()
                 {
                     return settings[setting].inUse();
-                }                @Override
+                }
+
+                @Override
                 public int getMaxNumber()
                 {
                     return settings[setting].getMaxNumber();
@@ -332,68 +331,6 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        super.refreshData(container, newData);
-
-        MenuUpdateBlock newDataUpdate = (MenuUpdateBlock)newData;
-
-        if (useId != newDataUpdate.useId)
-        {
-            useId = newDataUpdate.useId;
-            sendClientData(container, 0, 0);
-        }
-
-        if (idInverted != newDataUpdate.idInverted)
-        {
-            idInverted = newDataUpdate.idInverted;
-            sendClientData(container, 0, 2);
-        }
-
-        for (int i = 0; i < settings.length; i++)
-        {
-            int id = i + 1;
-
-            MetaSetting setting = settings[i];
-            MetaSetting newSetting = newDataUpdate.settings[i];
-
-            for (int j = 0; j < setting.bits.length; j++)
-            {
-                if (setting.bits[j] != newSetting.bits[j])
-                {
-                    setting.bits[j] = newSetting.bits[j];
-                    sendClientData(container, id, j);
-                }
-            }
-
-            if (setting.lowerTextBox.getNumber() != newSetting.lowerTextBox.getNumber())
-            {
-                setting.lowerTextBox.setNumber(newSetting.lowerTextBox.getNumber());
-                sendClientData(container, id, 4);
-            }
-
-            if (setting.higherTextBox.getNumber() != newSetting.higherTextBox.getNumber())
-            {
-                setting.higherTextBox.setNumber(newSetting.higherTextBox.getNumber());
-                sendClientData(container, id, 5);
-            }
-
-            if (setting.inverted != newSetting.inverted)
-            {
-                setting.inverted = newSetting.inverted;
-                sendClientData(container, id, 6);
-            }
-        }
-    }
-
-    public void sendClientData(ContainerManager container, int id, int subId)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id, subId);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    @Override
     public boolean isVisible()
     {
         return getParent().getConnectionSet() == ConnectionSet.BUD;
@@ -473,47 +410,6 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        super.writeData(dw);
-
-        dw.writeBoolean(useId);
-        dw.writeBoolean(idInverted);
-
-        for (MetaSetting setting : settings)
-        {
-            for (boolean bit : setting.bits)
-            {
-                dw.writeBoolean(bit);
-            }
-            dw.writeData(setting.lowerTextBox.getNumber(), DataBitHelper.BLOCK_META);
-            dw.writeData(setting.higherTextBox.getNumber(), DataBitHelper.BLOCK_META);
-            dw.writeBoolean(setting.inverted);
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        super.readData(dr);
-
-        useId = dr.readBoolean();
-        idInverted = dr.readBoolean();
-
-
-        for (MetaSetting setting : settings)
-        {
-            for (int i = 0; i < setting.bits.length; i++)
-            {
-                setting.bits[i] = dr.readBoolean();
-            }
-            setting.lowerTextBox.setNumber(dr.readData(DataBitHelper.BLOCK_META));
-            setting.higherTextBox.setNumber(dr.readData(DataBitHelper.BLOCK_META));
-            setting.inverted = dr.readBoolean();
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         super.copyFrom(menu);
@@ -524,10 +420,7 @@ public class MenuUpdateBlock extends MenuItem
 
         for (int i = 0; i < settings.length; i++)
         {
-            for (int j = 0; j < settings[i].bits.length; j++)
-            {
-                settings[i].bits[j] = menuUpdate.settings[i].bits[j];
-            }
+            System.arraycopy(menuUpdate.settings[i].bits, 0, settings[i].bits, 0, settings[i].bits.length);
             settings[i].lowerTextBox.setNumber(menuUpdate.settings[i].lowerTextBox.getNumber());
             settings[i].higherTextBox.setNumber(menuUpdate.settings[i].higherTextBox.getNumber());
             settings[i].inverted = menuUpdate.settings[i].inverted;

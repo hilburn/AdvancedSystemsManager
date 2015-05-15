@@ -4,10 +4,8 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -29,6 +27,7 @@ public class MenuInterval extends Menu
     public static final String NBT_INTERVAL = "Interval";
     public TextBoxNumberList textBoxes;
     public TextBoxNumber interval;
+
     public MenuInterval(FlowComponent parent)
     {
         super(parent);
@@ -96,42 +95,9 @@ public class MenuInterval extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        int val = getInterval();
-        if (val == 0)
-        {
-            val = 1;
-        }
-
-        dw.writeData(val, DataBitHelper.MENU_INTERVAL);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setInterval(dr.readData(DataBitHelper.MENU_INTERVAL));
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         setInterval(((MenuInterval)menu).getInterval());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuInterval newDataInterval = (MenuInterval)newData;
-
-        if (newDataInterval.getInterval() != getInterval())
-        {
-            setInterval(newDataInterval.getInterval());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeData(getInterval(), DataBitHelper.MENU_INTERVAL);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

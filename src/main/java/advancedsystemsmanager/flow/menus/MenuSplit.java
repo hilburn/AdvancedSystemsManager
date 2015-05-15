@@ -8,7 +8,6 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -191,65 +190,12 @@ public class MenuSplit extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(useSplit());
-        if (useSplit())
-        {
-            dw.writeBoolean(useFair());
-            dw.writeBoolean(useEmpty());
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setSplit(dr.readBoolean());
-        if (useSplit())
-        {
-            setFair(dr.readBoolean());
-            setEmpty(dr.readBoolean());
-        } else
-        {
-            setFair(false);
-            setEmpty(false);
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuSplit menuSplit = (MenuSplit)menu;
         setSplit(menuSplit.useSplit());
         setFair(menuSplit.useFair());
         setEmpty(menuSplit.useEmpty());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuSplit newDataSplit = (MenuSplit)newData;
-
-        if (useSplit() != newDataSplit.useSplit())
-        {
-            setSplit(newDataSplit.useSplit());
-
-            sendClientData(container, 0);
-        }
-
-        if (useFair() != newDataSplit.useFair())
-        {
-            setFair(newDataSplit.useFair());
-
-            sendClientData(container, 1);
-        }
-
-        if (useEmpty() != newDataSplit.useEmpty())
-        {
-            setEmpty(newDataSplit.useEmpty());
-
-            sendClientData(container, 2);
-        }
     }
 
     public void sendClientData(ContainerManager container, int id)

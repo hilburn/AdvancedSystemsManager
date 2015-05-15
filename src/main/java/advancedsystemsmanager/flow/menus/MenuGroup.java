@@ -2,10 +2,8 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -22,6 +20,7 @@ public class MenuGroup extends Menu
     public static final int MENU_WIDTH = 120;
     public static final int TEXT_MARGIN_X = 5;
     public static final int TEXT_Y = 5;
+
     public MenuGroup(FlowComponent parent)
     {
         super(parent);
@@ -132,39 +131,18 @@ public class MenuGroup extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

@@ -15,6 +15,7 @@ public abstract class MenuCamouflageAdvanced extends Menu
     public static final int ERROR_SIZE_H = 10;
     public static final int ERROR_SRC_X = 44;
     public static final int ERROR_SRC_Y = 212;
+
     public MenuCamouflageAdvanced(FlowComponent parent)
     {
         super(parent);

@@ -5,8 +5,6 @@ import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
@@ -42,7 +40,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     public static int Z_LEVEL_OPEN_MAXIMUM = 5;
     private long lastTicks;
     private AnimationController controller;
-    private boolean doubleShiftFlag;
     private boolean useButtons = true;
     private boolean useInfo = true;
     private boolean useMouseOver = true;
@@ -242,10 +239,6 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         }
         CollisionHelper.disableInBoundsCheck = false;
 
-        if (!Keyboard.isKeyDown(54) && doubleShiftFlag)
-        {
-            doubleShiftFlag = false;
-        }
     }
 
     private String getInfo()
@@ -377,20 +370,9 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         } else
         {
 
-
-            if (k == 54 && !doubleShiftFlag)
+            if (selectedComponent instanceof IGuiElement)
             {
-                DataWriter dw = PacketHandler.getWriterForServerActionPacket();
-                PacketHandler.sendDataToServer(dw);
-                doubleShiftFlag = true;
-            }
-
-            for (FlowComponent itemBase : manager.getZLevelRenderingList())
-            {
-                if (itemBase.isVisible() && itemBase.onKeyStroke(this, c, k) && k != 1)
-                {
-                    return;
-                }
+                if (((IGuiElement<GuiManager>)selectedComponent).onKeyStroke(this, c, k) && k != 1) return;
             }
 
             boolean recognized = false;

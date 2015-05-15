@@ -5,17 +5,14 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -39,6 +36,7 @@ public abstract class MenuRedstoneSides extends Menu
     public CheckBoxList checkBoxList;
     public RadioButtonList radioButtonList;
     public int selection;
+
     public MenuRedstoneSides(FlowComponent parent)
     {
         super(parent);
@@ -137,53 +135,12 @@ public abstract class MenuRedstoneSides extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(useFirstOption());
-        dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setFirstOption(dr.readBoolean());
-        selection = dr.readData(DataBitHelper.MENU_REDSTONE_SETTING);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuRedstoneSides menuRedstone = (MenuRedstoneSides)menu;
 
         selection = menuRedstone.selection;
         setFirstOption(menuRedstone.useFirstOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuRedstoneSides newDataRedstone = (MenuRedstoneSides)newData;
-
-        if (useFirstOption() != newDataRedstone.useFirstOption())
-        {
-            setFirstOption(newDataRedstone.useFirstOption());
-
-            sendClientData(container, true);
-        }
-
-        if (selection != newDataRedstone.selection)
-        {
-            selection = newDataRedstone.selection;
-
-            sendClientData(container, false);
-        }
-    }
-
-    public void sendClientData(ContainerManager container, boolean syncRequire)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, syncRequire);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     @Override

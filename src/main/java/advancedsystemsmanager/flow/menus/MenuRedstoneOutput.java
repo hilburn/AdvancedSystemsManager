@@ -6,16 +6,13 @@ import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuRedstoneOutput extends Menu
@@ -33,6 +30,7 @@ public class MenuRedstoneOutput extends Menu
     public TextBoxNumberList textBoxes;
     public TextBoxNumber textBox;
     public RadioButtonList radioButtons;
+
     public MenuRedstoneOutput(FlowComponent parent)
     {
         super(parent);
@@ -153,52 +151,12 @@ public class MenuRedstoneOutput extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(textBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
-        dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.MENU_REDSTONE_OUTPUT_TYPE);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        textBox.setNumber(dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG));
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.MENU_REDSTONE_OUTPUT_TYPE));
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuRedstoneOutput menuOutput = (MenuRedstoneOutput)menu;
 
         textBox.setNumber(menuOutput.textBox.getNumber());
         radioButtons.setSelectedOption(menuOutput.radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuRedstoneOutput newDataOutput = (MenuRedstoneOutput)newData;
-
-        if (textBox.getNumber() != newDataOutput.textBox.getNumber())
-        {
-            textBox.setNumber(newDataOutput.textBox.getNumber());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(true); //header
-            dw.writeData(textBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        if (radioButtons.getSelectedOption() != newDataOutput.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataOutput.radioButtons.getSelectedOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(false); //header
-            dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.MENU_REDSTONE_OUTPUT_TYPE);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

@@ -5,10 +5,8 @@ import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -32,6 +30,7 @@ public class MenuContainerTypes extends Menu
     public List<ISystemType> types;
     public boolean[] checked;
     public CheckBoxList checkBoxes;
+
     public MenuContainerTypes(FlowComponent parent)
     {
         super(parent);
@@ -122,47 +121,11 @@ public class MenuContainerTypes extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        for (boolean b : checked)
-        {
-            dw.writeBoolean(b);
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        for (int i = 0; i < checked.length; i++)
-        {
-            checked[i] = dr.readBoolean();
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuContainerTypes menuTypes = (MenuContainerTypes)menu;
 
         System.arraycopy(menuTypes.checked, 0, checked, 0, checked.length);
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuContainerTypes newDataTypes = (MenuContainerTypes)newData;
-
-        for (int i = 0; i < checked.length; i++)
-        {
-            if (newDataTypes.checked[i] != checked[i])
-            {
-                checked[i] = newDataTypes.checked[i];
-                DataWriter dw = getWriterForClientComponentPacket(container);
-                dw.writeData(i, DataBitHelper.CONTAINER_TYPE);
-                dw.writeBoolean(checked[i]);
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
-        }
     }
 
     @Override

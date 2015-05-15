@@ -3,11 +3,9 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.reference.Names;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MenuRFStorage extends MenuContainer

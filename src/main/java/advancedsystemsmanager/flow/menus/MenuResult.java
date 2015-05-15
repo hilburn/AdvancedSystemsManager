@@ -4,10 +4,8 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -15,7 +13,6 @@ import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuResult extends Menu
@@ -126,36 +123,9 @@ public class MenuResult extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        writeData(dw, radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        //readTheData(dr);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         radioButtons.setSelectedOption(((MenuResult)menu).radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuResult newDataResult = ((MenuResult)newData);
-
-        if (radioButtons.getSelectedOption() != newDataResult.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataResult.radioButtons.getSelectedOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            writeData(dw, radioButtons.getSelectedOption());
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

@@ -3,9 +3,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -80,36 +78,9 @@ public class MenuCraftingPriority extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(radioButtons.getSelectedOption() == 0);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        radioButtons.setSelectedOption(dr.readBoolean() ? 0 : 1);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         radioButtons.setSelectedOption(((MenuCraftingPriority)menu).radioButtons.getSelectedOption());
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuCraftingPriority newDataPriority = ((MenuCraftingPriority)newData);
-
-        if (radioButtons.getSelectedOption() != newDataPriority.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataPriority.radioButtons.getSelectedOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(radioButtons.getSelectedOption() == 0);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

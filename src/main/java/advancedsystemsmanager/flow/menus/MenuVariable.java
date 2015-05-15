@@ -3,17 +3,14 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -33,6 +30,7 @@ public class MenuVariable extends Menu
     public int selectedVariable = 0;
     public CheckBoxList checkBoxes;
     public boolean executed;
+
     public MenuVariable(FlowComponent parent)
     {
         super(parent);
@@ -210,66 +208,11 @@ public class MenuVariable extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeData(selectedVariable, DataBitHelper.VARIABLE_TYPE);
-        dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.CONTAINER_MODE);
-        dw.writeBoolean(executed);
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        setSelectedVariable(dr.readData(DataBitHelper.VARIABLE_TYPE));
-        radioButtons.setSelectedOption(dr.readData(DataBitHelper.CONTAINER_MODE));
-        executed = dr.readBoolean();
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         setSelectedVariable(((MenuVariable)menu).selectedVariable);
         radioButtons.setSelectedOption(((MenuVariable)menu).radioButtons.getSelectedOption());
         executed = ((MenuVariable)menu).executed;
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuVariable newDataMode = (MenuVariable)newData;
-
-        if (selectedVariable != newDataMode.selectedVariable)
-        {
-            setSelectedVariable(newDataMode.selectedVariable);
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(true); //var  || mode
-            dw.writeBoolean(true); //var
-            dw.writeData(selectedVariable, DataBitHelper.VARIABLE_TYPE);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        if (radioButtons.getRawSelectedOption() != newDataMode.radioButtons.getRawSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataMode.radioButtons.getRawSelectedOption());
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(true); //var  || mode
-            dw.writeBoolean(false); //mode
-            dw.writeData(radioButtons.getRawSelectedOption(), DataBitHelper.CONTAINER_MODE);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-
-        if (executed != newDataMode.getVariable().hasBeenExecuted())
-        {
-            executed = newDataMode.getVariable().hasBeenExecuted();
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeBoolean(false); //executed
-            dw.writeBoolean(executed);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     public Variable getVariable()

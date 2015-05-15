@@ -15,6 +15,7 @@ public class MenuContainerScrap extends MenuContainer
     public static final int MENU_WIDTH = 120;
     public static final int TEXT_MARGIN_X = 5;
     public static final int TEXT_Y = 25;
+
     public MenuContainerScrap(FlowComponent parent)
     {
         super(parent, SystemTypeRegistry.INVENTORY);

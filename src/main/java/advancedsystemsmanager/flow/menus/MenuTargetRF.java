@@ -3,8 +3,6 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuTargetRF extends MenuTarget
@@ -37,24 +35,6 @@ public class MenuTargetRF extends MenuTarget
             {
             }
         };
-    }
-
-    @Override
-    public void writeAdvancedSetting(DataWriter dataWriter, int i)
-    {
-
-    }
-
-    @Override
-    public void readAdvancedSetting(DataReader dataReader, int i)
-    {
-
-    }
-
-    @Override
-    public void resetAdvancedSetting(int i)
-    {
-
     }
 
     @Override

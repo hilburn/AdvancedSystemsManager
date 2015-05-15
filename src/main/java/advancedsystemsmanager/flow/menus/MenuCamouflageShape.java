@@ -5,16 +5,13 @@ import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -227,39 +224,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(inUse);
-        if (inUse)
-        {
-            dw.writeBoolean(useCollision);
-            dw.writeBoolean(fullCollision);
-            for (int i = 0; i < 6; i++)
-            {
-                dw.writeData(textBoxes.getTextBox(i).getNumber(), DataBitHelper.CAMOUFLAGE_BOUNDS);
-            }
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        inUse = dr.readBoolean();
-        if (inUse)
-        {
-            useCollision = dr.readBoolean();
-            fullCollision = dr.readBoolean();
-            for (int i = 0; i < 6; i++)
-            {
-                textBoxes.getTextBox(i).setNumber(dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS));
-            }
-        } else
-        {
-            loadDefault();
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuCamouflageShape menuShape = (MenuCamouflageShape)menu;
@@ -275,44 +239,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         } else
         {
             loadDefault();
-        }
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuCamouflageShape newDataShape = (MenuCamouflageShape)newData;
-        if (inUse != newDataShape.inUse || useCollision != newDataShape.useCollision || fullCollision != newDataShape.fullCollision)
-        {
-            inUse = newDataShape.inUse;
-
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeData(0, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
-            dw.writeBoolean(inUse);
-            if (!inUse)
-            {
-                loadDefault();
-            } else
-            {
-                useCollision = newDataShape.useCollision;
-                fullCollision = newDataShape.fullCollision;
-                dw.writeBoolean(useCollision);
-                dw.writeBoolean(fullCollision);
-            }
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (textBoxes.getTextBox(i).getNumber() != newDataShape.textBoxes.getTextBox(i).getNumber())
-            {
-                textBoxes.getTextBox(i).setNumber(newDataShape.textBoxes.getTextBox(i).getNumber());
-
-                DataWriter dw = getWriterForClientComponentPacket(container);
-                dw.writeData(i + 1, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
-                dw.writeData(textBoxes.getTextBox(i).getNumber(), DataBitHelper.CAMOUFLAGE_BOUNDS);
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
         }
     }
 

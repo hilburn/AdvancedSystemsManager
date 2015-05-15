@@ -7,13 +7,11 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -214,46 +212,6 @@ public abstract class MenuTarget extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        for (int i = 0; i < directions.length; i++)
-        {
-            dw.writeBoolean(isActive(i));
-            dw.writeBoolean(useAdvancedSetting(i));
-            if (useAdvancedSetting(i))
-            {
-                writeAdvancedSetting(dw, i);
-            }
-
-        }
-    }
-
-    public abstract void writeAdvancedSetting(DataWriter dw, int i);
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        for (int i = 0; i < directions.length; i++)
-        {
-
-            activatedDirections[i] = dr.readBoolean();
-            useRangeForDirections[i] = dr.readBoolean();
-            if (useAdvancedSetting(i))
-            {
-                readAdvancedSetting(dr, i);
-            } else
-            {
-                resetAdvancedSetting(i);
-            }
-
-        }
-    }
-
-    public abstract void readAdvancedSetting(DataReader dr, int i);
-
-    public abstract void resetAdvancedSetting(int i);
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuTarget menuTarget = (MenuTarget)menu;
@@ -267,31 +225,6 @@ public abstract class MenuTarget extends Menu
     }
 
     public abstract void copyAdvancedSetting(Menu menuTarget, int i);
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuTarget newDataTarget = (MenuTarget)newData;
-
-        for (int i = 0; i < directions.length; i++)
-        {
-            if (activatedDirections[i] != newDataTarget.activatedDirections[i])
-            {
-                activatedDirections[i] = newDataTarget.activatedDirections[i];
-
-                writeUpdatedData(container, i, DataTypeHeader.ACTIVATE, activatedDirections[i] ? 1 : 0);
-            }
-
-            if (useRangeForDirections[i] != newDataTarget.useRangeForDirections[i])
-            {
-                useRangeForDirections[i] = newDataTarget.useRangeForDirections[i];
-
-                writeUpdatedData(container, i, DataTypeHeader.USE_ADVANCED_SETTING, useRangeForDirections[i] ? 1 : 0);
-            }
-
-            refreshAdvancedComponentData(container, newData, i);
-        }
-    }
 
     public abstract void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i);
 

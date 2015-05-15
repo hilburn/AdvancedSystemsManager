@@ -2,13 +2,10 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.api.network.INetworkSync;
-import advancedsystemsmanager.api.network.INetworkWriter;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.api.network.INetworkReader;
 import advancedsystemsmanager.network.PacketHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -50,10 +47,6 @@ public abstract class Menu implements INetworkSync
         return false;
     }
 
-    public abstract void writeData(DataWriter dw);
-
-    public abstract void readData(DataReader dr);
-
     public DataWriter getWriterForServerComponentPacket()
     {
         return PacketHandler.getWriterForServerComponentPacket(getParent(), this);
@@ -70,8 +63,6 @@ public abstract class Menu implements INetworkSync
     }
 
     public abstract void copyFrom(Menu menu);
-
-    public abstract void refreshData(ContainerManager container, Menu newData);
 
     public int getId()
     {

@@ -6,16 +6,12 @@ import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.nio.ByteBuffer;
 
 public class MenuPulse extends Menu
 {
@@ -208,30 +204,6 @@ public class MenuPulse extends Menu
     }
 
     @Override
-    public void writeData(DataWriter dw)
-    {
-        dw.writeBoolean(usePulse);
-        if (usePulse)
-        {
-            dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.PULSE_TYPES);
-            dw.writeData(secondsTextBox.getNumber(), DataBitHelper.PULSE_SECONDS);
-            dw.writeData(ticksTextBox.getNumber(), DataBitHelper.PULSE_TICKS);
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        usePulse = dr.readBoolean();
-        if (usePulse)
-        {
-            radioButtons.setSelectedOption(dr.readData(DataBitHelper.PULSE_TYPES));
-            secondsTextBox.setNumber(dr.readData(DataBitHelper.PULSE_SECONDS));
-            ticksTextBox.setNumber(dr.readData(DataBitHelper.PULSE_TICKS));
-        }
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuPulse menuPulse = (MenuPulse)menu;
@@ -244,46 +216,6 @@ public class MenuPulse extends Menu
         } else
         {
             setDefault();
-        }
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuPulse newDataPulse = (MenuPulse)newData;
-
-        if (usePulse != newDataPulse.usePulse)
-        {
-            usePulse = newDataPulse.usePulse;
-
-            sendClientPacket(container, ComponentSyncType.CHECK_BOX);
-
-            if (!usePulse)
-            {
-                setDefault();
-                return;
-            }
-        }
-
-        if (radioButtons.getSelectedOption() != newDataPulse.radioButtons.getSelectedOption())
-        {
-            radioButtons.setSelectedOption(newDataPulse.radioButtons.getSelectedOption());
-
-            sendClientPacket(container, ComponentSyncType.RADIO_BUTTON);
-        }
-
-        if (secondsTextBox.getNumber() != newDataPulse.secondsTextBox.getNumber())
-        {
-            secondsTextBox.setNumber(newDataPulse.secondsTextBox.getNumber());
-
-            sendClientPacket(container, ComponentSyncType.TEXT_BOX_1);
-        }
-
-        if (ticksTextBox.getNumber() != newDataPulse.ticksTextBox.getNumber())
-        {
-            ticksTextBox.setNumber(newDataPulse.ticksTextBox.getNumber());
-
-            sendClientPacket(container, ComponentSyncType.TEXT_BOX_2);
         }
     }
 

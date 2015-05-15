@@ -212,7 +212,7 @@ public class PacketHandler
         }
         for (Menu menu : flowComponent.getMenus())
         {
-            menu.writeData(dw);
+            //menu.writeData(dw);
         }
 
         for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)

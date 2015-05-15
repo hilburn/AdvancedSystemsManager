@@ -4,18 +4,14 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -188,27 +184,6 @@ public class MenuSignText extends Menu
         update(IDLE_TIME);
     }
 
-    @Override
-    public void writeData(DataWriter dw)
-    {
-        for (int i = 0; i < textBoxes.length; i++)
-        {
-            dw.writeBoolean(update[i]);
-            dw.writeString(textBoxes[i].getText(), DataBitHelper.LINE_LENGTH);
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr)
-    {
-        for (int i = 0; i < textBoxes.length; i++)
-        {
-            update[i] = dr.readBoolean();
-            setTextPostSync(i, dr.readString(DataBitHelper.LINE_LENGTH));
-            textBoxes[i].resetCursor();
-        }
-    }
-
     public void setTextPostSync(int id, String str)
     {
         if (str == null)
@@ -227,34 +202,6 @@ public class MenuSignText extends Menu
         {
             textBoxes[i].setText(textMenu.textBoxes[i].getText());
             update[i] = textMenu.update[i];
-        }
-    }
-
-    @Override
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuSignText newDataText = (MenuSignText)newData;
-        for (int i = 0; i < textBoxes.length; i++)
-        {
-            if (!newDataText.textBoxes[i].getText().equals(textBoxes[i].getText()))
-            {
-                textBoxes[i].setText(newDataText.textBoxes[i].getText());
-                DataWriter dw = getWriterForClientComponentPacket(container);
-                dw.writeData(i, DataBitHelper.LINE_ID);
-                dw.writeBoolean(true);
-                dw.writeString(textBoxes[i].getText(), DataBitHelper.LINE_LENGTH);
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
-
-            if (newDataText.update[i] != update[i])
-            {
-                update[i] = newDataText.update[i];
-                DataWriter dw = getWriterForClientComponentPacket(container);
-                dw.writeData(i, DataBitHelper.LINE_ID);
-                dw.writeBoolean(false);
-                dw.writeBoolean(update[i]);
-                PacketHandler.sendDataToListeningClients(container, dw);
-            }
         }
     }
 

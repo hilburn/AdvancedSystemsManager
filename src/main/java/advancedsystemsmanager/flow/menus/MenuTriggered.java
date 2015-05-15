@@ -2,12 +2,10 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataReader;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.util.StevesHooks;
 import cpw.mods.fml.relauncher.Side;
@@ -78,18 +76,6 @@ public abstract class MenuTriggered extends Menu
     public void copyFrom(Menu menu)
     {
         this.setDelay(((MenuTriggered)menu).getDelay());
-    }
-
-    public void refreshData(ContainerManager container, Menu newData)
-    {
-        MenuTriggered newDataTriggered = (MenuTriggered)newData;
-        if (newDataTriggered.getDelay() != this.getDelay())
-        {
-            copyFrom(newData);
-            DataWriter dw = this.getWriterForClientComponentPacket(container);
-            dw.writeData(getDelay(), DataBitHelper.MENU_INTERVAL);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)

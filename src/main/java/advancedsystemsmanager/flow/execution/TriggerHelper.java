@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.execution;
 
 
-import advancedsystemsmanager.api.tileentities.IRedstoneNode;
 import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.api.tileentities.IRedstoneNode;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuContainer;
