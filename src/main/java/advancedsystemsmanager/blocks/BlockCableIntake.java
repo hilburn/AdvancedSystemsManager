@@ -3,7 +3,7 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
-import advancedsystemsmanager.tileentities.TileEntityIntake;
+import advancedsystemsmanager.tileentities.TileEntityValve;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -13,13 +13,13 @@ public class BlockCableIntake extends BlockCableDirectionAdvanced
 
     public BlockCableIntake()
     {
-        super(Names.CABLE_INTAKE);
+        super(Names.CABLE_VALVE);
     }
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta)
     {
-        return new TileEntityIntake();
+        return new TileEntityValve();
     }
 
 
@@ -38,7 +38,7 @@ public class BlockCableIntake extends BlockCableDirectionAdvanced
     @Override
     protected Class<? extends TileEntityClusterElement> getTeClass()
     {
-        return TileEntityIntake.class;
+        return TileEntityValve.class;
     }
 
 }

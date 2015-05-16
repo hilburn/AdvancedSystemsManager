@@ -358,7 +358,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 {
                     visited.add(target);
 
-                    if ((Settings.isLimitless(this) || element.depth < MAX_CABLE_LENGTH) && BlockRegistry.blockCable.isCable(worldObj.getBlock(target.x, target.y, target.z), worldObj.getBlockMetadata(target.x, target.y, target.z)))
+                    if ((Settings.isLimitless(this) || element.depth < MAX_CABLE_LENGTH) && BlockRegistry.cable.isCable(worldObj.getBlock(target.x, target.y, target.z), worldObj.getBlockMetadata(target.x, target.y, target.z)))
                     {
                         queue.add(target);
                     }

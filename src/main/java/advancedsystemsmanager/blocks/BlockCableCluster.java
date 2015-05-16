@@ -93,7 +93,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
-            BlockRegistry.blockCable.updateInventories(world, x, y, z);
+            BlockRegistry.cable.updateInventories(world, x, y, z);
         }
     }
 
@@ -109,7 +109,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
 
         if (isAdvanced(world.getBlockMetadata(x, y, z)))
         {
-            BlockRegistry.blockCable.updateInventories(world, x, y, z);
+            BlockRegistry.cable.updateInventories(world, x, y, z);
         }
     }
 
@@ -226,7 +226,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         if (te != null && te instanceof TileEntityCluster)
         {
             TileEntityCluster cluster = (TileEntityCluster)te;
-            ItemStack itemStack = new ItemStack(BlockRegistry.blockCableCluster, 1, damageDropped(meta));
+            ItemStack itemStack = new ItemStack(BlockRegistry.cableCluster, 1, damageDropped(meta));
             NBTTagCompound compound = new NBTTagCompound();
             itemStack.setTagCompound(compound);
             NBTTagCompound cable = new NBTTagCompound();
@@ -279,6 +279,6 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables)
     {
-        BlockRegistry.blockCable.getConnectedCables(world, coordinate, visited, cables);
+        BlockRegistry.cable.getConnectedCables(world, coordinate, visited, cables);
     }
 }

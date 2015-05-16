@@ -217,9 +217,9 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
 
     private void notifyUpdate(int x, int y, int z, boolean spread)
     {
-        if (worldObj.getBlock(x, y, z) != BlockRegistry.blockCable && (x != xCoord || y != yCoord || z != zCoord))
+        if (worldObj.getBlock(x, y, z) != BlockRegistry.cable && (x != xCoord || y != yCoord || z != zCoord))
         {
-            worldObj.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.blockCableOutput);
+            worldObj.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.cableOutput);
 
             if (spread)
             {

@@ -89,10 +89,8 @@ public abstract class MenuStuff<Type> extends Menu
             @Override
             public void updateSelectedOption(int selectedOption)
             {
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(false); //no specific item
-                writeRadioButtonRefreshState(dw, selectedOption == 0);
-                PacketHandler.sendDataToServer(dw);
+                this.selectedOption = selectedOption;
+                needSync = true;
             }
         };
 
@@ -118,12 +116,12 @@ public abstract class MenuStuff<Type> extends Menu
                 @Override
                 public void onUpdate()
                 {
-                    writeServerData(DataTypeHeader.USE_AMOUNT);
+                    needSync = true;
                 }
             });
         }
 
-        final MenuStuff self = this;
+        //final MenuStuff self = this;
         scrollControllerSearch = new ScrollController(true)
         {
             @Override
@@ -134,16 +132,16 @@ public abstract class MenuStuff<Type> extends Menu
                     return new ArrayList();
                 }
 
-                return self.updateSearch(search, all);
+                return MenuStuff.this.updateSearch(search, all);
             }
 
             @Override
             public void onClick(Object o, int mX, int mY, int button)
             {
                 selectedSetting.setContent(o);
-                writeServerData(DataTypeHeader.SET_ITEM);
                 selectedSetting = null;
                 updateScrolling();
+                needSync = true;
             }
 
             @Override
@@ -249,52 +247,6 @@ public abstract class MenuStuff<Type> extends Menu
     public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
     {
         dw.writeBoolean(value);
-    }
-
-    public void writeServerData(DataTypeHeader header)
-    {
-        writeServerData(header, selectedSetting);
-    }
-
-    public void writeServerData(DataTypeHeader header, Setting setting)
-    {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, header, setting);
-        PacketHandler.sendDataToServer(dw);
-    }
-
-    public void writeData(DataWriter dw, DataTypeHeader header, Setting setting)
-    {
-        dw.writeBoolean(true); //specific setting is being used
-        dw.writeData(setting.getId(), DataBitHelper.MENU_ITEM_SETTING_ID);
-        dw.writeData(header.id, DataBitHelper.MENU_ITEM_TYPE_HEADER);
-
-        switch (header)
-        {
-            case CLEAR:
-                break;
-            case USE_AMOUNT:
-                if (setting.isAmountSpecific())
-                {
-                    dw.writeBoolean(setting.isLimitedByAmount());
-                }
-                break;
-            case AMOUNT:
-                if (setting.isAmountSpecific())
-                {
-                    dw.writeData(setting.getAmount(), getAmountBitLength());
-                }
-                break;
-            default:
-                writeSpecificHeaderData(dw, header, setting);
-
-        }
-
-        //if the client send data to the server, do the update right away on that client
-        if (getParent().getManager().getWorldObj().isRemote)
-        {
-            onSettingContentChange();
-        }
     }
 
     public abstract DataBitHelper getAmountBitLength();
@@ -406,7 +358,7 @@ public abstract class MenuStuff<Type> extends Menu
             if (inDeleteBounds(mX, mY))
             {
                 selectedSetting.delete();
-                writeServerData(DataTypeHeader.CLEAR);
+                needSync = true;
                 selectedSetting = null;
                 getScrollingList().updateScrolling();
             }
@@ -471,13 +423,6 @@ public abstract class MenuStuff<Type> extends Menu
                 }
             }
         }
-    }
-
-    public void writeClientData(ContainerManager container, DataTypeHeader header, Setting setting)
-    {
-        DataWriter dw = getWriterForClientComponentPacket(container);
-        writeData(dw, header, setting);
-        PacketHandler.sendDataToListeningClients(container, dw);
     }
 
     @Override

@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataWriter;
@@ -15,7 +14,6 @@ import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
-
 
 public class MenuSplit extends Menu
 {

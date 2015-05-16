@@ -10,7 +10,7 @@ public class Names
     public static final String CABLE_OUTPUT = CABLE + "_output";
     public static final String CABLE_INPUT = CABLE + "_input";
     public static final String CABLE_CREATIVE = CABLE + "_creative";
-    public static final String CABLE_INTAKE = CABLE + "_intake";
+    public static final String CABLE_VALVE = CABLE + "_intake";
     public static final String CABLE_BUD = CABLE + "_bud";
     public static final String CABLE_BREAKER = CABLE + "_breaker";
     public static final String CABLE_CLUSTER = CABLE + "_cluster";
@@ -40,10 +40,10 @@ public class Names
     public static final String CONTAINER_VARIABLE = GUI_PREFIX + "ContainerVariable";
     public static final String FOR_EACH_LOOP = GUI_PREFIX + "ForEachLoop";
     public static final String AUTO_CRAFTER = GUI_PREFIX + "AutoCrafter";
-    public static final String GROUP_SHORT = GUI_PREFIX + "GroupShort";
-    public static final String NODE_SHORT = GUI_PREFIX + "NodeShort";
-    public static final String CAMOUFLAGE_SHORT = GUI_PREFIX + "CamouflageShort";
-    public static final String SIGN_SHORT = GUI_PREFIX + "SignShort";
+    public static final String GROUP = GUI_PREFIX + "Group";
+    public static final String NODE = GUI_PREFIX + "Node";
+    public static final String CAMOUFLAGE = GUI_PREFIX + "Camouflage";
+    public static final String SIGN = GUI_PREFIX + "Sign";
     public static final String RF_INPUT = GUI_PREFIX + "RfInput";
     public static final String RF_OUTPUT = GUI_PREFIX + "RfOutput";
     public static final String RF_CONDITION = GUI_PREFIX + "RfCondition";

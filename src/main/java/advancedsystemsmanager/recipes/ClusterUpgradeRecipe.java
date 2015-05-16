@@ -19,19 +19,19 @@ public class ClusterUpgradeRecipe extends ShapelessRecipes
 
     static
     {
-        RESULT = new ItemStack(BlockRegistry.blockCableCluster, 1, 8);
+        RESULT = new ItemStack(BlockRegistry.cableCluster, 1, 8);
         RECIPE = new ArrayList<ItemStack>();
-        RECIPE.add(new ItemStack(BlockRegistry.blockCableCluster, 1, 0));
+        RECIPE.add(new ItemStack(BlockRegistry.cableCluster, 1, 0));
         for (int i = 0; i < 8; i++)
         {
-            RECIPE.add(new ItemStack(BlockRegistry.blockCable));
+            RECIPE.add(new ItemStack(BlockRegistry.cable));
         }
     }
 
     public ClusterUpgradeRecipe()
     {
         super(RESULT, RECIPE);
-        RecipeSorter.register("sfm:clusterupgrade", ClusterUpgradeRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("asm:cluster", ClusterUpgradeRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ClusterUpgradeRecipe extends ShapelessRecipes
         {
             ItemStack itemStack = inv.getStackInSlot(i);
 
-            if (itemStack != null && itemStack.getItem() != null && Block.getBlockFromItem(itemStack.getItem()) == BlockRegistry.blockCableCluster)
+            if (itemStack != null && itemStack.getItem() != null && Block.getBlockFromItem(itemStack.getItem()) == BlockRegistry.cableCluster)
             {
                 ItemStack copy = itemStack.copy();
                 copy.setItemDamage(8);

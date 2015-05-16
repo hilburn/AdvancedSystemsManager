@@ -24,6 +24,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -227,7 +228,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 component.connections.put((int)connectionTag.getByte(NBT_CONNECTION_POS), connection);
             }
 
-            if (component.type == CommandRegistry.TRIGGER)
+            if (nbtTagCompound.hasKey(NBT_INTERVAL, Constants.NBT.TAG_SHORT))
             {
                 component.currentInterval = nbtTagCompound.getShort(NBT_INTERVAL);
             }
@@ -1421,6 +1422,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         x = newData.x;
         y = newData.y;
+        newData.linkParentAfterLoad();
         setParent(newData.parent);
         connections = newData.connections;
         name = newData.name;
@@ -1495,7 +1497,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         nbtTagCompound.setTag(NBT_CONNECTION, getConnectionNBT());
 
-        if (type == CommandRegistry.TRIGGER)
+        if (this.type.getCommandType() == ICommand.CommandType.TRIGGER)
         {
             nbtTagCompound.setShort(NBT_INTERVAL, (short)currentInterval);
         }

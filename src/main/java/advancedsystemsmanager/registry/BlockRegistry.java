@@ -1,10 +1,7 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.blocks.*;
-import advancedsystemsmanager.items.blocks.ItemAdvanced;
-import advancedsystemsmanager.items.blocks.ItemCamouflage;
-import advancedsystemsmanager.items.blocks.ItemCluster;
-import advancedsystemsmanager.items.blocks.ItemManager;
+import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
 import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
@@ -28,51 +25,51 @@ public class BlockRegistry
     public static BlockManager blockManager;
 
     @Register(name = Names.CABLE)
-    public static BlockCable blockCable;
+    public static BlockCable cable;
 
     //    Cluster Elements
     @Register(tileEntity = TileEntityCluster.class, itemBlock = ItemCluster.class, name = Names.CABLE_CLUSTER)
-    public static BlockCableCluster blockCableCluster;
+    public static BlockCableCluster cableCluster;
     @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_RELAY)
-    public static BlockCableRelay blockCableRelay;
-    @Register(tileEntity = TileEntityEmitter.class, name = Names.CABLE_OUTPUT)
-    public static BlockCableOutput blockCableOutput;
-    @Register(tileEntity = TileEntityReceiver.class, name = Names.CABLE_INPUT)
-    public static BlockCableInput blockCableInput;
-    @Register(tileEntity = TileEntityCreative.class, name = Names.CABLE_CREATIVE)
-    public static BlockCableCreative blockCableCreative;
-    @Register(tileEntity = TileEntityIntake.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_INTAKE)
-    public static BlockCableIntake blockCableIntake;
-    @Register(tileEntity = TileEntityBUD.class, name = Names.CABLE_BUD)
-    public static BlockCableBUD blockCableBUD;
-    @Register(tileEntity = TileEntityBreaker.class, name = Names.CABLE_BREAKER)
-    public static BlockCableBreaker blockCableBreaker;
+    public static BlockCableRelay cableRelay;
+    @Register(tileEntity = TileEntityEmitter.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_OUTPUT)
+    public static BlockCableOutput cableOutput;
+    @Register(tileEntity = TileEntityReceiver.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_INPUT)
+    public static BlockCableInput cableInput;
+    @Register(tileEntity = TileEntityCreative.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_CREATIVE)
+    public static BlockCableCreative cableCreative;
+    @Register(tileEntity = TileEntityValve.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_VALVE)
+    public static BlockCableIntake cableValve;
+    @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BUD)
+    public static BlockCableBUD cableBUD;
+    @Register(tileEntity = TileEntityBreaker.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BREAKER)
+    public static BlockCableBreaker cableBreaker;
     @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.CABLE_CAMO, SBRH = RenderCamouflage.class)
-    public static BlockCableCamouflages blockCableCamouflage;
-    @Register(tileEntity = TileEntitySignUpdater.class, name = Names.CABLE_SIGN)
-    public static BlockCableSign blockCableSign;
+    public static BlockCableCamouflages cableCamouflage;
+    @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_SIGN)
+    public static BlockCableSign cableSign;
 
     //    Mod Cluster Elements
-    @Register(tileEntity = TileEntityAENode.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
+    @Register(tileEntity = TileEntityAENode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
     public static BlockCableAE cableAENode;
-    @Register(tileEntity = TileEntityRFNode.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
+    @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
     public static BlockCableRF cableRFNode;
 
     public static void registerClusters()
     {
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, blockCableRelay, new ItemStack(blockCableRelay, 1, 8)));
-        ClusterRegistry.register(TileEntityEmitter.class, blockCableOutput);
-        ClusterRegistry.register(TileEntityReceiver.class, blockCableInput);
-        ClusterRegistry.register(TileEntityCreative.class, blockCableCreative);
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityIntake.class, blockCableIntake, new ItemStack(blockCableIntake, 1, 8)));
-        ClusterRegistry.register(TileEntityBUD.class, blockCableBUD);
-        ClusterRegistry.register(TileEntityBreaker.class, blockCableBreaker);
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 1)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, blockCableCamouflage, new ItemStack(blockCableCamouflage, 1, 2)));
-        ClusterRegistry.register(TileEntitySignUpdater.class, blockCableSign);
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 8)));
+        ClusterRegistry.register(TileEntityEmitter.class, cableOutput);
+        ClusterRegistry.register(TileEntityReceiver.class, cableInput);
+        ClusterRegistry.register(TileEntityCreative.class, cableCreative);
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 8)));
+        ClusterRegistry.register(TileEntityBUD.class, cableBUD);
+        ClusterRegistry.register(TileEntityBreaker.class, cableBreaker);
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 1)));
+        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 2)));
+        ClusterRegistry.register(TileEntitySignUpdater.class, cableSign);
     }
 
     public static void registerRecipes()
@@ -87,7 +84,7 @@ public class BlockRegistry
                 'S', Blocks.stone
         );
 
-        GameRegistry.addRecipe(new ItemStack(blockCable, 8),
+        GameRegistry.addRecipe(new ItemStack(cable, 8),
                 "GPG",
                 "IRI",
                 "GPG",
@@ -97,93 +94,93 @@ public class BlockRegistry
                 'P', Blocks.light_weighted_pressure_plate
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableRelay, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableRelay, 1),
+                cable,
                 Blocks.hopper
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableOutput, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableOutput, 1),
+                cable,
                 Items.redstone,
                 Items.redstone,
                 Items.redstone
         );
 
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableInput, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableInput, 1),
+                cable,
                 Items.redstone
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableRelay, 1, 8),
-                new ItemStack(blockCableRelay, 1, 0),
+        GameRegistry.addShapelessRecipe(new ItemStack(cableRelay, 1, 8),
+                new ItemStack(cableRelay, 1, 0),
                 new ItemStack(Items.dye, 1, 4)
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableIntake, 1, 0),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableValve, 1, 0),
+                cable,
                 Blocks.hopper,
                 Blocks.hopper,
                 Blocks.dropper
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableBUD, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableBUD, 1),
+                cable,
                 Items.quartz,
                 Items.quartz,
                 Items.quartz
         );
 
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableBreaker, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableBreaker, 1),
+                cable,
                 Items.iron_pickaxe,
                 Blocks.dispenser
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableIntake, 1, 8),
-                new ItemStack(blockCableIntake, 1, 0),
+        GameRegistry.addShapelessRecipe(new ItemStack(cableValve, 1, 8),
+                new ItemStack(cableValve, 1, 0),
                 Items.gold_ingot
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableCluster, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableCluster, 1),
+                cable,
                 Items.ender_pearl,
                 Items.ender_pearl,
                 Items.ender_pearl
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableCamouflage, 1, 0),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 0),
+                cable,
                 new ItemStack(Blocks.wool, 1, 14),
                 new ItemStack(Blocks.wool, 1, 13),
                 new ItemStack(Blocks.wool, 1, 11)
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableCamouflage, 1, 1),
-                new ItemStack(blockCableCamouflage, 1, 0),
-                new ItemStack(blockCableCamouflage, 1, 0),
+        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 1),
+                new ItemStack(cableCamouflage, 1, 0),
+                new ItemStack(cableCamouflage, 1, 0),
                 Blocks.iron_bars,
                 Blocks.iron_bars
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableCamouflage, 1, 2),
-                new ItemStack(blockCableCamouflage, 1, 1),
+        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 2),
+                new ItemStack(cableCamouflage, 1, 1),
                 Blocks.sticky_piston
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(blockCableSign, 1),
-                blockCable,
+        GameRegistry.addShapelessRecipe(new ItemStack(cableSign, 1),
+                cable,
                 new ItemStack(Items.dye, 0),
                 Items.feather
         );
 
-        GameRegistry.addRecipe(new ItemStack(cableRFNode), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', new ItemStack(blockCable));
+        GameRegistry.addRecipe(new ItemStack(cableRFNode), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', new ItemStack(cable));
         if (cableAENode != null)
         {
             ItemStack aeInterface = new ItemStack(GameRegistry.findBlock("appliedenergistics2", "tile.BlockInterface"));
             Item quartz = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
-            ItemStack cable = new ItemStack(blockCable);
+            ItemStack cable = new ItemStack(BlockRegistry.cable);
             ItemStack fluix = new ItemStack(quartz, 1, 12);
             ItemStack certus = new ItemStack(quartz, 1, 10);
             Block fluidBlock = GameRegistry.findBlock("extracells", "ecbaseblock");

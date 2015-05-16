@@ -53,7 +53,7 @@ public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage,
 
     public int getID()
     {
-        return 3;
+        return 2;
     }
 
     public void writeExtraData(ByteBuf buf)

@@ -14,12 +14,12 @@ import net.minecraftforge.oredict.RecipeSorter;
 
 public class ClusterUncraftingRecipe implements IRecipe
 {
-    private static ItemStack cluster = new ItemStack(BlockRegistry.blockCableCluster);
-    private static ItemStack advcluster = new ItemStack(BlockRegistry.blockCableCluster, 1, 8);
+    private static ItemStack cluster = new ItemStack(BlockRegistry.cableCluster);
+    private static ItemStack advcluster = new ItemStack(BlockRegistry.cableCluster, 1, 8);
 
     static
     {
-        RecipeSorter.register("asm:clusterUncrafting", ClusterUncraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("asm:cluster", ClusterUncraftingRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
     }
 
     @Override

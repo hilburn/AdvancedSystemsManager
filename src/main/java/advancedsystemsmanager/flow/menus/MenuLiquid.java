@@ -69,7 +69,6 @@ public class MenuLiquid extends MenuStuff<Fluid>
     public void sendAmountData()
     {
         selectedSetting.setAmount(amountTextBoxBuckets.getNumber() * 1000 + amountTextBoxMilli.getNumber());
-        writeServerData(DataTypeHeader.AMOUNT);
     }
 
     @Override

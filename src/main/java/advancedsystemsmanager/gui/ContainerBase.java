@@ -44,7 +44,7 @@ public abstract class ContainerBase extends Container
         {
             if (crafter instanceof EntityPlayerMP)
             {
-                MessageHandler.INSTANCE.sendTo(message, player);
+                if (crafter != player) MessageHandler.INSTANCE.sendTo(message, (EntityPlayerMP)crafter);
             }
         }
         te.readData(message.getBuffer(), player);

@@ -34,7 +34,7 @@ public class MenuCrafting extends MenuItem
                 for (Setting setting : settings)
                 {
                     setting.clear();
-                    writeServerData(DataTypeHeader.CLEAR, setting);
+
                 }
             }
         };

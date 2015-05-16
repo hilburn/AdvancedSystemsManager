@@ -1,5 +1,6 @@
 package advancedsystemsmanager.compatibility;
 
+import advancedsystemsmanager.compatibility.appliedenergistics.AECompat;
 import advancedsystemsmanager.compatibility.computercraft.ComputerCraftCompat;
 import advancedsystemsmanager.compatibility.jabba.JabbaCompat;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
@@ -14,7 +15,8 @@ public enum ModCompat
     OPENCOMPUTERS(Mods.OPENCOMPUTERS, "OpenComputers"),
     JABBA(Mods.JABBA, "JABBA", new JabbaCompat()),
     WAILA(Mods.WAILA, "Waila", new WailaCompat()),
-    RF(Mods.COFH_ENERGY, "RF API", new RFCompat());
+    RF(Mods.COFH_ENERGY, "RF API", new RFCompat()),
+    AE(Mods.APPLIEDENERGISTICS2, "Applied Energistics", new AECompat());
 
     private final String modId;
     private final String modName;

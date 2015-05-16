@@ -62,7 +62,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                 public void onNumberChanged()
                 {
                     selectedSetting.setAmount(getNumber());
-                    writeServerData(DataTypeHeader.AMOUNT);
+                    needSync = true;
                 }
             });
         }
@@ -79,28 +79,11 @@ public class MenuItem extends MenuStuff<ItemStack>
             public void onNumberChanged()
             {
                 getSelectedSetting().getItem().setItemDamage(getNumber());
-                writeServerData(DataTypeHeader.META);
+                needSync = true;
             }
         });
 
         setFirstRadioButtonSelected(whitelist);
-
-        /*checkBoxes.addCheckBox(new CheckBox("Is detection fuzzy?", 5, 40) {
-            @Override
-            public void setValue(boolean val) {
-                getSelectedSetting().setFuzzyMode(val ? FuzzyMode.FUZZY : FuzzyMode.PRECISE);
-            }
-
-            @Override
-            public boolean getKey() {
-                return getSelectedSetting().getFuzzyMode() == FuzzyMode.FUZZY;
-            }
-
-            @Override
-            public void onUpdate() {
-                writeServerData(DataTypeHeader.USE_FUZZY);
-            }
-        });*/
     }
 
     public ItemSetting getSelectedSetting()
@@ -240,7 +223,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                         id = 0;
                     }
                     getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
-                    writeServerData(DataTypeHeader.USE_FUZZY);
+                    needSync = true;
                     break;
                 }
             }

@@ -326,6 +326,7 @@ gui.system.CableAway=%d cable away
 gui.system.CablesAway=%d cables away
 gui.system.EmptyCluster=Empty cluster
 gui.system.TypeCamouflage=Camouflage
+gui.system.TypeCamouflageMenu=Camouflage Blocks
 gui.system.CamouflageSidesInfo=Select which sides of the block where the camouflage should be updated
 gui.system.CamouflageSidesName=Sides
 gui.system.CamouflageItemMenu=Camouflage

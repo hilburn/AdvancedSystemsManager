@@ -209,7 +209,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             }
         }
 
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.blockCableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.cableRelay.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
 
         int x = xCoord + direction.offsetX;
         int y = yCoord + direction.offsetY;
@@ -293,7 +293,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
     private boolean isAdvanced()
     {
-        return BlockRegistry.blockCableRelay.isAdvanced(getBlockMetadata());
+        return BlockRegistry.cableRelay.isAdvanced(getBlockMetadata());
     }
 
     private boolean isPlayerActive(EntityPlayer player)

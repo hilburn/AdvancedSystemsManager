@@ -1,14 +1,17 @@
 package advancedsystemsmanager.tileentities;
 
-
+import advancedsystemsmanager.api.items.IClusterItem;
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.helpers.PlayerHelper;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -18,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -32,6 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "cofh.api.energy.IEnergyProvider", modid = Mods.COFH_ENERGY),
+        @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY)
+})
 public class TileEntityCluster extends TileEntity implements ITileEntityInterface, IPacketBlock, IEnergyProvider, IEnergyReceiver
 {
 
@@ -104,26 +112,51 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
 
         for (byte type : types)
         {
-            ClusterRegistry block = ClusterRegistry.getRegistryList().get(type);
-            registryList.add(block);
-            TileEntityClusterElement element = (TileEntityClusterElement)((ITileEntityProvider)block.getBlock()).createNewTileEntity(getWorldObj(), 0);
-            elements.add(element);
-            if (element instanceof ITileEntityInterface)
-            {
-                interfaceObject = (ITileEntityInterface)element;
-            } else if (element instanceof TileEntityCamouflage)
-            {
-                camouflageObject = (TileEntityCamouflage)element;
-            }
-            for (ClusterMethodRegistration clusterMethodRegistration : element.getRegistrations())
-            {
-                methodRegistration.get(clusterMethodRegistration).add(new Pair(block, element));
-            }
-            element.xCoord = xCoord;
-            element.yCoord = yCoord;
-            element.zCoord = zCoord;
-            element.setWorldObj(worldObj);
-            element.setPartOfCluster(true);
+            addElement(type);
+        }
+    }
+
+    public TileEntityClusterElement addElement(byte type)
+    {
+        ClusterRegistry block = ClusterRegistry.getRegistryList().get(type);
+        return addElement(block);
+    }
+
+    public TileEntityClusterElement addElement(ClusterRegistry registry)
+    {
+        registryList.add(registry);
+        TileEntityClusterElement element = (TileEntityClusterElement)((ITileEntityProvider)registry.getBlock()).createNewTileEntity(getWorldObj(), 0);
+        elements.add(element);
+        if (element instanceof ITileEntityInterface)
+        {
+            interfaceObject = (ITileEntityInterface)element;
+        } else if (element instanceof TileEntityCamouflage)
+        {
+            camouflageObject = (TileEntityCamouflage)element;
+        }
+        Pair result = new Pair(registry, element);
+        for (ClusterMethodRegistration clusterMethodRegistration : element.getRegistrations())
+        {
+            methodRegistration.get(clusterMethodRegistration).add(result);
+        }
+        element.xCoord = xCoord;
+        element.yCoord = yCoord;
+        element.zCoord = zCoord;
+        element.setWorldObj(worldObj);
+        element.setPartOfCluster(true);
+        return element;
+    }
+
+    public void addElement(EntityPlayer player, ClusterRegistry registry)
+    {
+        TileEntityClusterElement element = addElement(registry);
+        if (element.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
+        {
+            registry.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, player, registry.getItemStack());
+        }
+        if (element.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_ADDED))
+        {
+            registry.getBlock().onBlockAdded(worldObj, xCoord, yCoord, zCoord);
         }
     }
 
@@ -216,6 +249,17 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
 
     public boolean onBlockActivated(EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
+        ItemStack stack = player.getCurrentEquippedItem();
+        if (stack != null && stack.getItem() instanceof IClusterItem)
+        {
+            ClusterRegistry registry = ((IClusterItem)stack.getItem()).getClusterRegistry(stack);
+            if (registry != null && !registryList.contains(registry))
+            {
+                addElement(registry);
+                PlayerHelper.consumeItem(player);
+                return true;
+            }
+        }
         for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.ON_BLOCK_ACTIVATED))
         {
             setWorldObject(blockContainer.te);
@@ -229,6 +273,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
         int toReceive = 0;
@@ -240,6 +285,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
         int toExtract = maxExtract;
@@ -251,6 +297,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
     public int getEnergyStored(ForgeDirection from)
     {
         int stored = -1;
@@ -262,6 +309,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
     public int getMaxEnergyStored(ForgeDirection from)
     {
         int max = -1;
@@ -273,6 +321,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
     public boolean canConnectEnergy(ForgeDirection from)
     {
         for (Pair blockContainer : getRegistrations(ClusterMethodRegistration.CONNECT_ENERGY))

@@ -62,6 +62,24 @@ public class ClusterRegistry
         return registry.get(tileEntityClusterElement.getClass());
     }
 
+    public static ClusterRegistry get(ItemStack stack)
+    {
+        for (ClusterRegistry registry : registryList)
+        {
+            if (stack.getItem() == registry.itemStack.getItem())
+            {
+                ClusterRegistry element = registry.headSubRegistry;
+                while (element != null)
+                {
+                    if (element.isValidMeta(stack.getItemDamage()))
+                        return element;
+                }
+                return registry;
+            }
+        }
+        return null;
+    }
+
     public static List<ClusterRegistry> getRegistryList()
     {
         return registryList;

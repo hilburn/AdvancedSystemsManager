@@ -2,10 +2,7 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.execution.ICommand;
-import advancedsystemsmanager.flow.execution.commands.CommandFluidInput;
-import advancedsystemsmanager.flow.execution.commands.CommandFluidOutput;
-import advancedsystemsmanager.flow.execution.commands.CommandItemInput;
-import advancedsystemsmanager.flow.execution.commands.CommandTrigger;
+import advancedsystemsmanager.flow.execution.commands.*;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 import java.util.ArrayList;
@@ -112,9 +109,11 @@ public class CommandRegistry
 //        registerCommand(SIGN = new Command(16, CommandType.MISC, Localization.SIGN_SHORT, Localization.SIGN_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuSigns.class, MenuSignText.class));
-        registerCommand(TRIGGER = new CommandTrigger());
+        registerCommand(new CommandTrigger());
         registerCommand(new CommandItemInput());
         registerCommand(new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
+
+        registerCommand(new CommandCamouflage());
     }
 }
