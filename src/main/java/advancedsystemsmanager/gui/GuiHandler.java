@@ -23,7 +23,7 @@ public class GuiHandler implements IGuiHandler
 
             if (te != null && te instanceof ITileEntityInterface)
             {
-                return ((ITileEntityInterface)te).getContainer(te, player.inventory);
+                return ((ITileEntityInterface)te).getContainer(player);
             }
         }
         return null;
@@ -40,7 +40,7 @@ public class GuiHandler implements IGuiHandler
 
             if (te != null && te instanceof ITileEntityInterface)
             {
-                return ((ITileEntityInterface)te).getGui(te, player.inventory);
+                return ((ITileEntityInterface)te).getGui(player);
             }
         }
         return null;

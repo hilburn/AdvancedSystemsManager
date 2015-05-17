@@ -135,10 +135,10 @@ public class ClusterRegistry
         return false;
     }
 
-    public static class ClusterRegistryAdvancedSensitive extends ClusterRegistry
+    public static class AdvancedSensitive extends ClusterRegistry
     {
 
-        public ClusterRegistryAdvancedSensitive(Class<? extends TileEntityClusterElement> clazz, Block block, ItemStack itemStack)
+        public AdvancedSensitive(Class<? extends TileEntityClusterElement> clazz, Block block, ItemStack itemStack)
         {
             super(clazz, block, itemStack);
         }
@@ -150,9 +150,9 @@ public class ClusterRegistry
         }
     }
 
-    public static class ClusterRegistryMetaSensitive extends ClusterRegistry
+    public static class MetaSensitive extends ClusterRegistry
     {
-        public ClusterRegistryMetaSensitive(Class<? extends TileEntityClusterElement> clazz, Block block, ItemStack itemStack)
+        public MetaSensitive(Class<? extends TileEntityClusterElement> clazz, Block block, ItemStack itemStack)
         {
             super(clazz, block, itemStack);
         }

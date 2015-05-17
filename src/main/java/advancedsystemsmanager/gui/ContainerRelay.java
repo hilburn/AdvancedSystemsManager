@@ -11,31 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ContainerRelay extends ContainerBase
+public class ContainerRelay extends ContainerBase<TileEntityRelay>
 {
     public List<UserPermission> oldPermissions;
     public boolean oldCreativeMode;
     public boolean oldOpList;
-    private TileEntityRelay relay;
 
     public ContainerRelay(TileEntityRelay relay, InventoryPlayer player)
     {
         super(relay, player);
-        this.relay = relay;
     }
 
     @Override
     public void addCraftingToCrafters(ICrafting player)
     {
         super.addCraftingToCrafters(player);
-        PacketHandler.sendAllData(this, player, relay);
+        PacketHandler.sendAllData(this, player, te);
         oldPermissions = new ArrayList<UserPermission>();
-        for (UserPermission permission : relay.getPermissions())
+        for (UserPermission permission : te.getPermissions())
         {
             oldPermissions.add(permission.copy());
         }
-        oldCreativeMode = relay.isCreativeMode();
-        oldOpList = relay.doesListRequireOp();
+        oldCreativeMode = te.isCreativeMode();
+        oldOpList = te.doesListRequireOp();
     }
 
     @Override
@@ -45,13 +43,7 @@ public class ContainerRelay extends ContainerBase
 
         if (oldPermissions != null)
         {
-            relay.updateData(this);
+            te.updateData(this);
         }
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
-        return entityplayer.getDistanceSq(relay.xCoord, relay.yCoord, relay.zCoord) <= 64;
     }
 }

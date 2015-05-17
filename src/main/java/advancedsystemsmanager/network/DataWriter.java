@@ -85,7 +85,7 @@ public class DataWriter
 
     void sendPlayerPackets(ContainerBase container)
     {
-        for (ICrafting crafting : container.getCrafters())
+        for (Object crafting : container.getCrafters())
         {
             if (crafting instanceof EntityPlayer)
             {

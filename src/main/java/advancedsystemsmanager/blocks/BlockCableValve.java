@@ -8,10 +8,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableIntake extends BlockCableDirectionAdvanced
+public class BlockCableValve extends BlockCableDirectionAdvanced
 {
 
-    public BlockCableIntake()
+    public BlockCableValve()
     {
         super(Names.CABLE_VALVE);
     }

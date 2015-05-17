@@ -13,21 +13,40 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
 
-public abstract class ContainerBase extends Container
+public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface> extends Container
 {
-    private ITileEntityInterface te;
+    protected T te;
     private InventoryPlayer player;
+    int playerInventoryEnd;
 
-
-    protected ContainerBase(ITileEntityInterface te, InventoryPlayer player)
+    protected ContainerBase(T te, InventoryPlayer player)
     {
         this.te = te;
         this.player = player;
+    }
+
+    protected void bindPlayerInventory(int x, int y)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            addSlotToContainer(new Slot(player, i, x + i * 18, y + 58));
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 9; j++)
+            {
+                addSlotToContainer(new Slot(player, j + i * 9 + 9, x + j * 18, y + i * 18));
+            }
+        }
+        playerInventoryEnd = inventorySlots.size();
     }
 
     public void syncNetworkElement(INetworkSync element, boolean loseFocus)
@@ -69,6 +88,53 @@ public abstract class ContainerBase extends Container
     public void sendFinalUpdate(INetworkSync element)
     {
         if (element != null)
-            MessageHandler.INSTANCE.sendToServer(new FinalSyncMessage((TileEntity)te, element));
+            MessageHandler.INSTANCE.sendToServer(new FinalSyncMessage(te, element));
     }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
+        return entityplayer.getDistanceSq(te.xCoord, te.yCoord, te.zCoord) <= 64;
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot)
+    {
+        Slot slotObject = (Slot) inventorySlots.get(slot);
+        ItemStack stack = null;
+
+        if (slotObject != null && slotObject.getHasStack())
+        {
+            ItemStack stackInSlot = slotObject.getStack();
+            stack = stackInSlot.copy();
+            if (slot < playerInventoryEnd)
+            {
+                if (!mergeItemStack(stackInSlot, playerInventoryEnd, inventorySlots.size(), false))
+                {
+                    return null;
+                }
+            } else
+            {
+                if (!mergeItemStack(stackInSlot, 0, playerInventoryEnd, false))
+                {
+                    return null;
+                }
+            }
+            if (stackInSlot.stackSize == 0)
+            {
+                slotObject.putStack(null);
+            } else
+            {
+                slotObject.onSlotChanged();
+            }
+            if (stackInSlot.stackSize == stack.stackSize)
+            {
+                return null;
+            }
+            slotObject.onPickupFromSlot(entityPlayer, stackInSlot);
+        }
+        return stack;
+    }
+
+
 }

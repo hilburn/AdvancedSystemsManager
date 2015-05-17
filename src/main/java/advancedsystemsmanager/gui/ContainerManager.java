@@ -4,19 +4,21 @@ import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.ContainerMessage;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 
-public class ContainerManager extends ContainerBase
+public class ContainerManager extends ContainerBase<TileEntityManager>
 {
-    public TileEntityManager manager;
+    @SideOnly(Side.CLIENT)
+    protected GuiManager gui;
 
     public ContainerManager(TileEntityManager manager, InventoryPlayer player)
     {
         super(manager, player);
-        this.manager = manager;
     }
 
     @Override
@@ -24,19 +26,23 @@ public class ContainerManager extends ContainerBase
     {
         super.addCraftingToCrafters(player);
 
-        if (player instanceof EntityPlayerMP && !manager.getWorldObj().isRemote)
-            MessageHandler.INSTANCE.sendTo(new ContainerMessage(manager), (EntityPlayerMP)player);
+        if (player instanceof EntityPlayerMP && !te.getWorldObj().isRemote)
+            MessageHandler.INSTANCE.sendTo(new ContainerMessage(te), (EntityPlayerMP)player);
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void detectAndSendChanges()
     {
-
+        if (gui != null && gui.selectedComponent != null)
+        {
+            gui.updateSelected();
+        }
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return entityplayer.getDistanceSq(manager.xCoord, manager.yCoord, manager.zCoord) <= 64 || (entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor);
+        return super.canInteractWith (entityplayer) || entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor;
     }
 }

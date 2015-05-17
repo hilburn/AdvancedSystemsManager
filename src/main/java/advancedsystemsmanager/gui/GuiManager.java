@@ -120,6 +120,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     public GuiManager(TileEntityManager manager, InventoryPlayer player)
     {
         super(new ContainerManager(manager, player));
+        ((ContainerManager)container).gui = this;
         xSize = GUI_WIDTH;
         ySize = GUI_HEIGHT;
         this.zLevel = 0;

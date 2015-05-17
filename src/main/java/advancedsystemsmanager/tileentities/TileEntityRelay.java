@@ -666,16 +666,16 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public Container getContainer(TileEntity te, InventoryPlayer inv)
+    public Container getContainer(EntityPlayer player)
     {
-        return new ContainerRelay((TileEntityRelay)te, inv);
+        return new ContainerRelay(this, player.inventory);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
+    public GuiScreen getGui(EntityPlayer player)
     {
-        return new GuiRelay((TileEntityRelay)te, inv);
+        return new GuiRelay(this, player.inventory);
     }
 
     @Override

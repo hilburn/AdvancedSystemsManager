@@ -84,6 +84,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     private int timer = 0;
     private TileEntityManager self = this;
     private boolean usingUnlimitedInventories;
+
     public TileEntityManager()
     {
         zLevelRenderingList = new ArrayList<FlowComponent>();
@@ -228,16 +229,16 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public Container getContainer(TileEntity te, InventoryPlayer inv)
+    public Container getContainer(EntityPlayer player)
     {
-        return new ContainerManager((TileEntityManager)te, inv);
+        return new ContainerManager(this, player.inventory);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
+    public GuiScreen getGui(EntityPlayer player)
     {
-        return new GuiManager((TileEntityManager)te, inv);
+        return new GuiManager(this, player.inventory);
     }
 
     @Override

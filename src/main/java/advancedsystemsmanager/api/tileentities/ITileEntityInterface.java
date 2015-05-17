@@ -12,10 +12,10 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface ITileEntityInterface extends INetworkWriter
 {
-    public abstract Container getContainer(TileEntity te, InventoryPlayer inv);
+    public abstract Container getContainer(EntityPlayer player);
 
     @SideOnly(Side.CLIENT)
-    public abstract GuiScreen getGui(TileEntity te, InventoryPlayer inv);
+    public abstract GuiScreen getGui(EntityPlayer player);
 
     void readData(ByteBuf buf, EntityPlayer player);
 }

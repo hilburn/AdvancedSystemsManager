@@ -124,6 +124,6 @@ public class AdvancedSystemsManager
         ModItemHelper.init();
         event.registerServerCommand(ParentCommand.instance);
         File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");
-        if (!file.exists()) file.mkdirs();
+        if (!file.exists()) file.mkdir();
     }
 }

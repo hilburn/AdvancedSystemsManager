@@ -332,15 +332,15 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public Container getContainer(TileEntity te, InventoryPlayer inv)
+    public Container getContainer(EntityPlayer player)
     {
-        return interfaceObject == null ? null : interfaceObject.getContainer((TileEntity)interfaceObject, inv);
+        return interfaceObject == null ? null : interfaceObject.getContainer(player);
     }
 
     @Override
-    public GuiScreen getGui(TileEntity te, InventoryPlayer inv)
+    public GuiScreen getGui(EntityPlayer player)
     {
-        return interfaceObject == null ? null : interfaceObject.getGui((TileEntity)interfaceObject, inv);
+        return interfaceObject == null ? null : interfaceObject.getGui(player);
     }
 
     @Override

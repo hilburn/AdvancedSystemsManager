@@ -39,7 +39,7 @@ public class BlockRegistry
     @Register(tileEntity = TileEntityCreative.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_CREATIVE)
     public static BlockCableCreative cableCreative;
     @Register(tileEntity = TileEntityValve.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_VALVE)
-    public static BlockCableIntake cableValve;
+    public static BlockCableValve cableValve;
     @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BUD)
     public static BlockCableBUD cableBUD;
     @Register(tileEntity = TileEntityBreaker.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BREAKER)
@@ -48,6 +48,8 @@ public class BlockRegistry
     public static BlockCableCamouflages cableCamouflage;
     @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_SIGN)
     public static BlockCableSign cableSign;
+    @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_VOID)
+    public static BlockCableVoid cableVoid;
 
     //    Mod Cluster Elements
     @Register(tileEntity = TileEntityAENode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
@@ -57,19 +59,20 @@ public class BlockRegistry
 
     public static void registerClusters()
     {
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 8)));
+        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 8)));
         ClusterRegistry.register(TileEntityEmitter.class, cableOutput);
         ClusterRegistry.register(TileEntityReceiver.class, cableInput);
         ClusterRegistry.register(TileEntityCreative.class, cableCreative);
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryAdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 8)));
+        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 8)));
         ClusterRegistry.register(TileEntityBUD.class, cableBUD);
         ClusterRegistry.register(TileEntityBreaker.class, cableBreaker);
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 1)));
-        ClusterRegistry.register(new ClusterRegistry.ClusterRegistryMetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 2)));
+        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 0)));
+        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 1)));
+        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 2)));
         ClusterRegistry.register(TileEntitySignUpdater.class, cableSign);
+        ClusterRegistry.register(TileEntityVoid.class, cableVoid);
     }
 
     public static void registerRecipes()
