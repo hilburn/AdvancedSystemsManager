@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
@@ -37,7 +38,13 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
         if (container instanceof ContainerBase)
         {
             World world = player.getEntityWorld();
-            if (!player.getEntityData().getBoolean("KONAMI"))
+            NBTTagCompound tagCompound;
+            if (!player.getEntityData().hasKey(EntityPlayer.PERSISTED_NBT_TAG))
+            {
+                player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+            }
+            tagCompound = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+            if (!tagCompound.getBoolean("KONAMI"))
             {
                 EntityCreeper creeper = new EntityCreeper(world);
                 for (int attempts = 0; attempts < 4; attempts++)
@@ -58,7 +65,7 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
                         }
                         if (world.rand.nextInt(10) == 0) creeper.getDataWatcher().updateObject(17, 1);
                         world.spawnEntityInWorld(creeper);
-                        player.getEntityData().setBoolean("KONAMI", true);
+                        tagCompound.setBoolean("KONAMI", true);
                         break;
                     }
                 }
