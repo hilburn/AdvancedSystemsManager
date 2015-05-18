@@ -6,13 +6,11 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAICreeperSwell;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
@@ -39,26 +37,34 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
         if (container instanceof ContainerBase)
         {
             World world = player.getEntityWorld();
-            EntityCreeper creeper = new EntityCreeper(world);
-            for (int attempts = 0; attempts < 4; attempts++)
+            if (!player.getEntityData().getBoolean("KONAMI"))
             {
-                setCoords(player, world);
-                creeper.setLocationAndAngles(x + world.rand.nextDouble(), y, z + world.rand.nextDouble(), world.rand.nextFloat(), world.rand.nextFloat());
-                if (!creeper.isEntityInsideOpaqueBlock())
+                EntityCreeper creeper = new EntityCreeper(world);
+                for (int attempts = 0; attempts < 4; attempts++)
                 {
-                    creeper.setAlwaysRenderNameTag(true);
-                    creeper.setCustomNameTag("hilburn");
-
-                    Iterator itr = creeper.tasks.taskEntries.iterator();
-                    while (itr.hasNext())
+                    setCoords(player, world);
+                    creeper.setLocationAndAngles(x + world.rand.nextDouble(), y, z + world.rand.nextDouble(), world.rand.nextFloat(), world.rand.nextFloat());
+                    if (!creeper.isEntityInsideOpaqueBlock())
                     {
-                        Object ai = itr.next();
-                        if (ai instanceof EntityAICreeperSwell || ai instanceof EntityAIAttackOnCollide) itr.remove();
+                        creeper.setAlwaysRenderNameTag(true);
+                        creeper.setCustomNameTag("hilburn");
+
+                        Iterator itr = creeper.tasks.taskEntries.iterator();
+                        while (itr.hasNext())
+                        {
+                            Object ai = itr.next();
+                            if (ai instanceof EntityAICreeperSwell || ai instanceof EntityAIAttackOnCollide)
+                                itr.remove();
+                        }
+                        if (world.rand.nextInt(10) == 0) creeper.getDataWatcher().updateObject(17, 1);
+                        world.spawnEntityInWorld(creeper);
+                        player.getEntityData().setBoolean("KONAMI", true);
+                        break;
                     }
-                    world.spawnEntityInWorld(creeper);
-                    if (world.rand.nextInt(10) == 0) creeper.getDataWatcher().updateObject(17, 1);
-                    break;
                 }
+            }else
+            {
+                world.createExplosion(player, player.posX, player.posY + player.eyeHeight/2, player.posZ, 4F, false);
             }
 
         }
