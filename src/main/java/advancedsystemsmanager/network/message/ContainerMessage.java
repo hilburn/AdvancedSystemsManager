@@ -58,7 +58,7 @@ public class ContainerMessage implements IBufferMessage, IMessageHandler<Contain
 
     public IMessage onMessage(ContainerMessage message, ContainerBase container, EntityPlayer player)
     {
-        container.getTileEntity().readData(message.buf, player);
+        container.getInterface().readData(message.buf, player);
         return null;
     }
 

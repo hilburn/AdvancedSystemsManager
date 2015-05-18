@@ -16,7 +16,6 @@ public class LiquidSetting extends Setting<Fluid>
 {
     public static final String NBT_FLUID_ID = "FluidId";
     public static final String NBT_FLUID_AMOUNT = "Amount";
-    public Fluid fluid;
     public int amount;
 
     public LiquidSetting(int id)
@@ -29,7 +28,7 @@ public class LiquidSetting extends Setting<Fluid>
     {
         super.clear();
 
-        fluid = null;
+        content = null;
         setDefaultAmount();
     }
 
@@ -38,17 +37,17 @@ public class LiquidSetting extends Setting<Fluid>
     {
         List<String> ret = new ArrayList<String>();
 
-        if (fluid == null)
+        if (content == null)
         {
             ret.add(Names.NO_LIQUID_SELECTED);
         } else
         {
-            ret.add(MenuLiquid.getDisplayName(fluid));
+            ret.add(MenuLiquid.getDisplayName(content));
         }
 
         ret.add("");
         ret.add(Names.CHANGE_LIQUID);
-        if (fluid != null)
+        if (content != null)
         {
             ret.add(Names.EDIT_SETTING);
         }
@@ -77,32 +76,32 @@ public class LiquidSetting extends Setting<Fluid>
     @Override
     public boolean isValid()
     {
-        return fluid != null;
+        return content != null;
     }
 
     @Override
     public void writeData(DataWriter dw)
     {
-        dw.writeData(fluid.getID(), DataBitHelper.MENU_FLUID_ID);
+        dw.writeData(content.getID(), DataBitHelper.MENU_FLUID_ID);
     }
 
     @Override
     public void readData(DataReader dr)
     {
-        fluid = FluidRegistry.getFluid(dr.readData(DataBitHelper.MENU_FLUID_ID));
+        content = FluidRegistry.getFluid(dr.readData(DataBitHelper.MENU_FLUID_ID));
     }
 
     @Override
     public void copyFrom(Setting setting)
     {
-        fluid = ((LiquidSetting)setting).fluid;
+        content = ((LiquidSetting)setting).content;
     }
 
     @Override
     public void load(NBTTagCompound settingTag)
     {
         //TODO load properly
-        fluid = FluidRegistry.getFluid(settingTag.getShort(NBT_FLUID_ID));
+        content = FluidRegistry.getFluid(settingTag.getShort(NBT_FLUID_ID));
         amount = settingTag.getInteger(NBT_FLUID_AMOUNT);
     }
 
@@ -110,41 +109,41 @@ public class LiquidSetting extends Setting<Fluid>
     public void save(NBTTagCompound settingTag)
     {
         //TODO save properly
-        settingTag.setShort(NBT_FLUID_ID, (short)fluid.getID());
+        settingTag.setShort(NBT_FLUID_ID, (short)content.getID());
         settingTag.setInteger(NBT_FLUID_AMOUNT, amount);
     }
 
     @Override
     public boolean isContentEqual(Setting otherSetting)
     {
-        return fluid.getID() == ((LiquidSetting)otherSetting).fluid.getID();
+        return content == ((LiquidSetting)otherSetting).content;
     }
 
     @Override
-    public void setContent(Object obj)
+    public void setContent(Fluid obj)
     {
-        fluid = (Fluid)obj;
+        content = obj;
         setDefaultAmount();
     }
 
     @Override
     public boolean isContentEqual(Fluid check)
     {
-        return fluid == check;
+        return content == check;
     }
 
     public int getLiquidId()
     {
-        return fluid.getID();
+        return content.getID();
     }
 
     public void setLiquidFromId(int id)
     {
-        fluid = FluidRegistry.getFluid(id);
+        content = FluidRegistry.getFluid(id);
     }
 
     public Fluid getFluid()
     {
-        return fluid;
+        return content;
     }
 }

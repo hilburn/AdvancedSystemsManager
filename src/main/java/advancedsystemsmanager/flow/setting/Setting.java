@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class Setting<Type>
 {
     public int id;
-
+    public Type content;
     public boolean isLimitedByAmount;
 
     public Setting(int id)
@@ -69,7 +69,7 @@ public abstract class Setting<Type>
 
     public abstract boolean isContentEqual(Setting otherSetting);
 
-    public abstract void setContent(Object obj);
+    public abstract void setContent(Type obj);
 
     public abstract boolean isContentEqual(Type check);
 

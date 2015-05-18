@@ -26,6 +26,7 @@ public class MessageHandler
         register(ContainerMessage.class, Side.CLIENT);
         register(ButtonMessage.class, Side.SERVER);
         register(ButtonMessage.class, Side.CLIENT);
+        register(SecretMessage.class, Side.SERVER);
     }
 
     private static void register(Class message, Side side)

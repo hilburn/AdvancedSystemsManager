@@ -5,6 +5,8 @@ import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.network.MessageHandler;
+import advancedsystemsmanager.network.message.SecretMessage;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
@@ -21,6 +23,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -113,6 +116,14 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             protected void trigger()
             {
                 useMouseOver = !useMouseOver;
+            }
+        });
+        codes.add(new SecretCode(new char[]{200, 200, 208, 208, 203, 205, 203, 205, 'b', 'a'})
+        {
+            @Override
+            protected void trigger()
+            {
+                MessageHandler.INSTANCE.sendToServer(new SecretMessage());
             }
         });
     }
@@ -379,7 +390,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             boolean recognized = false;
             for (SecretCode code : codes)
             {
-                if (code.keyTyped(c))
+                if (code.keyTyped(c, k))
                 {
                     recognized = true;
                 }
@@ -472,34 +483,46 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     private abstract class SecretCode
     {
-        private final String code;
+        private final char[] code;
         private int triggerNumber;
 
         private SecretCode(String code)
         {
+            this(code.toCharArray());
+        }
+
+        private SecretCode(char[] code)
+        {
             this.code = code;
         }
 
-        public boolean keyTyped(char c)
+        public boolean keyTyped(char c, int k)
         {
             if (Character.isAlphabetic(c))
             {
-                if (code.charAt(triggerNumber) == c)
+                if (code[triggerNumber] == c)
                 {
-                    if (triggerNumber + 1 > code.length() - 1)
+                    triggerNumber++;
+                    if (triggerNumber == code.length)
                     {
                         triggerNumber = 0;
                         trigger();
-                    } else
-                    {
-                        triggerNumber++;
                     }
                     return true;
                 } else if (triggerNumber != 0)
                 {
                     triggerNumber = 0;
-                    keyTyped(c);
+                    keyTyped(c, k);
                 }
+            }else if (code[triggerNumber] == k)
+            {
+                triggerNumber++;
+                if (triggerNumber == code.length)
+                {
+                    triggerNumber = 0;
+                    trigger();
+                }
+                return true;
             }
 
             return false;

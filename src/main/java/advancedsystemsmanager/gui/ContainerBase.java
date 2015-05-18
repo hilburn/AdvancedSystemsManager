@@ -74,7 +74,12 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
         te.readData(message.getBuffer(), player);
     }
 
-    public ITileEntityInterface getTileEntity()
+    public T getTileEntity()
+    {
+        return te;
+    }
+
+    public ITileEntityInterface getInterface()
     {
         return te;
     }

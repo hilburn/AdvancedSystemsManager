@@ -18,7 +18,6 @@ public class ItemSetting extends Setting<ItemStack>
 {
     public static final String NBT_SETTING_FUZZY = "FuzzyMode";
     public FuzzyMode fuzzyMode;
-    public ItemStack item;
 
     public ItemSetting(int id)
     {
@@ -31,30 +30,30 @@ public class ItemSetting extends Setting<ItemStack>
         super.clear();
 
         fuzzyMode = FuzzyMode.PRECISE;
-        item = null;
+        content = null;
     }
 
     @Override
     public List<String> getMouseOver()
     {
-        if (item != null && GuiScreen.isShiftKeyDown())
+        if (content != null && GuiScreen.isShiftKeyDown())
         {
-            return MenuItem.getToolTip(item);
+            return MenuItem.getToolTip(content);
         }
 
         List<String> ret = new ArrayList<String>();
 
-        if (item == null)
+        if (content == null)
         {
             ret.add(Names.NO_ITEM_SELECTED);
         } else
         {
-            ret.add(MenuItem.getDisplayName(item));
+            ret.add(MenuItem.getDisplayName(content));
         }
 
         ret.add("");
         ret.add(Names.CHANGE_ITEM);
-        if (item != null)
+        if (content != null)
         {
             ret.add(Names.EDIT_SETTING);
             ret.add(Names.FULL_DESCRIPTION);
@@ -72,31 +71,31 @@ public class ItemSetting extends Setting<ItemStack>
     @Override
     public int getAmount()
     {
-        return item == null ? 0 : item.stackSize;
+        return content == null ? 0 : content.stackSize;
     }
 
     @Override
     public void setAmount(int val)
     {
-        if (item != null)
+        if (content != null)
         {
-            item.stackSize = val;
+            content.stackSize = val;
         }
     }
 
     @Override
     public boolean isValid()
     {
-        return item != null;
+        return content != null;
     }
 
     @Override
     public void writeData(DataWriter dw)
     {
-        dw.writeData(Item.getIdFromItem(item.getItem()), DataBitHelper.MENU_ITEM_ID);
+        dw.writeData(Item.getIdFromItem(content.getItem()), DataBitHelper.MENU_ITEM_ID);
         dw.writeData(fuzzyMode.ordinal(), DataBitHelper.FUZZY_MODE);
-        dw.writeData(item.getItemDamage(), DataBitHelper.MENU_ITEM_META);
-        dw.writeNBT(item.getTagCompound());
+        dw.writeData(content.getItemDamage(), DataBitHelper.MENU_ITEM_META);
+        dw.writeNBT(content.getTagCompound());
     }
 
     @Override
@@ -105,51 +104,46 @@ public class ItemSetting extends Setting<ItemStack>
         int id = dr.readData(DataBitHelper.MENU_ITEM_ID);
         fuzzyMode = FuzzyMode.values()[dr.readData(DataBitHelper.FUZZY_MODE)];
         int meta = dr.readData(DataBitHelper.MENU_ITEM_META);
-        item = new ItemStack(Item.getItemById(id), 1, meta);
-        item.setTagCompound(dr.readNBT());
+        content = new ItemStack(Item.getItemById(id), 1, meta);
+        content.setTagCompound(dr.readNBT());
     }
 
     @Override
     public void copyFrom(Setting setting)
     {
-        item = ((ItemSetting)setting).getItem().copy();
+        content = ((ItemSetting)setting).getItem().copy();
         fuzzyMode = ((ItemSetting)setting).fuzzyMode;
     }
 
     public ItemStack getItem()
     {
-        return item;
-    }
-
-    public void setItem(ItemStack item)
-    {
-        this.item = item;
+        return content;
     }
 
     @Override
     public void load(NBTTagCompound settingTag)
     {
-        item = ItemStack.loadItemStackFromNBT(settingTag);
+        content = ItemStack.loadItemStackFromNBT(settingTag);
         fuzzyMode = FuzzyMode.values()[settingTag.getByte(NBT_SETTING_FUZZY)];
     }
 
     @Override
     public void save(NBTTagCompound settingTag)
     {
-        if (item != null) item.writeToNBT(settingTag);
+        if (content != null) content.writeToNBT(settingTag);
         settingTag.setByte(NBT_SETTING_FUZZY, (byte)fuzzyMode.ordinal());
     }
 
     @Override
     public boolean isContentEqual(Setting otherSetting)
     {
-        return Item.getIdFromItem(item.getItem()) == Item.getIdFromItem(((ItemSetting)otherSetting).item.getItem()) && ItemStack.areItemStackTagsEqual(item, ((ItemSetting)otherSetting).item);
+        return ItemStack.areItemStacksEqual(content,((ItemSetting)otherSetting).content) && ItemStack.areItemStackTagsEqual(content, ((ItemSetting)otherSetting).content);
     }
 
     @Override
-    public void setContent(Object obj)
+    public void setContent(ItemStack obj)
     {
-        item = ((ItemStack)obj).copy();
+        content = obj.copy();
     }
 
     @Override
