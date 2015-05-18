@@ -38,12 +38,11 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
         Container container = player.openContainer;
         if (container instanceof ContainerBase)
         {
-            TileEntity te = ((ContainerBase)container).getTileEntity();
             World world = player.getEntityWorld();
             EntityCreeper creeper = new EntityCreeper(world);
             for (int attempts = 0; attempts < 4; attempts++)
             {
-                setCoords(te, player, world);
+                setCoords(player, world);
                 creeper.setLocationAndAngles(x + world.rand.nextDouble(), y, z + world.rand.nextDouble(), world.rand.nextFloat(), world.rand.nextFloat());
                 if (!creeper.isEntityInsideOpaqueBlock())
                 {
@@ -66,19 +65,11 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
         return null;
     }
 
-    private void setCoords(TileEntity te, EntityPlayer player, World world)
+    private void setCoords(EntityPlayer player, World world)
     {
-        if (world == te.getWorldObj())
-        {
-            x = te.xCoord + (int)(4D - world.rand.nextDouble() * 8);
-            y = te.yCoord + 1;
-            z = te.zCoord + (int)(4D - world.rand.nextDouble() * 8);
-        }else
-        {
-            x = (int)(player.posX + 4D - world.rand.nextDouble() * 8);
-            z = (int)(player.posX + 4D - world.rand.nextDouble() * 8);
-            y = (int)player.posY;
-        }
+        x = (int)(Math.floor(player.posX) + 4D - world.rand.nextDouble() * 8);
+        z = (int)(Math.floor(player.posZ) + 4D - world.rand.nextDouble() * 8);
+        y = (int)player.posY;
         while (world.isAirBlock(x, y, z)) y--;
         while (!world.isAirBlock(x, y, z)) y++;
     }
