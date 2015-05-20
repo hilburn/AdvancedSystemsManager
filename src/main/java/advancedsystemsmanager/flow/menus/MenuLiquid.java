@@ -32,7 +32,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
 
     public MenuLiquid(FlowComponent parent, boolean whitelist)
     {
-        super(parent, LiquidSetting.class);
+        super(parent);
 
         numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(10, 50, 3, true)
         {
@@ -64,6 +64,12 @@ public class MenuLiquid extends MenuStuff<Fluid>
             }
         });
         setFirstRadioButtonSelected(whitelist);
+    }
+
+    @Override
+    public Setting<Fluid> getSetting(int id)
+    {
+        return new LiquidSetting(id);
     }
 
     public void sendAmountData()

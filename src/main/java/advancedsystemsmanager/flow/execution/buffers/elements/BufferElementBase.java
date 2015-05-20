@@ -35,6 +35,7 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
         return this.id;
     }
 
+    @Override
     public int getMaxWithSetting(int amount)
     {
         if (setting != null && setting.isLimitedByAmount())

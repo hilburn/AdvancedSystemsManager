@@ -63,7 +63,7 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
         {
             if (crafter instanceof EntityPlayerMP)
             {
-                if (crafter != player) MessageHandler.INSTANCE.sendTo(message, (EntityPlayerMP)crafter);
+                MessageHandler.INSTANCE.sendTo(message, (EntityPlayerMP)crafter);
             }
         }
         te.readData(message.getBuffer(), player);

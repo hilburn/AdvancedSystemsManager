@@ -39,14 +39,14 @@ public class MenuItem extends MenuStuff<ItemStack>
     public TextBoxNumber damageValueTextBox;
     public TextBoxNumber amountTextBox;
 
-    public MenuItem(FlowComponent parent, Class<? extends Setting> clazz)
+    public MenuItem(FlowComponent parent)
     {
-        this(parent, clazz, true);
+        this(parent, true);
     }
 
-    public MenuItem(FlowComponent parent, Class<? extends Setting> clazz, boolean whitelist)
+    public MenuItem(FlowComponent parent, boolean whitelist)
     {
-        super(parent, clazz);
+        super(parent);
 
         if (settings.get(0).isAmountSpecific())
         {
@@ -86,20 +86,15 @@ public class MenuItem extends MenuStuff<ItemStack>
         setFirstRadioButtonSelected(whitelist);
     }
 
+    @Override
+    public Setting<ItemStack> getSetting(int id)
+    {
+        return new ItemSetting(id);
+    }
+
     public ItemSetting getSelectedSetting()
     {
         return (ItemSetting)selectedSetting;
-    }
-
-    public MenuItem(FlowComponent parent)
-    {
-        this(parent, true);
-        //this(parent, !Settings.isAutoBlacklist());
-    }
-
-    public MenuItem(FlowComponent parent, boolean whitelist)
-    {
-        this(parent, ItemSetting.class, whitelist);
     }
 
     @SideOnly(Side.CLIENT)

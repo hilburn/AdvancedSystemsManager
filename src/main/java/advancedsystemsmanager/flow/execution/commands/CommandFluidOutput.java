@@ -5,6 +5,7 @@ import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.IInternalTank;
 import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.OutputLiquidCounter;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuLiquid;
@@ -27,7 +28,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
 {
     public CommandFluidOutput()
     {
-        super(6, Names.LIQUID_OUTPUT, IBuffer.FLUID);
+        super(FLUID_OUTPUT, Names.LIQUID_OUTPUT, IBuffer.FLUID);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
                 IBufferElement<Fluid> fluidBufferElement = iterator.next().getValue();
                 FluidStack fluidStack = new FluidStack(fluidBufferElement.getContent(), 0);
                 Setting<Fluid> setting = isValid(validSettings, fluidBufferElement.getContent());
-                boolean whitelist = menuLiquid.isFirstRadioButtonSelected();
+                boolean whitelist = menuLiquid.useWhiteList();
                 if (setting == null && whitelist) continue;
                 for (int side : validSides)
                 {

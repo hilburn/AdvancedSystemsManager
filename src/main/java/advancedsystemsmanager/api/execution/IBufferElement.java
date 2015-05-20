@@ -16,7 +16,7 @@ public interface IBufferElement<Type>
 
     IBufferElement<Type> getSplitElement(int elementAmount, int id, boolean fair);
 
-//    IBufferElement<Type> getNewBufferElement();
+    int getMaxWithSetting(int amount);
 
     int getCommandID();
 }

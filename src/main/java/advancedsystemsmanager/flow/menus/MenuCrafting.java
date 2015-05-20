@@ -10,6 +10,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
 
 public class MenuCrafting extends MenuItem
 {
@@ -18,7 +19,7 @@ public class MenuCrafting extends MenuItem
 
     public MenuCrafting(FlowComponent parent)
     {
-        super(parent, CraftingSetting.class);
+        super(parent);
 
         resultItem = new CraftingSetting(9)
         {
@@ -46,6 +47,12 @@ public class MenuCrafting extends MenuItem
         scrollControllerSelected.setVisibleRows(3);
         scrollControllerSelected.setItemUpperLimit(2);
         scrollControllerSelected.setDisabledScroll(true);
+    }
+
+    @Override
+    public Setting<ItemStack> getSetting(int id)
+    {
+        return new CraftingSetting(id);
     }
 
     @Override

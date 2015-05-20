@@ -58,27 +58,12 @@ public class CommandRegistry
 
     static
     {
-//        registerCommand(TRIGGER = new Command(0, CommandType.TRIGGER, Localization.TRIGGER_SHORT, Localization.TRIGGER_LONG,
-//                new ConnectionSet[]{ConnectionSet.CONTINUOUSLY, ConnectionSet.REDSTONE, ConnectionSet.BUD, StevesEnum.DELAYED},
-//                MenuReceivers.class, MenuBUDs.class, MenuInterval.class, MenuRedstoneSidesTrigger.class, MenuRedstoneStrength.class, MenuUpdateBlock.class, MenuDelayed.class));
-//        registerCommand(INPUT = new Command(1, CommandType.INPUT, Localization.INPUT_SHORT, Localization.INPUT_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuInventory.class, MenuTargetInventory.class, MenuItem.class));
-//        registerCommand(OUTPUT = new Command(2, CommandType.OUTPUT, Localization.OUTPUT_SHORT, Localization.OUTPUT_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuInventory.class, MenuTargetInventory.class, MenuItemOutput.class));
 //        registerCommand(CONDITION = new Command(3, CommandType.COMMAND_CONTROL, Localization.CONDITION_SHORT, Localization.CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuInventoryCondition.class, MenuTargetInventory.class, MenuItemCondition.class));
 //        registerCommand(FLOW_CONTROL = new Command(4, CommandType.COMMAND_CONTROL, Localization.FLOW_CONTROL_SHORT, Localization.FLOW_CONTROL_LONG,
 //                new ConnectionSet[]{ConnectionSet.MULTIPLE_INPUT_2, ConnectionSet.MULTIPLE_INPUT_5, ConnectionSet.MULTIPLE_OUTPUT_2, ConnectionSet.MULTIPLE_OUTPUT_5},
 //                MenuSplit.class));
-//        registerCommand(LIQUID_INPUT = new Command(5, CommandType.INPUT, Localization.LIQUID_INPUT_SHORT, Localization.LIQUID_INPUT_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuTank.class, MenuTargetTank.class, MenuLiquid.class));
-//        registerCommand(LIQUID_OUTPUT = new Command(6, CommandType.OUTPUT, Localization.LIQUID_OUTPUT_SHORT, Localization.LIQUID_OUTPUT_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuTank.class, MenuTargetTank.class, MenuLiquidOutput.class));
 //        registerCommand(LIQUID_CONDITION = new Command(7, CommandType.COMMAND_CONTROL, Localization.LIQUID_CONDITION_SHORT, Localization.LIQUID_CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuTankCondition.class, MenuTargetTank.class, MenuLiquidCondition.class));
@@ -103,14 +88,12 @@ public class CommandRegistry
 //        registerCommand(NODE = new Command(14, CommandType.MISC, Localization.NODE_SHORT, Localization.NODE_LONG,
 //                new ConnectionSet[]{ConnectionSet.INPUT_NODE, ConnectionSet.OUTPUT_NODE},
 //                MenuResult.class));
-//        registerCommand(CAMOUFLAGE = new Command(15, CommandType.MISC, Localization.CAMOUFLAGE_SHORT, Localization.CAMOUFLAGE_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuCamouflage.class, MenuCamouflageShape.class, MenuCamouflageInside.class, MenuCamouflageSides.class, MenuCamouflageItems.class));
 //        registerCommand(SIGN = new Command(16, CommandType.MISC, Localization.SIGN_SHORT, Localization.SIGN_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuSigns.class, MenuSignText.class));
         registerCommand(new CommandTrigger());
         registerCommand(new CommandItemInput());
+        registerCommand(new CommandItemOutput());
         registerCommand(new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
 

@@ -59,7 +59,7 @@ public abstract class MenuStuff<Type> extends Menu
     public RadioButtonList radioButtons;
     public CheckBoxList checkBoxes;
 
-    public MenuStuff(FlowComponent parent, Class<? extends Setting> settingClass)
+    public MenuStuff(FlowComponent parent)
     {
         super(parent);
 
@@ -68,18 +68,9 @@ public abstract class MenuStuff<Type> extends Menu
         externalSettings = new ArrayList<Setting<Type>>();
         for (int i = 0; i < getSettingCount(); i++)
         {
-            try
-            {
-                Constructor<? extends Setting> constructor = settingClass.getConstructor(int.class);
-                Object obj = constructor.newInstance(i);
-                Setting<Type> setting = (Setting<Type>)obj;
-                settings.add(setting);
-                externalSettings.add(setting);
-            } catch (Exception ex)
-            {
-                System.err.println("Failed to create setting");
-            }
-
+            Setting<Type> setting = getSetting(i);
+            settings.add(setting);
+            externalSettings.add(setting);
         }
         numberTextBoxes = new TextBoxNumberList();
 
@@ -213,6 +204,8 @@ public abstract class MenuStuff<Type> extends Menu
             }
         };
     }
+
+    public abstract Setting<Type> getSetting(int id);
 
     public void initRadioButtons()
     {

@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class CraftingDummy extends InventoryCrafting
 {
-
     public int inventoryWidth;
 
     public MenuCrafting crafting;
+    protected IRecipe cachedRecipe;
     public Map<Integer, ItemStack> overrideMap;
 
     public CraftingDummy(MenuCrafting crafting)
@@ -78,17 +78,23 @@ public class CraftingDummy extends InventoryCrafting
 
     public IRecipe getRecipe()
     {
-        for (int i = 0; i < CraftingManager.getInstance().getRecipeList().size(); ++i)
+        if (checkRecipe(cachedRecipe)) return cachedRecipe;
+        for (Object o : CraftingManager.getInstance().getRecipeList())
         {
-            IRecipe recipe = (IRecipe)CraftingManager.getInstance().getRecipeList().get(i);
+            IRecipe recipe = (IRecipe)o;
 
-            if (recipe.matches(this, crafting.getParent().getManager().getWorldObj()))
+            if (checkRecipe(recipe))
             {
                 return recipe;
             }
         }
 
         return null;
+    }
+
+    public boolean checkRecipe(IRecipe recipe)
+    {
+        return recipe.matches(this, crafting.getParent().getManager().getWorldObj());
     }
 
     @Override
@@ -100,7 +106,7 @@ public class CraftingDummy extends InventoryCrafting
     public boolean isItemValidForRecipe(IRecipe recipe, ItemSetting result, Map<Integer, ItemStack> overrideMap, boolean advanced)
     {
         this.overrideMap = overrideMap;
-        if ((advanced && getRecipe() == null) || (!advanced && !recipe.matches(this, crafting.getParent().getManager().getWorldObj())))
+        if ((advanced && getRecipe() == null) || (!advanced && !checkRecipe(recipe)))
         {
             return false;
         }
@@ -119,7 +125,7 @@ public class CraftingDummy extends InventoryCrafting
     @Override
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-        return;
+
     }
 
 

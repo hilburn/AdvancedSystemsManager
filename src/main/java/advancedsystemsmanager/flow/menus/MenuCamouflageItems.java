@@ -5,6 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -71,5 +72,14 @@ public class MenuCamouflageItems extends MenuItem
         {
             errors.add(Names.NO_CAMOUFLAGE_SETTING);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public List updateSearch(String search, boolean showAll)
+    {
+        Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll, true));
+        thread.start();
+        return scrollControllerSearch.getResult();
     }
 }

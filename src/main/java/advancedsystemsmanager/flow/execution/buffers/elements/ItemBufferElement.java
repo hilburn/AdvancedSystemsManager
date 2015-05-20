@@ -49,7 +49,6 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
         content.stackSize -= amount;
         this.amount -= amount;
         if (content.stackSize == 0) inventory.setInventorySlotContents(slot, null);
-        onUpdate();
         return amount;
     }
 
