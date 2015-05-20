@@ -53,6 +53,8 @@ public class AdvancedSystemsManager
 
     public static LogHelper log = new LogHelper(Reference.ID);
 
+    public static Config config;
+
     public static CreativeTabs creativeTab;
 
     static Registerer registerer;
@@ -61,8 +63,8 @@ public class AdvancedSystemsManager
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = Metadata.init(metadata);
-        Config.init(event.getSuggestedConfigurationFile());
-
+        config = new Config(event.getSuggestedConfigurationFile());
+        config.init();
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override
@@ -78,7 +80,7 @@ public class AdvancedSystemsManager
             }
         };
 
-        registerer = new Registerer(log, PROXY);
+        registerer = new Registerer(log, PROXY, config);
         registerer.scan(BlockRegistry.class);
         registerer.scan(ItemRegistry.class);
 

@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class Menu implements INetworkSync
 {
     public FlowComponent parent;
-    boolean needSync;
+    boolean needsSync;
     public int id;
 
     public Menu(FlowComponent parent)
@@ -114,12 +114,12 @@ public abstract class Menu implements INetworkSync
     @Override
     public boolean needsSync()
     {
-        return needSync;
+        return needsSync;
     }
 
     @Override
     public void setSynced()
     {
-        needSync = false;
+        needsSync = false;
     }
 }

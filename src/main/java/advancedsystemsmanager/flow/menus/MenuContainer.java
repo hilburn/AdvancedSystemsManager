@@ -181,7 +181,11 @@ public class MenuContainer extends Menu
                     }
                 } else
                 {
-                    setSelectedInventoryAndSync(iContainerSelection.getId(), !selectedInventories.contains(iContainerSelection.getId()));
+                    MenuContainer.this.needsSync = true;
+                    long id = iContainerSelection.getId();
+                    if (selectedInventories.contains(id)) selectedInventories.remove(id);
+                    else selectedInventories.add(id);
+                    //TODO: Better syncing
                 }
             }
 
@@ -529,9 +533,9 @@ public class MenuContainer extends Menu
 
     public void setSelectedInventoryAndSync(long val, boolean select)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
-        writeData(dw, val, select);
-        PacketHandler.sendDataToServer(dw);
+//        DataWriter dw = getWriterForServerComponentPacket();
+//        writeData(dw, val, select);
+//        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(DataWriter dw, long id, boolean select)

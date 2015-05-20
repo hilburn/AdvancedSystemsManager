@@ -37,7 +37,7 @@ public class MenuRFCondition extends Menu
 
             public void onUpdate()
             {
-                MenuRFCondition.this.needSync = true;
+                MenuRFCondition.this.needsSync = true;
             }
         });
         this.textBoxes = new WideNumberBoxList();
@@ -46,7 +46,7 @@ public class MenuRFCondition extends Menu
             @Override
             public void onNumberChanged()
             {
-                MenuRFCondition.this.needSync = true;
+                MenuRFCondition.this.needsSync = true;
             }
         });
         this.textBox.setNumber(0);

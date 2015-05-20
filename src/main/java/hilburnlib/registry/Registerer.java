@@ -15,13 +15,28 @@ import java.lang.reflect.Modifier;
 
 public class Registerer
 {
+    private static IConfigLock NULL_LOCK = new IConfigLock()
+    {
+        @Override
+        public boolean shouldRegister(String string, boolean defaultValue)
+        {
+            return true;
+        }
+    };
     private LogHelper log;
     private IRenderRegistry renderRegistry;
+    private IConfigLock configLock;
 
     public Registerer(LogHelper log, IRenderRegistry renderRegistry)
     {
+        this(log, renderRegistry, NULL_LOCK);
+    }
+
+    public Registerer(LogHelper log, IRenderRegistry renderRegistry, IConfigLock configLock)
+    {
         this.log = log;
         this.renderRegistry = renderRegistry;
+        this.configLock = configLock;
     }
 
     public void scan(Class<?> targetClass)
@@ -30,23 +45,27 @@ public class Registerer
         {
             Register annotation = field.getAnnotation(Register.class);
             if (annotation == null) continue;
-            if (!annotation.dependency().isEmpty() && !Loader.isModLoaded(annotation.dependency()) && !ModAPIManager.INSTANCE.hasAPI(annotation.dependency())) continue;
-            Class clazz = field.getType();
-            if (Modifier.isStatic(field.getModifiers()))
+            ConfigKey configKey = field.getAnnotation(ConfigKey.class);
+            if ((annotation.dependency().isEmpty() || Loader.isModLoaded(annotation.dependency()) || ModAPIManager.INSTANCE.hasAPI(annotation.dependency())) &&
+                    (configKey == null || configLock.shouldRegister(configKey.value(), configKey.configDefault())))
             {
-                if (Item.class.isAssignableFrom(clazz))
+                Class clazz = field.getType();
+                if (Modifier.isStatic(field.getModifiers()))
                 {
-                    registerItem(field, annotation, clazz);
-                } else if (Block.class.isAssignableFrom(clazz))
-                {
-                    registerBlock(field, annotation, clazz);
+                    if (Item.class.isAssignableFrom(clazz))
+                    {
+                        registerItem(field, annotation, clazz);
+                    } else if (Block.class.isAssignableFrom(clazz))
+                    {
+                        registerBlock(field, annotation, clazz);
+                    } else
+                    {
+                        log.warn("Can only register Blocks and Items - " + field.getName() + " unrecognised");
+                    }
                 } else
                 {
-                    log.warn("Can only register Blocks and Items - " + field.getName() + " unrecognised");
+                    log.warn("Can't register non-static field " + field.getName());
                 }
-            } else
-            {
-                log.warn("Can't register non-static field " + field.getName());
             }
         }
     }

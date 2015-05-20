@@ -18,7 +18,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
 {
     public CommandItemOutput()
     {
-        super(ITEM_INPUT, Names.ITEM_INPUT, null);
+        super(ITEM_OUTPUT, Names.ITEM_OUTPUT, null);
     }
 
     @Override

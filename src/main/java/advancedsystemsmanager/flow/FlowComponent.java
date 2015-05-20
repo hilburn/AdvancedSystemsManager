@@ -685,7 +685,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         addConnection(id, null);
         if (connection.getComponentId() >= 0)
         {
-            manager.getFlowItem(connection.getComponentId()).addConnection(connection.getConnectionId(), null);
+            FlowComponent component = manager.getFlowItem(connection.getComponentId());
+            if (component != null) component.addConnection(connection.getConnectionId(), null);
         }
     }
 

@@ -4,19 +4,16 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.DataBitHelper;
 import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +78,7 @@ public abstract class MenuStuff<Type> extends Menu
             public void updateSelectedOption(int selectedOption)
             {
                 this.selectedOption = selectedOption;
-                needSync = true;
+                needsSync = true;
             }
         };
 
@@ -107,7 +104,7 @@ public abstract class MenuStuff<Type> extends Menu
                 @Override
                 public void onUpdate()
                 {
-                    needSync = true;
+                    needsSync = true;
                 }
             });
         }
@@ -132,7 +129,7 @@ public abstract class MenuStuff<Type> extends Menu
                 selectedSetting.setContent(o);
                 selectedSetting = null;
                 updateScrolling();
-                needSync = true;
+                needsSync = true;
             }
 
             @Override
@@ -351,7 +348,7 @@ public abstract class MenuStuff<Type> extends Menu
             if (inDeleteBounds(mX, mY))
             {
                 selectedSetting.delete();
-                needSync = true;
+                needsSync = true;
                 selectedSetting = null;
                 getScrollingList().updateScrolling();
             }

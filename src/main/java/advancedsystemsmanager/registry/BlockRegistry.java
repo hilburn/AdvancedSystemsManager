@@ -11,6 +11,7 @@ import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
+import hilburnlib.registry.ConfigKey;
 import hilburnlib.registry.Register;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -52,6 +53,7 @@ public class BlockRegistry
     public static BlockCableVoid cableVoid;
 
     //    Mod Cluster Elements
+    @ConfigKey(Names.CABLE_AE)
     @Register(tileEntity = TileEntityAENode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
     public static BlockCableAE cableAENode;
     @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)

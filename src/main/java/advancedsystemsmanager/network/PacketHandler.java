@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 public class PacketHandler
 {
     public static final double BLOCK_UPDATE_RANGE = 128;
+    public static final double BLOCK_UPDATE_SQ = BLOCK_UPDATE_RANGE * BLOCK_UPDATE_RANGE;
 
     public static void sendDataToServer(DataWriter dw)
     {

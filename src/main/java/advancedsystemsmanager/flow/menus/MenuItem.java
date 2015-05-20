@@ -62,7 +62,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                 public void onNumberChanged()
                 {
                     selectedSetting.setAmount(getNumber());
-                    needSync = true;
+                    needsSync = true;
                 }
             });
         }
@@ -79,7 +79,7 @@ public class MenuItem extends MenuStuff<ItemStack>
             public void onNumberChanged()
             {
                 getSelectedSetting().getItem().setItemDamage(getNumber());
-                needSync = true;
+                needsSync = true;
             }
         });
 
@@ -218,7 +218,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                         id = 0;
                     }
                     getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
-                    needSync = true;
+                    needsSync = true;
                     break;
                 }
             }

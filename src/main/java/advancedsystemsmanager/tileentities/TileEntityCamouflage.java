@@ -36,15 +36,10 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     private static final String NBT_META = "Meta";
     private static final String NBT_COLLISION = "Collision";
     private static final String NBT_FULL = "Full";
-    private static final String NBT_MIN_X = "MinX";
-    private static final String NBT_MAX_X = "MaxX";
-    private static final String NBT_MIN_Y = "MinY";
-    private static final String NBT_MAX_Y = "MaxY";
-    private static final String NBT_MIN_Z = "MinZ";
-    private static final String NBT_MAX_Z = "MaxZ";
+    private static final String NBT_BOUNDS = "Bounds";
     private boolean useCollision = true;
     private boolean fullCollision = false;
-    private int[] bounds = {0, 32, 0, 32, 0, 32};
+    private byte[] bounds = {0, 32, 0, 32, 0, 32};
     private int[] ids = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
     private int[] metas = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
     private boolean hasClientUpdatedData;
@@ -160,7 +155,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             {
                 if (bounds[i] != menu.getBounds(i))
                 {
-                    bounds[i] = menu.getBounds(i);
+                    bounds[i] = (byte)menu.getBounds(i);
                     isServerDirty = true;
                 }
             }
@@ -171,7 +166,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
                 {
                     int tmp = bounds[i + 1];
                     bounds[i + 1] = bounds[i];
-                    bounds[i] = tmp;
+                    bounds[i] = (byte)tmp;
                 }
             }
         }
@@ -355,10 +350,10 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
                     if (dr.readBoolean())
                     {
-                        bounds[i] = dr.readBoolean() ? 32 : 0;
+                        bounds[i] = (byte)(dr.readBoolean() ? 32 : 0);
                     } else
                     {
-                        bounds[i] = dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS.getBitCount() - 1);
+                        bounds[i] = (byte)(dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS.getBitCount() - 1));
                     }
                 }
             }
@@ -393,7 +388,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     {
         double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
 
-        if (distance > Math.pow(PacketHandler.BLOCK_UPDATE_RANGE, 2))
+        if (distance > PacketHandler.BLOCK_UPDATE_SQ)
         {
             hasClientUpdatedData = false;
         } else if (!hasClientUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
@@ -421,12 +416,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             useCollision = tagCompound.getBoolean(NBT_COLLISION);
             fullCollision = tagCompound.getBoolean(NBT_FULL);
 
-            bounds[0] = tagCompound.getByte(NBT_MIN_X);
-            bounds[1] = tagCompound.getByte(NBT_MAX_X);
-            bounds[2] = tagCompound.getByte(NBT_MIN_Y);
-            bounds[3] = tagCompound.getByte(NBT_MAX_Y);
-            bounds[4] = tagCompound.getByte(NBT_MIN_Z);
-            bounds[5] = tagCompound.getByte(NBT_MAX_Z);
+            bounds = tagCompound.getByteArray(NBT_BOUNDS);
         }
     }
 
@@ -450,12 +440,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             tagCompound.setBoolean(NBT_COLLISION, useCollision);
             tagCompound.setBoolean(NBT_FULL, fullCollision);
 
-            tagCompound.setByte(NBT_MIN_X, (byte)bounds[0]);
-            tagCompound.setByte(NBT_MAX_X, (byte)bounds[1]);
-            tagCompound.setByte(NBT_MIN_Y, (byte)bounds[2]);
-            tagCompound.setByte(NBT_MAX_Y, (byte)bounds[3]);
-            tagCompound.setByte(NBT_MIN_Z, (byte)bounds[4]);
-            tagCompound.setByte(NBT_MAX_Z, (byte)bounds[5]);
+            tagCompound.setByteArray(NBT_BOUNDS, bounds);
         }
 
 
