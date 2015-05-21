@@ -18,6 +18,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class BlockRegistry
 {
@@ -43,8 +45,24 @@ public class BlockRegistry
     public static BlockCableValve cableValve;
     @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BUD)
     public static BlockCableBUD cableBUD;
-    @Register(tileEntity = TileEntityBreaker.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BREAKER)
-    public static BlockCableBreaker cableBreaker;
+    @Register(tileEntity = TileEntityBlockGate.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BLOCK_GATE)
+    public static BlockCableGate cableBlockGate = new BlockCableGate(Names.CABLE_BLOCK_GATE)
+    {
+        @Override
+        public TileEntity createNewTileEntity(World world, int meta)
+        {
+            return new TileEntityBlockGate();
+        }
+    };
+    @Register(tileEntity = TileEntityFluidGate.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_FLUID_GATE)
+    public static BlockCableGate cableFluidGate = new BlockCableGate(Names.CABLE_FLUID_GATE)
+    {
+        @Override
+        public TileEntity createNewTileEntity(World world, int meta)
+        {
+            return new TileEntityFluidGate();
+        }
+    };
     @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.CABLE_CAMO, SBRH = RenderCamouflage.class)
     public static BlockCableCamouflages cableCamouflage;
     @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_SIGN)
@@ -69,7 +87,8 @@ public class BlockRegistry
         ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 0)));
         ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 8)));
         ClusterRegistry.register(TileEntityBUD.class, cableBUD);
-        ClusterRegistry.register(TileEntityBreaker.class, cableBreaker);
+        ClusterRegistry.register(TileEntityBlockGate.class, cableBlockGate);
+        ClusterRegistry.register(TileEntityFluidGate.class, cableFluidGate);
         ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 0)));
         ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 1)));
         ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 2)));
@@ -137,7 +156,7 @@ public class BlockRegistry
         );
 
 
-        GameRegistry.addShapelessRecipe(new ItemStack(cableBreaker, 1),
+        GameRegistry.addShapelessRecipe(new ItemStack(cableBlockGate, 1),
                 cable,
                 Items.iron_pickaxe,
                 Blocks.dispenser

@@ -1,15 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
-
-import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.network.*;
 import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,45 +10,30 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityBreaker extends TileEntityClusterElement implements IInventory, IPacketBlock
+public class TileEntityBlockGate extends TileEntityBaseGate implements IInventory
 {
 
-    private static final String FAKE_PLAYER_NAME = "[asm_PLAYER]";
+    private static final String FAKE_PLAYER_NAME = "[ASM_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
-    private static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
-    private static final String NBT_DIRECTION = "Direction";
-    private static final int UPDATE_BUFFER_DISTANCE = 5;
+
     private List<ItemStack> inventory;
     private List<ItemStack> inventoryCache;
     private boolean broken;
-    private int placeDirection;
-    private boolean blocked;
-    private boolean missingPlaceDirection;
-    private boolean hasUpdatedData;
+    protected boolean blocked;
+
 
     @Override
     public void updateEntity()
     {
-        if (missingPlaceDirection)
-        {
-            setPlaceDirection(getBlockMetadata());
-            missingPlaceDirection = false;
-        }
-        if (worldObj.isRemote)
-        {
-            keepClientDataUpdated();
-        }
-
+        super.updateEntity();
         if (inventory != null)
         {
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
@@ -250,25 +228,7 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    private void keepClientDataUpdated()
-    {
-        if (isPartOfCluster())
-        {
-            return;
-        }
 
-        double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-
-        if (distance > Math.pow(PacketHandler.BLOCK_UPDATE_RANGE, 2))
-        {
-            hasUpdatedData = false;
-        } else if (!hasUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
-        {
-            hasUpdatedData = true;
-            PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 0);
-        }
-    }
 
     @Override
     public int getSizeInventory()
@@ -306,7 +266,7 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
 
     private boolean canBreakBlock(Block block, int x, int y, int z)
     {
-        return block != null && Block.getIdFromBlock(block) != Block.getIdFromBlock(Blocks.bedrock) && block.getBlockHardness(worldObj, x, y, z) >= 0;
+        return block != null && block != Blocks.bedrock && block.getBlockHardness(worldObj, x, y, z) >= 0;
     }
 
     @Override
@@ -371,7 +331,7 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     @Override
     public String getInventoryName()
     {
-        return BlockRegistry.cableBreaker.getLocalizedName();
+        return BlockRegistry.cableBlockGate.getLocalizedName();
     }
 
     @Override
@@ -383,7 +343,7 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     @Override
     public int getInventoryStackLimit()
     {
-        return 64;
+        return 1;
     }
 
     @Override
@@ -411,86 +371,6 @@ public class TileEntityBreaker extends TileEntityClusterElement implements IInve
     }
 
     @Override
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        if (tagCompound.hasKey(NBT_DIRECTION))
-        {
-            setPlaceDirection(tagCompound.getByte(NBT_DIRECTION));
-        } else
-        {
-            if (worldObj != null)
-            {
-                setPlaceDirection(getBlockMetadata());
-            } else
-            {
-                missingPlaceDirection = true;
-            }
-        }
-    }
-
-    @Override
-    protected void writeContentToNBT(NBTTagCompound tagCompound)
-    {
-        tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
-    }
-
-    @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
-    }
-
-    @Override
-    public void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id)
-    {
-        if (onServer)
-        {
-            dw.writeData(placeDirection, DataBitHelper.PLACE_DIRECTION);
-        } else
-        {
-            //nothing to write, empty packet
-        }
-    }
-
-    @Override
-    public void readData(DataReader dr, EntityPlayer player, boolean onServer, int id)
-    {
-        if (onServer)
-        {
-            //respond by sending the data to the client that required it
-            PacketHandler.sendBlockPacket(this, player, 0);
-        } else
-        {
-            placeDirection = dr.readData(DataBitHelper.PLACE_DIRECTION);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
-    }
-
-    @Override
-    public int infoBitLength(boolean onServer)
-    {
-        return 0;
-    }
-
-    public int getPlaceDirection()
-    {
-        return placeDirection;
-    }
-
-    public void setPlaceDirection(int placeDirection)
-    {
-        if (this.placeDirection != placeDirection)
-        {
-            this.placeDirection = placeDirection;
-
-            if (!isPartOfCluster() && worldObj != null && !worldObj.isRemote)
-            {
-                PacketHandler.sendBlockPacket(this, null, 0);
-            }
-        }
-    }
-
-
     public boolean isBlocked()
     {
         return blocked;

@@ -13,7 +13,8 @@ public class Names
     public static final String CABLE_VALVE = CABLE + "_intake";
     public static final String CABLE_VOID = CABLE + "_void";
     public static final String CABLE_BUD = CABLE + "_bud";
-    public static final String CABLE_BREAKER = CABLE + "_breaker";
+    public static final String CABLE_BLOCK_GATE = CABLE + "_breaker";
+    public static final String CABLE_FLUID_GATE = CABLE + "_fluid_gate";
     public static final String CABLE_CLUSTER = CABLE + "_cluster";
     public static final String CABLE_CAMO = CABLE + "_camo";
     public static final String CABLE_SIGN = CABLE + "_sign";

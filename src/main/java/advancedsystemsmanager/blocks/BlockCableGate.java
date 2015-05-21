@@ -1,9 +1,7 @@
 package advancedsystemsmanager.blocks;
 
-
-import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.tileentities.TileEntityBreaker;
+import advancedsystemsmanager.tileentities.TileEntityBaseGate;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,26 +10,17 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-//This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableBreaker extends BlockTileBase
+public abstract class BlockCableGate extends BlockTileBase
 {
-    public BlockCableBreaker()
+    public BlockCableGate(String name)
     {
-        super(Names.CABLE_BREAKER, 3);
+        super(name, 3);
     }
-
-    @Override
-    public TileEntity createNewTileEntity(World world, int meta)
-    {
-        return new TileEntityBreaker();
-    }
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -46,12 +35,12 @@ public class BlockCableBreaker extends BlockTileBase
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
 
-        TileEntityBreaker breaker = TileEntityCluster.getTileEntity(TileEntityBreaker.class, world, x, y, z);
+        TileEntityBaseGate gate = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
 
-        if (breaker != null)
+        if (gate != null)
         {
-            int meta = breaker.getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
-            int direction = breaker.getPlaceDirection();
+            int meta = gate.getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
+            int direction = gate.getPlaceDirection();
 
             if (side == meta && side == direction)
             {
@@ -83,7 +72,7 @@ public class BlockCableBreaker extends BlockTileBase
             side = ForgeDirection.VALID_DIRECTIONS[side].getOpposite().ordinal();
         }
 
-        TileEntityBreaker breaker = TileEntityCluster.getTileEntity(TileEntityBreaker.class, world, x, y, z);
+        TileEntityBaseGate breaker = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
         if (breaker != null && !breaker.isBlocked())
         {
             breaker.setPlaceDirection(side);
@@ -99,7 +88,7 @@ public class BlockCableBreaker extends BlockTileBase
     {
         int meta = BlockPistonBase.determineOrientation(world, x, y, z, entity);
 
-        TileEntityBreaker breaker = TileEntityCluster.getTileEntity(TileEntityBreaker.class, world, x, y, z);
+        TileEntityBaseGate breaker = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
         if (breaker != null)
         {
             breaker.setMetaData(meta);

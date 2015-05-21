@@ -64,7 +64,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         }
     }
 
-    public static <T> T getTileEntity(Class<? extends TileEntityClusterElement> clazz, IBlockAccess world, int x, int y, int z)
+    public static <T extends TileEntityClusterElement> T getTileEntity(Class<T> clazz, IBlockAccess world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
 
