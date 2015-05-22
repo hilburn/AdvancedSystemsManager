@@ -19,7 +19,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void init()
     {
-        Settings.load();
+        Settings.loadDefault();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.util.ClusterMethodRegistration;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -15,6 +16,7 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +31,11 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
     private boolean broken;
     protected boolean blocked;
 
+    @Override
+    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
+    }
 
     @Override
     public void updateEntity()

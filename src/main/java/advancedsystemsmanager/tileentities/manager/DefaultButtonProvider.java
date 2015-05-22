@@ -5,8 +5,6 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CopyHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.settings.Settings;
@@ -14,7 +12,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class DefaultButtonProvider implements IManagerButtonProvider

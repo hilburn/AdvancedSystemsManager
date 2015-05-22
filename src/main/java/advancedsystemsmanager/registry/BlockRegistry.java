@@ -46,29 +46,22 @@ public class BlockRegistry
     @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BUD)
     public static BlockCableBUD cableBUD;
     @Register(tileEntity = TileEntityBlockGate.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BLOCK_GATE)
-    public static BlockCableGate cableBlockGate = new BlockCableGate(Names.CABLE_BLOCK_GATE)
-    {
-        @Override
-        public TileEntity createNewTileEntity(World world, int meta)
-        {
-            return new TileEntityBlockGate();
-        }
-    };
+    public static BlockCableBlockGate cableBlockGate;
     @Register(tileEntity = TileEntityFluidGate.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_FLUID_GATE)
-    public static BlockCableGate cableFluidGate = new BlockCableGate(Names.CABLE_FLUID_GATE)
-    {
-        @Override
-        public TileEntity createNewTileEntity(World world, int meta)
-        {
-            return new TileEntityFluidGate();
-        }
-    };
+    public static BlockCableFluidGate cableFluidGate;
     @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.CABLE_CAMO, SBRH = RenderCamouflage.class)
     public static BlockCableCamouflages cableCamouflage;
     @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_SIGN)
     public static BlockCableSign cableSign;
     @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_VOID)
-    public static BlockCableVoid cableVoid;
+    public static BlockTileBase cableVoid = new BlockTileBase(Names.CABLE_VOID)
+    {
+        @Override
+        public TileEntity createNewTileEntity(World world, int meta)
+        {
+            return new TileEntityVoid();
+        }
+    };
 
     //    Mod Cluster Elements
     @ConfigKey(Names.CABLE_AE)

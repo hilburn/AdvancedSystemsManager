@@ -5,63 +5,21 @@ import advancedsystemsmanager.tileentities.TileEntityBaseGate;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class BlockCableGate extends BlockTileBase
 {
-    public BlockCableGate(String name)
+    public BlockCableGate(String name, int icons)
     {
-        super(name, 3);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerBlockIcons(IIconRegister register)
-    {
-        super.registerBlockIcons(register);
-        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-    {
-
-        TileEntityBaseGate gate = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
-
-        if (gate != null)
-        {
-            int meta = gate.getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
-            int direction = gate.getPlaceDirection();
-
-            if (side == meta && side == direction)
-            {
-                return icons[0];
-            } else if (side == meta)
-            {
-                return icons[1];
-            } else if (side == direction)
-            {
-                return icons[2];
-            }
-        }
-
-        return blockIcon;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return side == 3 ? icons[0] : blockIcon;
+        super(name, icons);
     }
 
     @Override
@@ -78,9 +36,14 @@ public abstract class BlockCableGate extends BlockTileBase
             breaker.setPlaceDirection(side);
             return true;
         }
-
-
         return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta)
+    {
+        return side == 3 ? icons[0] : blockIcon;
     }
 
     @Override
@@ -93,6 +56,24 @@ public abstract class BlockCableGate extends BlockTileBase
         {
             breaker.setMetaData(meta);
             breaker.setPlaceDirection(meta);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockIcons(IIconRegister register)
+    {
+        super.registerBlockIcons(register);
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    {
+        TileEntityBaseGate gate = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
+        if (gate != null)
+        {
+            gate.onNeighbourBlockChange(world, x, y, z, block);
         }
     }
 }

@@ -7,7 +7,6 @@ import advancedsystemsmanager.gui.GuiHandler;
 import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
-import advancedsystemsmanager.network.FileHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.PacketEventHandler;
 import advancedsystemsmanager.proxy.CommonProxy;
@@ -89,8 +88,6 @@ public class AdvancedSystemsManager
         MessageHandler.init();
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
-
-        FileHelper.setConfigDir(event.getModConfigurationDirectory());
     }
 
     @Mod.EventHandler

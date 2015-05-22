@@ -1,10 +1,7 @@
 package advancedsystemsmanager.settings;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.helpers.Config;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
-import advancedsystemsmanager.network.FileHelper;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -48,17 +45,7 @@ public final class Settings
 
     private static void save()
     {
-        DataWriter dw = FileHelper.getWriter(NAME);
-
-        if (dw != null)
-        {
-            for (Map.Entry<String, Boolean> entry : settingsRegistry.entrySet())
-            {
-                dw.writeBoolean(entry.getValue());
-            }
-
-            FileHelper.close(dw);
-        }
+        AdvancedSystemsManager.config.saveSettings(settingsRegistry);
     }
 
     public static boolean getSetting(String name)
@@ -72,32 +59,7 @@ public final class Settings
         manager.specialRenderer = new SettingsScreen(manager);
     }
 
-    public static void load()
-    {
-        DataReader dr = FileHelper.read(NAME);
-
-        if (dr != null)
-        {
-            try
-            {
-                for (Map.Entry<String, Boolean> entry : settingsRegistry.entrySet())
-                {
-                    entry.setValue(dr.readBoolean());
-                }
-            } catch (Exception ignored)
-            {
-                loadDefault();
-            } finally
-            {
-                dr.close();
-            }
-        } else
-        {
-            loadDefault();
-        }
-    }
-
-    private static void loadDefault()
+    public static void loadDefault()
     {
         settingsRegistry = new LinkedHashMap<String, Boolean>(Config.managerSettings);
     }
@@ -156,9 +118,9 @@ public final class Settings
     {
         if (manager.getWorldObj().isRemote)
         {
-            DataWriter dw = PacketHandler.getWriterForServerActionPacket();
-            dw.writeBoolean(limitless);
-            PacketHandler.sendDataToServer(dw);
+//            DataWriter dw = PacketHandler.getWriterForServerActionPacket();
+//            dw.writeBoolean(limitless);
+//            PacketHandler.sendDataToServer(dw);
         } else
         {
             int meta = manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord);

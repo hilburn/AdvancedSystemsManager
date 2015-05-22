@@ -5,8 +5,6 @@ import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuGroup;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;

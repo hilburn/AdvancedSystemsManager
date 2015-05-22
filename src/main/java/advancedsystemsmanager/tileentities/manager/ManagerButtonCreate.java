@@ -6,8 +6,6 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.menus.MenuTarget;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import io.netty.buffer.ByteBuf;
