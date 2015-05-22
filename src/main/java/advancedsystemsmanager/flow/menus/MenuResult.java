@@ -5,8 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
@@ -56,7 +55,7 @@ public class MenuResult extends Menu
             @Override
             public void updateSelectedOption(int selectedOption)
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 writeData(dw, selectedOption);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -79,9 +78,9 @@ public class MenuResult extends Menu
         }
     }
 
-    public void writeData(DataWriter dw, int val)
+    public void writeData(ASMPacket dw, int val)
     {
-        dw.writeData(val, DataBitHelper.MENU_CONNECTION_TYPE_ID);
+        dw.writeByte(val);
     }
 
     @Override

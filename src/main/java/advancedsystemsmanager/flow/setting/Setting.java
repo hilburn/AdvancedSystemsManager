@@ -1,7 +1,6 @@
 package advancedsystemsmanager.flow.setting;
 
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,9 +56,9 @@ public abstract class Setting<Type>
 
     public abstract boolean isValid();
 
-    public abstract void writeData(DataWriter dw);
+    public abstract void writeData(ASMPacket dw);
 
-    public abstract void readData(DataReader dr);
+    public abstract void readData(ASMPacket dr);
 
     public abstract void copyFrom(Setting setting);
 

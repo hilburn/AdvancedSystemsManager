@@ -5,8 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -38,8 +37,8 @@ public class MenuInterval extends Menu
             @Override
             public void onNumberChanged()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeData(getNumber(), DataBitHelper.MENU_INTERVAL);
+                ASMPacket dw = getWriterForServerComponentPacket();
+                dw.writeVarIntToBuffer(getNumber());
                 PacketHandler.sendDataToServer(dw);
             }
         });

@@ -5,10 +5,8 @@ import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -104,12 +102,12 @@ public class MenuRedstoneStrength extends Menu
 
     public void sendServerData(int id)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, id);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, int id)
+    public void writeData(ASMPacket dw, int id)
     {
         boolean isTextBox = id != 2;
         dw.writeBoolean(isTextBox);
@@ -118,7 +116,7 @@ public class MenuRedstoneStrength extends Menu
             boolean isHigh = id == 1;
             dw.writeBoolean(isHigh);
             TextBoxNumber textBox = isHigh ? highTextBox : lowTextBox;
-            dw.writeData(textBox.getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
+            dw.writeByte(textBox.getNumber());
         } else
         {
             dw.writeBoolean(inverted);

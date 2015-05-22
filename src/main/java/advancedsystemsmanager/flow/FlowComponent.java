@@ -9,8 +9,7 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -1199,22 +1198,22 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     }
 
-    public void writeConnectionNode(DataWriter dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    public void writeConnectionNode(ASMPacket dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
     {
         dw.writeBoolean(false);
-        dw.writeData(connectionId, DataBitHelper.CONNECTION_ID);
+        dw.writeVarIntToBuffer(connectionId);
         dw.writeBoolean(false); //nodes
-        dw.writeData(nodeId, DataBitHelper.NODE_ID);
+        dw.writeVarIntToBuffer(nodeId);
         if (length != -1)
         {
-            dw.writeData(length, DataBitHelper.NODE_ID);
+            dw.writeVarIntToBuffer(length);
         }
         dw.writeBoolean(deleted);
         if (!deleted)
         {
             dw.writeBoolean(created);
-            dw.writeData(x, DataBitHelper.FLOW_CONTROL_X);
-            dw.writeData(y, DataBitHelper.FLOW_CONTROL_Y);
+            dw.writeShort(x);
+            dw.writeShort(y);
         }
 
     }

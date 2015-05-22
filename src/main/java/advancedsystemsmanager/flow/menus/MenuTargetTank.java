@@ -6,8 +6,7 @@ import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -32,9 +31,9 @@ public class MenuTargetTank extends MenuTarget
             @Override
             public void updateSelectedOption(int selectedOption)
             {
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeData(selectedDirectionId, DataBitHelper.MENU_TARGET_DIRECTION_ID);
-                dw.writeData(DataTypeHeader.START_OR_TANK_DATA.getId(), DataBitHelper.MENU_TARGET_TYPE_HEADER);
+                ASMPacket dw = getWriterForServerComponentPacket();
+                dw.writeByte(selectedDirectionId);
+                dw.writeByte(DataTypeHeader.START_OR_TANK_DATA.getId());
                 dw.writeBoolean(selectedOption == 1);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -85,9 +84,9 @@ public class MenuTargetTank extends MenuTarget
         {
             onlyFull[i] = newDataTarget.onlyFull[i];
 
-            DataWriter dw = getWriterForClientComponentPacket(container);
-            dw.writeData(i, DataBitHelper.MENU_TARGET_DIRECTION_ID);
-            dw.writeData(DataTypeHeader.START_OR_TANK_DATA.getId(), DataBitHelper.MENU_TARGET_TYPE_HEADER);
+            ASMPacket dw = getWriterForClientComponentPacket(container);
+            dw.writeByte(i);
+            dw.writeByte(DataTypeHeader.START_OR_TANK_DATA.getId());
             dw.writeBoolean(onlyFull[i]);
             PacketHandler.sendDataToListeningClients(container, dw);
         }

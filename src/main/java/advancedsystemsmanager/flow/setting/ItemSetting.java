@@ -1,9 +1,7 @@
 package advancedsystemsmanager.flow.setting;
 
 import advancedsystemsmanager.flow.menus.MenuItem;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.Item;
@@ -90,22 +88,17 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public void writeData(DataWriter dw)
+    public void writeData(ASMPacket dw)
     {
-        dw.writeData(Item.getIdFromItem(content.getItem()), DataBitHelper.MENU_ITEM_ID);
-        dw.writeData(fuzzyMode.ordinal(), DataBitHelper.FUZZY_MODE);
-        dw.writeData(content.getItemDamage(), DataBitHelper.MENU_ITEM_META);
-        dw.writeNBT(content.getTagCompound());
+        dw.writeItemStackToBuffer(content);
+        dw.writeByte(fuzzyMode.ordinal());
     }
 
     @Override
-    public void readData(DataReader dr)
+    public void readData(ASMPacket dr)
     {
-        int id = dr.readData(DataBitHelper.MENU_ITEM_ID);
-        fuzzyMode = FuzzyMode.values()[dr.readData(DataBitHelper.FUZZY_MODE)];
-        int meta = dr.readData(DataBitHelper.MENU_ITEM_META);
-        content = new ItemStack(Item.getItemById(id), 1, meta);
-        content.setTagCompound(dr.readNBT());
+        content = dr.readItemStackFromBuffer();
+        fuzzyMode = FuzzyMode.values()[dr.readByte()];
     }
 
     @Override

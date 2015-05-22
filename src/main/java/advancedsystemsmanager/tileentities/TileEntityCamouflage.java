@@ -253,53 +253,47 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id)
+    public void writeData(ASMPacket dw, int id)
     {
-        if (onServer)
+        for (int i = 0; i < getSideCount(); i++)
         {
-            for (int i = 0; i < getSideCount(); i++)
+            if (ids[i] == 0)
             {
-                if (ids[i] == 0)
-                {
-                    dw.writeBoolean(false);
-                } else
+                dw.writeBoolean(false);
+            } else
+            {
+                dw.writeBoolean(true);
+                dw.writeShort(ids[i]);
+                dw.writeByte(metas[i]);
+            }
+        }
+        if (getCamouflageType().useSpecialShape())
+        {
+            dw.writeBoolean(useCollision);
+            if (useCollision)
+            {
+                dw.writeBoolean(fullCollision);
+            }
+            for (int bound : bounds)
+            {
+                //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
+                //0 -> 01
+                //32 -> 11
+                //1 to 31 ->  bin(bound) << 1
+
+                if (bound == 0)
                 {
                     dw.writeBoolean(true);
-                    dw.writeData(ids[i], DataBitHelper.BLOCK_ID);
-                    dw.writeData(metas[i], DataBitHelper.BLOCK_META);
+                    dw.writeBoolean(false);
+                } else if (bound == 32)
+                {
+                    dw.writeBoolean(true);
+                    dw.writeBoolean(true);
+                } else
+                {
+                    dw.writeByte(bound << 1);
                 }
             }
-            if (getCamouflageType().useSpecialShape())
-            {
-                dw.writeBoolean(useCollision);
-                if (useCollision)
-                {
-                    dw.writeBoolean(fullCollision);
-                }
-                for (int bound : bounds)
-                {
-                    //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
-                    //0 -> 01
-                    //32 -> 11
-                    //1 to 31 ->  bin(bound) << 1
-
-                    if (bound == 0)
-                    {
-                        dw.writeBoolean(true);
-                        dw.writeBoolean(false);
-                    } else if (bound == 32)
-                    {
-                        dw.writeBoolean(true);
-                        dw.writeBoolean(true);
-                    } else
-                    {
-                        dw.writeData(bound << 1, DataBitHelper.CAMOUFLAGE_BOUNDS.getBitCount());
-                    }
-                }
-            }
-        } else
-        {
-            //nothing to write, empty packet
         }
     }
 
@@ -309,62 +303,49 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void readData(DataReader dr, EntityPlayer player, boolean onServer, int id)
+    public void readData(ASMPacket dr, int id)
     {
-        if (onServer)
+        for (int i = 0; i < getSideCount(); i++)
         {
-            //respond by sending the data to the client that required it
-            PacketHandler.sendBlockPacket(this, player, 0);
-        } else
-        {
-            for (int i = 0; i < getSideCount(); i++)
+            if (!dr.readBoolean())
             {
-                if (!dr.readBoolean())
-                {
-                    ids[i] = 0;
-                    metas[i] = 0;
-                } else
-                {
-                    ids[i] = dr.readData(DataBitHelper.BLOCK_ID);
-                    metas[i] = dr.readData(DataBitHelper.BLOCK_META);
-                    validateSide(i);
-                }
-            }
-            if (getCamouflageType().useSpecialShape())
+                ids[i] = 0;
+                metas[i] = 0;
+            } else
             {
-                useCollision = dr.readBoolean();
-                if (useCollision)
-                {
-                    fullCollision = dr.readBoolean();
-                } else
-                {
-                    fullCollision = false;
-                }
-
-                for (int i = 0; i < bounds.length; i++)
-                {
-                    //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
-                    //0 -> 01
-                    //32 -> 11
-                    //1 to 31 ->  bin(bound) << 1
-
-                    if (dr.readBoolean())
-                    {
-                        bounds[i] = (byte)(dr.readBoolean() ? 32 : 0);
-                    } else
-                    {
-                        bounds[i] = (byte)(dr.readData(DataBitHelper.CAMOUFLAGE_BOUNDS.getBitCount() - 1));
-                    }
-                }
+                ids[i] = dr.readShort();
+                metas[i] = dr.readByte();
+                validateSide(i);
             }
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
-    }
+        if (getCamouflageType().useSpecialShape())
+        {
+            useCollision = dr.readBoolean();
+            if (useCollision)
+            {
+                fullCollision = dr.readBoolean();
+            } else
+            {
+                fullCollision = false;
+            }
 
-    @Override
-    public int infoBitLength(boolean onServer)
-    {
-        return 1;
+            for (int i = 0; i < bounds.length; i++)
+            {
+                //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
+                //0 -> 01
+                //32 -> 11
+                //1 to 31 ->  bin(bound) << 1
+
+                if (dr.readBoolean())
+                {
+                    bounds[i] = (byte)(dr.readBoolean() ? 32 : 0);
+                } else
+                {
+                    bounds[i] = (byte)(dr.readByte() - 1);
+                }
+            }
+        }
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override

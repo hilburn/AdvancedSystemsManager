@@ -7,8 +7,7 @@ import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -69,12 +68,12 @@ public abstract class MenuRedstoneSides extends Menu
 
     public void sendServerData(boolean syncRequire)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, syncRequire);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, boolean syncRequire)
+    public void writeData(ASMPacket dw, boolean syncRequire)
     {
         dw.writeBoolean(syncRequire);
         if (syncRequire)
@@ -82,7 +81,7 @@ public abstract class MenuRedstoneSides extends Menu
             dw.writeBoolean(useFirstOption());
         } else
         {
-            dw.writeData(selection, DataBitHelper.MENU_REDSTONE_SETTING);
+            dw.writeByte(selection);
         }
     }
 

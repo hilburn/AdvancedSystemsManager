@@ -6,8 +6,7 @@ import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -230,16 +229,16 @@ public abstract class MenuTarget extends Menu
 
     public void writeUpdatedData(ContainerManager container, int id, DataTypeHeader header, int data)
     {
-        DataWriter dw = getWriterForClientComponentPacket(container);
+        ASMPacket dw = getWriterForClientComponentPacket(container);
         writeData(dw, id, header, data);
         PacketHandler.sendDataToListeningClients(container, dw);
     }
 
-    public void writeData(DataWriter dw, int id, DataTypeHeader header, int data)
+    public void writeData(ASMPacket dw, int id, DataTypeHeader header, int data)
     {
-        dw.writeData(id, DataBitHelper.MENU_TARGET_DIRECTION_ID);
-        dw.writeData(header.id, DataBitHelper.MENU_TARGET_TYPE_HEADER);
-        dw.writeData(data, header.bits);
+        dw.writeByte(id);
+        dw.writeByte(header.id);
+        dw.writeByte(data);
     }
 
     @Override
@@ -300,7 +299,7 @@ public abstract class MenuTarget extends Menu
 
     public void writeData(DataTypeHeader header, int data)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, selectedDirectionId, header, data);
         PacketHandler.sendDataToServer(dw);
     }
@@ -313,28 +312,21 @@ public abstract class MenuTarget extends Menu
 
     public enum DataTypeHeader
     {
-        ACTIVATE(0, DataBitHelper.BOOLEAN),
-        USE_ADVANCED_SETTING(1, DataBitHelper.BOOLEAN),
-        START_OR_TANK_DATA(2, DataBitHelper.MENU_TARGET_RANGE),
-        END(3, DataBitHelper.MENU_TARGET_RANGE);
+        ACTIVATE(0),
+        USE_ADVANCED_SETTING(1),
+        START_OR_TANK_DATA(2),
+        END(3);
 
         public int id;
-        public DataBitHelper bits;
 
-        DataTypeHeader(int header, DataBitHelper bits)
+        DataTypeHeader(int header)
         {
             this.id = header;
-            this.bits = bits;
         }
 
         public int getId()
         {
             return id;
-        }
-
-        public DataBitHelper getBits()
-        {
-            return bits;
         }
     }
 

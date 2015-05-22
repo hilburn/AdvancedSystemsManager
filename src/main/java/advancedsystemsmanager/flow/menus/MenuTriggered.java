@@ -3,9 +3,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.util.StevesHooks;
 import cpw.mods.fml.relauncher.Side;
@@ -13,7 +11,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.EnumSet;
-
 
 public abstract class MenuTriggered extends Menu
 {
@@ -58,19 +55,19 @@ public abstract class MenuTriggered extends Menu
         return this.textBoxes.onKeyStroke(gui, c, k);
     }
 
-    public void writeData(DataWriter dw)
+    public void writeData(ASMPacket dw)
     {
         int val = this.getDelay();
         if (val < getMin())
         {
             val = getMin();
         }
-        dw.writeData(val, DataBitHelper.MENU_INTERVAL);
+        dw.writeVarIntToBuffer(val);
     }
 
-    public void readData(DataReader dr)
+    public void readData(ASMPacket dr)
     {
-        this.setDelay(dr.readData(DataBitHelper.MENU_INTERVAL));
+        this.setDelay(dr.readVarIntFromBuffer());
     }
 
     public void copyFrom(Menu menu)

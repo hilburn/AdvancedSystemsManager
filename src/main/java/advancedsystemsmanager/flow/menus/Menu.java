@@ -5,7 +5,7 @@ import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -47,7 +47,7 @@ public abstract class Menu implements INetworkSync
         return false;
     }
 
-    public DataWriter getWriterForServerComponentPacket()
+    public ASMPacket getWriterForServerComponentPacket()
     {
         return PacketHandler.getWriterForServerComponentPacket(getParent(), this);
     }
@@ -57,7 +57,7 @@ public abstract class Menu implements INetworkSync
         return parent;
     }
 
-    public DataWriter getWriterForClientComponentPacket(ContainerManager container)
+    public ASMPacket getWriterForClientComponentPacket(ContainerManager container)
     {
         return PacketHandler.getWriterForClientComponentPacket(container, getParent(), this);
     }

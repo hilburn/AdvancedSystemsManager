@@ -2,15 +2,12 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
@@ -134,24 +131,24 @@ public class MenuListOrder extends Menu
 
     public void sendServerData(UpdateType type)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, type);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, UpdateType type)
+    public void writeData(ASMPacket dw, UpdateType type)
     {
-        dw.writeData(type.ordinal(), DataBitHelper.ORDER_TYPES);
+        dw.writeByte(type.ordinal());
         switch (type)
         {
             case USE_ALL:
                 dw.writeBoolean(all);
                 break;
             case AMOUNT:
-                dw.writeData(textBox.getNumber(), DataBitHelper.ORDER_AMOUNT);
+                dw.writeVarIntToBuffer(textBox.getNumber());
                 break;
             case TYPE:
-                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.ORDER_TYPES);
+                dw.writeByte(radioButtons.getSelectedOption());
                 break;
             case REVERSED:
                 dw.writeBoolean(reversed);

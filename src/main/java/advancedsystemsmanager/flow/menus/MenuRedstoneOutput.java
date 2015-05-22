@@ -7,8 +7,7 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -42,9 +41,9 @@ public class MenuRedstoneOutput extends Menu
             @Override
             public void onNumberChanged()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(true); //header
-                dw.writeData(getNumber(), DataBitHelper.MENU_REDSTONE_ANALOG);
+                dw.writeByte(getNumber());
                 PacketHandler.sendDataToServer(dw);
             }
 
@@ -62,9 +61,9 @@ public class MenuRedstoneOutput extends Menu
             public void updateSelectedOption(int selectedOption)
             {
                 setSelectedOption(selectedOption);
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(false); //header
-                dw.writeData(selectedOption, DataBitHelper.MENU_REDSTONE_OUTPUT_TYPE);
+                dw.writeByte(selectedOption);
                 PacketHandler.sendDataToServer(dw);
             }
         };

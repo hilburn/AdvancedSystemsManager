@@ -2,13 +2,10 @@ package advancedsystemsmanager.network;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
-import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.Point;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.gui.ContainerBase;
 import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -24,15 +21,14 @@ public class PacketHandler
     public static final double BLOCK_UPDATE_RANGE = 128;
     public static final double BLOCK_UPDATE_SQ = BLOCK_UPDATE_RANGE * BLOCK_UPDATE_RANGE;
 
-    public static void sendDataToServer(DataWriter dw)
+    public static void sendDataToServer(ASMPacket dw)
     {
         dw.sendServerPacket();
-        dw.close();
     }
 
     public static void sendAllData(Container container, ICrafting crafting, ITileEntityInterface te)
     {
-        DataWriter dw = new DataWriter();
+        ASMPacket dw = new ASMPacket();
 
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
@@ -40,10 +36,9 @@ public class PacketHandler
         //te.writeNetworkComponent(dw);
 
         sendDataToPlayer(crafting, dw);
-        dw.close();
     }
 
-    public static void sendDataToPlayer(ICrafting crafting, DataWriter dw)
+    public static void sendDataToPlayer(ICrafting crafting, ASMPacket dw)
     {
         if (crafting instanceof EntityPlayerMP)
         {
@@ -53,9 +48,9 @@ public class PacketHandler
         }
     }
 
-    public static DataWriter getWriterForUpdate(Container container)
+    public static ASMPacket getWriterForUpdate(Container container)
     {
-        DataWriter dw = new DataWriter();
+        ASMPacket dw = new ASMPacket();
 
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
@@ -78,9 +73,9 @@ public class PacketHandler
     }*/
 
     @SideOnly(Side.CLIENT)
-    public static DataWriter getWriterForServerActionPacket()
+    public static ASMPacket getWriterForServerActionPacket()
     {
-        DataWriter dw = getBaseWriterForServerPacket();
+        ASMPacket dw = getBaseWriterForServerPacket();
 
         dw.writeBoolean(true); //action
 
@@ -88,12 +83,12 @@ public class PacketHandler
     }
 
     @SideOnly(Side.CLIENT)
-    private static DataWriter getBaseWriterForServerPacket()
+    private static ASMPacket getBaseWriterForServerPacket()
     {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
         if (container != null)
         {
-            DataWriter dw = new DataWriter();
+            ASMPacket dw = new ASMPacket();
             dw.writeBoolean(true); //use container
             dw.writeByte(container.windowId);
 
@@ -106,15 +101,15 @@ public class PacketHandler
 
     public static void sendUpdateInventoryPacket(ContainerManager container)
     {
-        DataWriter dw = PacketHandler.getWriterForSpecificData(container);
+        ASMPacket dw = PacketHandler.getWriterForSpecificData(container);
         createNonComponentPacket(dw);
         dw.writeBoolean(true);
         sendDataToListeningClients(container, dw);
     }
 
-    private static DataWriter getWriterForSpecificData(Container container)
+    private static ASMPacket getWriterForSpecificData(Container container)
     {
-        DataWriter dw = new DataWriter();
+        ASMPacket dw = new ASMPacket();
 
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
@@ -124,128 +119,101 @@ public class PacketHandler
         return dw;
     }
 
-    private static void createNonComponentPacket(DataWriter dw)
+    private static void createNonComponentPacket(ASMPacket dw)
     {
         dw.writeBoolean(false); //this is a packet that has nothing to do with a specific FlowComponent
     }
 
-    public static void sendDataToListeningClients(ContainerBase container, DataWriter dw)
+    public static void sendDataToListeningClients(ContainerBase container, ASMPacket dw)
     {
         dw.sendPlayerPackets(container);
-        dw.close();
     }
 
-    public static DataWriter getWriterForServerComponentPacket(FlowComponent component, Menu menu)
+    public static ASMPacket getWriterForServerComponentPacket(FlowComponent component, Menu menu)
     {
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getWriterForServerPacket();
         createComponentPacket(dw, component, menu);
         return dw;
     }
 
     @SideOnly(Side.CLIENT)
-    public static DataWriter getWriterForServerPacket()
+    public static ASMPacket getWriterForServerPacket()
     {
-        DataWriter dw = getBaseWriterForServerPacket();
+        ASMPacket dw = getBaseWriterForServerPacket();
 
         dw.writeBoolean(false); //no action
 
         return dw;
     }
 
-    private static void createComponentPacket(DataWriter dw, FlowComponent component, Menu menu)
+    private static void createComponentPacket(ASMPacket dw, FlowComponent component, Menu menu)
     {
         dw.writeBoolean(true); //this is a packet for a specific FlowComponent
-        dw.writeComponentId(component.getManager(), component.getId());
+        dw.writeLong(component.getId());
 
         if (menu != null)
         {
             dw.writeBoolean(true); //this is packet for a specific menu
-            dw.writeData(menu.getId(), DataBitHelper.FLOW_CONTROL_MENU_COUNT);
+            dw.writeByte(menu.getId());
         } else
         {
             dw.writeBoolean(false); //this is a packet that has nothing to do with a menu
         }
     }
 
-    public static DataWriter getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
+    public static ASMPacket getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
     {
-        DataWriter dw = PacketHandler.getWriterForSpecificData(container);
+        ASMPacket dw = PacketHandler.getWriterForSpecificData(container);
         createComponentPacket(dw, component, menu);
         return dw;
     }
 
-    public static DataWriter getButtonPacketWriter()
+    public static ASMPacket getButtonPacketWriter()
     {
-        DataWriter dw = getWriterForServerPacket();
+        ASMPacket dw = getWriterForServerPacket();
         createNonComponentPacket(dw);
         return dw;
     }
 
-    public static void sendNewFlowComponent(ContainerManager container, FlowComponent component)
+    public static void writeAllComponentData(ASMPacket dw, FlowComponent flowComponent)
     {
-        DataWriter dw = new DataWriter();
-
-        dw.writeBoolean(true); //use container
-        dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
-        dw.writeBoolean(true); //new data;
-
-        writeAllComponentData(dw, component);
-        PacketHandler.sendDataToListeningClients(container, dw);
-
-        dw.close();
-    }
-
-    public static void writeAllComponentData(DataWriter dw, FlowComponent flowComponent)
-    {
-        dw.writeData(flowComponent.getX(), DataBitHelper.FLOW_CONTROL_X);
-        dw.writeData(flowComponent.getY(), DataBitHelper.FLOW_CONTROL_Y);
-        dw.writeData(flowComponent.getType().getId(), DataBitHelper.FLOW_CONTROL_TYPE_ID);
-        dw.writeComponentId(flowComponent.manager, flowComponent.getId());
-        dw.writeString(flowComponent.getComponentName(), DataBitHelper.NAME_LENGTH);
-        if (flowComponent.getParent() != null)
-        {
-            dw.writeBoolean(true);
-            dw.writeComponentId(flowComponent.getManager(), flowComponent.getParent().getId());
-        } else
-        {
-            dw.writeBoolean(false);
-        }
-        for (Menu menu : flowComponent.getMenus())
-        {
-            //menu.writeData(dw);
-        }
-
-        for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-        {
-            Connection connection = flowComponent.getConnection(i);
-            dw.writeBoolean(connection != null);
-            if (connection != null)
-            {
-                dw.writeComponentId(flowComponent.getManager(), connection.getComponentId());
-                dw.writeData(connection.getConnectionId(), DataBitHelper.CONNECTION_ID);
-
-                dw.writeData(connection.getNodes().size(), DataBitHelper.NODE_ID);
-                for (Point point : connection.getNodes())
-                {
-                    dw.writeData(point.getX(), DataBitHelper.FLOW_CONTROL_X);
-                    dw.writeData(point.getY(), DataBitHelper.FLOW_CONTROL_Y);
-                }
-            }
-        }
-
-        flowComponent.getManager().updateVariables();
-    }
-
-    public static void sendRemovalPacket(ContainerManager container, int idToRemove)
-    {
-        DataWriter dw = PacketHandler.getWriterForSpecificData(container);
-        createNonComponentPacket(dw);
-        dw.writeBoolean(false);
-        dw.writeComponentId((TileEntityManager)container.getTileEntity(), idToRemove);
-        sendDataToListeningClients(container, dw);
-
-        dw.close();
+//        dw.writeData(flowComponent.getX(), DataBitHelper.FLOW_CONTROL_X);
+//        dw.writeData(flowComponent.getY(), DataBitHelper.FLOW_CONTROL_Y);
+//        dw.writeData(flowComponent.getType().getId(), DataBitHelper.FLOW_CONTROL_TYPE_ID);
+//        dw.writeComponentId(flowComponent.manager, flowComponent.getId());
+//        dw.writeString(flowComponent.getComponentName(), DataBitHelper.NAME_LENGTH);
+//        if (flowComponent.getParent() != null)
+//        {
+//            dw.writeBoolean(true);
+//            dw.writeComponentId(flowComponent.getManager(), flowComponent.getParent().getId());
+//        } else
+//        {
+//            dw.writeBoolean(false);
+//        }
+//        for (Menu menu : flowComponent.getMenus())
+//        {
+//            //menu.writeData(dw);
+//        }
+//
+//        for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
+//        {
+//            Connection connection = flowComponent.getConnection(i);
+//            dw.writeBoolean(connection != null);
+//            if (connection != null)
+//            {
+//                dw.writeComponentId(flowComponent.getManager(), connection.getComponentId());
+//                dw.writeData(connection.getConnectionId(), DataBitHelper.CONNECTION_ID);
+//
+//                dw.writeData(connection.getNodes().size(), DataBitHelper.NODE_ID);
+//                for (Point point : connection.getNodes())
+//                {
+//                    dw.writeData(point.getX(), DataBitHelper.FLOW_CONTROL_X);
+//                    dw.writeData(point.getY(), DataBitHelper.FLOW_CONTROL_Y);
+//                }
+//            }
+//        }
+//
+//        flowComponent.getManager().updateVariables();
     }
 
     public static void sendBlockPacket(IPacketBlock block, EntityPlayer player, int id)
@@ -255,18 +223,14 @@ public class PacketHandler
             TileEntity te = (TileEntity)block;
             boolean onServer = player == null || !player.worldObj.isRemote;
 
-            DataWriter dw = new DataWriter();
+            ASMPacket dw = new ASMPacket();
             dw.writeBoolean(false); //no container
-            dw.writeData(te.xCoord, DataBitHelper.XZ_COORDINATE);
-            dw.writeData(te.yCoord, DataBitHelper.Y_COORDINATE);
-            dw.writeData(te.zCoord, DataBitHelper.XZ_COORDINATE);
-            int length = block.infoBitLength(onServer);
-            if (length != 0)
-            {
-                dw.writeData(id, length);
-            }
-            block.writeData(dw, player, onServer, id);
+            dw.writeInt(te.xCoord);
+            dw.writeByte(te.yCoord);
+            dw.writeInt(te.zCoord);
+            dw.writeByte(id);
 
+            block.writeData(dw, id);
             if (!onServer)
             {
                 dw.sendServerPacket();
@@ -277,8 +241,6 @@ public class PacketHandler
             {
                 dw.sendPlayerPackets(te.xCoord + 0.5, te.yCoord, te.zCoord, BLOCK_UPDATE_RANGE, te.getWorldObj().provider.dimensionId);
             }
-
-            dw.close();
         }
     }
 }

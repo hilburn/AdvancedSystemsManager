@@ -5,9 +5,7 @@ import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionOption;
@@ -41,8 +39,8 @@ public class MenuDelayed extends MenuTriggered
         {
             public void onNumberChanged()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeData(getDelay(), DataBitHelper.MENU_INTERVAL);
+                ASMPacket dw = getWriterForServerComponentPacket();
+                dw.writeVarIntToBuffer(getDelay());
                 dw.writeBoolean(buttonList.getSelectedOption() == 0);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -51,8 +49,8 @@ public class MenuDelayed extends MenuTriggered
         {
             public void onNumberChanged()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeData(getDelay(), DataBitHelper.MENU_INTERVAL);
+                ASMPacket dw = getWriterForServerComponentPacket();
+                dw.writeVarIntToBuffer(getDelay());
                 dw.writeBoolean(buttonList.getSelectedOption() == 0);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -69,8 +67,8 @@ public class MenuDelayed extends MenuTriggered
             public void updateSelectedOption(int i)
             {
                 setSelectedOption(i);
-                DataWriter dw = getWriterForServerComponentPacket();
-                dw.writeData(getDelay(), DataBitHelper.MENU_INTERVAL);
+                ASMPacket dw = getWriterForServerComponentPacket();
+                dw.writeVarIntToBuffer(getDelay());
                 dw.writeBoolean(buttonList.getSelectedOption() == 0);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -98,14 +96,14 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public void writeData(DataWriter dw)
+    public void writeData(ASMPacket dw)
     {
         super.writeData(dw);
         dw.writeBoolean(buttonList.getSelectedOption() == 0);
     }
 
     @Override
-    public void readData(DataReader dr)
+    public void readData(ASMPacket dr)
     {
         super.readData(dr);
         buttonList.setSelectedOption(dr.readBoolean() ? 0 : 1);

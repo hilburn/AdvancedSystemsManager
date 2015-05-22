@@ -1,9 +1,7 @@
 package advancedsystemsmanager.flow.setting;
 
 import advancedsystemsmanager.flow.menus.MenuLiquid;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
@@ -80,15 +78,15 @@ public class LiquidSetting extends Setting<Fluid>
     }
 
     @Override
-    public void writeData(DataWriter dw)
+    public void writeData(ASMPacket dw)
     {
-        dw.writeData(content.getID(), DataBitHelper.MENU_FLUID_ID);
+        dw.writeShort(content.getID());
     }
 
     @Override
-    public void readData(DataReader dr)
+    public void readData(ASMPacket dr)
     {
-        content = FluidRegistry.getFluid(dr.readData(DataBitHelper.MENU_FLUID_ID));
+        content = FluidRegistry.getFluid(dr.readShort());
     }
 
     @Override

@@ -4,8 +4,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -68,10 +67,10 @@ public class MenuVariable extends Menu
             public void updateSelectedOption(int selectedOption)
             {
                 setSelectedOption(selectedOption);
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(true); //var || mode
                 dw.writeBoolean(false); //mode
-                dw.writeData(selectedOption, DataBitHelper.CONTAINER_MODE);
+                dw.writeVarIntToBuffer(selectedOption);
                 PacketHandler.sendDataToServer(dw);
             }
         };
@@ -110,10 +109,10 @@ public class MenuVariable extends Menu
             @Override
             public void onUpdate()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(true); //var || mode
                 dw.writeBoolean(true); //var
-                dw.writeData(selectedVariable, DataBitHelper.VARIABLE_TYPE);
+                dw.writeVarIntToBuffer(selectedVariable);
                 PacketHandler.sendDataToServer(dw);
             }
         };
@@ -136,7 +135,7 @@ public class MenuVariable extends Menu
             @Override
             public void onUpdate()
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(false); //executed
                 dw.writeBoolean(executed);
                 PacketHandler.sendDataToServer(dw);

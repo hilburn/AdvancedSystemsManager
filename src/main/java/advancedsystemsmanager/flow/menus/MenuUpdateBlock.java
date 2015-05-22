@@ -8,8 +8,7 @@ import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -245,17 +244,17 @@ public class MenuUpdateBlock extends MenuItem
 
     public void sendServerData(int id, int subId)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, id, subId);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, int id, int subId)
+    public void writeData(ASMPacket dw, int id, int subId)
     {
         dw.writeBoolean(false); //no setting specific
         dw.writeBoolean(true); //other data
-        dw.writeData(id, DataBitHelper.BUD_SYNC_TYPE);
-        dw.writeData(subId, id == 0 ? DataBitHelper.BUD_SYNC_SUB_TYPE_SHORT : DataBitHelper.BUD_SYNC_SUB_TYPE_LONG);
+        dw.writeByte(id);
+        dw.writeByte(subId);
 
         if (id == 0)
         {
@@ -275,10 +274,10 @@ public class MenuUpdateBlock extends MenuItem
                 dw.writeBoolean(setting.bits[subId]);
             } else if (subId == 4)
             {
-                dw.writeData(setting.lowerTextBox.getNumber(), DataBitHelper.BLOCK_META);
+                dw.writeByte(setting.lowerTextBox.getNumber());
             } else if (subId == 5)
             {
-                dw.writeData(setting.higherTextBox.getNumber(), DataBitHelper.BLOCK_META);
+                dw.writeByte(setting.higherTextBox.getNumber());
             } else if (subId == 6)
             {
                 dw.writeBoolean(setting.inverted);
@@ -349,7 +348,7 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
+    public void writeRadioButtonRefreshState(ASMPacket dw, boolean value)
     {
         dw.writeBoolean(false);
         super.writeRadioButtonRefreshState(dw, value);

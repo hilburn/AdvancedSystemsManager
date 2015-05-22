@@ -1,16 +1,10 @@
 package advancedsystemsmanager.api.network;
 
-
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
-import net.minecraft.entity.player.EntityPlayer;
+import advancedsystemsmanager.network.ASMPacket;
 
 public interface IPacketBlock
 {
+    void writeData(ASMPacket packet, int id);
 
-    void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id);
-
-    void readData(DataReader dr, EntityPlayer player, boolean onServer, int id);
-
-    int infoBitLength(boolean onServer);
+    void readData(ASMPacket packet, int id);
 }

@@ -4,7 +4,7 @@ import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import io.netty.buffer.ByteBuf;
@@ -13,7 +13,6 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MenuGroup extends Menu
 {
@@ -118,8 +117,8 @@ public class MenuGroup extends Menu
                 {
                     if (!component.equals(getParent()))
                     {
-                        DataWriter dw = getWriterForServerComponentPacket();
-                        dw.writeComponentId(getParent().getManager(), component.getId());
+                        ASMPacket dw = getWriterForServerComponentPacket();
+                        dw.writeVarIntToBuffer(component.getId());
                         dw.writeBoolean(GuiScreen.isShiftKeyDown());
                         PacketHandler.sendDataToServer(dw);
                     }

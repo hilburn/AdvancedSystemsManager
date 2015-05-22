@@ -56,13 +56,13 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public void writeData(ASMPacket packet, int id)
     {
         packet.writeByte(placeDirection);
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public void readData(ASMPacket packet, int id)
     {
         placeDirection = packet.readByte();
     }

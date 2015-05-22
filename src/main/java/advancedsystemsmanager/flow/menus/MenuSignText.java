@@ -6,8 +6,7 @@ import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -81,8 +80,8 @@ public class MenuSignText extends Menu
                 @Override
                 public void onUpdate()
                 {
-                    DataWriter dw = getWriterForServerComponentPacket();
-                    dw.writeData(id, DataBitHelper.LINE_ID);
+                    ASMPacket dw = getWriterForServerComponentPacket();
+                    dw.writeByte(id);
                     dw.writeBoolean(false);
                     dw.writeBoolean(getValue());
                     PacketHandler.sendDataToServer(dw);
@@ -243,10 +242,10 @@ public class MenuSignText extends Menu
                 hasChanged[i] -= partial;
                 if (hasChanged[i] <= 0)
                 {
-                    DataWriter dw = getWriterForServerComponentPacket();
-                    dw.writeData(i, DataBitHelper.LINE_ID);
+                    ASMPacket dw = getWriterForServerComponentPacket();
+                    dw.writeByte(i);
                     dw.writeBoolean(true);
-                    dw.writeString(textBoxes[i].getText(), DataBitHelper.LINE_LENGTH);
+                    dw.writeStringToBuffer(textBoxes[i].getText());
                     PacketHandler.sendDataToServer(dw);
                 }
             }

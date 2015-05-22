@@ -7,6 +7,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -19,77 +20,49 @@ public class PacketEventHandler
     @SubscribeEvent
     public void onClientPacket(FMLNetworkEvent.ClientCustomPacketEvent event)
     {
-        DataReader dr = new DataReader(event.packet.payload().array());
-        EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
-
-        boolean useContainer = dr.readBoolean();
-
-        if (useContainer)
-        {
-            int containerId = dr.readByte();
-            Container container = player.openContainer;
-
-            if (container != null && container.windowId == containerId && container instanceof ContainerBase)
-            {
-                if (dr.readBoolean())
-                {
-                    //((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
-                } else
-                {
-                    //((ContainerBase)container).getTileEntity().readAllData(dr, player);
-                }
-
-            }
-        } else
-        {
-            int x = dr.readData(DataBitHelper.XZ_COORDINATE);
-            int y = dr.readData(DataBitHelper.Y_COORDINATE);
-            int z = dr.readData(DataBitHelper.XZ_COORDINATE);
-
-            TileEntity te = player.worldObj.getTileEntity(x, y, z);
-            if (te != null && te instanceof IPacketBlock)
-            {
-                int id = dr.readData(((IPacketBlock)te).infoBitLength(false));
-                ((IPacketBlock)te).readData(dr, player, false, id);
-            }
-        }
-
-        dr.close();
+        handlePacket(event.packet.payload(), FMLClientHandler.instance().getClient().thePlayer);
     }
 
     @SubscribeEvent
     public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event)
     {
-        DataReader dr = new DataReader(event.packet.payload().array());
-        EntityPlayer player = ((NetHandlerPlayServer)event.handler).playerEntity;
+        handlePacket(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
+    }
 
-        boolean useContainer = dr.readBoolean();
+    public void handlePacket(ByteBuf buffer, EntityPlayer player)
+    {
+        ASMPacket packet = new ASMPacket(buffer);
+        boolean useContainer = packet.readBoolean();
 
         if (useContainer)
         {
-            int containerId = dr.readByte();
+            int containerId = packet.readByte();
             Container container = player.openContainer;
 
             if (container != null && container.windowId == containerId && container instanceof ContainerBase)
             {
-                //((ContainerBase)container).getTileEntity().readUpdatedData(dr, player);
-                ((TileEntity)((ContainerBase)container).getTileEntity()).markDirty();
+                if (packet.readBoolean())
+                {
+                    //((ContainerBase)container).getTileEntity().readUpdatedData(packet, player);
+                } else
+                {
+                    //((ContainerBase)container).getTileEntity().readAllData(packet, player);
+                }
+
             }
         } else
         {
-            int x = dr.readData(DataBitHelper.XZ_COORDINATE);
-            int y = dr.readData(DataBitHelper.Y_COORDINATE);
-            int z = dr.readData(DataBitHelper.XZ_COORDINATE);
+            int x = packet.readInt();
+            int y = packet.readUnsignedByte();
+            int z = packet.readInt();
 
             TileEntity te = player.worldObj.getTileEntity(x, y, z);
             if (te != null && te instanceof IPacketBlock)
             {
-                int id = dr.readData(((IPacketBlock)te).infoBitLength(true));
-                ((IPacketBlock)te).readData(dr, player, true, id);
+                int id = packet.readByte();
+                ((IPacketBlock)te).readData(packet, id);
             }
         }
-
-        dr.close();
     }
 
 }

@@ -6,8 +6,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
@@ -72,8 +71,8 @@ public class MenuContainerTypes extends Menu
                 @Override
                 public void onUpdate()
                 {
-                    DataWriter dw = getWriterForServerComponentPacket();
-                    dw.writeData(id, DataBitHelper.CONTAINER_TYPE);
+                    ASMPacket dw = getWriterForServerComponentPacket();
+                    dw.writeByte(id);
                     dw.writeBoolean(checked[id]);
                     PacketHandler.sendDataToServer(dw);
                 }

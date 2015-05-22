@@ -6,8 +6,7 @@ import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -141,8 +140,8 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
 
     public void sendCheckBoxPacket()
     {
-        DataWriter dw = getWriterForServerComponentPacket();
-        dw.writeData(0, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
+        ASMPacket dw = getWriterForServerComponentPacket();
+        dw.writeByte(0);
         dw.writeBoolean(inUse);
         if (inUse)
         {
@@ -318,9 +317,9 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
         @Override
         public void onNumberChanged()
         {
-            DataWriter dw = getWriterForServerComponentPacket();
-            dw.writeData(id + 1, DataBitHelper.CAMOUFLAGE_BOUND_TYPE);
-            dw.writeData(getNumber(), DataBitHelper.CAMOUFLAGE_BOUNDS);
+            ASMPacket dw = getWriterForServerComponentPacket();
+            dw.writeByte(id + 1);
+            dw.writeByte(getNumber());
             PacketHandler.sendDataToServer(dw);
         }
 

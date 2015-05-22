@@ -7,8 +7,7 @@ import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
@@ -240,27 +239,19 @@ public class MenuItem extends MenuStuff<ItemStack>
     }
 
     @Override
-    public DataBitHelper getAmountBitLength()
-    {
-        return DataBitHelper.MENU_ITEM_AMOUNT;
-    }
-
-    @Override
-    public void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting)
+    public void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting)
     {
         ItemSetting itemSetting = (ItemSetting)setting;
         switch (header)
         {
             case SET_ITEM:
-                dw.writeData(Item.getIdFromItem(itemSetting.getItem().getItem()), DataBitHelper.MENU_ITEM_ID);
-                dw.writeData(itemSetting.getItem().getItemDamage(), DataBitHelper.MENU_ITEM_META);
-                dw.writeNBT(itemSetting.getItem().getTagCompound());
+                dw.writeItemStackToBuffer(itemSetting.getItem());
                 break;
             case USE_FUZZY:
-                dw.writeData(itemSetting.getFuzzyMode().ordinal(), DataBitHelper.FUZZY_MODE);
+                dw.writeByte(itemSetting.getFuzzyMode().ordinal());
                 break;
             case META:
-                dw.writeData(itemSetting.getItem().getItemDamage(), DataBitHelper.MENU_ITEM_META);
+                dw.writeShort(itemSetting.getItem().getItemDamage());
         }
     }
 

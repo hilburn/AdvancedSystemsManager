@@ -1,13 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -136,19 +134,13 @@ public class MenuLiquid extends MenuStuff<Fluid>
     }
 
     @Override
-    public DataBitHelper getAmountBitLength()
-    {
-        return DataBitHelper.MENU_LIQUID_AMOUNT;
-    }
-
-    @Override
-    public void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting)
+    public void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting)
     {
         LiquidSetting liquidSetting = (LiquidSetting)setting;
         switch (header)
         {
             case SET_ITEM:
-                dw.writeData(liquidSetting.getLiquidId(), DataBitHelper.MENU_FLUID_ID);
+                dw.writeShort(liquidSetting.getLiquidId());
         }
     }
 

@@ -21,8 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -432,73 +430,54 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id)
+    public void writeData(ASMPacket dw, int id)
     {
         if (id == 0)
         {
             if (camouflageObject != null)
             {
-                camouflageObject.writeData(dw, player, onServer, id);
+                camouflageObject.writeData(dw, id);
             }
         } else
         {
 
-            if (onServer)
+            dw.writeByte(elements.size());
+            for (ClusterRegistry registry : registryList)
             {
-                dw.writeData(elements.size(), DataBitHelper.CLUSTER_SUB_ID);
-                for (int i = 0; i < elements.size(); i++)
-                {
-                    dw.writeData((byte)registryList.get(i).getId(), DataBitHelper.CLUSTER_SUB_ID);
-                }
-                for (int i = 0; i < elements.size(); i++)
-                {
-                    dw.writeData((byte)elements.get(i).getBlockMetadata(), DataBitHelper.BLOCK_META);
-                }
-            } else
+                dw.writeByte(registry.getId());
+            }
+            for (TileEntityClusterElement element : elements)
             {
-                //nothing to write, empty packet
+                dw.writeByte(element.getBlockMetadata());
             }
         }
     }
 
     @Override
-    public void readData(DataReader dr, EntityPlayer player, boolean onServer, int id)
+    public void readData(ASMPacket dr, int id)
     {
         if (id == 0)
         {
             if (camouflageObject != null)
             {
-                camouflageObject.readData(dr, player, onServer, id);
+                camouflageObject.readData(dr, id);
             }
         } else
         {
-
-            if (onServer)
+            int length = dr.readByte();
+            byte[] types = new byte[length];
+            for (int i = 0; i < length; i++)
             {
-                //respond by sending the data to the client that required it
-                PacketHandler.sendBlockPacket(this, player, 1);
-            } else
+                types[i] = dr.readByte();
+            }
+            loadElements(types);
+            for (int i = 0; i < length; i++)
             {
-                int length = dr.readData(DataBitHelper.CLUSTER_SUB_ID);
-                byte[] types = new byte[length];
-                for (int i = 0; i < length; i++)
-                {
-                    types[i] = (byte)dr.readData(DataBitHelper.CLUSTER_SUB_ID);
-                }
-                loadElements(types);
-                for (int i = 0; i < length; i++)
-                {
-                    elements.get(i).setMetaData(dr.readData(DataBitHelper.BLOCK_META));
-                }
+                elements.get(i).setMetaData(dr.readByte());
             }
         }
     }
 
-    @Override
-    public int infoBitLength(boolean onServer)
-    {
-        return 1;
-    }
 
     public byte[] getTypes()
     {

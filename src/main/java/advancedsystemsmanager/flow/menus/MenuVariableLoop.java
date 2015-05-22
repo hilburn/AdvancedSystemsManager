@@ -5,8 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.elements.VariableDisplay;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -80,9 +79,9 @@ public class MenuVariableLoop extends Menu
     public void sendServerData(boolean useList)
     {
         int val = useList ? selectedList : selectedElement;
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         dw.writeBoolean(useList);
-        dw.writeData(val, DataBitHelper.VARIABLE_TYPE);
+        dw.writeByte(val);
         PacketHandler.sendDataToServer(dw);
     }
 

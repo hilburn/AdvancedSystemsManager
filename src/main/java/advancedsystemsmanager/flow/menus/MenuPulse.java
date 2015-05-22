@@ -5,8 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -112,27 +111,27 @@ public class MenuPulse extends Menu
 
     public void sendServerPacket(ComponentSyncType type)
     {
-        DataWriter dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getWriterForServerComponentPacket();
         writeData(dw, type);
         PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, ComponentSyncType type)
+    public void writeData(ASMPacket dw, ComponentSyncType type)
     {
-        dw.writeData(type.ordinal(), DataBitHelper.PULSE_COMPONENT_TYPES);
+        dw.writeByte(type.ordinal());
         switch (type)
         {
             case CHECK_BOX:
                 dw.writeBoolean(usePulse);
                 break;
             case RADIO_BUTTON:
-                dw.writeData(radioButtons.getSelectedOption(), DataBitHelper.PULSE_TYPES);
+                dw.writeByte(radioButtons.getSelectedOption());
                 break;
             case TEXT_BOX_1:
-                dw.writeData(secondsTextBox.getNumber(), DataBitHelper.PULSE_SECONDS);
+                dw.writeVarIntToBuffer(secondsTextBox.getNumber());
                 break;
             case TEXT_BOX_2:
-                dw.writeData(ticksTextBox.getNumber(), DataBitHelper.PULSE_TICKS);
+                dw.writeByte(ticksTextBox.getNumber());
 
         }
     }
@@ -221,7 +220,7 @@ public class MenuPulse extends Menu
 
     public void sendClientPacket(ContainerManager container, ComponentSyncType type)
     {
-        DataWriter dw = getWriterForClientComponentPacket(container);
+        ASMPacket dw = getWriterForClientComponentPacket(container);
         writeData(dw, type);
         PacketHandler.sendDataToListeningClients(container, dw);
     }

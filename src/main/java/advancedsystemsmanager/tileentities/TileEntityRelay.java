@@ -3,9 +3,7 @@ package advancedsystemsmanager.tileentities;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.gui.ContainerRelay;
 import advancedsystemsmanager.gui.GuiRelay;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataReader;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
@@ -23,7 +21,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -684,7 +681,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         readContentFromNBT(ByteBufUtils.readTag(buf));
     }
 
-    public void readUpdatedData(DataReader dr, EntityPlayer player)
+    public void readUpdatedData(ASMPacket dr, EntityPlayer player)
     {
         if (!worldObj.isRemote)
         {
@@ -718,7 +715,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             boolean added = dr.readBoolean();
             if (added)
             {
-                UserPermission permission = new UserPermission(dr.readString(DataBitHelper.NAME_LENGTH));
+                UserPermission permission = new UserPermission(dr.readStringFromBuffer());
 
                 for (UserPermission userPermission : permissions)
                 {
@@ -740,7 +737,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
                 }
             } else
             {
-                int id = dr.readData(DataBitHelper.PERMISSION_ID);
+                int id = dr.readByte();
 
                 if (id >= 0 && id < permissions.size())
                 {
@@ -778,7 +775,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             container.oldOpList = doesListRequireOp();
             container.oldCreativeMode = isCreativeMode();
 
-            DataWriter dw = PacketHandler.getWriterForUpdate(container);
+            ASMPacket dw = PacketHandler.getWriterForUpdate(container);
             dw.writeBoolean(false); //no user data
             dw.writeBoolean(creativeMode);
             dw.writeBoolean(doesListRequireOp);
@@ -791,10 +788,10 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             int id = container.oldPermissions.size();
             UserPermission permission = permissions.get(id);
 
-            DataWriter dw = PacketHandler.getWriterForUpdate(container);
+            ASMPacket dw = PacketHandler.getWriterForUpdate(container);
             dw.writeBoolean(true); //user data
             dw.writeBoolean(true); //added
-            dw.writeString(permission.getName(), DataBitHelper.NAME_LENGTH);
+            dw.writeStringToBuffer(permission.getName());
             dw.writeBoolean(permission.isActive());
             dw.writeBoolean(permission.isOp());
             PacketHandler.sendDataToListeningClients(container, dw);
@@ -807,10 +804,10 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             {
                 if (i >= permissions.size() || !permissions.get(i).getName().equals(container.oldPermissions.get(i).getName()))
                 {
-                    DataWriter dw = PacketHandler.getWriterForUpdate(container);
+                    ASMPacket dw = PacketHandler.getWriterForUpdate(container);
                     dw.writeBoolean(true); //user data
                     dw.writeBoolean(false); //existing
-                    dw.writeData(i, DataBitHelper.PERMISSION_ID);
+                    dw.writeInt(i);
                     dw.writeBoolean(true); //deleted
                     PacketHandler.sendDataToListeningClients(container, dw);
                     container.oldPermissions.remove(i);
@@ -827,10 +824,10 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
                 if (permission.isOp() != oldPermission.isOp() || permission.isActive() != oldPermission.isActive())
                 {
-                    DataWriter dw = PacketHandler.getWriterForUpdate(container);
+                    ASMPacket dw = PacketHandler.getWriterForUpdate(container);
                     dw.writeBoolean(true); //user data
                     dw.writeBoolean(false); //existing
-                    dw.writeData(i, DataBitHelper.PERMISSION_ID);
+                    dw.writeInt(i);
                     dw.writeBoolean(false); //update
                     dw.writeBoolean(permission.isActive());
                     dw.writeBoolean(permission.isOp());

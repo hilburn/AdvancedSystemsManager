@@ -1,8 +1,7 @@
 package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
@@ -600,10 +599,10 @@ public class GuiRelay extends GuiBase
 
     private void removeUser(int id)
     {
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(false); //existing
-        dw.writeData(id, DataBitHelper.PERMISSION_ID);
+        dw.writeVarIntToBuffer(id);
         dw.writeBoolean(true); //deleted
         PacketHandler.sendDataToServer(dw);
     }
@@ -622,7 +621,7 @@ public class GuiRelay extends GuiBase
 
     private void updateGlobalSettings()
     {
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(false); //no user data
         dw.writeBoolean(relay.isCreativeMode());
         dw.writeBoolean(relay.doesListRequireOp());
@@ -631,20 +630,20 @@ public class GuiRelay extends GuiBase
 
     private void addUser()
     {
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(true); //added
-        dw.writeString(getUserName(), DataBitHelper.NAME_LENGTH);
+        dw.writeStringToBuffer(getUserName());
         PacketHandler.sendDataToServer(dw);
     }
 
     private void updateUser(int id)
     {
         UserPermission permission = relay.getPermissions().get(id);
-        DataWriter dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getWriterForServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(false); //existing
-        dw.writeData(id, DataBitHelper.PERMISSION_ID);
+        dw.writeVarIntToBuffer(id);
         dw.writeBoolean(false); //update
         dw.writeBoolean(permission.isActive());
         dw.writeBoolean(permission.isOp());

@@ -1,13 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -234,14 +232,12 @@ public abstract class MenuStuff<Type> extends Menu
 
     public abstract void updateTextBoxes();
 
-    public void writeRadioButtonRefreshState(DataWriter dw, boolean value)
+    public void writeRadioButtonRefreshState(ASMPacket dw, boolean value)
     {
         dw.writeBoolean(value);
     }
 
-    public abstract DataBitHelper getAmountBitLength();
-
-    public abstract void writeSpecificHeaderData(DataWriter dw, DataTypeHeader header, Setting setting);
+    public abstract void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting);
 
     public void onSettingContentChange()
     {

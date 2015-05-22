@@ -296,55 +296,36 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     }
 
     @Override
-    public void writeData(DataWriter dw, EntityPlayer player, boolean onServer, int id)
+    public void writeData(ASMPacket dw, int id)
     {
-        if (onServer)
+        for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
         {
-            for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
+            boolean isOn = updatedStrength[i] > 0;
+            dw.writeBoolean(isOn);
+            if (isOn)
             {
-                boolean isOn = updatedStrength[i] > 0;
-                dw.writeBoolean(isOn);
-                if (isOn)
-                {
-                    dw.writeData(updatedStrength[i], DataBitHelper.MENU_REDSTONE_ANALOG);
-                    dw.writeBoolean(updatedStrong[i]);
-                }
+                dw.writeByte(updatedStrength[i] | (updatedStrong[i] ? 1 << 5: 0));
             }
-        } else
-        {
-            //nothing to write, empty packet
         }
     }
 
     @Override
-    public void readData(DataReader dr, EntityPlayer player, boolean onServer, int id)
+    public void readData(ASMPacket dr, int id)
     {
-        if (onServer)
+        for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
         {
-            //respond by sending the data to the client that required it
-            PacketHandler.sendBlockPacket(this, player, 0);
-        } else
-        {
-            for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
+            boolean isOn = dr.readBoolean();
+            if (isOn)
             {
-                boolean isOn = dr.readBoolean();
-                if (isOn)
-                {
-                    strengths[i] = dr.readData(DataBitHelper.MENU_REDSTONE_ANALOG);
-                    strong[i] = dr.readBoolean();
-                } else
-                {
-                    strengths[i] = 0;
-                }
+                byte val = dr.readByte();
+                strengths[i] = val & 0xF;
+                strong[i] = (val >> 5) > 0;
+            } else
+            {
+                strengths[i] = 0;
             }
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
-    }
-
-    @Override
-    public int infoBitLength(boolean onServer)
-    {
-        return 0; //won't use the id
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override

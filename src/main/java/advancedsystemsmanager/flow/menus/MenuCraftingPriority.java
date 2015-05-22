@@ -4,7 +4,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -28,7 +28,7 @@ public class MenuCraftingPriority extends Menu
             @Override
             public void updateSelectedOption(int selectedOption)
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 dw.writeBoolean(selectedOption == 0);
                 PacketHandler.sendDataToServer(dw);
             }

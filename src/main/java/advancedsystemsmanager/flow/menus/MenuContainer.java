@@ -11,8 +11,7 @@ import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.gui.*;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
-import advancedsystemsmanager.network.DataBitHelper;
-import advancedsystemsmanager.network.DataWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -92,7 +91,7 @@ public class MenuContainer extends Menu
             @Override
             public void updateSelectedOption(int selectedOption)
             {
-                DataWriter dw = getWriterForServerComponentPacket();
+                ASMPacket dw = getWriterForServerComponentPacket();
                 writeRadioButtonData(dw, selectedOption);
                 PacketHandler.sendDataToServer(dw);
             }
@@ -525,10 +524,10 @@ public class MenuContainer extends Menu
         return ret;
     }
 
-    public void writeRadioButtonData(DataWriter dw, int option)
+    public void writeRadioButtonData(ASMPacket dw, int option)
     {
         dw.writeBoolean(true);
-        dw.writeData(option, DataBitHelper.MENU_INVENTORY_MULTI_SELECTION_TYPE);
+        dw.writeByte(option);
     }
 
     public void setSelectedInventoryAndSync(long val, boolean select)
@@ -538,10 +537,10 @@ public class MenuContainer extends Menu
 //        PacketHandler.sendDataToServer(dw);
     }
 
-    public void writeData(DataWriter dw, long id, boolean select)
+    public void writeData(ASMPacket dw, long id, boolean select)
     {
         dw.writeBoolean(false);
-        dw.writeInventoryId(getParent().getManager(), id);
+        dw.writeLong(id);
         dw.writeBoolean(select);
     }
 
