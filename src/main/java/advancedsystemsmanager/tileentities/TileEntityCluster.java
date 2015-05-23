@@ -122,8 +122,9 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
 
     public TileEntityClusterElement addElement(ClusterRegistry registry)
     {
-        registryList.add(registry);
         TileEntityClusterElement element = (TileEntityClusterElement)((ITileEntityProvider)registry.getBlock()).createNewTileEntity(getWorldObj(), 0);
+        if (interfaceObject != null && element instanceof ITileEntityInterface || camouflageObject != null && element instanceof TileEntityCamouflage) return null;
+        registryList.add(registry);
         elements.add(element);
         if (element instanceof ITileEntityInterface)
         {
@@ -145,9 +146,10 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         return element;
     }
 
-    public void addElement(EntityPlayer player, ClusterRegistry registry)
+    public boolean addElement(EntityPlayer player, ClusterRegistry registry)
     {
         TileEntityClusterElement element = addElement(registry);
+        if (element == null) return false;
         if (element.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
         {
             registry.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, player, registry.getItemStack());
@@ -156,6 +158,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         {
             registry.getBlock().onBlockAdded(worldObj, xCoord, yCoord, zCoord);
         }
+        return true;
     }
 
     public void onBlockPlacedBy(EntityLivingBase entity, ItemStack itemStack)
@@ -251,9 +254,8 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
         if (stack != null && stack.getItem() instanceof IClusterItem)
         {
             ClusterRegistry registry = ((IClusterItem)stack.getItem()).getClusterRegistry(stack);
-            if (registry != null && !registryList.contains(registry))
+            if (registry != null && !registryList.contains(registry) && addElement(player, registry))
             {
-                addElement(registry);
                 PlayerHelper.consumeItem(player);
                 return true;
             }
