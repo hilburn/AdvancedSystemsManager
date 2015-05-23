@@ -34,11 +34,11 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
     private static final int BUTTON_SRC_Y = 0;
     private static final int BUTTON_SIZE = 14;
     private static final int BUTTON_SIZE_INNER = 12;
+    private static final String localization = Names.SETTINGS;
     private TileEntityManager manager;
     private List<Button> buttons;
     private CheckBoxList checkBoxes;
     private String cachedString;
-    private String localization = Names.CLOSE_GROUP_LABEL;
     private int currentX;
     private int currentY;
     private int offsetY;
@@ -214,8 +214,8 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 
         private CheckBoxSetting(IPacketProvider provider, String name)
         {
-            super(provider, null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
-            key = "gui.asm.Settings." + name;
+            super(provider, null, getXAndGenerateY(StatCollector.translateToLocal(Names.SETTINGS + "." + name)), currentY);
+            key = Names.SETTINGS + "." + name;
             this.name = name;
             setTextWidth(CHECK_BOX_WIDTH);
         }

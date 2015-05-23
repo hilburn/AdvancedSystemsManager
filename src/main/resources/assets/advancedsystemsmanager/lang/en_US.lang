@@ -96,6 +96,7 @@ gui.system.ConnectionOnHighBlockPulse=On high pulse
 gui.system.ConnectionWhileHighBlock=While high signal
 gui.system.ConnectionOnLowBlockPulse=On low pulse
 gui.system.ConnectionWhileLowBlock=While low signal
+gui.system.ConnectionDelayedOutput=Delayed Output
 
 
 # ======================================
@@ -116,6 +117,7 @@ gui.system.ConnectionSetBud=Block update detector
 gui.system.ConnectionSetOutputNode=Output Node
 gui.system.ConnectionSetInputNode=Input Node
 gui.system.ConnectionSetDynamic=Dynamic
+gui.system.ConnectionSetDelayed=Delayed
 
 # ======================================
 #			COMPONENT MENUS

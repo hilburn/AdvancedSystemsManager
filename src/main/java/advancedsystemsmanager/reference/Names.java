@@ -328,16 +328,6 @@ public class Names
     public static final String COMMANDS = GUI_PREFIX + "Commands";
     public static final String PREFERENCES = GUI_PREFIX + "Preferences";
     public static final String SETTINGS = GUI_PREFIX + "Settings";
-    public static final String CLOSE_GROUP_LABEL = GUI_PREFIX + "CloseGroupLabel";
-    public static final String OPEN_MENU_LARGE_HIT_BOX = GUI_PREFIX + "OpenMenuLargeHitBox";
-    public static final String OPEN_MENU_LARGE_HIT_BOX_MENU = GUI_PREFIX + "OpenMenuLargeHitBoxMenu";
-    public static final String OPEN_GROUP_QUICK = GUI_PREFIX + "OpenGroupQuick";
-    public static final String SHOW_COMMAND_TYPE = GUI_PREFIX + "ShowCommandType";
-    public static final String AUTO_SIDE = GUI_PREFIX + "AutoSide";
-    public static final String AUTO_BLACK_LIST = GUI_PREFIX + "AutoBlackList";
-    public static final String LIMITLESS = GUI_PREFIX + "Limitless";
-    public static final String ENLARGE_INTERFACES = GUI_PREFIX + "EnlargeInterfaces";
-    public static final String AUTO_MOVE_FIRST = GUI_PREFIX + "AutoMoveFirst";
     public static final String GIVE_PERMISSION = GUI_PREFIX + "GivePermission";
     public static final String REVOKE_PERMISSION = GUI_PREFIX + "RevokePermission";
     public static final String ACTIVATE_USER = GUI_PREFIX + "ActivateUser";
