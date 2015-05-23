@@ -1,7 +1,6 @@
 package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.message.ContainerMessage;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
@@ -27,17 +26,16 @@ public class ContainerManager extends ContainerBase<TileEntityManager>
         super.addCraftingToCrafters(player);
 
         if (player instanceof EntityPlayerMP && !te.getWorldObj().isRemote)
-            MessageHandler.INSTANCE.sendTo(new ContainerMessage(te), (EntityPlayerMP)player);
+        {
+            PacketHandler.sendAllData(this, player, te);
+        }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void detectAndSendChanges()
     {
-        if (gui != null && gui.selectedComponent != null)
-        {
-            gui.updateSelected();
-        }
+       //TODO: Whatttt
     }
 
     @Override

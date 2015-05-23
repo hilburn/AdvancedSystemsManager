@@ -304,7 +304,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
             {
                 itr.remove();
                 manager.getZLevelRenderingList().add(0, itemBase);
-                setSelected(itemBase.clicked(x, y));
+                setSelected(itemBase);
                 break;
             }
         }
@@ -468,16 +468,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     public void setSelected(IPacketSync selected)
     {
-        if (this.selectedComponent != selected)
-        {
-            container.syncNetworkElement(selectedComponent, true);
-        }
         this.selectedComponent = selected;
-    }
-
-    public void updateSelected()
-    {
-        container.syncNetworkElement(selectedComponent, false);
     }
 
     private abstract class SecretCode

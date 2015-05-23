@@ -1,5 +1,6 @@
 package advancedsystemsmanager.network;
 
+import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -20,6 +21,9 @@ public class PacketHandler
 {
     public static final double BLOCK_UPDATE_RANGE = 128;
     public static final double BLOCK_UPDATE_SQ = BLOCK_UPDATE_RANGE * BLOCK_UPDATE_RANGE;
+    public static final int SYNC_ALL = 0;
+    public static final int SYNC_COMPONENT = 2;
+    public static final int BUTTON_CLICK = 5;
 
     public static void sendDataToServer(ASMPacket dw)
     {
@@ -32,8 +36,7 @@ public class PacketHandler
 
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
-        dw.writeBoolean(false); //all data
-        //te.writeNetworkComponent(dw);
+        te.writeData(dw);
 
         sendDataToPlayer(crafting, dw);
     }
@@ -75,7 +78,7 @@ public class PacketHandler
     @SideOnly(Side.CLIENT)
     public static ASMPacket getWriterForServerActionPacket()
     {
-        ASMPacket dw = getBaseWriterForServerPacket();
+        ASMPacket dw = getBaseContainerPacket();
 
         dw.writeBoolean(true); //action
 
@@ -83,39 +86,23 @@ public class PacketHandler
     }
 
     @SideOnly(Side.CLIENT)
-    public static ASMPacket getBaseWriterForServerPacket()
+    public static ASMPacket getBaseContainerPacket()
     {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
         if (container != null)
         {
-            ASMPacket dw = new ASMPacket();
-            dw.writeBoolean(true); //use container
-            dw.writeByte(container.windowId);
-
-            return dw;
+            return getContainerPacket(container);
         } else
         {
             return null;
         }
     }
 
-    public static void sendUpdateInventoryPacket(ContainerManager container)
-    {
-        ASMPacket dw = PacketHandler.getWriterForSpecificData(container);
-        createNonComponentPacket(dw);
-        dw.writeBoolean(true);
-        sendDataToListeningClients(container, dw);
-    }
-
-    private static ASMPacket getWriterForSpecificData(Container container)
+    public static ASMPacket getContainerPacket(Container container)
     {
         ASMPacket dw = new ASMPacket();
-
         dw.writeBoolean(true); //use container
         dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
-        dw.writeBoolean(false); //not new
-
         return dw;
     }
 
@@ -139,31 +126,29 @@ public class PacketHandler
     @SideOnly(Side.CLIENT)
     public static ASMPacket getWriterForServerPacket()
     {
-        ASMPacket dw = getBaseWriterForServerPacket();
-
-        dw.writeBoolean(false); //no action
-
-        return dw;
+        return getBaseContainerPacket();
     }
 
     private static void createComponentPacket(ASMPacket dw, FlowComponent component)
     {
-        dw.writeByte(5); //this is a packet for a specific FlowComponent
+        dw.writeByte(SYNC_COMPONENT); //this is a packet for a specific FlowComponent
         dw.writeVarIntToBuffer(component.getId());
     }
 
     public static ASMPacket getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
     {
-        ASMPacket dw = PacketHandler.getWriterForSpecificData(container);
+        ASMPacket dw = PacketHandler.getContainerPacket(container);
         createComponentPacket(dw, component);
         return dw;
     }
 
-    public static ASMPacket getButtonPacketWriter()
+    public static ASMPacket getButtonPacket(int index, IManagerButton button)
     {
-        ASMPacket dw = getWriterForServerPacket();
-        createNonComponentPacket(dw);
-        return dw;
+        ASMPacket packet = getWriterForServerPacket();
+        packet.writeByte(BUTTON_CLICK);
+        packet.writeByte(index);
+        button.writeData(packet);
+        return packet;
     }
 
     public static void writeAllComponentData(ASMPacket dw, FlowComponent flowComponent)

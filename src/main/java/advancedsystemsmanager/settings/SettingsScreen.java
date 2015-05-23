@@ -186,7 +186,7 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
     @Override
     public ASMPacket getSyncPacket()
     {
-        return PacketHandler.getBaseWriterForServerPacket();
+        return PacketHandler.getBaseContainerPacket();
     }
 
     @Override

@@ -2,8 +2,7 @@ package advancedsystemsmanager.api.gui;
 
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.message.ButtonMessage;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -91,7 +90,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
             {
                 if (managerButton.validClick())
                 {
-                    MessageHandler.INSTANCE.sendToServer(new ButtonMessage(managerButton, itr.index));
+                    PacketHandler.sendDataToServer(PacketHandler.getButtonPacket(itr.index, managerButton));
                 }
                 return true;
             }

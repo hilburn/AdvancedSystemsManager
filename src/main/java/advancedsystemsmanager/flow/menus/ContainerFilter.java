@@ -59,8 +59,9 @@ public class ContainerFilter
 
     public MenuContainer currentMenu;
 
-    public ContainerFilter()
+    public ContainerFilter(MenuContainer container)
     {
+        currentMenu = container;
         checkBoxes = new CheckBoxList();
 
         filterVariableSelection = new ArrayList<Long>();

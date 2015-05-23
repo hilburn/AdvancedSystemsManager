@@ -20,6 +20,7 @@ import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
@@ -243,18 +244,18 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readData(ASMPacket buf, EntityPlayer player)
+    public void readData(ASMPacket packet, EntityPlayer player)
     {
-        switch(buf.readByte())
+        switch(packet.readByte())
         {
-            case 0:
+            case PacketHandler.SYNC_ALL:
                 updateInventories();
-                int flowControlCount = buf.readInt();
+                int flowControlCount = packet.readVarIntFromBuffer();
                 components.clear();
                 getZLevelRenderingList().clear();
                 for (int i = 0; i < flowControlCount; i++)
                 {
-                    NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
+                    NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
                     FlowComponent component  = FlowComponent.readFromNBT(this, tagCompound, false);
                     addNewComponent(component);
                     if (worldObj.isRemote) zLevelRenderingList.add(component);
@@ -278,7 +279,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             case 1:
                 if (!worldObj.isRemote)
                 {
-                    boolean val = buf.readBoolean();
+                    boolean val = packet.readBoolean();
                     if ((val || !isUsingUnlimitedStuff()) && player.capabilities.isCreativeMode)
                     {
                         Settings.setLimitless(this, val);
@@ -292,29 +293,26 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     } */
                 }
                 break;
-            case 2:
-                IPacketReader nr = getFlowItem(buf.readVarIntFromBuffer());
+            case PacketHandler.SYNC_COMPONENT:
+                IPacketReader nr = getFlowItem(packet.readVarIntFromBuffer());
 
                 if (nr != null)
                 {
-                    nr.readData(buf);
+                    nr.readData(packet);
                 }
                 break;
             case 3:
                 updateInventories();
                 break;
             case 4:
-                removeFlowComponent(buf.readInt());
+                removeFlowComponent(packet.readInt());
                 break;
-            case 5:
-                int buttonId = buf.readByte();
+            case PacketHandler.BUTTON_CLICK:
+                int buttonId = packet.readByte();
                 if (buttonId >= 0 && buttonId < buttons.size())
                 {
                     IManagerButton button = buttons.get(buttonId);
-                    if (button.isVisible())
-                    {
-                        button.readData(buf);
-                    }
+                    button.readData(packet);
                 }
         }
         if (!this.worldObj.isRemote) this.markDirty();
@@ -635,8 +633,8 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     @Override
     public void writeData(ASMPacket packet)
     {
-        packet.writeByte(0);
-        packet.writeInt(components.size());
+        packet.writeByte(PacketHandler.SYNC_ALL);
+        packet.writeVarIntToBuffer(components.size());
         for (FlowComponent flowComponent : components.valueCollection())
         {
             NBTTagCompound tagCompound = new NBTTagCompound();

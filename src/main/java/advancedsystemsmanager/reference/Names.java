@@ -10,7 +10,7 @@ public class Names
     public static final String CABLE_OUTPUT = CABLE + "_output";
     public static final String CABLE_INPUT = CABLE + "_input";
     public static final String CABLE_CREATIVE = CABLE + "_creative";
-    public static final String CABLE_VALVE = CABLE + "_intake";
+    public static final String CABLE_VALVE = CABLE + "_valve";
     public static final String CABLE_VOID = CABLE + "_void";
     public static final String CABLE_BUD = CABLE + "_bud";
     public static final String CABLE_BLOCK_GATE = CABLE + "_block_gate";

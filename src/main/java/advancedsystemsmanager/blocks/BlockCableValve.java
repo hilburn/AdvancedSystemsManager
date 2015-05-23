@@ -26,13 +26,13 @@ public class BlockCableValve extends BlockCableDirectionAdvanced
     @Override
     protected String getFrontTextureName(boolean isAdvanced)
     {
-        return isAdvanced ? "cable_intake_3" : "cable_intake_1";
+        return Names.CABLE_VALVE + (isAdvanced ? "_3" : "_1");
     }
 
     @Override
     protected String getSideTextureName(boolean isAdvanced)
     {
-        return isAdvanced ? "cable_intake_2" : "cable_intake";
+        return Names.CABLE_VALVE + (isAdvanced ? "_2" : "");
     }
 
     @Override

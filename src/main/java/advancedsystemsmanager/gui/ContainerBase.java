@@ -18,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
-
 public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface> extends Container
 {
     protected T te;
@@ -46,14 +45,6 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
             }
         }
         playerInventoryEnd = inventorySlots.size();
-    }
-
-    public void syncNetworkElement(IPacketSync element, boolean loseFocus)
-    {
-//        if (element != null && element.needsSync() && (crafters.size() > 1 || loseFocus))
-//        {
-//            MessageHandler.INSTANCE.sendToServer(new SyncMessage(element));
-//        }
     }
 
     public void updateServer(ASMPacket message, EntityPlayerMP player)

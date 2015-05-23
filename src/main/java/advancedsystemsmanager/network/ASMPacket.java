@@ -30,7 +30,7 @@ public class ASMPacket extends PacketBuffer
 
     public ASMPacket()
     {
-        super(Unpooled.buffer());
+        super(Unpooled.buffer(10));
     }
 
     public ASMPacket(ByteBuf buffer)

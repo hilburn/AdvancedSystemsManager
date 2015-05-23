@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
@@ -31,10 +32,10 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
     public void registerBlockIcons(IIconRegister register)
     {
         icons = new IIcon[4];
-        icons[0] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(false));
-        icons[1] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(false));
-        icons[2] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(true));
-        icons[3] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true));
+        icons[0] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(false).replace(Names.PREFIX, ""));
+        icons[1] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(false).replace(Names.PREFIX, ""));
+        icons[2] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getSideTextureName(true).replace(Names.PREFIX, ""));
+        icons[3] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true).replace(Names.PREFIX, ""));
     }
 
     protected abstract String getFrontTextureName(boolean isAdvanced);
