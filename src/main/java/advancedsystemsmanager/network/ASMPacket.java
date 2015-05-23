@@ -38,9 +38,36 @@ public class ASMPacket extends PacketBuffer
         super(buffer);
     }
 
-    void sendPlayerPackets(double x, double y, double z, double r, int dimension)
+    public ASMPacket copy()
+    {
+        return new ASMPacket(super.copy());
+    }
+
+    public void sendPlayerPackets(double x, double y, double z, double r, int dimension)
     {
         packetHandler.sendToAllAround(getPacket(), new TargetPoint(dimension, x, y, z, r));
+    }
+
+    public void sendPlayerPacket(EntityPlayerMP player)
+    {
+        packetHandler.sendTo(getPacket(), player);
+    }
+
+    public void sendServerPacket()
+    {
+        packetHandler.sendToServer(getPacket());
+    }
+
+    public void sendPlayerPackets(ContainerBase container)
+    {
+        FMLProxyPacket packet = getPacket();
+        for (Object crafting : container.getCrafters())
+        {
+            if (crafting instanceof EntityPlayerMP)
+            {
+                packetHandler.sendTo(packet, (EntityPlayerMP)crafting);
+            }
+        }
     }
 
     public FMLProxyPacket getPacket()
@@ -120,28 +147,4 @@ public class ASMPacket extends PacketBuffer
     {
         return readStringFromBuffer(32);
     }
-
-    void sendPlayerPacket(EntityPlayerMP player)
-    {
-        packetHandler.sendTo(getPacket(), player);
-    }
-
-    void sendServerPacket()
-    {
-        packetHandler.sendToServer(getPacket());
-    }
-
-    void sendPlayerPackets(ContainerBase container)
-    {
-        for (Object crafting : container.getCrafters())
-        {
-            if (crafting instanceof EntityPlayer)
-            {
-                EntityPlayerMP player = (EntityPlayerMP)crafting;
-                packetHandler.sendTo(getPacket(), player);
-            }
-        }
-    }
-
-
 }

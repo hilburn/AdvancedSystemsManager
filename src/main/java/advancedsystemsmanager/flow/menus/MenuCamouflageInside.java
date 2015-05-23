@@ -24,18 +24,7 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     {
         super(parent);
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeByte(radioButtons.getSelectedOption());
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         for (int i = 0; i < InsideSetType.values().length; i++)
         {

@@ -1,7 +1,10 @@
 package advancedsystemsmanager.flow.elements;
 
 
-public class TextBoxNumber
+import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.network.ASMPacket;
+
+public class TextBoxNumber extends UpdateElement
 {
     public static final int TEXT_BOX_SIZE_W = 21;
     public static final int TEXT_BOX_SIZE_W_WIDE = 33;
@@ -12,8 +15,9 @@ public class TextBoxNumber
     public int length;
     public boolean wide;
 
-    public TextBoxNumber(int x, int y, int length, boolean wide)
+    public TextBoxNumber(IPacketProvider packetProvider, int x, int y, int length, boolean wide)
     {
+        super(packetProvider);
         this.x = x;
         this.y = y;
         number = 0;
@@ -77,10 +81,6 @@ public class TextBoxNumber
         return wide;
     }
 
-    public void onNumberChanged()
-    {
-    }
-
     public int getWidth()
     {
         return wide ? TEXT_BOX_SIZE_W_WIDE : TEXT_BOX_SIZE_W;
@@ -99,5 +99,17 @@ public class TextBoxNumber
     public int getTextY()
     {
         return 3;
+    }
+
+    @Override
+    public void writeData(ASMPacket packet)
+    {
+        packet.writeVarIntToBuffer(number);
+    }
+
+    @Override
+    public void readData(ASMPacket packet)
+    {
+        number = packet.readVarIntFromBuffer();
     }
 }

@@ -64,7 +64,7 @@ public class MenuUpdateBlock extends MenuItem
         scrollControllerSelected.setX(ID_START_X + ID_TEXT_BOX + 10);
 
 
-        checkBoxes.addCheckBox(new CheckBox(Names.USE_ID, ID_START_X, ID_START_Y + CHECKBOX_OFFSET)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.USE_ID, ID_START_X, ID_START_Y + CHECKBOX_OFFSET)
         {
             @Override
             public void setValue(boolean val)
@@ -76,12 +76,6 @@ public class MenuUpdateBlock extends MenuItem
             public boolean getValue()
             {
                 return useId;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(0, 0);
             }
         });
 
@@ -102,7 +96,7 @@ public class MenuUpdateBlock extends MenuItem
             }
         });*/
 
-        checkBoxes.addCheckBox(new CheckBox(Names.INVERT, ID_START_X + META_INVERTED_OFFSET, ID_START_Y + CHECKBOX_OFFSET)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.INVERT, ID_START_X + META_INVERTED_OFFSET, ID_START_Y + CHECKBOX_OFFSET)
         {
             @Override
             public void setValue(boolean val)
@@ -114,12 +108,6 @@ public class MenuUpdateBlock extends MenuItem
             public boolean getValue()
             {
                 return idInverted;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(0, 2);
             }
 
             @Override
@@ -136,7 +124,7 @@ public class MenuUpdateBlock extends MenuItem
             for (int j = 0; j < settings[setting].bits.length; j++)
             {
                 final int bit = j;
-                checkBoxes.addCheckBox(new CheckBox(null, META_START_X + (settings[setting].bits.length - (bit + 1)) * CheckBoxList.CHECK_BOX_SIZE, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
+                checkBoxes.addCheckBox(new CheckBox(getParent(), null, META_START_X + (settings[setting].bits.length - (bit + 1)) * CheckBoxList.CHECK_BOX_SIZE, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
                 {
                     @Override
                     public void setValue(boolean val)
@@ -154,18 +142,12 @@ public class MenuUpdateBlock extends MenuItem
                     {
                         return settings[setting].bits[bit];
                     }
-
-                    @Override
-                    public void onUpdate()
-                    {
-                        sendServerData(setting + 1, bit);
-                    }
                 });
 
                 settings[setting].bits[bit] = setting == 0;
             }
 
-            textBoxes.addTextBox(settings[setting].lowerTextBox = new TextBoxNumber(META_START_X + META_TEXT_BOX_OFFSET_1, META_START_Y + setting * META_SPACING, 2, false)
+            textBoxes.addTextBox(settings[setting].lowerTextBox = new TextBoxNumber(getParent(), META_START_X + META_TEXT_BOX_OFFSET_1, META_START_Y + setting * META_SPACING, 2, false)
             {
                 @Override
                 public boolean isVisible()
@@ -179,27 +161,14 @@ public class MenuUpdateBlock extends MenuItem
                     return settings[setting].getMaxNumber();
                 }
 
-                @Override
-                public void onNumberChanged()
-                {
-                    sendServerData(setting + 1, 4);
-                }
-
-
             });
 
-            textBoxes.addTextBox(settings[setting].higherTextBox = new TextBoxNumber(META_START_X + META_TEXT_BOX_OFFSET_2, META_START_Y + setting * META_SPACING, 2, false)
+            textBoxes.addTextBox(settings[setting].higherTextBox = new TextBoxNumber(getParent(), META_START_X + META_TEXT_BOX_OFFSET_2, META_START_Y + setting * META_SPACING, 2, false)
             {
                 @Override
                 public int getMaxNumber()
                 {
                     return settings[setting].getMaxNumber();
-                }
-
-                @Override
-                public void onNumberChanged()
-                {
-                    sendServerData(setting + 1, 5);
                 }
 
                 @Override
@@ -209,7 +178,7 @@ public class MenuUpdateBlock extends MenuItem
                 }
             });
 
-            checkBoxes.addCheckBox(new CheckBox(Names.INVERT, META_START_X + META_INVERTED_OFFSET, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
+            checkBoxes.addCheckBox(new CheckBox(getParent(), Names.INVERT, META_START_X + META_INVERTED_OFFSET, META_START_Y + CHECKBOX_OFFSET + setting * META_SPACING)
             {
                 @Override
                 public void setValue(boolean val)
@@ -224,12 +193,6 @@ public class MenuUpdateBlock extends MenuItem
                 }
 
                 @Override
-                public void onUpdate()
-                {
-                    sendServerData(setting + 1, 6);
-                }
-
-                @Override
                 public boolean isVisible()
                 {
                     return settings[setting].inUse();
@@ -240,13 +203,6 @@ public class MenuUpdateBlock extends MenuItem
         }
 
 
-    }
-
-    public void sendServerData(int id, int subId)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, id, subId);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(ASMPacket dw, int id, int subId)

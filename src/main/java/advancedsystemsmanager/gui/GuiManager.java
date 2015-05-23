@@ -2,7 +2,7 @@ package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.animation.AnimationController;
 import advancedsystemsmanager.api.gui.IGuiElement;
-import advancedsystemsmanager.api.network.INetworkSync;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
@@ -23,7 +23,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -49,7 +48,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     private TileEntityManager manager;
 
-    public INetworkSync selectedComponent;
+    public IPacketSync selectedComponent;
     public IGuiElement<GuiManager> hoverComponent;
 
     private List<SecretCode> codes = new ArrayList<SecretCode>();
@@ -467,7 +466,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         return manager;
     }
 
-    public void setSelected(INetworkSync selected)
+    public void setSelected(IPacketSync selected)
     {
         if (this.selectedComponent != selected)
         {

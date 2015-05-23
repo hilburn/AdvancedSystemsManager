@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network.message;
 
-import advancedsystemsmanager.api.network.INetworkWriter;
+import advancedsystemsmanager.api.network.IPacketWriter;
 import advancedsystemsmanager.gui.ContainerBase;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,14 +13,14 @@ import net.minecraft.inventory.Container;
 
 public class ContainerMessage implements IBufferMessage, IMessageHandler<ContainerMessage, IMessage>
 {
-    protected INetworkWriter writer;
+    protected IPacketWriter writer;
     protected ByteBuf buf;
 
     public ContainerMessage()
     {
     }
 
-    public ContainerMessage(INetworkWriter writer)
+    public ContainerMessage(IPacketWriter writer)
     {
         this.writer = writer;
     }
@@ -34,7 +34,7 @@ public class ContainerMessage implements IBufferMessage, IMessageHandler<Contain
     @Override
     public void toBytes(ByteBuf buf)
     {
-        writer.writeNetworkComponent(buf);
+        //writer.writeNetworkComponent(buf);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ContainerMessage implements IBufferMessage, IMessageHandler<Contain
 
     public IMessage onMessage(ContainerMessage message, ContainerBase container, EntityPlayer player)
     {
-        container.getInterface().readData(message.buf, player);
+        //container.getInterface().readData(message.buf, player);
         return null;
     }
 

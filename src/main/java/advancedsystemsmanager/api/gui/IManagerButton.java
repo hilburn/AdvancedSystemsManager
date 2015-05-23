@@ -1,13 +1,12 @@
 package advancedsystemsmanager.api.gui;
 
-import advancedsystemsmanager.api.network.INetworkReader;
-import advancedsystemsmanager.api.network.INetworkWriter;
+import advancedsystemsmanager.api.network.IPacketReader;
+import advancedsystemsmanager.api.network.IPacketWriter;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ResourceLocation;
 
-public interface IManagerButton extends INetworkWriter, INetworkReader
+public interface IManagerButton extends IPacketWriter, IPacketReader
 {
     public static final int BUTTON_SIZE = 14;
     public static final int BUTTON_ICON_SIZE = 12;

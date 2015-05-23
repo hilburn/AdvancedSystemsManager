@@ -86,21 +86,12 @@ public class MenuContainer extends Menu
 
         selectedInventories = new ArrayList<Long>();
         filterVariables = new ArrayList<Variable>();
-        radioButtonsMulti = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                writeRadioButtonData(dw, selectedOption);
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        radioButtonsMulti = new RadioButtonList(getParent());
 
         initRadioButtons();
         radioButtonsMulti.setSelectedOption(getDefaultRadioButton());
 
-        scrollController = new ScrollController<IContainerSelection<GuiManager>>(getDefaultSearch())
+        scrollController = new ScrollController<IContainerSelection<GuiManager>>(getParent(), getDefaultSearch())
         {
             public boolean locked;
             public int lockedX;
@@ -180,7 +171,7 @@ public class MenuContainer extends Menu
                     }
                 } else
                 {
-                    MenuContainer.this.needsSync = true;
+//                    MenuContainer.this.needsSync = true;
                     long id = iContainerSelection.getId();
                     if (selectedInventories.contains(id)) selectedInventories.remove(id);
                     else selectedInventories.add(id);

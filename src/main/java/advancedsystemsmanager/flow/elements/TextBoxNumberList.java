@@ -54,7 +54,7 @@ public class TextBoxNumberList
                     } else
                     {
                         textBox.setNumber(0);
-                        selectedTextBox.onNumberChanged();
+                        selectedTextBox.onUpdate();
                     }
                 } else
                 {
@@ -78,17 +78,17 @@ public class TextBoxNumberList
                 if (Math.abs(selectedTextBox.getNumber()) < Math.pow(10, selectedTextBox.getLength() - 1))
                 {
                     selectedTextBox.setNumber((Math.abs(selectedTextBox.getNumber()) * 10 + number) * (selectedTextBox.getNumber() < 0 ? -1 : 1));
-                    selectedTextBox.onNumberChanged();
+                    selectedTextBox.onUpdate();
                 }
                 return true;
             } else if (c == '-' && selectedTextBox.allowNegative())
             {
                 selectedTextBox.setNumber(selectedTextBox.getNumber() * -1);
-                selectedTextBox.onNumberChanged();
+                selectedTextBox.onUpdate();
             } else if (k == 14)
             {
                 selectedTextBox.setNumber(selectedTextBox.getNumber() / 10);
-                selectedTextBox.onNumberChanged();
+                selectedTextBox.onUpdate();
                 return true;
             } else if (k == 15)
             {

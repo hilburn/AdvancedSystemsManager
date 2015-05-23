@@ -43,7 +43,7 @@ public class MenuRedstoneStrength extends Menu
         super(parent);
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Names.INVERT_SELECTION, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.INVERT_SELECTION, CHECK_BOX_X, CHECK_BOX_Y)
         {
 
             @Override
@@ -57,23 +57,11 @@ public class MenuRedstoneStrength extends Menu
             {
                 return inverted;
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(2);
-            }
         });
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(lowTextBox = new TextBoxNumber(TEXT_BOX_X_LEFT, TEXT_BOX_Y, 2, true)
+        textBoxes.addTextBox(lowTextBox = new TextBoxNumber(getParent(), TEXT_BOX_X_LEFT, TEXT_BOX_Y, 2, true)
         {
-            @Override
-            public void onNumberChanged()
-            {
-                sendServerData(0);
-            }
-
             @Override
             public int getMaxNumber()
             {
@@ -81,14 +69,8 @@ public class MenuRedstoneStrength extends Menu
             }
         });
 
-        textBoxes.addTextBox(highTextBox = new TextBoxNumber(TEXT_BOX_X_RIGHT, TEXT_BOX_Y, 2, true)
+        textBoxes.addTextBox(highTextBox = new TextBoxNumber(getParent(), TEXT_BOX_X_RIGHT, TEXT_BOX_Y, 2, true)
         {
-            @Override
-            public void onNumberChanged()
-            {
-                sendServerData(1);
-            }
-
             @Override
             public int getMaxNumber()
             {
@@ -98,13 +80,6 @@ public class MenuRedstoneStrength extends Menu
 
         lowTextBox.setNumber(1);
         highTextBox.setNumber(15);
-    }
-
-    public void sendServerData(int id)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, id);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(ASMPacket dw, int id)

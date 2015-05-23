@@ -49,15 +49,7 @@ public abstract class MenuRedstoneSides extends Menu
             checkBoxList.addCheckBox(new CheckBoxSide(i));
         }
 
-        radioButtonList = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setFirstOption(selectedOption == 0);
-                sendServerData(true);
-            }
-        };
+        radioButtonList = new RadioButtonList(getParent());
 
         radioButtonList.setSelectedOption(1);
 
@@ -65,13 +57,6 @@ public abstract class MenuRedstoneSides extends Menu
     }
 
     public abstract void initRadioButtons();
-
-    public void sendServerData(boolean syncRequire)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, syncRequire);
-        PacketHandler.sendDataToServer(dw);
-    }
 
     public void writeData(ASMPacket dw, boolean syncRequire)
     {
@@ -176,7 +161,7 @@ public abstract class MenuRedstoneSides extends Menu
 
         public CheckBoxSide(int id)
         {
-            super(LocalizationHelper.getDirectionString(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
+            super(getParent(), LocalizationHelper.getDirectionString(id), CHECKBOX_X + CHECKBOX_SPACING_X * (id % 2), CHECKBOX_Y + CHECKBOX_SPACING_Y * (id / 2));
 
             this.id = id;
         }
@@ -197,12 +182,6 @@ public abstract class MenuRedstoneSides extends Menu
         public boolean getValue()
         {
             return (selection & (1 << id)) != 0;
-        }
-
-        @Override
-        public void onUpdate()
-        {
-            sendServerData(false);
         }
     }
 }

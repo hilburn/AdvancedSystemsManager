@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities.manager;
 
-import advancedsystemsmanager.api.network.INetworkReader;
+import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
@@ -19,6 +19,7 @@ import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
@@ -35,7 +36,6 @@ import gnu.trove.map.hash.TLongObjectHashMap;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -84,6 +84,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     private int timer = 0;
     private TileEntityManager self = this;
     private boolean usingUnlimitedInventories;
+    private FlowComponent currentGroup;
 
     public TileEntityManager()
     {
@@ -242,7 +243,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readData(ByteBuf buf, EntityPlayer player)
+    public void readData(ASMPacket buf, EntityPlayer player)
     {
         switch(buf.readByte())
         {
@@ -292,7 +293,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 }
                 break;
             case 2:
-                INetworkReader nr = getNetworkReaderForComponentPacket(buf, this);
+                IPacketReader nr = getFlowItem(buf.readVarIntFromBuffer());
 
                 if (nr != null)
                 {
@@ -464,21 +465,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
     }
 
-    private INetworkReader getNetworkReaderForComponentPacket(ByteBuf buf, TileEntityManager manager)
-    {
-
-        int componentId = buf.readInt();
-
-        FlowComponent component = manager.getFlowItem(componentId);
-
-        if (buf.readBoolean())
-        {
-            int menuId = buf.readByte();
-            return component.getMenus().get(menuId % component.getMenus().size());
-        }
-        return component;
-    }
-
     public Variable[] getVariables()
     {
         return variables;
@@ -641,16 +627,21 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         return network.get(selected);
     }
 
-    @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public void setCurrentGroup(FlowComponent currentGroup)
     {
-        buf.writeByte(0);
-        buf.writeInt(components.size());
+        this.currentGroup = currentGroup;
+    }
+
+    @Override
+    public void writeData(ASMPacket packet)
+    {
+        packet.writeByte(0);
+        packet.writeInt(components.size());
         for (FlowComponent flowComponent : components.valueCollection())
         {
             NBTTagCompound tagCompound = new NBTTagCompound();
             flowComponent.writeToNBT(tagCompound, false);
-            ByteBufUtils.writeTag(buf, tagCompound);
+            packet.writeNBTTagCompoundToBuffer(tagCompound);
         }
     }
 }

@@ -342,11 +342,11 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readData(ByteBuf buf, EntityPlayer player)
+    public void readData(ASMPacket packet, EntityPlayer player)
     {
         if (interfaceObject != null)
         {
-            interfaceObject.readData(buf, player);
+            interfaceObject.readData(packet, player);
         }
     }
 
@@ -491,11 +491,11 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public void writeData(ASMPacket packet)
     {
         if (interfaceObject != null)
         {
-            interfaceObject.writeNetworkComponent(buf);
+            interfaceObject.writeData(packet);
         }
     }
 

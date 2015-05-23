@@ -117,12 +117,11 @@ public class MenuGroup extends Menu
                 {
                     if (!component.equals(getParent()))
                     {
-                        ASMPacket dw = getWriterForServerComponentPacket();
+                        ASMPacket dw = component.getSyncPacket();
                         dw.writeVarIntToBuffer(component.getId());
                         dw.writeBoolean(GuiScreen.isShiftKeyDown());
                         PacketHandler.sendDataToServer(dw);
                     }
-
                     break;
                 }
             }
@@ -144,10 +143,10 @@ public class MenuGroup extends Menu
     {
     }
 
-    @Override
-    public void readData(ByteBuf dr)
-    {
-        super.readData(dr);
+//    @Override
+//    public void readData(ByteBuf dr)
+//    {
+//        super.readData(dr);
 //        if (!getParent().getManager().getWorldObj().isRemote)
 //        {
 //            int id = dr.readInt();
@@ -155,11 +154,6 @@ public class MenuGroup extends Menu
 //            boolean moveCluster = dr.readBoolean();
 //            moveComponents(component, getParent(), moveCluster);
 //        }
-    }
+//    }
 
-    @Override
-    public void writeNetworkComponent(ByteBuf buf)
-    {
-        super.writeNetworkComponent(buf);
-    }
 }

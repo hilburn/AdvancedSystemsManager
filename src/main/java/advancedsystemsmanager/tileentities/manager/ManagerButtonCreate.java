@@ -6,6 +6,7 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.menus.MenuTarget;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import io.netty.buffer.ByteBuf;
@@ -23,21 +24,21 @@ public class ManagerButtonCreate extends ManagerButton
     }
 
     @Override
-    public void readData(ByteBuf buf)
+    public void readData(ASMPacket packet)
     {
         if (Settings.isLimitless(manager) || manager.getFlowItems().size() < TileEntityManager.MAX_COMPONENT_AMOUNT)
         {
             FlowComponent component = new FlowComponent(manager, 50, 50, type);
 
-            boolean hasParent = buf.readBoolean();
+            boolean hasParent = packet.readBoolean();
             if (hasParent)
             {
-                component.setParent(manager.getFlowItem(buf.readInt()));
+                component.setParent(manager.getFlowItem(packet.readVarIntFromBuffer()));
             }
 
-            boolean autoSide = buf.readBoolean();
-            boolean autoBlackList = buf.readBoolean();
-            boolean moveFirst = buf.readBoolean();
+            boolean autoSide = packet.readBoolean();
+            boolean autoBlackList = packet.readBoolean();
+            boolean moveFirst = packet.readBoolean();
             boolean isInput = type.getCommandType() == ICommand.CommandType.INPUT;
             boolean isOutput = type.getCommandType() == ICommand.CommandType.OUTPUT;
             if (autoSide)
@@ -83,20 +84,20 @@ public class ManagerButtonCreate extends ManagerButton
 
 
     @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public void writeData(ASMPacket packet)
     {
         if (manager.selectedGroup != null)
         {
-            buf.writeBoolean(true);
-            buf.writeInt(manager.selectedGroup.getId());
+            packet.writeBoolean(true);
+            packet.writeVarIntToBuffer(manager.selectedGroup.getId());
         } else
         {
-            buf.writeBoolean(false);
+            packet.writeBoolean(false);
         }
 
-        buf.writeBoolean(Settings.isAutoSide());
-        buf.writeBoolean(Settings.isAutoBlacklist());
-        buf.writeBoolean(Settings.isPriorityMoveFirst());
+        packet.writeBoolean(Settings.isAutoSide());
+        packet.writeBoolean(Settings.isAutoBlacklist());
+        packet.writeBoolean(Settings.isPriorityMoveFirst());
     }
 
     @Override

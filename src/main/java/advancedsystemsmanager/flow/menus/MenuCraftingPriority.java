@@ -23,16 +23,7 @@ public class MenuCraftingPriority extends Menu
     {
         super(parent);
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(selectedOption == 0);
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
 
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Names.PRIORITY_MOVE_FIRST));

@@ -37,7 +37,7 @@ public class MenuVariable extends Menu
         int declarationCount = 0;
         int modificationCount = 0;
 
-        radioButtons = new RadioButtonList()
+        radioButtons = new RadioButtonList(getParent())
         {
             @Override
             public int getSelectedOption()
@@ -61,17 +61,6 @@ public class MenuVariable extends Menu
                 {
                     getParent().getManager().updateVariables();
                 }
-            }
-
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(true); //var || mode
-                dw.writeBoolean(false); //mode
-                dw.writeVarIntToBuffer(selectedOption);
-                PacketHandler.sendDataToServer(dw);
             }
         };
 
@@ -105,20 +94,10 @@ public class MenuVariable extends Menu
             {
                 setSelectedVariable(val);
             }
-
-            @Override
-            public void onUpdate()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(true); //var || mode
-                dw.writeBoolean(true); //var
-                dw.writeVarIntToBuffer(selectedVariable);
-                PacketHandler.sendDataToServer(dw);
-            }
         };
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Names.GLOBAL_VALUE_SET, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.GLOBAL_VALUE_SET, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -130,15 +109,6 @@ public class MenuVariable extends Menu
             public boolean getValue()
             {
                 return executed;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(false); //executed
-                dw.writeBoolean(executed);
-                PacketHandler.sendDataToServer(dw);
             }
 
             @Override

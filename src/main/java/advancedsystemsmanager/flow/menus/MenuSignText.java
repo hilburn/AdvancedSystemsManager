@@ -52,10 +52,10 @@ public class MenuSignText extends Menu
         for (int i = 0; i < textBoxes.length; i++)
         {
             final int id = i;
-            textBoxes[i] = new TextBoxLogic(15, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
+            textBoxes[i] = new TextBoxLogic(getParent(), 15, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
             {
                 @Override
-                public void textChanged()
+                public void onUpdate()
                 {
                     hasChanged[id] = IDLE_TIME;
                 }
@@ -63,7 +63,7 @@ public class MenuSignText extends Menu
             textBoxes[i].setMult(0.6F);
             textBoxes[i].setTextAndCursor("");
 
-            checkBoxes.addCheckBox(new CheckBox(Names.UPDATE_LINE, CHECK_BOX_X, CHECK_BOX_Y + TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING)
+            checkBoxes.addCheckBox(new CheckBox(getParent(), Names.UPDATE_LINE, CHECK_BOX_X, CHECK_BOX_Y + TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING)
             {
                 @Override
                 public void setValue(boolean val)
@@ -77,15 +77,6 @@ public class MenuSignText extends Menu
                     return update[id];
                 }
 
-                @Override
-                public void onUpdate()
-                {
-                    ASMPacket dw = getWriterForServerComponentPacket();
-                    dw.writeByte(id);
-                    dw.writeBoolean(false);
-                    dw.writeBoolean(getValue());
-                    PacketHandler.sendDataToServer(dw);
-                }
             });
             update[i] = true;
         }
@@ -230,26 +221,6 @@ public class MenuSignText extends Menu
         }
 
         nbtTagCompound.setTag(NBT_LINES, list);
-    }
-
-    @Override
-    public void update(float partial)
-    {
-        for (int i = 0; i < hasChanged.length; i++)
-        {
-            if (hasChanged[i] > 0)
-            {
-                hasChanged[i] -= partial;
-                if (hasChanged[i] <= 0)
-                {
-                    ASMPacket dw = getWriterForServerComponentPacket();
-                    dw.writeByte(i);
-                    dw.writeBoolean(true);
-                    dw.writeStringToBuffer(textBoxes[i].getText());
-                    PacketHandler.sendDataToServer(dw);
-                }
-            }
-        }
     }
 
     @Override

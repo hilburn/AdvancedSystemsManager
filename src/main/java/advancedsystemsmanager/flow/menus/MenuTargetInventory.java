@@ -30,28 +30,8 @@ public class MenuTargetInventory extends MenuTarget
         super(parent);
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(startTextBox = new TextBoxNumber(39, 49, 2, false)
-        {
-            @Override
-            public void onNumberChanged()
-            {
-                if (selectedDirectionId != -1 && getParent().getManager().getWorldObj().isRemote)
-                {
-                    writeData(DataTypeHeader.START_OR_TANK_DATA, getNumber());
-                }
-            }
-        });
-        textBoxes.addTextBox(endTextBox = new TextBoxNumber(60, 49, 2, false)
-        {
-            @Override
-            public void onNumberChanged()
-            {
-                if (selectedDirectionId != -1 && getParent().getManager().getWorldObj().isRemote)
-                {
-                    writeData(DataTypeHeader.END, getNumber());
-                }
-            }
-        });
+        textBoxes.addTextBox(startTextBox = new TextBoxNumber(getParent(), 39, 49, 2, false));
+        textBoxes.addTextBox(endTextBox = new TextBoxNumber(getParent(), 60, 49, 2, false));
     }
 
     @Override
@@ -96,14 +76,14 @@ public class MenuTargetInventory extends MenuTarget
         {
             startRange[i] = newDataTarget.startRange[i];
 
-            writeUpdatedData(container, i, DataTypeHeader.START_OR_TANK_DATA, startRange[i]);
+            //writeUpdatedData(container, i, DataTypeHeader.START_OR_TANK_DATA, startRange[i]);
         }
 
         if (endRange[i] != newDataTarget.endRange[i])
         {
             endRange[i] = newDataTarget.endRange[i];
 
-            writeUpdatedData(container, i, DataTypeHeader.END, endRange[i]);
+            //writeUpdatedData(container, i, DataTypeHeader.END, endRange[i]);
         }
     }
 

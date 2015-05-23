@@ -1,20 +1,14 @@
 package advancedsystemsmanager.network.message;
 
-import advancedsystemsmanager.api.network.INetworkWriter;
-import advancedsystemsmanager.gui.ContainerBase;
+import advancedsystemsmanager.api.network.IPacketWriter;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
 
 public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage, IMessage>
 {
-    public INetworkWriter sync;
+    public IPacketWriter sync;
     public ByteBuf buf;
 
     public SyncMessage()
@@ -26,7 +20,7 @@ public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage,
         this.buf = buf;
     }
 
-    public SyncMessage(INetworkWriter sync)
+    public SyncMessage(IPacketWriter sync)
     {
         this.sync = sync;
     }
@@ -44,7 +38,7 @@ public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage,
         {
             buf.writeByte(getID());
             writeExtraData(buf);
-            sync.writeNetworkComponent(buf);
+            //sync.writeNetworkComponent(buf);
         } else
         {
             buf.writeBytes(this.buf.copy());
@@ -63,23 +57,23 @@ public class SyncMessage implements IBufferMessage, IMessageHandler<SyncMessage,
     @Override
     public IMessage onMessage(SyncMessage message, MessageContext ctx)
     {
-        if (ctx.side == Side.CLIENT)
-        {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            Container container = player.openContainer;
-            if (container instanceof ContainerBase)
-            {
-                ((ContainerBase)container).updateClient(message, player);
-            }
-        } else
-        {
-            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            Container container = player.openContainer;
-            if (container instanceof ContainerBase)
-            {
-                ((ContainerBase)container).updateServer(message, player);
-            }
-        }
+//        if (ctx.side == Side.CLIENT)
+//        {
+//            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+//            Container container = player.openContainer;
+//            if (container instanceof ContainerBase)
+//            {
+//                ((ContainerBase)container).updateClient(message, player);
+//            }
+//        } else
+//        {
+//            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+//            Container container = player.openContainer;
+//            if (container instanceof ContainerBase)
+//            {
+//                ((ContainerBase)container).updateServer(message, player);
+//            }
+//        }
         return null;
     }
 

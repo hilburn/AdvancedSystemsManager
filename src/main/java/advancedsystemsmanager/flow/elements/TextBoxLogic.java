@@ -1,12 +1,14 @@
 package advancedsystemsmanager.flow.elements;
 
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ChatAllowedCharacters;
 
 
-public class TextBoxLogic
+public class TextBoxLogic extends UpdateElement
 {
     public String text;
     public int cursor;
@@ -16,8 +18,9 @@ public class TextBoxLogic
     public boolean updatedCursor;
     public float mult;
 
-    public TextBoxLogic(int charLimit, int width)
+    public TextBoxLogic(IPacketProvider packetProvider, int charLimit, int width)
     {
+        super(packetProvider);
         this.charLimit = charLimit;
         this.width = width;
         mult = 1F;
@@ -32,7 +35,7 @@ public class TextBoxLogic
         {
             text = newText;
             moveCursor(gui, str.length());
-            textChanged();
+            onUpdate();
         }
     }
 
@@ -49,7 +52,7 @@ public class TextBoxLogic
                 text = text.substring(0, cursor - 1) + text.substring(cursor);
                 moveCursor(gui, direction);
             }
-            textChanged();
+            onUpdate();
         }
     }
 
@@ -59,11 +62,6 @@ public class TextBoxLogic
         cursor += steps;
 
         updateCursor();
-    }
-
-
-    public void textChanged()
-    {
     }
 
     public String getText()
@@ -136,5 +134,17 @@ public class TextBoxLogic
     public void setMult(float mult)
     {
         this.mult = mult;
+    }
+
+    @Override
+    public void writeData(ASMPacket packet)
+    {
+        packet.writeStringToBuffer(text);
+    }
+
+    @Override
+    public void readData(ASMPacket packet)
+    {
+        text = packet.readStringFromBuffer();
     }
 }

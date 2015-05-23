@@ -83,7 +83,7 @@ public class PacketHandler
     }
 
     @SideOnly(Side.CLIENT)
-    private static ASMPacket getBaseWriterForServerPacket()
+    public static ASMPacket getBaseWriterForServerPacket()
     {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
         if (container != null)
@@ -129,10 +129,10 @@ public class PacketHandler
         dw.sendPlayerPackets(container);
     }
 
-    public static ASMPacket getWriterForServerComponentPacket(FlowComponent component, Menu menu)
+    public static ASMPacket getWriterForServerComponentPacket(FlowComponent component)
     {
         ASMPacket dw = PacketHandler.getWriterForServerPacket();
-        createComponentPacket(dw, component, menu);
+        createComponentPacket(dw, component);
         return dw;
     }
 
@@ -146,25 +146,16 @@ public class PacketHandler
         return dw;
     }
 
-    private static void createComponentPacket(ASMPacket dw, FlowComponent component, Menu menu)
+    private static void createComponentPacket(ASMPacket dw, FlowComponent component)
     {
-        dw.writeBoolean(true); //this is a packet for a specific FlowComponent
-        dw.writeLong(component.getId());
-
-        if (menu != null)
-        {
-            dw.writeBoolean(true); //this is packet for a specific menu
-            dw.writeByte(menu.getId());
-        } else
-        {
-            dw.writeBoolean(false); //this is a packet that has nothing to do with a menu
-        }
+        dw.writeByte(5); //this is a packet for a specific FlowComponent
+        dw.writeVarIntToBuffer(component.getId());
     }
 
     public static ASMPacket getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
     {
         ASMPacket dw = PacketHandler.getWriterForSpecificData(container);
-        createComponentPacket(dw, component, menu);
+        createComponentPacket(dw, component);
         return dw;
     }
 

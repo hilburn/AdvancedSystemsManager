@@ -32,7 +32,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
     {
         super(parent);
 
-        numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(10, 50, 3, true)
+        numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(getParent(), 10, 50, 3, true)
         {
             @Override
             public boolean isVisible()
@@ -41,13 +41,13 @@ public class MenuLiquid extends MenuStuff<Fluid>
             }
 
             @Override
-            public void onNumberChanged()
+            public void onUpdate()
             {
                 sendAmountData();
             }
         });
 
-        numberTextBoxes.addTextBox(amountTextBoxMilli = new TextBoxNumber(60, 50, 3, true)
+        numberTextBoxes.addTextBox(amountTextBoxMilli = new TextBoxNumber(getParent(), 60, 50, 3, true)
         {
             @Override
             public boolean isVisible()
@@ -56,7 +56,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
             }
 
             @Override
-            public void onNumberChanged()
+            public void onUpdate()
             {
                 sendAmountData();
             }

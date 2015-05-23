@@ -49,7 +49,7 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
 
         checkBoxes = new CheckBoxList();
 
-        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_BOUNDS_USE, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.CAMOUFLAGE_BOUNDS_USE, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -62,15 +62,9 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             {
                 return inUse;
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendCheckBoxPacket();
-            }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_COLLISION_USE, CHECK_BOX_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.CAMOUFLAGE_COLLISION_USE, CHECK_BOX_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -85,19 +79,13 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             }
 
             @Override
-            public void onUpdate()
-            {
-                sendCheckBoxPacket();
-            }
-
-            @Override
             public boolean isVisible()
             {
                 return inUse;
             }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Names.CAMOUFLAGE_COLLISION_FULL, CHECK_BOX_X + CHECK_BOX_SPACING_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.CAMOUFLAGE_COLLISION_FULL, CHECK_BOX_X + CHECK_BOX_SPACING_X, CHECK_BOX_Y + CHECK_BOX_SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -109,12 +97,6 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             public boolean getValue()
             {
                 return fullCollision;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                sendCheckBoxPacket();
             }
 
             @Override
@@ -131,24 +113,11 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
             int x = i % 2;
             int y = i / 2;
 
-            textBoxes.addTextBox(new TextBoxRange(i, TEXT_BOX_X + TEXT_BOX_SPACING_X * x, TEXT_BOX_Y + TEXT_BOX_SPACING_Y * y, x == 0 ? 0 : 32));
+            textBoxes.addTextBox(new TextBoxRange(TEXT_BOX_X + TEXT_BOX_SPACING_X * x, TEXT_BOX_Y + TEXT_BOX_SPACING_Y * y, x == 0 ? 0 : 32));
         }
 
         loadDefault();
 
-    }
-
-    public void sendCheckBoxPacket()
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        dw.writeByte(0);
-        dw.writeBoolean(inUse);
-        if (inUse)
-        {
-            dw.writeBoolean(useCollision);
-            dw.writeBoolean(fullCollision);
-        }
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void loadDefault()
@@ -304,23 +273,12 @@ public class MenuCamouflageShape extends MenuCamouflageAdvanced
 
     public class TextBoxRange extends TextBoxNumber
     {
-        public int id;
         public int defaultNumber;
 
-        public TextBoxRange(int id, int x, int y, int defaultNumber)
+        public TextBoxRange(int x, int y, int defaultNumber)
         {
-            super(x, y, 2, false);
+            super(getParent(), x, y, 2, false);
             this.defaultNumber = defaultNumber;
-            this.id = id;
-        }
-
-        @Override
-        public void onNumberChanged()
-        {
-            ASMPacket dw = getWriterForServerComponentPacket();
-            dw.writeByte(id + 1);
-            dw.writeByte(getNumber());
-            PacketHandler.sendDataToServer(dw);
         }
 
         @Override

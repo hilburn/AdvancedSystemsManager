@@ -54,27 +54,18 @@ public class MenuContainerTypes extends Menu
             final int id = i;
             int x = i % 2;
             int y = i / 2;
-            checkBoxes.addCheckBox(new CheckBox(types.get(i).getName(), CHECK_BOX_X + CHECK_BOX_SPACING_X * x, CHECK_BOX_Y + CHECK_BOX_SPACING_Y * y)
+            checkBoxes.addCheckBox(new CheckBox(getParent(), types.get(i).getName(), CHECK_BOX_X + CHECK_BOX_SPACING_X * x, CHECK_BOX_Y + CHECK_BOX_SPACING_Y * y)
             {
                 @Override
                 public void setValue(boolean val)
                 {
-                    checked[id] = val;
+                    MenuContainerTypes.this.checked[id] = val;
                 }
 
                 @Override
                 public boolean getValue()
                 {
-                    return checked[id];
-                }
-
-                @Override
-                public void onUpdate()
-                {
-                    ASMPacket dw = getWriterForServerComponentPacket();
-                    dw.writeByte(id);
-                    dw.writeBoolean(checked[id]);
-                    PacketHandler.sendDataToServer(dw);
+                    return MenuContainerTypes.this.checked[id];
                 }
             });
         }

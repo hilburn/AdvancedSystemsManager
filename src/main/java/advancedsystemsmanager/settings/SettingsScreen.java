@@ -1,10 +1,14 @@
 package advancedsystemsmanager.settings;
 
+import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -17,9 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class SettingsScreen implements IInterfaceRenderer
+public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 {
-
     private static final int CHECK_BOX_WIDTH = 100;
     private static final int START_X = 10;
     private static final int START_SETTINGS_X = 380;
@@ -180,6 +183,18 @@ public class SettingsScreen implements IInterfaceRenderer
 
     }
 
+    @Override
+    public ASMPacket getSyncPacket()
+    {
+        return PacketHandler.getBaseWriterForServerPacket();
+    }
+
+    @Override
+    public void registerSyncable(IPacketSync networkSync)
+    {
+
+    }
+
     private class CheckBoxSetting extends CheckBox
     {
         private String key;
@@ -187,7 +202,7 @@ public class SettingsScreen implements IInterfaceRenderer
 
         private CheckBoxSetting(String name)
         {
-            super(null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
+            super(SettingsScreen.this, null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
             key = "gui.asm.Settings." + name;
             this.name = name;
             setTextWidth(CHECK_BOX_WIDTH);

@@ -56,16 +56,18 @@ public class CopyHelper
 
         for (FlowComponent component : added.keySet())
         {
-            for (Map.Entry<Integer, Connection> entry : component.getConnections().entrySet())
+            int i = 0;
+            for (Connection entry : component.getConnections())
             {
                 try
                 {
-                    FlowComponent connectTo = added.get(oldComponents.get(entry.getValue().getComponentId()));
+                    FlowComponent connectTo = added.get(oldComponents.get(entry.getComponentId()));
                     if (connectTo != null)
                     {
-                        Connection newConnection = new Connection(connectTo.getId(), entry.getValue().getConnectionId());
-                        added.get(component).setConnection(entry.getKey(), newConnection);
+                        Connection newConnection = new Connection(connectTo.getId(), entry.getConnectionId());
+                        added.get(component).setConnection(i, newConnection);
                     }
+                    i++;
                 } catch (NullPointerException ignored)
                 {
                     break;

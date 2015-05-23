@@ -1,15 +1,17 @@
 package advancedsystemsmanager.flow.elements;
 
 
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RadioButtonList
+public class RadioButtonList extends UpdateElement
 {
 
     public static final int RADIO_SIZE = 8;
@@ -21,10 +23,10 @@ public abstract class RadioButtonList
     public List<RadioButton> radioButtonList;
     public int selectedOption;
 
-    public RadioButtonList()
+    public RadioButtonList(IPacketProvider packetProvider)
     {
+        super(packetProvider);
         radioButtonList = new ArrayList<RadioButton>();
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -69,20 +71,31 @@ public abstract class RadioButtonList
         }
     }
 
-    public abstract void updateSelectedOption(int selectedOption);
+    public void updateSelectedOption(int selectedOption)
+    {
+        this.selectedOption = selectedOption;
+        onUpdate();
+    }
 
     public void add(RadioButton radioButton)
     {
         radioButtonList.add(radioButton);
     }
 
-    public final int getRawSelectedOption()
-    {
-        return selectedOption;
-    }
-
     public int size()
     {
         return radioButtonList.size();
+    }
+
+    @Override
+    public void writeData(ASMPacket packet)
+    {
+        packet.writeByte(getSelectedOption());
+    }
+
+    @Override
+    public void readData(ASMPacket packet)
+    {
+        selectedOption = packet.readByte();
     }
 }

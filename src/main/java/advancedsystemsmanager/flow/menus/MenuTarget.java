@@ -299,7 +299,7 @@ public abstract class MenuTarget extends Menu
 
     public void writeData(DataTypeHeader header, int data)
     {
-        ASMPacket dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getParent().getSyncPacket();
         writeData(dw, selectedDirectionId, header, data);
         PacketHandler.sendDataToServer(dw);
     }

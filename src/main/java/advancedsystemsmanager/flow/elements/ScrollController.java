@@ -2,6 +2,7 @@ package advancedsystemsmanager.flow.elements;
 
 
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
@@ -13,7 +14,6 @@ import java.util.List;
 
 public abstract class ScrollController<T>
 {
-
     public static final int ITEM_SIZE = 16;
     public static final int ITEM_SIZE_WITH_MARGIN = 20;
     public static final int ARROW_SIZE_W = 10;
@@ -53,21 +53,20 @@ public abstract class ScrollController<T>
     public long lastUpdate;
     public float left;
 
-
-    public ScrollController(boolean hasSearchBox)
+    public ScrollController(IPacketProvider packetProvider, boolean hasSearchBox)
     {
-        this(hasSearchBox ? "" : null);
+        this(packetProvider, hasSearchBox ? "" : null);
     }
 
-    public ScrollController(String defaultText)
+    public ScrollController(IPacketProvider packetProvider, String defaultText)
     {
         this.hasSearchBox = defaultText != null;
         if (hasSearchBox)
         {
-            textBox = new TextBoxLogic(Integer.MAX_VALUE, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
+            textBox = new TextBoxLogic(packetProvider, Integer.MAX_VALUE, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
             {
                 @Override
-                public void textChanged()
+                public void onUpdate()
                 {
                     if (getText().length() > 0)
                     {

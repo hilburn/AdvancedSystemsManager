@@ -2,6 +2,7 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.StevesEnum;
+import advancedsystemsmanager.network.ASMPacket;
 import io.netty.buffer.ByteBuf;
 
 public class MenuRFInput extends MenuRF
@@ -11,10 +12,12 @@ public class MenuRFInput extends MenuRF
         super(parent, StevesEnum.RF_PROVIDER);
     }
 
-    @Override
-    public void readData(ByteBuf buf)
-    {
-        super.readData(buf);
-        updateConnectedNodes();
-    }
+
+//    @Override
+//    public void readData(ASMPacket packet)
+//    {
+//        super.readData(packet);
+//        updateConnectedNodes();
+//    }
+
 }

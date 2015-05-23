@@ -79,7 +79,7 @@ public class MenuVariableLoop extends Menu
     public void sendServerData(boolean useList)
     {
         int val = useList ? selectedList : selectedElement;
-        ASMPacket dw = getWriterForServerComponentPacket();
+        ASMPacket dw = getParent().getSyncPacket();
         dw.writeBoolean(useList);
         dw.writeByte(val);
         PacketHandler.sendDataToServer(dw);

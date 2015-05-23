@@ -32,16 +32,7 @@ public class MenuInterval extends Menu
         super(parent);
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(interval = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 3, true)
-        {
-            @Override
-            public void onNumberChanged()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeVarIntToBuffer(getNumber());
-                PacketHandler.sendDataToServer(dw);
-            }
-        });
+        textBoxes.addTextBox(interval = new TextBoxNumber(getParent(), TEXT_BOX_X, TEXT_BOX_Y, 3, true));
 
         interval.setNumber(1);
     }

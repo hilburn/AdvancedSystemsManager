@@ -35,44 +35,16 @@ public class MenuDelayed extends MenuTriggered
     public MenuDelayed(FlowComponent parent)
     {
         super(parent);
-        this.textBoxes.addTextBox(this.intervalSeconds = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 3, true)
+        this.textBoxes.addTextBox(this.intervalSeconds = new TextBoxNumber(getParent(), TEXT_BOX_X, TEXT_BOX_Y, 3, true));
+        this.textBoxes.addTextBox(this.intervalTicks = new TextBoxNumber(getParent(), TEXT_BOX_X + intervalSeconds.getWidth() + TEXT_MARGIN_X, TEXT_BOX_Y, 2, true)
         {
-            public void onNumberChanged()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeVarIntToBuffer(getDelay());
-                dw.writeBoolean(buttonList.getSelectedOption() == 0);
-                PacketHandler.sendDataToServer(dw);
-            }
-        });
-        this.textBoxes.addTextBox(this.intervalTicks = new TextBoxNumber(TEXT_BOX_X + intervalSeconds.getWidth() + TEXT_MARGIN_X, TEXT_BOX_Y, 2, true)
-        {
-            public void onNumberChanged()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeVarIntToBuffer(getDelay());
-                dw.writeBoolean(buttonList.getSelectedOption() == 0);
-                PacketHandler.sendDataToServer(dw);
-            }
-
             @Override
             public int getMaxNumber()
             {
                 return 19;
             }
         });
-        this.buttonList = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int i)
-            {
-                setSelectedOption(i);
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeVarIntToBuffer(getDelay());
-                dw.writeBoolean(buttonList.getSelectedOption() == 0);
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        this.buttonList = new RadioButtonList(getParent());
         buttonList.add(new RadioButton(TEXT_MARGIN_X, TEXT_BOX_Y + 20, Names.DELAY_RESTART));
         buttonList.add(new RadioButton(TEXT_MARGIN_X * 5 + intervalSeconds.getWidth(), TEXT_BOX_Y + 20, Names.DELAY_IGNORE));
         setDelay(5);

@@ -1,11 +1,10 @@
 package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.api.network.INetworkSync;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.FinalSyncMessage;
-import advancedsystemsmanager.network.message.IBufferMessage;
-import advancedsystemsmanager.network.message.SyncMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,29 +48,23 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
         playerInventoryEnd = inventorySlots.size();
     }
 
-    public void syncNetworkElement(INetworkSync element, boolean loseFocus)
+    public void syncNetworkElement(IPacketSync element, boolean loseFocus)
     {
-        if (element != null && element.needsSync() && (crafters.size() > 1 || loseFocus))
-        {
-            MessageHandler.INSTANCE.sendToServer(new SyncMessage(element));
-        }
+//        if (element != null && element.needsSync() && (crafters.size() > 1 || loseFocus))
+//        {
+//            MessageHandler.INSTANCE.sendToServer(new SyncMessage(element));
+//        }
     }
 
-    public void updateServer(IBufferMessage message, EntityPlayerMP player)
+    public void updateServer(ASMPacket message, EntityPlayerMP player)
     {
-        for (Object crafter : crafters)
-        {
-            if (crafter instanceof EntityPlayerMP)
-            {
-                MessageHandler.INSTANCE.sendTo(message, (EntityPlayerMP)crafter);
-            }
-        }
-        te.readData(message.getBuffer(), player);
+        message.sendPlayerPackets(this);
+        te.readData(message, player);
     }
 
-    public void updateClient(IBufferMessage message, EntityPlayer player)
+    public void updateClient(ASMPacket message, EntityPlayer player)
     {
-        te.readData(message.getBuffer(), player);
+        te.readData(message, player);
     }
 
     public T getTileEntity()
@@ -90,7 +83,7 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
     }
 
     @SideOnly(Side.CLIENT)
-    public void sendFinalUpdate(INetworkSync element)
+    public void sendFinalUpdate(IPacketSync element)
     {
         if (element != null)
             MessageHandler.INSTANCE.sendToServer(new FinalSyncMessage(te, element));
@@ -140,6 +133,4 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
         }
         return stack;
     }
-
-
 }

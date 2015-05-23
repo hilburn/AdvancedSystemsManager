@@ -36,17 +36,8 @@ public class MenuRedstoneOutput extends Menu
 
         textBoxes = new TextBoxNumberList();
 
-        textBoxes.addTextBox(textBox = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 2, true)
+        textBoxes.addTextBox(textBox = new TextBoxNumber(getParent(), TEXT_BOX_X, TEXT_BOX_Y, 2, true)
         {
-            @Override
-            public void onNumberChanged()
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(true); //header
-                dw.writeByte(getNumber());
-                PacketHandler.sendDataToServer(dw);
-            }
-
             @Override
             public int getMaxNumber()
             {
@@ -55,18 +46,7 @@ public class MenuRedstoneOutput extends Menu
         });
         textBox.setNumber(15);
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeBoolean(false); //header
-                dw.writeByte(selectedOption);
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         for (int i = 0; i < Settings.values().length; i++)
         {

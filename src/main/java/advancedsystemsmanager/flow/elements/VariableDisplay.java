@@ -90,5 +90,8 @@ public abstract class VariableDisplay
         }
     }
 
-    public abstract void onUpdate();
+    public void onUpdate()
+    {
+
+    };
 }

@@ -30,17 +30,13 @@ public class MenuResult extends Menu
 
         sets = parent.getType().getSets();
 
-        radioButtons = new RadioButtonList()
+        radioButtons = new RadioButtonList(getParent())
         {
             @Override
             public void setSelectedOption(int selectedOption)
             {
                 super.setSelectedOption(selectedOption);
 
-                if (selectedOption >= sets.length)
-                {
-                    System.out.println(getParent().getType().getLongName());
-                }
                 getParent().setConnectionSet(sets[radioButtons.getSelectedOption()]);
 
                 if (getParent().getType() == CommandRegistry.VARIABLE)
@@ -50,14 +46,6 @@ public class MenuResult extends Menu
                 {
                     getParent().setParent(getParent().getParent());
                 }
-            }
-
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                writeData(dw, selectedOption);
-                PacketHandler.sendDataToServer(dw);
             }
         };
 

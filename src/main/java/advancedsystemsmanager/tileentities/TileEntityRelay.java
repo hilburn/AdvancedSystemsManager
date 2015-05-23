@@ -676,7 +676,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void readData(ByteBuf buf, EntityPlayer player)
+    public void readData(ASMPacket buf, EntityPlayer player)
     {
         readContentFromNBT(ByteBufUtils.readTag(buf));
     }
@@ -907,10 +907,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public void writeData(ASMPacket packet)
     {
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeContentToNBT(tagCompound);
-        ByteBufUtils.writeTag(buf, tagCompound);
+        ByteBufUtils.writeTag(packet, tagCompound);
     }
+
 }

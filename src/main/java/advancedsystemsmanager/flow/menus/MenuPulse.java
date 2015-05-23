@@ -40,7 +40,7 @@ public class MenuPulse extends Menu
         super(parent);
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Names.DO_EMIT_PULSE, CHECK_BOX_X, CHECK_BOX_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.DO_EMIT_PULSE, CHECK_BOX_X, CHECK_BOX_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -53,24 +53,9 @@ public class MenuPulse extends Menu
             {
                 return usePulse;
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerPacket(ComponentSyncType.CHECK_BOX);
-            }
         });
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                radioButtons.setSelectedOption(selectedOption);
-
-                sendServerPacket(ComponentSyncType.RADIO_BUTTON);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         for (int i = 0; i < PULSE_OPTIONS.values().length; i++)
         {
@@ -83,37 +68,17 @@ public class MenuPulse extends Menu
 
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(secondsTextBox = new TextBoxNumber(TEXT_BOX_X_LEFT, TEXT_BOX_Y, 2, true)
-        {
-            @Override
-            public void onNumberChanged()
-            {
-                sendServerPacket(ComponentSyncType.TEXT_BOX_1);
-            }
-        });
-        textBoxes.addTextBox(ticksTextBox = new TextBoxNumber(TEXT_BOX_X_RIGHT, TEXT_BOX_Y, 2, true)
+        textBoxes.addTextBox(secondsTextBox = new TextBoxNumber(getParent(), TEXT_BOX_X_LEFT, TEXT_BOX_Y, 2, true));
+        textBoxes.addTextBox(ticksTextBox = new TextBoxNumber(getParent(), TEXT_BOX_X_RIGHT, TEXT_BOX_Y, 2, true)
         {
             @Override
             public int getMaxNumber()
             {
                 return 19;
             }
-
-            @Override
-            public void onNumberChanged()
-            {
-                sendServerPacket(ComponentSyncType.TEXT_BOX_2);
-            }
         });
 
         setDefault();
-    }
-
-    public void sendServerPacket(ComponentSyncType type)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, type);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(ASMPacket dw, ComponentSyncType type)

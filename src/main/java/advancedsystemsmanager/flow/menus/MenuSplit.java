@@ -33,22 +33,14 @@ public class MenuSplit extends Menu
         super(parent);
 
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-                sendServerData(0);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y, Names.SEQUENTIAL));
         radioButtons.add(new RadioButton(RADIO_X, RADIO_Y + SPACING_Y, Names.SPLIT));
 
         checkBoxes = new CheckBoxList();
 
-        checkBoxes.addCheckBox(new CheckBox(Names.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.FAIR_SPLIT, CHECK_BOX_X, RADIO_Y + 2 * SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -61,15 +53,9 @@ public class MenuSplit extends Menu
             {
                 return useFair();
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(1);
-            }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Names.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.EMPTY_PINS, CHECK_BOX_X, RADIO_Y + 3 * SPACING_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -82,20 +68,7 @@ public class MenuSplit extends Menu
             {
                 return useEmpty();
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(2);
-            }
         });
-    }
-
-    public void sendServerData(int id)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, id);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(ASMPacket dw, int id)

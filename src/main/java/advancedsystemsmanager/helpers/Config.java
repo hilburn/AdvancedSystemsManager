@@ -53,7 +53,7 @@ public class Config implements IConfigLock
     public boolean shouldRegister(String string, boolean defaultValue)
     {
         config.load();
-        boolean result = config.get(string, CATEGORY_ENABLE, defaultValue).getBoolean();
+        boolean result = config.get(CATEGORY_ENABLE, string, defaultValue).getBoolean();
         config.save();
         return result;
     }

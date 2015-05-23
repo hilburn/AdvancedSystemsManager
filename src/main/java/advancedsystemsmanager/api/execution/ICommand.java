@@ -42,6 +42,7 @@ public interface ICommand
         OUTPUT,
         COMMAND_CONTROL,
         CRAFTING,
-        MISC
+        MISC,
+        GROUP;
     }
 }

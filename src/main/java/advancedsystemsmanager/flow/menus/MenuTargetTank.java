@@ -26,18 +26,7 @@ public class MenuTargetTank extends MenuTarget
     {
         super(parent);
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                ASMPacket dw = getWriterForServerComponentPacket();
-                dw.writeByte(selectedDirectionId);
-                dw.writeByte(DataTypeHeader.START_OR_TANK_DATA.getId());
-                dw.writeBoolean(selectedOption == 1);
-                PacketHandler.sendDataToServer(dw);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y, Names.EMPTY_TANK));
         radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + RADIO_BUTTON_SPACING, Names.FILLED_TANK));

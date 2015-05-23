@@ -5,6 +5,7 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CopyHelper;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.settings.Settings;
@@ -27,9 +28,9 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
-            public void readData(ByteBuf buf)
+            public void readData(ASMPacket packet)
             {
-                int idToRemove = buf.readInt();
+                int idToRemove = packet.readInt();
                 if (idToRemove != -1)
                     manager.removeFlowComponent(idToRemove);
             }
@@ -48,18 +49,18 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void writeNetworkComponent(ByteBuf buf)
+            public void writeData(ASMPacket packet)
             {
                 manager.justSentServerComponentRemovalPacket = true;
                 for (FlowComponent item : manager.getFlowItems())
                 {
                     if (item.isBeingMoved())
                     {
-                        buf.writeInt(item.getId());
+                        packet.writeInt(item.getId());
                         return;
                     }
                 }
-                buf.writeInt(-1);
+                packet.writeInt(-1);
             }
 
             @Override
@@ -77,11 +78,11 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void readData(ByteBuf buf)
+            public void readData(ASMPacket packet)
             {
                 if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
                 {
-                    int id = buf.readInt();
+                    int id = packet.readInt();
                     if (id != -1)
                     {
                         FlowComponent item = manager.getFlowItem(id);
@@ -111,17 +112,17 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void writeNetworkComponent(ByteBuf buf)
+            public void writeData(ASMPacket packet)
             {
                 for (FlowComponent item : manager.getFlowItems())
                 {
                     if (item.isBeingMoved())
                     {
-                        buf.writeInt(item.getId());
+                        packet.writeInt(item.getId());
                         return;
                     }
                 }
-                buf.writeInt(-1);
+                packet.writeInt(-1);
             }
 
 

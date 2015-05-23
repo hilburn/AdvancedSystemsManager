@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
@@ -41,12 +42,12 @@ public class PacketEventHandler
 
             if (container != null && container.windowId == containerId && container instanceof ContainerBase)
             {
-                if (packet.readBoolean())
+                if (player instanceof EntityPlayerMP)
                 {
-                    //((ContainerBase)container).getTileEntity().readUpdatedData(packet, player);
+                    ((ContainerBase)container).updateServer(packet, (EntityPlayerMP)player);
                 } else
                 {
-                    //((ContainerBase)container).getTileEntity().readAllData(packet, player);
+                    ((ContainerBase)container).updateClient(packet, player);
                 }
 
             }

@@ -70,22 +70,14 @@ public abstract class MenuStuff<Type> extends Menu
         numberTextBoxes = new TextBoxNumberList();
 
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                this.selectedOption = selectedOption;
-                needsSync = true;
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         initRadioButtons();
 
         checkBoxes = new CheckBoxList();
         if (settings.get(0).isAmountSpecific())
         {
-            checkBoxes.addCheckBox(new CheckBox(Names.SPECIFY_AMOUNT, 5, 25)
+            checkBoxes.addCheckBox(new CheckBox(getParent(), Names.SPECIFY_AMOUNT, 5, 25)
             {
                 @Override
                 public void setValue(boolean val)
@@ -98,17 +90,11 @@ public abstract class MenuStuff<Type> extends Menu
                 {
                     return selectedSetting.isLimitedByAmount();
                 }
-
-                @Override
-                public void onUpdate()
-                {
-                    needsSync = true;
-                }
             });
         }
 
         //final MenuStuff self = this;
-        scrollControllerSearch = new ScrollController(true)
+        scrollControllerSearch = new ScrollController(getParent(), true)
         {
             @Override
             public List updateSearch(String search, boolean all)
@@ -127,7 +113,6 @@ public abstract class MenuStuff<Type> extends Menu
                 selectedSetting.setContent(o);
                 selectedSetting = null;
                 updateScrolling();
-                needsSync = true;
             }
 
             @Override
@@ -146,7 +131,7 @@ public abstract class MenuStuff<Type> extends Menu
             }
         };
 
-        scrollControllerSelected = new ScrollController<Setting<Type>>(false)
+        scrollControllerSelected = new ScrollController<Setting<Type>>(getParent(), false)
         {
             @Override
             public List<Setting<Type>> updateSearch(String search, boolean all)
@@ -344,7 +329,7 @@ public abstract class MenuStuff<Type> extends Menu
             if (inDeleteBounds(mX, mY))
             {
                 selectedSetting.delete();
-                needsSync = true;
+                //needsSync = true;
                 selectedSetting = null;
                 getScrollingList().updateScrolling();
             }

@@ -1,24 +1,19 @@
 package advancedsystemsmanager.flow.menus;
 
-
-import advancedsystemsmanager.api.network.INetworkSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 
-public abstract class Menu implements INetworkSync
+public abstract class Menu
 {
     public FlowComponent parent;
-    boolean needsSync;
     public int id;
 
     public Menu(FlowComponent parent)
@@ -45,11 +40,6 @@ public abstract class Menu implements INetworkSync
     public boolean onKeyStroke(GuiManager gui, char c, int k)
     {
         return false;
-    }
-
-    public ASMPacket getWriterForServerComponentPacket()
-    {
-        return PacketHandler.getWriterForServerComponentPacket(getParent(), this);
     }
 
     public FlowComponent getParent()
@@ -92,34 +82,5 @@ public abstract class Menu implements INetworkSync
 
     public void onGuiClosed()
     {
-    }
-
-    @Override
-    public void readData(ByteBuf buf)
-    {
-        readFromNBT(ByteBufUtils.readTag(buf), false);
-    }
-
-    @Override
-    public void writeNetworkComponent(ByteBuf buf)
-    {
-        buf.writeInt(parent.getId());
-        buf.writeBoolean(true);
-        buf.writeByte(id);
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        writeToNBT(tagCompound, false);
-        ByteBufUtils.writeTag(buf, tagCompound);
-    }
-
-    @Override
-    public boolean needsSync()
-    {
-        return needsSync;
-    }
-
-    @Override
-    public void setSynced()
-    {
-        needsSync = false;
     }
 }

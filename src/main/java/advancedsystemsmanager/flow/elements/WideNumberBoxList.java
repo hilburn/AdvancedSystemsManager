@@ -49,7 +49,7 @@ public class WideNumberBoxList
                     } else
                     {
                         textBox.setNumber(0);
-                        this.selectedTextBox.onNumberChanged();
+                        this.selectedTextBox.onUpdate();
                     }
                 } else
                 {
@@ -73,7 +73,7 @@ public class WideNumberBoxList
                 if ((double)Math.abs(this.selectedTextBox.getNumber()) < Math.pow(10.0D, (double)(this.selectedTextBox.getLength() - 1)))
                 {
                     this.selectedTextBox.setNumber(Math.min(this.selectedTextBox.getNumber() * 10 + i, this.selectedTextBox.getMaxNumber()));
-                    this.selectedTextBox.onNumberChanged();
+                    this.selectedTextBox.onUpdate();
                 }
 
                 return true;
@@ -82,13 +82,13 @@ public class WideNumberBoxList
             if (c == 45 && this.selectedTextBox.allowNegative())
             {
                 this.selectedTextBox.setNumber(this.selectedTextBox.getNumber() * -1);
-                this.selectedTextBox.onNumberChanged();
+                this.selectedTextBox.onUpdate();
             } else
             {
                 if (k == 14)
                 {
                     this.selectedTextBox.setNumber(this.selectedTextBox.getNumber() / 10);
-                    this.selectedTextBox.onNumberChanged();
+                    this.selectedTextBox.onUpdate();
                     return true;
                 }
 

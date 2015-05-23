@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network.message;
 
-import advancedsystemsmanager.api.network.INetworkWriter;
+import advancedsystemsmanager.api.network.IPacketWriter;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.gui.ContainerBase;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -22,7 +22,7 @@ public class FinalSyncMessage extends SyncMessage
     {
     }
 
-    public FinalSyncMessage(TileEntity tileEntity, INetworkWriter writer)
+    public FinalSyncMessage(TileEntity tileEntity, IPacketWriter writer)
     {
         super(writer);
         this.x = tileEntity.xCoord;
@@ -57,12 +57,12 @@ public class FinalSyncMessage extends SyncMessage
                     Container container = ((EntityPlayerMP)players).openContainer;
                     if (container instanceof ContainerBase && ((ContainerBase)container).getTileEntity() == tileEntity)
                     {
-                        ((ContainerBase)container).updateServer(getSyncMessage(), player);
+//                        ((ContainerBase)container).updateServer(getSyncMessage(), player);
                         return null;
                     }
                 }
             }
-            ((ITileEntityInterface)tileEntity).readData(message.buf, player);
+            //((ITileEntityInterface)tileEntity).readData(message.buf, player);
         }
         return null;
     }

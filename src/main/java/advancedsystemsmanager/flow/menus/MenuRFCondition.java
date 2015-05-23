@@ -23,7 +23,7 @@ public class MenuRFCondition extends Menu
     public MenuRFCondition(FlowComponent parent)
     {
         super(parent);
-        this.checkBoxes.addCheckBox(new CheckBox(Names.BELOW, 5, 50)
+        this.checkBoxes.addCheckBox(new CheckBox(getParent(), Names.BELOW, 5, 50)
         {
             public void setValue(boolean val)
             {
@@ -34,21 +34,9 @@ public class MenuRFCondition extends Menu
             {
                 return MenuRFCondition.this.triggerBelow;
             }
-
-            public void onUpdate()
-            {
-                MenuRFCondition.this.needsSync = true;
-            }
         });
         this.textBoxes = new WideNumberBoxList();
-        this.textBoxes.addTextBox(this.textBox = new WideNumberBox(5, 30, 31)
-        {
-            @Override
-            public void onNumberChanged()
-            {
-                MenuRFCondition.this.needsSync = true;
-            }
-        });
+        this.textBoxes.addTextBox(this.textBox = new WideNumberBox(getParent(), 5, 30, 31));
         this.textBox.setNumber(0);
     }
 

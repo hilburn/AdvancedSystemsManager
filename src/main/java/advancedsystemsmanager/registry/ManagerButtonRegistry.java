@@ -5,6 +5,7 @@ import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuGroup;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
@@ -38,7 +39,7 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
         {
             @Override
-            public void readData(ByteBuf buf)
+            public void readData(ASMPacket packet)
             {
 
             }
@@ -50,7 +51,7 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void writeNetworkComponent(ByteBuf buf)
+            public void writeData(ASMPacket packet)
             {
                 Settings.openMenu(manager);
             }
@@ -72,11 +73,11 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void readData(ByteBuf buf)
+            public void readData(ASMPacket packet)
             {
-                int id = buf.readInt();
+                int id = packet.readInt();
                 FlowComponent component = manager.getFlowItem(id);
-                boolean moveCluster = buf.readBoolean();
+                boolean moveCluster = packet.readBoolean();
                 if (component.getParent() != null)
                 {
                     MenuGroup.moveComponents(component, component.getParent().getParent(), moveCluster);
@@ -103,7 +104,7 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void writeNetworkComponent(ByteBuf buf)
+            public void writeData(ASMPacket packet)
             {
                 for (FlowComponent item : manager.getFlowItems())
                 {
@@ -111,8 +112,8 @@ public class ManagerButtonRegistry
                     {
                         //For the server only
                         manager.justSentServerComponentRemovalPacket = true;
-                        buf.writeInt(item.getId());
-                        buf.writeBoolean(GuiScreen.isShiftKeyDown());
+                        packet.writeInt(item.getId());
+                        packet.writeBoolean(GuiScreen.isShiftKeyDown());
                         item.resetPosition();
                         return;
                     }

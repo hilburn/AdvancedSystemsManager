@@ -41,15 +41,7 @@ public class MenuListOrder extends Menu
     {
         super(parent);
 
-        radioButtons = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-                sendServerData(UpdateType.TYPE);
-            }
-        };
+        radioButtons = new RadioButtonList(getParent());
 
         for (int i = 0; i < LoopOrder.values().length; i++)
         {
@@ -60,7 +52,7 @@ public class MenuListOrder extends Menu
         }
 
         checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(Names.USE_ALL, CHECK_BOX_X, CHECK_BOX_AMOUNT_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.USE_ALL, CHECK_BOX_X, CHECK_BOX_AMOUNT_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -73,15 +65,9 @@ public class MenuListOrder extends Menu
             {
                 return all;
             }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(UpdateType.USE_ALL);
-            }
         });
 
-        checkBoxes.addCheckBox(new CheckBox(Names.REVERSED, CHECK_BOX_X, CHECK_BOX_REVERSE_Y)
+        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.REVERSED, CHECK_BOX_X, CHECK_BOX_REVERSE_Y)
         {
             @Override
             public void setValue(boolean val)
@@ -96,12 +82,6 @@ public class MenuListOrder extends Menu
             }
 
             @Override
-            public void onUpdate()
-            {
-                sendServerData(UpdateType.REVERSED);
-            }
-
-            @Override
             public boolean isVisible()
             {
                 return canReverse();
@@ -111,29 +91,16 @@ public class MenuListOrder extends Menu
         all = true;
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(textBox = new TextBoxNumber(TEXT_BOX_X, TEXT_BOX_Y, 2, false)
+        textBoxes.addTextBox(textBox = new TextBoxNumber(getParent(), TEXT_BOX_X, TEXT_BOX_Y, 2, false)
         {
             @Override
             public boolean isVisible()
             {
                 return !all;
             }
-
-            @Override
-            public void onNumberChanged()
-            {
-                sendServerData(UpdateType.AMOUNT);
-            }
         });
 
         textBox.setNumber(1);
-    }
-
-    public void sendServerData(UpdateType type)
-    {
-        ASMPacket dw = getWriterForServerComponentPacket();
-        writeData(dw, type);
-        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeData(ASMPacket dw, UpdateType type)

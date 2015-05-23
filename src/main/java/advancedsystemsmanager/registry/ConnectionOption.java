@@ -47,7 +47,6 @@ public enum ConnectionOption
 
     public String getName(FlowComponent component, int id)
     {
-
         if (name != null)
         {
             return name;

@@ -56,15 +56,12 @@ public class Point
 
         Point point = (Point)o;
 
-        if (x != point.x) return false;
-        if (y != point.y) return false;
-
-        return true;
+        return x == point.x && y == point.y;
     }
 
     public void adjustToGrid()
     {
-        x = ((x - 2) / 10) * 10 + 2;
-        y = ((y - 4) / 10) * 10 + 4;
+        x = ((x - 4) / 10) * 10 + 4;
+        y = ((y - 2) / 10) * 10 + 2;
     }
 }

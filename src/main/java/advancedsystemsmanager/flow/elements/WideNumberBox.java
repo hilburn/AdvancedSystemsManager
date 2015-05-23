@@ -1,11 +1,13 @@
 package advancedsystemsmanager.flow.elements;
 
 
+import advancedsystemsmanager.api.network.IPacketProvider;
+
 public class WideNumberBox extends TextBoxNumber
 {
-    public WideNumberBox(int x, int y, int length)
+    public WideNumberBox(IPacketProvider packetProvider, int x, int y, int length)
     {
-        super(x, y, length, true);
+        super(packetProvider, x, y, length, true);
     }
 
     @Override

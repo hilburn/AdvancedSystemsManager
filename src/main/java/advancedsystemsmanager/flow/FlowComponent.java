@@ -3,22 +3,22 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
-import advancedsystemsmanager.api.network.INetworkSync;
+import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -27,8 +27,9 @@ import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+import java.util.List;
 
-public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, INetworkSync
+public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, IPacketSync, IPacketProvider
 {
     public static final int COMPONENT_SRC_X = 0;
     public static final int COMPONENT_SRC_Y = 0;
@@ -106,12 +107,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final String NBT_POS_Y = "Y";
     public static final String NBT_TYPE = "T";
     public static final String NBT_CONNECTION = "C";
-    public static final String NBT_CONNECTION_POS = "CP";
-    public static final String NBT_CONNECTION_TARGET_COMPONENT = "CT";
-    public static final String NBT_CONNECTION_TARGET_CONNECTION = "CC";
     public static final String NBT_INTERVAL = "I";
     public static final String NBT_MENUS = "M";
-    public static final String NBT_NODES = "N";
     public static final String NBT_NAME = "Na";
     public static final String NBT_PARENT = "P";
     private static final String NBT_ID = "ID";
@@ -131,7 +128,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public ICommand type;
     public TileEntityManager manager;
     public int id;
-    public Map<Integer, Connection> connections;
+    public Connection[] connections;
     public int currentInterval;
     public boolean isEditing;
     public TextBoxLogic textBox;
@@ -146,6 +143,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public int parentLoadId = -1;
     public int overrideX = -1;
     public int overrideY = -1;
+    private List<IPacketSync> networkSyncList = new ArrayList<IPacketSync>();
     List<String> errors = new ArrayList<String>();
 
     public FlowComponent(TileEntityManager manager, ICommand type)
@@ -172,8 +170,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         menus.add(new MenuResult(this));
 
         openMenuId = -1;
-        connections = new HashMap<Integer, Connection>();
-        textBox = new TextBoxLogic(TEXT_MAX_LENGTH, TEXT_SPACE);
+        connections = new Connection[connectionSet.getConnections().length];
+        textBox = new TextBoxLogic(this, TEXT_MAX_LENGTH, TEXT_SPACE);
 
         childrenInputNodes = new ArrayList<FlowComponent>();
         childrenOutputNodes = new ArrayList<FlowComponent>();
@@ -207,24 +205,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             NBTTagList connections = nbtTagCompound.getTagList(NBT_CONNECTION, 10);
             for (int i = 0; i < connections.tagCount(); i++)
             {
-                NBTTagCompound connectionTag = connections.getCompoundTagAt(i);
-
-                int componentId = connectionTag.getShort(NBT_CONNECTION_TARGET_COMPONENT);
-                Connection connection = new Connection(componentId, connectionTag.getByte(NBT_CONNECTION_TARGET_CONNECTION));
-
-                if (connectionTag.hasKey(NBT_NODES))
-                {
-                    connection.getNodes().clear();
-                    NBTTagList nodes = connectionTag.getTagList(NBT_NODES, 10);
-                    for (int j = 0; j < nodes.tagCount(); j++)
-                    {
-                        NBTTagCompound nodeTag = nodes.getCompoundTagAt(j);
-
-                        connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
-                    }
-                }
-
-                component.connections.put((int)connectionTag.getByte(NBT_CONNECTION_POS), connection);
+                Connection.readFromNBT(component.connections, connections.getCompoundTagAt(i));
             }
 
             if (nbtTagCompound.hasKey(NBT_INTERVAL, Constants.NBT.TAG_SHORT))
@@ -392,7 +373,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 gui.drawLine(location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY);
             }
 
-            Connection connectedConnection = connections.get(i);
+            Connection connectedConnection = connections[i];
             if (connectedConnection != null)
             {
                 hasConnection = true;
@@ -658,7 +639,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             for (int i = 0; i < Math.min(oldLength, newLength); i++)
             {
-                Connection connection = connections.get(i);
+                Connection connection = connections[i];
                 if (connection != null && this.connectionSet.getConnections()[i].isInput() != connectionSet.getConnections()[i].isInput())
                 {
                     removeConnection(i);
@@ -667,25 +648,29 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             for (int i = newLength; i < oldLength; i++)
             {
-                Connection connection = connections.get(i);
+                Connection connection = connections[i];
                 if (connection != null)
                 {
                     removeConnection(i);
                 }
             }
+
+            this.connections = Arrays.copyOf(connections, connectionSet.getConnections().length);
         }
         this.connectionSet = connectionSet;
     }
 
     public void removeConnection(int id)
     {
-        Connection connection = connections.get(id);
-
-        addConnection(id, null);
-        if (connection.getComponentId() >= 0)
+        Connection connection = connections[id];
+        if (connection != null)
         {
-            FlowComponent component = manager.getFlowItem(connection.getComponentId());
-            if (component != null) component.addConnection(connection.getConnectionId(), null);
+            addConnection(id, null);
+            if (connection.getComponentId() >= 0)
+            {
+                FlowComponent component = manager.getFlowItem(connection.getComponentId());
+                if (component != null) component.addConnection(connection.getConnectionId(), null);
+            }
         }
     }
 
@@ -695,7 +680,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         {
             needsSync = true;
         }
-        connections.put(id, connection);
+        connections[id] = connection;
     }
 
     public TileEntityManager getManager()
@@ -758,43 +743,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             return isLarge && openMenuId != -1 && menus.get(openMenuId).onKeyStroke(gui, c, k);
     }
 
-    public INetworkSync clicked(int mX, int mY)
+    public IPacketSync clicked(int mX, int mY)
     {
-        if (CollisionHelper.inBounds(x, y, getComponentWidth(), getComponentHeight(), mX, mY))
-        {
-            int internalX = mX - x;
-            int internalY = mY - y;
-
-            if (inArrowBounds(internalX, internalY) || (Settings.isLargeOpenHitBox() && internalY < COMPONENT_SIZE_H))
-            {
-                if (!isLarge && type == CommandRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
-                {
-                    return null;
-                } else
-                {
-                    return this;
-                }
-            } else if (isLarge)
-            {
-                for (int i = 0; i < menus.size(); i++)
-                {
-                    Menu menu = menus.get(i);
-
-                    if (menu.isVisible())
-                    {
-                        if (inMenuArrowBounds(i, internalX, internalY) || (Settings.isLargeOpenHitBoxMenu() && internalY >= getMenuItemY(i) && internalY <= getMenuItemY(i) + MENU_ITEM_SIZE_H))
-                        {
-                            return menu;
-                        }
-                    }
-                }
-
-            }
-            return this;
-        } else
-        {
-            return this;
-        }
+        return null;
     }
 
     public boolean onClick(int mX, int mY, int button)
@@ -822,7 +773,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     name = null;
                 }
                 textBox.setText(null);
-                needsSync = true;
             } else if (isLarge && isEditing && CollisionHelper.inBounds(EDIT_X_SMALL, EDIT_Y_BOT, EDIT_SIZE_SMALL, EDIT_SIZE_SMALL, internalX, internalY))
             {
                 isEditing = false;
@@ -835,9 +785,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 }
             } else if (inArrowBounds(internalX, internalY) || (Settings.isLargeOpenHitBox() && internalY < COMPONENT_SIZE_H))
             {
-                if (!isLarge && type == CommandRegistry.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
+                if (!isLarge && type.getCommandType() == ICommand.CommandType.GROUP && Settings.isQuickGroupOpen() && !GuiScreen.isShiftKeyDown())
                 {
-                    manager.setSelectedGroup(this);
+                    manager.setCurrentGroup(this);
                 } else
                 {
                     isLarge = !isLarge;
@@ -900,10 +850,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
                 if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
                 {
+
+
                     Connection current = manager.getCurrentlyConnecting();
                     if (button == 1 && current == null)
                     {
-                        Connection selected = connections.get(i);
+                        Connection selected = connections[i];
 
                         if (selected != null)
                         {
@@ -921,14 +873,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                             {
                                 int id = reversed ? selected.getNodes().size() : 0;
                                 selected.addAndSelectNode(mX, mY, id);
-                                needsSync = true;
+                                component.sendConnectionNode(connectionId, id, false, true, mX, mY);
                             }
                         }
                     } else
                     {
                         if (current == null)
                         {
-                            if (connections.get(i) != null)
+                            if (connections[i] != null)
                             {
                                 removeConnection(i);
                             }
@@ -950,7 +902,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                     return true;
                                 }
 
-                                if (connections.get(i) != null)
+                                if (connections[i] != null)
                                 {
                                     removeConnection(i);
                                 }
@@ -966,7 +918,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     return true;
                 } else
                 {
-                    Connection selected = connections.get(i);
+                    Connection selected = connections[i];
                     if (selected != null)
                     {
                         List<Point> nodes = selected.getNodes();
@@ -984,10 +936,11 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                 {
                                     if (GuiScreen.isShiftKeyDown())
                                     {
-                                        needsSync = true;
+                                        sendConnectionNode(i, j, true, false, 0, 0);
                                     } else if (selected.getNodes().size() < MAX_NODES && selected.getSelectedNode() == null)
                                     {
-                                        needsSync = true;
+                                        selected.addAndSelectNode(mX, mY, j + 1);
+                                        sendConnectionNode(i, j + 1, false, true, mX, mY);
                                     }
                                 }
                                 return true;
@@ -996,27 +949,21 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     }
                 }
             }
+
             return false;
         }
+    }
+
+    public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
+    {
+        ASMPacket dw = PacketHandler.getWriterForServerComponentPacket(this);
+        writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
+        //PacketHandler.sendDataToServer(dw);
     }
 
     public boolean isVisible()
     {
         return isVisible(getManager().getSelectedGroup());
-    }
-
-    @Override
-    public boolean needsSync()
-    {
-        if (needsSync) return true;
-        for (Menu menu : menus) if (menu.needsSync()) return true;
-        return false;
-    }
-
-    @Override
-    public void setSynced()
-    {
-        needsSync = false;
     }
 
     public boolean isVisible(FlowComponent selectedComponent)
@@ -1077,7 +1024,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     c = new Connection(this.getId(), connectionId);
                 } else
                 {
-                    c = currentComponent.connections.get(i);
+                    c = currentComponent.connections[i];
                     //old connection that will be replaced
                     if (c != null && c.getComponentId() == this.id && c.getConnectionId() == connectionId)
                     {
@@ -1107,7 +1054,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null)
             {
                 removeConnection(i);
@@ -1129,7 +1076,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null)
             {
                 connection.update(mX, mY);
@@ -1179,7 +1126,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null)
             {
                 for (int j = 0; j < connection.getNodes().size(); j++)
@@ -1215,7 +1162,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             dw.writeShort(x);
             dw.writeShort(y);
         }
-
     }
 
     public void postRelease()
@@ -1227,7 +1173,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         if (true) return;  //TODO work in progress
         adjustToGrid();
-        for (Connection connection : connections.values())
+        for (Connection connection : connections)
         {
             if (connection != null)
             {
@@ -1263,7 +1209,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 sideCount++;
             }
 
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null && id < connection.getComponentId())
             {
 
@@ -1387,12 +1333,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return menus;
     }
 
-    @Override
-    public void readData(ByteBuf buf)
-    {
-        refreshData(readFromNBT(manager, ByteBufUtils.readTag(buf), false));
-    }
-
     public FlowComponent copy()
     {
         FlowComponent copy = new FlowComponent(manager, x, y, id, type);
@@ -1408,10 +1348,10 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null)
             {
-                copy.connections.put(i, connection.copy());
+                copy.connections[i] = connection.copy();
             }
         }
 
@@ -1433,6 +1373,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return id;
     }
 
+    @Override
+    public void onUpdate()
+    {
+
+    }
+
     public void setId(int id)
     {
         this.id = id;
@@ -1441,7 +1387,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public Connection getConnection(int i)
     {
-        return connections.get(i);
+        return connections[i];
     }
 
     public boolean isBeingMoved()
@@ -1453,12 +1399,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = connections.get(i);
+            Connection connection = connections[i];
             if (connection != null)
             {
                 if (connection.getComponentId() == idToRemove)
                 {
-                    connections.remove(i);
+                    connections[i] = null;
                 }
             }
         }
@@ -1520,29 +1466,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         NBTTagList connections = new NBTTagList();
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            Connection connection = this.connections.get(i);
+            Connection connection = this.connections[i];
 
             if (connection != null)
             {
                 NBTTagCompound connectionTag = new NBTTagCompound();
-                connectionTag.setByte(NBT_CONNECTION_POS, (byte)i);
-                connectionTag.setInteger(NBT_CONNECTION_TARGET_COMPONENT, connection.getComponentId());
-                connectionTag.setByte(NBT_CONNECTION_TARGET_CONNECTION, (byte)connection.getConnectionId());
-
-
-                NBTTagList nodes = new NBTTagList();
-                for (Point point : connection.getNodes())
-                {
-                    NBTTagCompound nodeTag = new NBTTagCompound();
-
-                    nodeTag.setShort(NBT_POS_X, (short)point.getX());
-                    nodeTag.setShort(NBT_POS_Y, (short)point.getY());
-
-                    nodes.appendTag(nodeTag);
-                }
-
-                connectionTag.setTag(NBT_NODES, nodes);
-
+                connection.writeToNBT(connectionTag, i);
                 connections.appendTag(connectionTag);
             }
         }
@@ -1567,12 +1496,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public void setConnection(int i, Connection connection)
     {
-        connections.put(i, connection);
+        connections[i] = connection;
     }
 
     public void clearConnections()
     {
-        connections.clear();
+        connections = new Connection[connections.length];
     }
 
     public String getComponentName()
@@ -1732,7 +1661,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         this.overrideX = overrideX;
     }
 
-    public Map<Integer, Connection> getConnections()
+    public Connection[] getConnections()
     {
         return connections;
     }
@@ -1748,13 +1677,28 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     }
 
     @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public ASMPacket getSyncPacket()
     {
-        buf.writeInt(getId());
-        buf.writeBoolean(false);
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        writeToNBT(tagCompound, false);
-        tagCompound.removeTag(NBT_MENUS);
-        ByteBufUtils.writeTag(buf, tagCompound);
+        return PacketHandler.getWriterForServerComponentPacket(this);
+    }
+
+    @Override
+    public void registerSyncable(IPacketSync networkSync)
+    {
+        networkSync.setId(networkSyncList.size());
+        networkSyncList.add(networkSync);
+    }
+
+    @Override
+    public void readData(ASMPacket packet)
+    {
+        int id = packet.readUnsignedByte();
+        if (id < networkSyncList.size()) networkSyncList.get(id).readData(packet);
+    }
+
+    @Override
+    public void writeData(ASMPacket packet)
+    {
+
     }
 }

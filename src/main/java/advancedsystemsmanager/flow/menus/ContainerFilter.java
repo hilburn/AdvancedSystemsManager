@@ -108,14 +108,8 @@ public class ContainerFilter
             checkBoxes.addCheckBox(invertRange[i + 3] = new CheckBoxPage(Names.INVERT, MenuContainer.Page.DISTANCE, CHECK_BOX_DISTANCE_INVERT_X, y));
         }
 
-        radioButtonsSelection = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-            }
-        };
+        radioButtonsSelection = new RadioButtonList(currentMenu.getParent());
+
         String[] selection = {Names.ONLY_SELECTED, Names.HIDE_SELECTED};
         for (int i = 0; i < selection.length; i++)
         {
@@ -124,7 +118,7 @@ public class ContainerFilter
 
         //checkBoxes.addCheckBox(new CheckBoxPage(Localization.RELOAD_ON_CHANGE, ComponentMenuContainer.Page.SELECTION, CHECK_BOX_X, CHECK_BOX_SELECTION_Y));
 
-        scrollControllerVariable = new ScrollController<Variable>(false)
+        scrollControllerVariable = new ScrollController<Variable>(currentMenu.getParent(), false)
         {
             @Override
             public List<Variable> updateSearch(String search, boolean all)
@@ -162,14 +156,7 @@ public class ContainerFilter
             }
         };
 
-        radioButtonVariable = new RadioButtonList()
-        {
-            @Override
-            public void updateSelectedOption(int selectedOption)
-            {
-                setSelectedOption(selectedOption);
-            }
-        };
+        radioButtonVariable = new RadioButtonList(currentMenu.getParent());
 
         String[] varOptions = {Names.USE_UNUSED, Names.USE_FILTER};
         for (int i = 0; i < varOptions.length; i++)
@@ -332,40 +319,29 @@ public class ContainerFilter
 
     public class CheckBoxPage extends CheckBox
     {
-
-
-        public boolean checked; //this checkbox is only used on the client side so we don't have to anything special with the values
         public MenuContainer.Page page;
 
         public CheckBoxPage(String name, MenuContainer.Page page, int x, int y)
         {
-            super(name, x, y);
+            super(currentMenu.getParent(), name, x, y);
             this.page = page;
         }
-
 
         @Override
         public void setValue(boolean val)
         {
-            checked = val;
-        }
-
-        @Override
-        public boolean getValue()
-        {
-            return checked;
-        }
-
-        @Override
-        public void onUpdate()
-        {
-
+            this.checked = val;
         }
 
         @Override
         public boolean isVisible()
         {
             return currentMenu.getCurrentPage() == page;
+        }
+
+        @Override
+        public void onUpdate()
+        {
         }
     }
 
@@ -377,7 +353,7 @@ public class ContainerFilter
 
         public TextBoxPage(MenuContainer.Page page, int x, int y, boolean negative, int defaultNumber)
         {
-            super(x, y, 3, false);
+            super(currentMenu.getParent(), x, y, 3, false);
             this.page = page;
             this.negative = negative;
             this.defaultNumber = defaultNumber;
@@ -417,6 +393,11 @@ public class ContainerFilter
         public int getTextY()
         {
             return negative ? 4 : super.getTextY();
+        }
+
+        @Override
+        public void onUpdate()
+        {
         }
     }
 }

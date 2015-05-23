@@ -1,6 +1,5 @@
 package advancedsystemsmanager.gui;
 
-
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.settings.Settings;
@@ -14,11 +13,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -90,7 +89,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     protected float getScale()
     {
 
-        net.minecraft.client.gui.ScaledResolution scaledresolution = new net.minecraft.client.gui.ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
         float w = scaledresolution.getScaledWidth() * 0.9F;
         float h = scaledresolution.getScaledHeight() * 0.9F;
         float multX = w / xSize;
@@ -471,9 +470,9 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(32826);
         GL11.glEnable(2903);
         GL11.glEnable(2896);
-        float zLevel = this.zLevel;
-        itemRender.zLevel = 500.0F;
-        this.zLevel = 500.0F;
+        this.zLevel ++;
+        itemRender.zLevel = zLevel;
+
 
         try
         {
@@ -490,8 +489,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             }
         } finally
         {
+            this.zLevel--;
             itemRender.zLevel = zLevel;
-            this.zLevel = zLevel;
             bindTexture(this.getComponentResource());
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(2896);

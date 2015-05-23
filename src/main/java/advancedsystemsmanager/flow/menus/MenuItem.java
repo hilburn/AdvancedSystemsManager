@@ -49,36 +49,22 @@ public class MenuItem extends MenuStuff<ItemStack>
 
         if (settings.get(0).isAmountSpecific())
         {
-            numberTextBoxes.addTextBox(amountTextBox = new TextBoxNumber(80, 24, 3, true)
+            numberTextBoxes.addTextBox(amountTextBox = new TextBoxNumber(getParent(), 80, 24, 3, true)
             {
                 @Override
                 public boolean isVisible()
                 {
                     return selectedSetting.isLimitedByAmount();
                 }
-
-                @Override
-                public void onNumberChanged()
-                {
-                    selectedSetting.setAmount(getNumber());
-                    needsSync = true;
-                }
             });
         }
 
-        numberTextBoxes.addTextBox(damageValueTextBox = new TextBoxNumber(70, 52, 5, true)
+        numberTextBoxes.addTextBox(damageValueTextBox = new TextBoxNumber(getParent(), 70, 52, 5, true)
         {
             @Override
             public boolean isVisible()
             {
                 return getSelectedSetting().canChangeMetaData() && getSelectedSetting().getFuzzyMode().requiresMetaData();
-            }
-
-            @Override
-            public void onNumberChanged()
-            {
-                getSelectedSetting().getItem().setItemDamage(getNumber());
-                needsSync = true;
             }
         });
 
@@ -217,7 +203,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                         id = 0;
                     }
                     getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
-                    needsSync = true;
+                    //TODO: What?
                     break;
                 }
             }

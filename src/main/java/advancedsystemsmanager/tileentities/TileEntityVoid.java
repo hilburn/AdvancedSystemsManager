@@ -3,6 +3,7 @@ package advancedsystemsmanager.tileentities;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.gui.ContainerVoid;
 import advancedsystemsmanager.gui.GuiVoid;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
@@ -146,12 +147,13 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     }
 
     @Override
-    public void readData(ByteBuf buf, EntityPlayer player)
+    public void readData(ASMPacket buf, EntityPlayer player)
     {
     }
 
     @Override
-    public void writeNetworkComponent(ByteBuf buf)
+    public void writeData(ASMPacket packet)
     {
+
     }
 }
