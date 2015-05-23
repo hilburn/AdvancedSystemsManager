@@ -4,6 +4,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemCoord;
 
@@ -59,9 +60,8 @@ public class ContainerFilter
 
     public MenuContainer currentMenu;
 
-    public ContainerFilter(MenuContainer container)
+    public ContainerFilter()
     {
-        currentMenu = container;
         checkBoxes = new CheckBoxList();
 
         filterVariableSelection = new ArrayList<Long>();
@@ -109,7 +109,7 @@ public class ContainerFilter
             checkBoxes.addCheckBox(invertRange[i + 3] = new CheckBoxPage(Names.INVERT, MenuContainer.Page.DISTANCE, CHECK_BOX_DISTANCE_INVERT_X, y));
         }
 
-        radioButtonsSelection = new RadioButtonList(currentMenu.getParent());
+        radioButtonsSelection = new RadioButtonList(Null.NULL_PACKET);
 
         String[] selection = {Names.ONLY_SELECTED, Names.HIDE_SELECTED};
         for (int i = 0; i < selection.length; i++)
@@ -119,7 +119,7 @@ public class ContainerFilter
 
         //checkBoxes.addCheckBox(new CheckBoxPage(Localization.RELOAD_ON_CHANGE, ComponentMenuContainer.Page.SELECTION, CHECK_BOX_X, CHECK_BOX_SELECTION_Y));
 
-        scrollControllerVariable = new ScrollController<Variable>(currentMenu.getParent(), false)
+        scrollControllerVariable = new ScrollController<Variable>(Null.NULL_PACKET, false)
         {
             @Override
             public List<Variable> updateSearch(String search, boolean all)
@@ -157,7 +157,7 @@ public class ContainerFilter
             }
         };
 
-        radioButtonVariable = new RadioButtonList(currentMenu.getParent());
+        radioButtonVariable = new RadioButtonList(Null.NULL_PACKET);
 
         String[] varOptions = {Names.USE_UNUSED, Names.USE_FILTER};
         for (int i = 0; i < varOptions.length; i++)
@@ -324,7 +324,7 @@ public class ContainerFilter
 
         public CheckBoxPage(String name, MenuContainer.Page page, int x, int y)
         {
-            super(currentMenu.getParent(), name, x, y);
+            super(Null.NULL_PACKET, name, x, y);
             this.page = page;
         }
 
@@ -354,7 +354,7 @@ public class ContainerFilter
 
         public TextBoxPage(MenuContainer.Page page, int x, int y, boolean negative, int defaultNumber)
         {
-            super(currentMenu.getParent(), x, y, 3, false);
+            super(Null.NULL_PACKET, x, y, 3, false);
             this.page = page;
             this.negative = negative;
             this.defaultNumber = defaultNumber;

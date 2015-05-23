@@ -47,7 +47,7 @@ public class ManagerButtonRegistry
             @Override
             public boolean validClick()
             {
-                return false;
+                return true;
             }
 
             @Override

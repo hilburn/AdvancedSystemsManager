@@ -61,7 +61,7 @@ public class MenuContainer extends Menu
 
     public static final int CHECK_BOX_FILTER_Y = 5;
     public static final int CHECK_BOX_FILTER_SPACING = 12;
-//    public static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
+    public static final ContainerFilter filter = new ContainerFilter(); //this one is static so all of the menus will share the selection
     public static final String NBT_SELECTION = "InventorySelection";
     public static final String NBT_SELECTION_ID = "InventoryID";
     public static final String NBT_SHARED = "SharedCommand";
@@ -72,7 +72,6 @@ public class MenuContainer extends Menu
     public List<IContainerSelection<GuiManager>> inventories;
     public RadioButtonList radioButtonsMulti;
     public ScrollController<IContainerSelection<GuiManager>> scrollController;
-    public ContainerFilter filter;
     public ISystemType type;
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
@@ -88,8 +87,6 @@ public class MenuContainer extends Menu
         selectedInventories = new ArrayList<Long>();
         filterVariables = new ArrayList<Variable>();
         radioButtonsMulti = new RadioButtonList(getParent());
-
-        filter = new ContainerFilter(this);
 
         initRadioButtons();
         radioButtonsMulti.setSelectedOption(getDefaultRadioButton());

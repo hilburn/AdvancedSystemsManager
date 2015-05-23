@@ -1,5 +1,8 @@
 package advancedsystemsmanager.reference;
 
+import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.network.ASMPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
@@ -7,10 +10,7 @@ import net.minecraft.item.ItemStack;
 
 public class Null
 {
-    public static IInventory NULL_INVENTORY = new NullInventory();
-    public static ItemStack NULL_STACK = new ItemStack(Blocks.end_portal, 0);
-
-    private static class NullInventory implements IInventory
+    public static IInventory NULL_INVENTORY = new IInventory()
     {
         @Override
         public int getSizeInventory()
@@ -86,5 +86,26 @@ public class Null
         {
             return false;
         }
-    }
+
+    };
+    public static ItemStack NULL_STACK = new ItemStack(Blocks.end_portal, 0);
+    public static IPacketProvider NULL_PACKET = new IPacketProvider()
+    {
+        @Override
+        public ASMPacket getSyncPacket()
+        {
+            return new ASMPacket();
+        }
+
+        @Override
+        public void registerSyncable(IPacketSync networkSync)
+        {
+        }
+
+        @Override
+        public void sendPacketToServer(ASMPacket packet)
+        {
+        }
+    };
+
 }

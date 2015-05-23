@@ -1677,6 +1677,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public ASMPacket getSyncPacket()
     {
         return PacketHandler.getWriterForServerComponentPacket(this);
@@ -1687,6 +1688,13 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         networkSync.setId(networkSyncList.size());
         networkSyncList.add(networkSync);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void sendPacketToServer(ASMPacket packet)
+    {
+        PacketHandler.sendDataToServer(packet);
     }
 
     @Override

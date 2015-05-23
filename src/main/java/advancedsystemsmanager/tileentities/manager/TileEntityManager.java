@@ -276,7 +276,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     }
                 }
                 break;
-            case 1:
+            case PacketHandler.SETTING_MESSAGE:
                 if (!worldObj.isRemote)
                 {
                     boolean val = packet.readBoolean();

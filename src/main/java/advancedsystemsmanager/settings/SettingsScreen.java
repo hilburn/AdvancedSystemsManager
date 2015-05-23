@@ -10,6 +10,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
@@ -106,7 +107,7 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 
         for (String setting : Settings.settingsRegistry.keySet())
         {
-            checkBoxes.addCheckBox(new CheckBoxSetting(setting));
+            checkBoxes.addCheckBox(new CheckBoxSetting(Null.NULL_PACKET, setting));
         }
 
 
@@ -195,6 +196,12 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 
     }
 
+    @Override
+    public void sendPacketToServer(ASMPacket packet)
+    {
+        PacketHandler.sendDataToServer(packet);
+    }
+
     private class CheckBoxSetting extends CheckBox
     {
         private String key;
@@ -202,7 +209,12 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 
         private CheckBoxSetting(String name)
         {
-            super(SettingsScreen.this, null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
+            this(SettingsScreen.this, name);
+        }
+
+        private CheckBoxSetting(IPacketProvider provider, String name)
+        {
+            super(provider, null, getXAndGenerateY(StatCollector.translateToLocal("gui.asm.Settings." + name)), currentY);
             key = "gui.asm.Settings." + name;
             this.name = name;
             setTextWidth(CHECK_BOX_WIDTH);

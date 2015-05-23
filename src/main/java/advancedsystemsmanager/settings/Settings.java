@@ -2,6 +2,8 @@ package advancedsystemsmanager.settings;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.helpers.Config;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,7 +42,7 @@ public final class Settings
     public static void setSetting(String name, boolean value)
     {
         settingsRegistry.put(name, value);
-        save();
+        AdvancedSystemsManager.config.setConfigValue(name, String.valueOf(value));
     }
 
     private static void save()
@@ -118,9 +120,10 @@ public final class Settings
     {
         if (manager.getWorldObj().isRemote)
         {
-//            DataWriter dw = PacketHandler.getWriterForServerActionPacket();
-//            dw.writeBoolean(limitless);
-//            PacketHandler.sendDataToServer(dw);
+            ASMPacket packet = PacketHandler.getBaseContainerPacket();
+            packet.writeByte(PacketHandler.SETTING_MESSAGE);
+            packet.writeBoolean(limitless);
+            PacketHandler.sendDataToServer(packet);
         } else
         {
             int meta = manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord);

@@ -10,4 +10,7 @@ public interface IPacketProvider
     ASMPacket getSyncPacket();
 
     void registerSyncable(IPacketSync networkSync);
+
+    @SideOnly(Side.CLIENT)
+    void sendPacketToServer(ASMPacket packet);
 }

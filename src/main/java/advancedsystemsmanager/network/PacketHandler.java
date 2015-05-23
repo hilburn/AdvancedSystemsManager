@@ -22,8 +22,10 @@ public class PacketHandler
     public static final double BLOCK_UPDATE_RANGE = 128;
     public static final double BLOCK_UPDATE_SQ = BLOCK_UPDATE_RANGE * BLOCK_UPDATE_RANGE;
     public static final int SYNC_ALL = 0;
+    public static final byte SETTING_MESSAGE = 1;
     public static final int SYNC_COMPONENT = 2;
     public static final int BUTTON_CLICK = 5;
+
 
     public static void sendDataToServer(ASMPacket dw)
     {
