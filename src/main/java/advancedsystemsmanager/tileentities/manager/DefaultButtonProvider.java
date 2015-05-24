@@ -28,11 +28,15 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             @Override
-            public void readData(ASMPacket packet)
+            public boolean readData(ASMPacket packet)
             {
-                int idToRemove = packet.readInt();
+                int idToRemove = packet.readVarIntFromBuffer();
                 if (idToRemove != -1)
+                {
                     manager.removeFlowComponent(idToRemove);
+                    return true;
+                }
+                return false;
             }
 
             @Override
@@ -49,18 +53,18 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void writeData(ASMPacket packet)
+            public boolean writeData(ASMPacket packet)
             {
                 manager.justSentServerComponentRemovalPacket = true;
-                for (FlowComponent item : manager.getFlowItems())
+                for (FlowComponent item : manager.getZLevelRenderingList())
                 {
                     if (item.isBeingMoved())
                     {
-                        packet.writeInt(item.getId());
-                        return;
+                        packet.writeVarIntToBuffer(item.getId());
+                        return true;
                     }
                 }
-                packet.writeInt(-1);
+                return false;
             }
 
             @Override
@@ -78,24 +82,28 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void readData(ASMPacket packet)
+            public boolean readData(ASMPacket packet)
             {
-                if (Settings.isLimitless(manager) || manager.getFlowItems().size() < 511)
+                if (Settings.isLimitless(manager) || manager.components.size() < 511)
                 {
-                    int id = packet.readInt();
+                    int id = packet.readVarIntFromBuffer();
                     if (id != -1)
                     {
                         FlowComponent item = manager.getFlowItem(id);
-                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager.getFlowItems(), item, Settings.isLimitless(manager));
-                        manager.getFlowItems().addAll(added);
+                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager, manager.getFlowItems(), item, Settings.isLimitless(manager));
+                        for (FlowComponent add : added)
+                        {
+                            manager.addNewComponent(add);
+                        }
                     }
                 }
+                return true;
             }
 
             @Override
             public boolean validClick()
             {
-                for (FlowComponent item : manager.getFlowItems())
+                for (FlowComponent item : manager.getZLevelRenderingList())
                 {
                     if (item.isBeingMoved())
                     {
@@ -112,17 +120,17 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             }
 
             @Override
-            public void writeData(ASMPacket packet)
+            public boolean writeData(ASMPacket packet)
             {
-                for (FlowComponent item : manager.getFlowItems())
+                for (FlowComponent item : manager.getZLevelRenderingList())
                 {
                     if (item.isBeingMoved())
                     {
-                        packet.writeInt(item.getId());
-                        return;
+                        packet.writeVarIntToBuffer(item.getId());
+                        return true;
                     }
                 }
-                packet.writeInt(-1);
+                return false;
             }
 
 

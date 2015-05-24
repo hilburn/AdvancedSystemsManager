@@ -59,9 +59,9 @@ public class Point
         return x == point.x && y == point.y;
     }
 
-    public void adjustToGrid()
+    public void adjustToGrid(int grid)
     {
-        x = ((x - 4) / 10) * 10 + 4;
-        y = ((y - 2) / 10) * 10 + 2;
+        x = Math.round((x - 2)/grid) + 2;
+        y = Math.round((y - 4)/grid) + 4;
     }
 }

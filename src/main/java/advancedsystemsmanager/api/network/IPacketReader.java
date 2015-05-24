@@ -4,5 +4,5 @@ import advancedsystemsmanager.network.ASMPacket;
 
 public interface IPacketReader
 {
-    void readData(ASMPacket packet);
+    boolean readData(ASMPacket packet);
 }

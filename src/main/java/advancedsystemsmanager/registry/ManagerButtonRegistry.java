@@ -39,9 +39,9 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
         {
             @Override
-            public void readData(ASMPacket packet)
+            public boolean readData(ASMPacket packet)
             {
-
+                return false;
             }
 
             @Override
@@ -51,9 +51,10 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void writeData(ASMPacket packet)
+            public boolean writeData(ASMPacket packet)
             {
                 Settings.openMenu(manager);
+                return false;
             }
         });
 
@@ -73,7 +74,7 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void readData(ASMPacket packet)
+            public boolean readData(ASMPacket packet)
             {
                 int id = packet.readInt();
                 FlowComponent component = manager.getFlowItem(id);
@@ -82,6 +83,7 @@ public class ManagerButtonRegistry
                 {
                     MenuGroup.moveComponents(component, component.getParent().getParent(), moveCluster);
                 }
+                return true;
             }
 
             @Override
@@ -104,7 +106,7 @@ public class ManagerButtonRegistry
             }
 
             @Override
-            public void writeData(ASMPacket packet)
+            public boolean writeData(ASMPacket packet)
             {
                 for (FlowComponent item : manager.getFlowItems())
                 {
@@ -115,12 +117,13 @@ public class ManagerButtonRegistry
                         packet.writeInt(item.getId());
                         packet.writeBoolean(GuiScreen.isShiftKeyDown());
                         item.resetPosition();
-                        return;
+                        return true;
                     }
                 }
 
                 //Client only
                 manager.selectedGroup = manager.selectedGroup.getParent();
+                return false;
             }
 
             @Override

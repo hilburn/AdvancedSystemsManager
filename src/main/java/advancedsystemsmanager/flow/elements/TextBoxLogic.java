@@ -137,14 +137,16 @@ public class TextBoxLogic extends UpdateElement
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         packet.writeStringToBuffer(text);
+        return true;
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public boolean readData(ASMPacket packet)
     {
         text = packet.readStringFromBuffer();
+        return false;
     }
 }

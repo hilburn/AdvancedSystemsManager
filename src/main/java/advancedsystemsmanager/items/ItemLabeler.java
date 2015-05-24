@@ -1,7 +1,10 @@
 package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.api.items.IItemInterfaceProvider;
+import advancedsystemsmanager.gui.GuiLabeler;
 import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
@@ -9,8 +12,10 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +31,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemLabeler extends ItemBase
+public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
 {
     public ItemLabeler()
     {
@@ -125,5 +130,22 @@ public class ItemLabeler extends ItemBase
     public static String getLabel(ItemStack stack)
     {
         return stack.hasTagCompound() ? stack.getTagCompound().getString("Label") : "";
+    }
+
+    @Override
+    public Container getContainer(ItemStack stack, EntityPlayer player)
+    {
+        return null;
+    }
+
+    @Override
+    public GuiScreen getGui(ItemStack stack, EntityPlayer player)
+    {
+        return new GuiLabeler(stack, player);
+    }
+
+    @Override
+    public void readData(ItemStack stack, ASMPacket buf, EntityPlayer player)
+    {
     }
 }

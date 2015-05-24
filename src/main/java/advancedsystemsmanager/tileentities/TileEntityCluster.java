@@ -2,7 +2,7 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.items.IClusterItem;
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.helpers.PlayerHelper;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.network.*;
@@ -14,7 +14,6 @@ import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.Minecraft;
@@ -38,7 +37,7 @@ import java.util.Map;
         @Optional.Interface(iface = "cofh.api.energy.IEnergyProvider", modid = Mods.COFH_ENERGY),
         @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY)
 })
-public class TileEntityCluster extends TileEntity implements ITileEntityInterface, IPacketBlock, IEnergyProvider, IEnergyReceiver
+public class TileEntityCluster extends TileEntity implements ITileInterfaceProvider, IPacketBlock, IEnergyProvider, IEnergyReceiver
 {
 
     private static final String NBT_SUB_BLOCKS = "SubBlocks";
@@ -48,7 +47,7 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     private List<TileEntityClusterElement> elements;
     private List<ClusterRegistry> registryList;
     private Map<ClusterMethodRegistration, List<Pair>> methodRegistration;
-    private ITileEntityInterface interfaceObject;  //only the relay is currently having a interface
+    private ITileInterfaceProvider interfaceObject;  //only the relay is currently having a interface
     private TileEntityCamouflage camouflageObject;
 
     public TileEntityCluster()
@@ -107,6 +106,8 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     {
         registryList.clear();
         elements.clear();
+        interfaceObject = null;
+        camouflageObject = null;
 
         for (byte type : types)
         {
@@ -123,12 +124,12 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     public TileEntityClusterElement addElement(ClusterRegistry registry)
     {
         TileEntityClusterElement element = (TileEntityClusterElement)((ITileEntityProvider)registry.getBlock()).createNewTileEntity(getWorldObj(), 0);
-        if (interfaceObject != null && element instanceof ITileEntityInterface || camouflageObject != null && element instanceof TileEntityCamouflage) return null;
+        if ((interfaceObject != null && element instanceof ITileInterfaceProvider) || (camouflageObject != null && element instanceof TileEntityCamouflage)) return null;
         registryList.add(registry);
         elements.add(element);
-        if (element instanceof ITileEntityInterface)
+        if (element instanceof ITileInterfaceProvider)
         {
-            interfaceObject = (ITileEntityInterface)element;
+            interfaceObject = (ITileInterfaceProvider)element;
         } else if (element instanceof TileEntityCamouflage)
         {
             camouflageObject = (TileEntityCamouflage)element;
@@ -344,12 +345,9 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readData(ASMPacket packet, EntityPlayer player)
+    public boolean readData(ASMPacket packet, EntityPlayer player)
     {
-        if (interfaceObject != null)
-        {
-            interfaceObject.readData(packet, player);
-        }
+        return interfaceObject != null && interfaceObject.readData(packet, player);
     }
 
     @Override
@@ -442,40 +440,50 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
             }
         } else
         {
-
-            dw.writeByte(elements.size());
-            for (ClusterRegistry registry : registryList)
+            if (!worldObj.isRemote)
             {
-                dw.writeByte(registry.getId());
-            }
-            for (TileEntityClusterElement element : elements)
-            {
-                dw.writeByte(element.getBlockMetadata());
+                dw.writeByte(elements.size());
+                for (ClusterRegistry registry : registryList)
+                {
+                    dw.writeByte(registry.getId());
+                }
+                for (TileEntityClusterElement element : elements)
+                {
+                    dw.writeByte(element.getBlockMetadata());
+                }
             }
         }
     }
 
     @Override
-    public void readData(ASMPacket dr, int id)
+    public void readData(ASMPacket packet, int id)
     {
         if (id == 0)
         {
             if (camouflageObject != null)
             {
-                camouflageObject.readData(dr, id);
+                camouflageObject.readData(packet, id);
             }
         } else
         {
-            int length = dr.readByte();
-            byte[] types = new byte[length];
-            for (int i = 0; i < length; i++)
+            if (worldObj.isRemote)
             {
-                types[i] = dr.readByte();
-            }
-            loadElements(types);
-            for (int i = 0; i < length; i++)
+                int length = packet.readByte();
+                byte[] types = new byte[length];
+                for (int i = 0; i < length; i++)
+                {
+                    types[i] = packet.readByte();
+                }
+                loadElements(types);
+                for (int i = 0; i < length; i++)
+                {
+                    elements.get(i).setMetaData(packet.readByte());
+                }
+            }else
             {
-                elements.get(i).setMetaData(dr.readByte());
+                ASMPacket response = PacketHandler.constructBlockPacket(this, this, 1);
+                response.setPlayers(packet.getPlayers());
+                response.sendResponse();
             }
         }
     }
@@ -493,12 +501,9 @@ public class TileEntityCluster extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
-        if (interfaceObject != null)
-        {
-            interfaceObject.writeData(packet);
-        }
+        return interfaceObject != null && interfaceObject.writeData(packet);
     }
 
     private class Pair

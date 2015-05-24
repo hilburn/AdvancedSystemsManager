@@ -77,29 +77,6 @@ public class StevesHooks
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
-    public static void removeFlowComponent(TileEntityManager manager, int idToRemove)
-    {
-        for (int id : getIdsToRemove(idToRemove, manager.getFlowItems()))
-        {
-            manager.removeFlowComponent(id, manager.components);
-            if (!manager.getWorldObj().isRemote)
-            {
-                manager.getRemovedIds().add(id);
-            } else
-            {
-                for (Iterator<FlowComponent> itr = manager.getZLevelRenderingList().iterator(); itr.hasNext(); )
-                {
-                    if (itr.next().getId() == id)
-                    {
-                        itr.remove();
-                        break;
-                    }
-                }
-            }
-            manager.updateVariables();
-        }
-    }
-
     public static List<Integer> getIdsToRemove(int idToRemove, Collection<FlowComponent> items)
     {
         List<Integer> ids = new ArrayList<Integer>();

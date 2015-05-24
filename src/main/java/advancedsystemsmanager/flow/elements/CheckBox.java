@@ -60,14 +60,16 @@ public abstract class CheckBox extends UpdateElement
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         packet.writeBoolean(getValue());
+        return true;
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public boolean readData(ASMPacket packet)
     {
         setValue(packet.readBoolean());
+        return false;
     }
 }

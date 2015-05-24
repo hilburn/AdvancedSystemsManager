@@ -2,7 +2,7 @@ package advancedsystemsmanager.network;
 
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.gui.ContainerBase;
@@ -15,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
+
+import java.util.List;
 
 
 public class PacketHandler
@@ -32,7 +34,7 @@ public class PacketHandler
         dw.sendServerPacket();
     }
 
-    public static void sendAllData(Container container, ICrafting crafting, ITileEntityInterface te)
+    public static void sendAllData(Container container, ICrafting crafting, ITileInterfaceProvider te)
     {
         ASMPacket dw = new ASMPacket();
 
@@ -78,16 +80,6 @@ public class PacketHandler
     }*/
 
     @SideOnly(Side.CLIENT)
-    public static ASMPacket getWriterForServerActionPacket()
-    {
-        ASMPacket dw = getBaseContainerPacket();
-
-        dw.writeBoolean(true); //action
-
-        return dw;
-    }
-
-    @SideOnly(Side.CLIENT)
     public static ASMPacket getBaseContainerPacket()
     {
         Container container = Minecraft.getMinecraft().thePlayer.openContainer;
@@ -108,17 +100,12 @@ public class PacketHandler
         return dw;
     }
 
-    private static void createNonComponentPacket(ASMPacket dw)
-    {
-        dw.writeBoolean(false); //this is a packet that has nothing to do with a specific FlowComponent
-    }
-
     public static void sendDataToListeningClients(ContainerBase container, ASMPacket dw)
     {
-        dw.sendPlayerPackets(container);
+        dw.sendPlayerPackets(true, container);
     }
 
-    public static ASMPacket getWriterForServerComponentPacket(FlowComponent component)
+    public static ASMPacket getComponentPacket(FlowComponent component)
     {
         ASMPacket dw = PacketHandler.getWriterForServerPacket();
         createComponentPacket(dw, component);
@@ -144,14 +131,6 @@ public class PacketHandler
         return dw;
     }
 
-    public static ASMPacket getButtonPacket(int index, IManagerButton button)
-    {
-        ASMPacket packet = getWriterForServerPacket();
-        packet.writeByte(BUTTON_CLICK);
-        packet.writeByte(index);
-        button.writeData(packet);
-        return packet;
-    }
 
     public static void writeAllComponentData(ASMPacket dw, FlowComponent flowComponent)
     {
@@ -194,31 +173,46 @@ public class PacketHandler
 //        flowComponent.getManager().updateVariables();
     }
 
+    public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
+    {
+        ASMPacket dw = new ASMPacket(20);
+        dw.writeBoolean(false); //no container
+        dw.writeInt(te.xCoord);
+        dw.writeByte(te.yCoord);
+        dw.writeInt(te.zCoord);
+        dw.writeByte(id);
+
+        block.writeData(dw, id);
+        return dw;
+    }
+
     public static void sendBlockPacket(IPacketBlock block, EntityPlayer player, int id)
     {
         if (block instanceof TileEntity)
         {
             TileEntity te = (TileEntity)block;
+            ASMPacket packet = constructBlockPacket(te, block, id);
             boolean onServer = player == null || !player.worldObj.isRemote;
 
-            ASMPacket dw = new ASMPacket();
-            dw.writeBoolean(false); //no container
-            dw.writeInt(te.xCoord);
-            dw.writeByte(te.yCoord);
-            dw.writeInt(te.zCoord);
-            dw.writeByte(id);
-
-            block.writeData(dw, id);
             if (!onServer)
             {
-                dw.sendServerPacket();
+                packet.sendServerPacket();
             } else if (player != null)
             {
-                dw.sendPlayerPacket((EntityPlayerMP)player);
+                packet.sendPlayerPacket((EntityPlayerMP)player);
             } else
             {
-                dw.sendPlayerPackets(te.xCoord + 0.5, te.yCoord, te.zCoord, BLOCK_UPDATE_RANGE, te.getWorldObj().provider.dimensionId);
+                packet.sendPlayerPackets(te.xCoord + 0.5, te.yCoord + 0.5, te.zCoord + 0.5, BLOCK_UPDATE_RANGE, te.getWorldObj().provider.dimensionId);
             }
         }
+    }
+
+    public static void sendButtonPacket(int index, IManagerButton button)
+    {
+        ASMPacket packet = PacketHandler.getWriterForServerPacket();
+        packet.writeByte(PacketHandler.BUTTON_CLICK);
+        packet.writeByte(index);
+        if (button.writeData(packet))
+            PacketHandler.sendDataToServer(packet);
     }
 }

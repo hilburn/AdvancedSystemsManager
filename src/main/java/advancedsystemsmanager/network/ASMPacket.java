@@ -21,16 +21,24 @@ import net.minecraft.network.PacketBuffer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static advancedsystemsmanager.AdvancedSystemsManager.packetHandler;
 import static advancedsystemsmanager.reference.Reference.ID;
 
 public class ASMPacket extends PacketBuffer
 {
+    List<EntityPlayerMP> players;
 
     public ASMPacket()
     {
         super(Unpooled.buffer(10));
+    }
+
+    public ASMPacket(int size)
+    {
+        super(Unpooled.buffer(size));
     }
 
     public ASMPacket(ByteBuf buffer)
@@ -41,6 +49,31 @@ public class ASMPacket extends PacketBuffer
     public ASMPacket copy()
     {
         return new ASMPacket(super.copy());
+    }
+
+    public void setPlayer(EntityPlayerMP player)
+    {
+        if (players == null) players = new ArrayList<EntityPlayerMP>();
+        players.add(player);
+    }
+
+    public void setPlayers(List<EntityPlayerMP> players)
+    {
+        this.players = players;
+    }
+
+    public List<EntityPlayerMP> getPlayers()
+    {
+        return this.players;
+    }
+
+    public void sendResponse()
+    {
+        FMLProxyPacket packet = getPacket();
+        for (EntityPlayerMP player : players)
+        {
+            packetHandler.sendTo(packet, player);
+        }
     }
 
     public void sendPlayerPackets(double x, double y, double z, double r, int dimension)
@@ -58,12 +91,12 @@ public class ASMPacket extends PacketBuffer
         packetHandler.sendToServer(getPacket());
     }
 
-    public void sendPlayerPackets(ContainerBase container)
+    public void sendPlayerPackets(boolean reply, ContainerBase container)
     {
         FMLProxyPacket packet = getPacket();
         for (Object crafting : container.getCrafters())
         {
-            if (crafting instanceof EntityPlayerMP)
+            if (crafting instanceof EntityPlayerMP && (players == null || players.contains(crafting) == reply))
             {
                 packetHandler.sendTo(packet, (EntityPlayerMP)crafting);
             }

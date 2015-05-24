@@ -88,14 +88,16 @@ public class RadioButtonList extends UpdateElement
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         packet.writeByte(getSelectedOption());
+        return true;
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public boolean readData(ASMPacket packet)
     {
         selectedOption = packet.readByte();
+        return false;
     }
 }

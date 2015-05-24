@@ -1,6 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.gui.ContainerRelay;
 import advancedsystemsmanager.gui.GuiRelay;
 import advancedsystemsmanager.network.ASMPacket;
@@ -15,7 +15,6 @@ import advancedsystemsmanager.wrappers.InventoryWrapperPlayer;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -41,7 +40,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class TileEntityRelay extends TileEntityClusterElement implements IInventory, ISidedInventory, IFluidHandler, ITileEntityInterface
+public class TileEntityRelay extends TileEntityClusterElement implements IInventory, ISidedInventory, IFluidHandler, ITileInterfaceProvider
 {
 
     private static final int MAX_CHAIN_LENGTH = 512;
@@ -676,9 +675,10 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void readData(ASMPacket buf, EntityPlayer player)
+    public boolean readData(ASMPacket buf, EntityPlayer player)
     {
         readContentFromNBT(ByteBufUtils.readTag(buf));
+        return false;
     }
 
     public void readUpdatedData(ASMPacket dr, EntityPlayer player)
@@ -907,11 +907,12 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeContentToNBT(tagCompound);
         ByteBufUtils.writeTag(packet, tagCompound);
+        return true;
     }
 
 }

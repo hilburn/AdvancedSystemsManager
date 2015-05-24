@@ -3,7 +3,7 @@ package advancedsystemsmanager.tileentities.manager;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.Connection;
@@ -29,7 +29,6 @@ import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -47,7 +46,7 @@ import java.util.*;
 
 import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
-public class TileEntityManager extends TileEntity implements ITileEntityInterface
+public class TileEntityManager extends TileEntity implements ITileInterfaceProvider
 {
     public static final TriggerHelperRedstone redstoneTrigger = new TriggerHelperRedstone(3, 4);
     public static final TriggerHelperRedstone redstoneCondition = new TriggerHelperRedstone(1, 2);
@@ -79,7 +78,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     private Variable[] variables;
     private int maxID;
     private int triggerOffset;
-    private List<Integer> removedIds;
     private boolean firstInventoryUpdate = true;
     private boolean firstCommandExecution = true;
     private int timer = 0;
@@ -91,7 +89,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     {
         zLevelRenderingList = new ArrayList<FlowComponent>();
         buttons = ManagerButtonRegistry.getButtons(this);
-        removedIds = new ArrayList<Integer>();
         variables = new Variable[VariableColor.values().length];
         components = new TIntObjectHashMap<FlowComponent>();
         network = new TLongObjectHashMap<SystemCoord>();
@@ -102,10 +99,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
-    public void removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
+    public FlowComponent removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
-
-        componentMap.remove(idToRemove);
+        FlowComponent removed = componentMap.remove(idToRemove);
 
         if (selectedGroup != null && selectedGroup.getId() == idToRemove)
         {
@@ -114,20 +110,15 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
         for (FlowComponent component : componentMap.valueCollection())
             component.updateConnectionIdsAtRemoval(idToRemove);
-        //do this afterwards so the new ids won't mess anything up
-//        for (int i = idToRemove; i < items.size(); i++)
-//        {
-//            items.get(i).decreaseId();
-//        }
+
+        return removed;
     }
 
     public void removeFlowComponent(int idToRemove)
     {
-        removeFlowComponent(idToRemove, components);
-        if (!worldObj.isRemote)
-        {
-            removedIds.add(idToRemove);
-        } else
+        FlowComponent removed = removeFlowComponent(idToRemove, components);
+        if (removed.getType().getCommandType() == CommandType.TRIGGER) triggers.remove(removed);
+        if (worldObj.isRemote)
         {
             for (int i = 0; i < zLevelRenderingList.size(); i++)
             {
@@ -195,9 +186,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void triggerRedstone(TileEntityReceiver inputTrigger)
     {
-        for (FlowComponent item : getFlowItems())
+        for (FlowComponent item : triggers)
         {
-            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.REDSTONE)
+            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
             {
                 redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
             }
@@ -207,27 +198,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public Collection<FlowComponent> getFlowItems()
     {
         return components.valueCollection();
-    }
-
-    public void triggerChat()
-    {
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.CHAT)
-            {
-                activateTrigger(item, EnumSet.allOf(ConnectionOption.class));
-            }
-        }
-    }
-
-    public void readGenericData(ByteBuf buf)
-    {
-
-    }
-
-    public List<Integer> getRemovedIds()
-    {
-        return removedIds;
     }
 
     @Override
@@ -244,8 +214,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void readData(ASMPacket packet, EntityPlayer player)
+    public boolean readData(ASMPacket packet, EntityPlayer player)
     {
+        boolean result = false;
         switch(packet.readByte())
         {
             case PacketHandler.SYNC_ALL:
@@ -256,7 +227,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 for (int i = 0; i < flowControlCount; i++)
                 {
                     NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
-                    FlowComponent component  = FlowComponent.readFromNBT(this, tagCompound, false);
+                    FlowComponent component = FlowComponent.readFromNBT(this, tagCompound, false);
                     addNewComponent(component);
                     if (worldObj.isRemote) zLevelRenderingList.add(component);
                 }
@@ -275,6 +246,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                         selectedGroup = selectedGroup.getParent();
                     }
                 }
+                result = false;
                 break;
             case PacketHandler.SETTING_MESSAGE:
                 if (!worldObj.isRemote)
@@ -291,15 +263,13 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                     for (FlowComponent item : items) {
                         item.adjustEverythingToGridFine();
                     } */
+                    result =  false;
                 }
                 break;
             case PacketHandler.SYNC_COMPONENT:
                 IPacketReader nr = getFlowItem(packet.readVarIntFromBuffer());
 
-                if (nr != null)
-                {
-                    nr.readData(packet);
-                }
+                result =  nr != null && nr.readData(packet);
                 break;
             case 3:
                 updateInventories();
@@ -312,10 +282,12 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
                 if (buttonId >= 0 && buttonId < buttons.size())
                 {
                     IManagerButton button = buttons.get(buttonId);
-                    button.readData(packet);
+                    result = button.readData(packet);
                 }
+                break;
         }
         if (!this.worldObj.isRemote) this.markDirty();
+        return result;
     }
 
     private boolean findNewSelectedComponent(int id)
@@ -431,6 +403,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     public boolean addNewComponent(FlowComponent component)
     {
         boolean result = components.put(component.getId(), component) != null;
+        if (component.getType().getCommandType() == CommandType.TRIGGER) triggers.add(component);
         if (worldObj.isRemote) zLevelRenderingList.add(0, component);
         return result;
     }
@@ -470,9 +443,9 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
 
     public void triggerBUD(TileEntityBUD tileEntityBUD)
     {
-        for (FlowComponent item : getFlowItems())
+        for (FlowComponent item : triggers)
         {
-            if (item.getType().getCommandType() == CommandType.TRIGGER && item.getConnectionSet() == ConnectionSet.BUD)
+            if (item.getConnectionSet() == ConnectionSet.BUD)
             {
                 budTrigger.triggerBUD(item, tileEntityBUD);
             }
@@ -514,31 +487,28 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             StevesHooks.tickTriggers(this);
             if (timer++ % 20 == triggerOffset)
             {
-                for (FlowComponent item : getFlowItems())
+                for (FlowComponent item : triggers)
                 {
-                    if (item.getType().getCommandType() == CommandType.TRIGGER)
+                    MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
+                    int interval = componentMenuInterval.getInterval();
+                    if (interval == 0)
                     {
-                        MenuInterval componentMenuInterval = (MenuInterval)item.getMenus().get(TriggerHelper.TRIGGER_INTERVAL_ID);
-                        int interval = componentMenuInterval.getInterval();
-                        if (interval == 0)
-                        {
-                            continue;
-                        }
-                        item.setCurrentInterval(item.getCurrentInterval() + 1);
-                        if (item.getCurrentInterval() >= interval)
-                        {
-                            item.setCurrentInterval(0);
+                        continue;
+                    }
+                    item.setCurrentInterval(item.getCurrentInterval() + 1);
+                    if (item.getCurrentInterval() >= interval)
+                    {
+                        item.setCurrentInterval(0);
 
-                            EnumSet<ConnectionOption> valid = EnumSet.of(ConnectionOption.INTERVAL);
-                            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
-                            {
-                                redstoneTrigger.onTrigger(item, valid);
-                            } else if (item.getConnectionSet() == ConnectionSet.BUD)
-                            {
-                                budTrigger.onTrigger(item, valid);
-                            }
-                            activateTrigger(item, valid);
+                        EnumSet<ConnectionOption> valid = EnumSet.of(ConnectionOption.INTERVAL);
+                        if (item.getConnectionSet() == ConnectionSet.REDSTONE)
+                        {
+                            redstoneTrigger.onTrigger(item, valid);
+                        } else if (item.getConnectionSet() == ConnectionSet.BUD)
+                        {
+                            budTrigger.onTrigger(item, valid);
                         }
+                        activateTrigger(item, valid);
                     }
                 }
             }
@@ -631,7 +601,7 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         packet.writeByte(PacketHandler.SYNC_ALL);
         packet.writeVarIntToBuffer(components.size());
@@ -641,5 +611,6 @@ public class TileEntityManager extends TileEntity implements ITileEntityInterfac
             flowComponent.writeToNBT(tagCompound, false);
             packet.writeNBTTagCompoundToBuffer(tagCompound);
         }
+        return true;
     }
 }

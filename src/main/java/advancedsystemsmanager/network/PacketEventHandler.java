@@ -33,6 +33,7 @@ public class PacketEventHandler
     public void handlePacket(ByteBuf buffer, EntityPlayer player)
     {
         ASMPacket packet = new ASMPacket(buffer);
+        if (player instanceof EntityPlayerMP) packet.setPlayer((EntityPlayerMP)player);
         boolean useContainer = packet.readBoolean();
 
         if (useContainer)

@@ -1,9 +1,8 @@
 package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.api.network.IPacketSync;
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.MessageHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
-public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface> extends Container
+public abstract class ContainerBase<T extends TileEntity & ITileInterfaceProvider> extends Container
 {
     protected T te;
     private InventoryPlayer player;
@@ -48,8 +47,7 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
 
     public void updateServer(ASMPacket message, EntityPlayerMP player)
     {
-        message.sendPlayerPackets(this);
-        te.readData(message, player);
+        message.sendPlayerPackets(te.readData(message, player), this);
     }
 
     public void updateClient(ASMPacket message, EntityPlayer player)
@@ -62,7 +60,7 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
         return te;
     }
 
-    public ITileEntityInterface getInterface()
+    public ITileInterfaceProvider getInterface()
     {
         return te;
     }

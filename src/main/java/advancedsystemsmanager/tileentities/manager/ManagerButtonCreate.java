@@ -24,7 +24,7 @@ public class ManagerButtonCreate extends ManagerButton
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public boolean readData(ASMPacket packet)
     {
         if (Settings.isLimitless(manager) || manager.getFlowItems().size() < TileEntityManager.MAX_COMPONENT_AMOUNT)
         {
@@ -73,7 +73,9 @@ public class ManagerButtonCreate extends ManagerButton
             }
 
             manager.addNewComponent(component);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -84,7 +86,7 @@ public class ManagerButtonCreate extends ManagerButton
 
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
         if (manager.selectedGroup != null)
         {
@@ -98,6 +100,7 @@ public class ManagerButtonCreate extends ManagerButton
         packet.writeBoolean(Settings.isAutoSide());
         packet.writeBoolean(Settings.isAutoBlacklist());
         packet.writeBoolean(Settings.isPriorityMoveFirst());
+        return true;
     }
 
     @Override

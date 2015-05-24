@@ -24,11 +24,11 @@ public abstract class UpdateElement implements IPacketSync
     {
         ASMPacket packet = packetProvider.getSyncPacket();
         packet.writeByte(id);
-        writeData(packet);
-        packetProvider.sendPacketToServer(packet);
+        if (writeData(packet))
+            packetProvider.sendPacketToServer(packet);
     }
 
-    public abstract void writeData(ASMPacket packet);
+    public abstract boolean writeData(ASMPacket packet);
 
-    public abstract void readData(ASMPacket packet);
+    public abstract boolean readData(ASMPacket packet);
 }

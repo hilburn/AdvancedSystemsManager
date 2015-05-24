@@ -1,8 +1,11 @@
 package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.items.IItemInterfaceProvider;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -17,14 +20,27 @@ public class GuiHandler implements IGuiHandler
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (ID > 0)
+        switch (ID)
         {
-            TileEntity te = world.getTileEntity(x, y, z);
+            case 0:
+                ItemStack stack = player.getCurrentEquippedItem();
+                if (stack != null)
+                {
+                    Item item = stack.getItem();
+                    if (item instanceof IItemInterfaceProvider)
+                    {
+                        return ((IItemInterfaceProvider)item).getContainer(stack, player);
+                    }
+                }
+                break;
+            case 1:
+                TileEntity te = world.getTileEntity(x, y, z);
 
-            if (te != null && te instanceof ITileEntityInterface)
-            {
-                return ((ITileEntityInterface)te).getContainer(player);
-            }
+                if (te != null && te instanceof ITileInterfaceProvider)
+                {
+                    return ((ITileInterfaceProvider)te).getContainer(player);
+                }
+                break;
         }
         return null;
     }
@@ -33,17 +49,32 @@ public class GuiHandler implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
 
-        if (ID == 0) return new GuiLabeler(player.getCurrentEquippedItem(), player);
-        else
+        switch (ID)
         {
-            TileEntity te = world.getTileEntity(x, y, z);
+            case 0:
+                ItemStack stack = player.getCurrentEquippedItem();
+                if (stack != null)
+                {
+                    Item item = stack.getItem();
+                    if (item instanceof IItemInterfaceProvider)
+                    {
+                        return ((IItemInterfaceProvider)item).getContainer(stack, player);
+                    }
+                }
+                break;
+//                return new GuiLabeler(player.getCurrentEquippedItem(), player);
+            case 1:
+                TileEntity te = world.getTileEntity(x, y, z);
 
-            if (te != null && te instanceof ITileEntityInterface)
-            {
-                return ((ITileEntityInterface)te).getGui(player);
-            }
+                if (te != null && te instanceof ITileInterfaceProvider)
+                {
+                    return ((ITileInterfaceProvider)te).getGui(player);
+                }
+                break;
         }
         return null;
     }
+
+
 
 }

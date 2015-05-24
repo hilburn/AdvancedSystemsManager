@@ -171,7 +171,16 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         openMenuId = -1;
         connections = new Connection[connectionSet.getConnections().length];
-        textBox = new TextBoxLogic(this, TEXT_MAX_LENGTH, TEXT_SPACE);
+        textBox = new TextBoxLogic(this, TEXT_MAX_LENGTH, TEXT_SPACE)
+        {
+            @Override
+            public boolean readData(ASMPacket packet)
+            {
+                super.readData(packet);
+                setComponentName(text);
+                return false;
+            }
+        };
 
         childrenInputNodes = new ArrayList<FlowComponent>();
         childrenOutputNodes = new ArrayList<FlowComponent>();
@@ -956,7 +965,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public void sendConnectionNode(int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
     {
-        ASMPacket dw = PacketHandler.getWriterForServerComponentPacket(this);
+        ASMPacket dw = PacketHandler.getComponentPacket(this);
         writeConnectionNode(dw, -1, connectionId, nodeId, deleted, created, x, y);
         //PacketHandler.sendDataToServer(dw);
     }
@@ -992,7 +1001,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @SideOnly(Side.CLIENT)
     public String getName()
     {
-        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? getType().getName() : name : textBox.getText();
+        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? StatCollector.translateToLocal(getType().getName()) : name : textBox.getText();
     }
 
     public boolean checkForLoops(int connectionId, Connection connection)
@@ -1095,7 +1104,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             if (GuiScreen.isShiftKeyDown())
             {
-                adjustToGrid();
+                adjustToGrid(10);
                 mouseDragX = x;
                 mouseDragY = y;
             } else
@@ -1103,19 +1112,21 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 mouseDragX = mX;
                 mouseDragY = mY;
             }
-            needsSync = true;
         }
     }
 
-    public void adjustToGrid()
+    public void adjustToGrid(int grid)
     {
-        x = (x / 10) * 10;
-        y = (y / 10) * 10;
+        x = Math.round(x / grid) * grid;
+        y = Math.round(y / grid) * grid;
     }
 
     public void onRelease(int mX, int mY, int button)
     {
         followMouse(mX, mY);
+        if (isDragging) {
+            sendLocationData();
+        }
 
         for (int i = 0; i < menus.size(); i++)
         {
@@ -1142,7 +1153,15 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 }
             }
         }
+    }
 
+    private void sendLocationData()
+    {
+        ASMPacket dw = PacketHandler.getComponentPacket(this);
+        dw.writeByte(networkSyncList.size());
+        dw.writeShort(x);
+        dw.writeShort(y);
+        PacketHandler.sendDataToServer(dw);
     }
 
     public void writeConnectionNode(ASMPacket dw, int length, int connectionId, int nodeId, boolean deleted, boolean created, int x, int y)
@@ -1169,115 +1188,21 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         isDragging = false;
     }
 
-    public void adjustEverythingToGridraw()
+    public void adjustEverythingToGrid(int grid)
     {
         if (true) return;  //TODO work in progress
-        adjustToGrid();
+        adjustToGrid(grid);
         for (Connection connection : connections)
         {
             if (connection != null)
             {
-                connection.adjustAllToGrid();
+                connection.adjustAllToGrid(grid);
             }
         }
     }
 
     public void adjustEverythingToGridFine()
     {
-        if (true) return; //TODO work in progress
-        int outputCount = 0;
-        int inputCount = 0;
-        int sideCount = 0;
-        for (int i = 0; i < connectionSet.getConnections().length; i++)
-        {
-            ConnectionOption connectionOption = connectionSet.getConnections()[i];
-
-            int[] location = getConnectionLocation(connectionOption, inputCount, outputCount, sideCount);
-            if (location == null)
-            {
-                continue;
-            }
-
-            if (connectionOption.isInput())
-            {
-                inputCount++;
-            } else if (connectionOption.getType() == ConnectionOption.ConnectionType.OUTPUT)
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
-            }
-
-            Connection connection = connections[i];
-            if (connection != null && id < connection.getComponentId())
-            {
-
-
-                int startX = location[0] + location[3] / 2;
-                int startY = location[1] + location[4] / 2;
-                int[] otherLocation = getManager().getFlowItem(connection.getComponentId()).getConnectionLocationFromId(connection.getConnectionId());
-                if (otherLocation == null)
-                {
-                    return;
-                }
-                int endX = otherLocation[0] + otherLocation[3] / 2;
-                int endY = otherLocation[1] + otherLocation[4] / 2;
-
-                if (startX != endX && startY != endY && connection.getNodes().size() < 1)
-                {
-                    connection.getNodes().add(new Point(startX, startY));
-                }
-
-                int x = startX;
-                int y = startY;
-
-                List<Point> nodes = connection.getNodes();
-                for (int j = 0; j <= nodes.size(); j++)
-                {
-                    Point point;
-                    boolean isFinal;
-                    if (j == nodes.size())
-                    {
-                        if (j == 0)
-                        {
-                            break;
-                        }
-                        point = nodes.get(j - 1);
-                        x = endX;
-                        y = endY;
-                    } else
-                    {
-                        point = nodes.get(j);
-                    }
-                    /*boolean closeX = Math.abs(point.getX() - x) < 20;
-                    boolean closeY = Math.abs(point.getY() - y) < 20;
-
-                    if (closeX && closeY) {
-                        System.out.println("Double"); */
-                    if (Math.abs(point.getX() - x) < Math.abs(point.getY() - y))
-                    {
-                        point.setX(x);
-                    } else
-                    {
-                        point.setY(y);
-                    }
-                    //TODO how do we decide?
-                    /*} else if (closeX) {
-                        point.setX(x);
-                    } else if (closeY) {
-                        point.setY(y);
-                    } else {
-                        System.out.println("Nothing");
-                        //Do nothing
-                    } */
-
-                    x = point.getX();
-                    y = point.getY();
-                }
-            }
-        }
-
 
     }
 
@@ -1356,16 +1281,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
 
         return copy;
-    }
-
-    public void refreshData(FlowComponent newData)
-    {
-        x = newData.x;
-        y = newData.y;
-        newData.linkParentAfterLoad();
-        setParent(newData.parent);
-        connections = newData.connections;
-        name = newData.name;
     }
 
     public int getId()
@@ -1680,7 +1595,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @SideOnly(Side.CLIENT)
     public ASMPacket getSyncPacket()
     {
-        return PacketHandler.getWriterForServerComponentPacket(this);
+        return PacketHandler.getComponentPacket(this);
     }
 
     @Override
@@ -1698,15 +1613,35 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     }
 
     @Override
-    public void readData(ASMPacket packet)
+    public boolean readData(ASMPacket packet)
     {
         int id = packet.readUnsignedByte();
-        if (id < networkSyncList.size()) networkSyncList.get(id).readData(packet);
+        if (id < networkSyncList.size())
+        {
+            return networkSyncList.get(id).readData(packet);
+        }
+        else
+        {
+            switch (id - networkSyncList.size())
+            {
+                case 0:
+                    x = packet.readShort();
+                    y = packet.readShort();
+                    break;
+                case 1:
+                    //Connection Change
+                    break;
+                case 2:
+                    //Parent Change
+                    break;
+            }
+            return false;
+        }
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
-
+        return false;
     }
 }

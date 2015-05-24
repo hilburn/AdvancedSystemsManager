@@ -76,16 +76,16 @@ public class Connection
 
             if (GuiScreen.isShiftKeyDown())
             {
-                selectedNode.adjustToGrid();
+                selectedNode.adjustToGrid(10);
             }
         }
     }
 
-    public void adjustAllToGrid()
+    public void adjustAllToGrid(int grid)
     {
         for (Point node : nodes)
         {
-            node.adjustToGrid();
+            node.adjustToGrid(grid);
         }
     }
 

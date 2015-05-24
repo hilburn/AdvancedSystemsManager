@@ -2,15 +2,16 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.*;
 
 public class CopyHelper
 {
-    public static Collection<FlowComponent> copyConnectionsWithChildren(Collection<FlowComponent> existing, FlowComponent toCopy, boolean limitless)
+    public static Collection<FlowComponent> copyConnectionsWithChildren(TileEntityManager manager, Collection<FlowComponent> existing, FlowComponent toCopy, boolean limitless)
     {
         Map<FlowComponent, FlowComponent> added = new LinkedHashMap<FlowComponent, FlowComponent>();
-        copyConnectionsWithChildren(added, existing, toCopy, toCopy.getParent(), true);
+        copyConnectionsWithChildren(manager, added, existing, toCopy, toCopy.getParent(), true);
         if (added.size() + existing.size() >= 511 && !limitless)
         {
             Iterator<Map.Entry<FlowComponent, FlowComponent>> itr = added.entrySet().iterator();
@@ -24,7 +25,7 @@ public class CopyHelper
         return added.values();
     }
 
-    private static void copyConnectionsWithChildren(Map<FlowComponent, FlowComponent> added, Collection<FlowComponent> existing, FlowComponent toCopy, FlowComponent newParent, boolean reset)
+    private static void copyConnectionsWithChildren(TileEntityManager manager, Map<FlowComponent, FlowComponent> added, Collection<FlowComponent> existing, FlowComponent toCopy, FlowComponent newParent, boolean reset)
     {
         FlowComponent newComponent = toCopy.copy();
         newComponent.clearConnections();
@@ -35,13 +36,13 @@ public class CopyHelper
             newComponent.setX(50);
             newComponent.setY(50);
         }
-        newComponent.setId(existing.size() + added.size());
+        newComponent.setId(manager.getNextFreeID());
         added.put(toCopy, newComponent);
         for (FlowComponent component : existing)
         {
             if (component.getParent() == toCopy)
             {
-                copyConnectionsWithChildren(added, existing, component, newComponent, false);
+                copyConnectionsWithChildren(manager, added, existing, component, newComponent, false);
             }
         }
     }

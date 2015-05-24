@@ -1,11 +1,10 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
+import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.gui.ContainerVoid;
 import advancedsystemsmanager.gui.GuiVoid;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -19,7 +18,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.EnumSet;
 
-public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileEntityInterface
+public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider
 {
 
     @Override
@@ -147,13 +146,14 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     }
 
     @Override
-    public void readData(ASMPacket buf, EntityPlayer player)
+    public boolean readData(ASMPacket buf, EntityPlayer player)
     {
+        return false;
     }
 
     @Override
-    public void writeData(ASMPacket packet)
+    public boolean writeData(ASMPacket packet)
     {
-
+        return false;
     }
 }
