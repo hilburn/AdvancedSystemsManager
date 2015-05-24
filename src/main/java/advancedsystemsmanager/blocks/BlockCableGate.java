@@ -15,7 +15,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class BlockCableGate extends BlockTileBase
+public abstract class BlockCableGate<T extends TileEntityBaseGate> extends BlockClusterElementBase<T>
 {
     public BlockCableGate(String name, int icons)
     {
@@ -30,7 +30,7 @@ public abstract class BlockCableGate extends BlockTileBase
             side = ForgeDirection.VALID_DIRECTIONS[side].getOpposite().ordinal();
         }
 
-        TileEntityBaseGate breaker = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
+        TileEntityBaseGate breaker = getTileEntity(world, x, y, z);
         if (breaker != null && !breaker.isBlocked())
         {
             breaker.setPlaceDirection(side);
@@ -51,7 +51,7 @@ public abstract class BlockCableGate extends BlockTileBase
     {
         int meta = BlockPistonBase.determineOrientation(world, x, y, z, entity);
 
-        TileEntityBaseGate breaker = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
+        TileEntityBaseGate breaker = getTileEntity(world, x, y, z);
         if (breaker != null)
         {
             breaker.setMetaData(meta);
@@ -70,7 +70,7 @@ public abstract class BlockCableGate extends BlockTileBase
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TileEntityBaseGate gate = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
+        TileEntityBaseGate gate = getTileEntity(world, x, y, z);
         if (gate != null)
         {
             gate.onNeighbourBlockChange(world, x, y, z, block);

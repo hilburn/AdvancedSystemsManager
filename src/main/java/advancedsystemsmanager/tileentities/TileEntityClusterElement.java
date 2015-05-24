@@ -1,5 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.tileentities.IClusterElement;
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.item.ItemStack;
@@ -9,33 +11,36 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.EnumSet;
 
 
-public abstract class TileEntityClusterElement extends TileEntity
+public abstract class TileEntityClusterElement extends TileEntity implements IClusterTile
 {
-
-    private ClusterRegistry registryElement;
+    private IClusterElement clusterElement;
     private boolean isPartOfCluster;
     private int meta;
 
     protected TileEntityClusterElement()
     {
-        registryElement = ClusterRegistry.get(this);
+        clusterElement = ClusterRegistry.get(this);
     }
 
+    @Override
     public ItemStack getItemStackFromBlock()
     {
-        return registryElement.getItemStack(getBlockMetadata());
+        return clusterElement.getItemStack(getBlockMetadata());
     }
 
+    @Override
     public boolean isPartOfCluster()
     {
         return isPartOfCluster;
     }
 
+    @Override
     public void setPartOfCluster(boolean partOfCluster)
     {
         isPartOfCluster = partOfCluster;
     }
 
+    @Override
     public void setMetaData(int meta)
     {
         if (isPartOfCluster)
@@ -73,13 +78,15 @@ public abstract class TileEntityClusterElement extends TileEntity
         }
     }
 
-    protected void writeContentToNBT(NBTTagCompound tagCompound)
+    @Override
+    public void writeContentToNBT(NBTTagCompound tagCompound)
     {
     }
 
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
     {
     }
 
-    protected abstract EnumSet<ClusterMethodRegistration> getRegistrations();
+    public abstract EnumSet<ClusterMethodRegistration> getRegistrations();
 }

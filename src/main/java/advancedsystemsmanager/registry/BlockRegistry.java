@@ -66,24 +66,6 @@ public class BlockRegistry
     @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
     public static BlockCableRF cableRFNode;
 
-    public static void registerClusters()
-    {
-        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityRelay.class, cableRelay, new ItemStack(cableRelay, 1, 8)));
-        ClusterRegistry.register(TileEntityEmitter.class, cableOutput);
-        ClusterRegistry.register(TileEntityReceiver.class, cableInput);
-        ClusterRegistry.register(TileEntityCreative.class, cableCreative);
-        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.AdvancedSensitive(TileEntityValve.class, cableValve, new ItemStack(cableValve, 1, 8)));
-        ClusterRegistry.register(TileEntityBUD.class, cableBUD);
-        ClusterRegistry.register(TileEntityBlockGate.class, cableBlockGate);
-        ClusterRegistry.register(TileEntityFluidGate.class, cableFluidGate);
-        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 0)));
-        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 1)));
-        ClusterRegistry.register(new ClusterRegistry.MetaSensitive(TileEntityCamouflage.class, cableCamouflage, new ItemStack(cableCamouflage, 1, 2)));
-        ClusterRegistry.register(TileEntitySignUpdater.class, cableSign);
-        ClusterRegistry.register(TileEntityVoid.class, cableVoid);
-    }
 
     public static void registerRecipes()
     {

@@ -1,11 +1,15 @@
 package advancedsystemsmanager.recipes;
 
 
+import advancedsystemsmanager.api.items.IClusterItem;
+import advancedsystemsmanager.api.tileentities.ICluster;
+import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -52,49 +56,25 @@ public class ClusterRecipe implements IRecipe
         if (cluster != null)
         {
             boolean foundClusterComponent = false;
-            List<Integer> types = new ArrayList<Integer>();
-            NBTTagCompound compound = cluster.getTagCompound();
-            if (compound != null && compound.hasKey(ItemCluster.NBT_CABLE))
-            {
-                byte[] typeIds = compound.getCompoundTag(ItemCluster.NBT_CABLE).getByteArray(ItemCluster.NBT_TYPES);
-                for (byte typeId : typeIds)
-                {
-                    types.add((int)typeId);
-                }
-            }
+            if (!cluster.hasTagCompound()) cluster.setTagCompound(new NBTTagCompound());
+            List<IClusterElement> existing = ItemCluster.getTypes(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
+            List<ItemStack> stacks = ItemCluster.getItemStacks(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
 
             for (int i = 0; i < inventorycrafting.getSizeInventory(); i++)
             {
                 ItemStack item = inventorycrafting.getStackInSlot(i);
 
-                if (item != null && Block.getBlockFromItem(item.getItem()) != BlockRegistry.cableCluster)
+                if (item != null && item.getItem() instanceof IClusterItem)
                 {
-                    boolean validItem = false;
-                    for (int j = 0; j < ClusterRegistry.getRegistryList().size(); j++)
+                    IClusterElement element = ((IClusterItem)item.getItem()).getClusterElement(item);
+                    if (element != null)
                     {
-                        if (item.isItemEqual(ClusterRegistry.getRegistryList().get(j).getItemStack()))
-                        {
-                            if (ClusterRegistry.getRegistryList().get(j).isChainPresentIn(types))
-                            {
-                                return false; //duplicate item
-                            }
-                            types.add(j);
-                            validItem = true;
-                            foundClusterComponent = true;
-                            break;
-                        }
-                    }
-                    if (!validItem)
-                    {
-                        return false; //invalid item
+                        if (existing.contains(element)) return false;
+                        existing.add(element);
+                        stacks.add(item);
+                        foundClusterComponent = true;
                     }
                 }
-            }
-
-            byte[] typeIds = new byte[types.size()];
-            for (int i = 0; i < types.size(); i++)
-            {
-                typeIds[i] = (byte)(int)types.get(i);
             }
 
             if (!foundClusterComponent)
@@ -103,12 +83,7 @@ public class ClusterRecipe implements IRecipe
             }
 
             output = new ItemStack(BlockRegistry.cableCluster, 1, cluster.getItemDamage());
-            NBTTagCompound newCompound = new NBTTagCompound();
-            output.setTagCompound(newCompound);
-            NBTTagCompound subCompound = new NBTTagCompound();
-            newCompound.setTag(ItemCluster.NBT_CABLE, subCompound);
-            subCompound.setByteArray(ItemCluster.NBT_TYPES, typeIds);
-
+            ItemCluster.setClusterTag(output, stacks);
             return true;
         }
 

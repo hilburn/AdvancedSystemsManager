@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -14,7 +15,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableOutput extends BlockTileBase
+public class BlockCableOutput extends BlockClusterElementBase<TileEntityEmitter>
 {
     public BlockCableOutput()
     {
@@ -87,8 +88,9 @@ public class BlockCableOutput extends BlockTileBase
         return true;
     }
 
-    private TileEntityEmitter getTileEntity(IBlockAccess world, int x, int y, int z)
+    @Override
+    public boolean isInstance(IClusterTile tile)
     {
-        return TileEntityCluster.getTileEntity(TileEntityEmitter.class, world, x, y, z);
+        return tile instanceof TileEntityEmitter;
     }
 }

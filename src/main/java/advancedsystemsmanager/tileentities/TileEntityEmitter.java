@@ -290,7 +290,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.SHOULD_CHECK_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_STRONG_POWER);
     }

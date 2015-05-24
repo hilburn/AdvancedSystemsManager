@@ -1,9 +1,8 @@
 package advancedsystemsmanager.blocks;
 
-
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntitySignUpdater;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,7 +16,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 //This is indeed not a subclass to the cable, you can't relay signals through this block
-public class BlockCableSign extends BlockTileBase
+public class BlockCableSign extends BlockClusterElementBase<TileEntitySignUpdater>
 {
     public BlockCableSign()
     {
@@ -63,13 +62,16 @@ public class BlockCableSign extends BlockTileBase
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
     {
         int meta = BlockPistonBase.determineOrientation(world, x, y, z, entity);
-
-        TileEntitySignUpdater sign = TileEntityCluster.getTileEntity(TileEntitySignUpdater.class, world, x, y, z);
+        TileEntitySignUpdater sign = getTileEntity(world, x, y, z);
         if (sign != null)
         {
             sign.setMetaData(meta);
         }
     }
 
-
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntitySignUpdater;
+    }
 }

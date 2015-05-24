@@ -1,9 +1,10 @@
 package advancedsystemsmanager.api.items;
 
+import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.item.ItemStack;
 
 public interface IClusterItem
 {
-    ClusterRegistry getClusterRegistry(ItemStack stack);
+    IClusterElement getClusterElement(ItemStack stack);
 }

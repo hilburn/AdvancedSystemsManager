@@ -12,7 +12,7 @@ import java.util.EnumSet;
 public class TileEntitySignUpdater extends TileEntityClusterElement
 {
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
     }

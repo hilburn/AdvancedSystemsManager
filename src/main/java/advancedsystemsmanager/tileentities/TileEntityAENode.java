@@ -98,9 +98,9 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        return null;
+        return EnumSet.noneOf(ClusterMethodRegistration.class);
     }
 
     @Override

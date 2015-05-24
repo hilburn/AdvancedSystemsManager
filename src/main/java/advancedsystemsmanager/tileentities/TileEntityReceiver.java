@@ -79,11 +79,11 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     public void writeContentToNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = new NBTTagList();
-        for (int i = 0; i < isPowered.length; i++)
+        for (int powered : isPowered)
         {
             NBTTagCompound sideTag = new NBTTagCompound();
 
-            sideTag.setByte(NBT_POWER, (byte)isPowered[i]);
+            sideTag.setByte(NBT_POWER, (byte)powered);
 
             sidesTag.appendTag(sideTag);
         }
@@ -93,7 +93,7 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED, ClusterMethodRegistration.ON_BLOCK_ADDED);
     }

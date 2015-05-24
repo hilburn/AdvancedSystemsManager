@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -7,7 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockCableBUD extends BlockTileBase
+public class BlockCableBUD extends BlockClusterElementBase<TileEntityBUD>
 {
     public BlockCableBUD()
     {
@@ -23,12 +24,16 @@ public class BlockCableBUD extends BlockTileBase
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TileEntityBUD bud = TileEntityCluster.getTileEntity(TileEntityBUD.class, world, x, y, z);
+        TileEntityBUD bud = getTileEntity(world, x, y, z);
         if (bud != null)
         {
             bud.onTrigger();
         }
     }
 
-
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntityBUD;
+    }
 }

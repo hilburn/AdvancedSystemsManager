@@ -38,6 +38,12 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         setHardness(2F);
     }
 
+    @Override
+    public void register()
+    {
+        //No nested clusters...
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(int side, int meta)
@@ -155,7 +161,6 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         if (cluster != null)
         {
             cluster.loadElements(itemStack);
-
             cluster.onBlockPlacedBy(entity, itemStack);
         }
     }
@@ -227,11 +232,8 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         {
             TileEntityCluster cluster = (TileEntityCluster)te;
             ItemStack itemStack = new ItemStack(BlockRegistry.cableCluster, 1, damageDropped(meta));
-            NBTTagCompound compound = new NBTTagCompound();
-            itemStack.setTagCompound(compound);
-            NBTTagCompound cable = new NBTTagCompound();
-            compound.setTag(ItemCluster.NBT_CABLE, cable);
-            cable.setByteArray(ItemCluster.NBT_TYPES, cluster.getTypes());
+            List<ItemStack> stacks = cluster.getStacks();
+            ItemCluster.setClusterTag(itemStack, stacks);
             return itemStack;
         }
 

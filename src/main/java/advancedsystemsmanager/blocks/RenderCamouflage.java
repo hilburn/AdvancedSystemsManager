@@ -1,7 +1,7 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -77,45 +77,48 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
         renderer.setRenderBoundsFromBlock(block);
         renderer.renderStandardBlock(block, x, y, z);
 
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
-
-        if (camouflage != null && camouflage.getCamouflageType().useDoubleRendering())
+        if (block instanceof BlockCamouflageBase)
         {
-            BlockCamouflageBase camoBlock = (BlockCamouflageBase)block;
+            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(world, x, y, z);
 
-            float maxX = (float)block.getBlockBoundsMaxX();
-            float maxY = (float)block.getBlockBoundsMaxY();
-            float maxZ = (float)block.getBlockBoundsMaxZ();
-            float minX = (float)block.getBlockBoundsMinX();
-            float minY = (float)block.getBlockBoundsMinY();
-            float minZ = (float)block.getBlockBoundsMinZ();
+            if (camouflage != null && camouflage.getCamouflageType().useDoubleRendering())
+            {
+                BlockCamouflageBase camoBlock = (BlockCamouflageBase)block;
 
-            float f = 0.0015F;
-            float f2 = 0.002F;
-            block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceYNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 1, true));
+                float maxX = (float)block.getBlockBoundsMaxX();
+                float maxY = (float)block.getBlockBoundsMaxY();
+                float maxZ = (float)block.getBlockBoundsMaxZ();
+                float minX = (float)block.getBlockBoundsMinX();
+                float minY = (float)block.getBlockBoundsMinY();
+                float minZ = (float)block.getBlockBoundsMinZ();
 
-            block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceYPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 0, true));
+                float f = 0.0015F;
+                float f2 = 0.002F;
+                block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceYNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 1, true));
 
-            block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceZNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 3, true));
+                block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceYPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 0, true));
 
-            block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceZPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 2, true));
+                block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceZNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 3, true));
 
-            block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceXNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 5, true));
+                block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceZPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 2, true));
 
-            block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
-            renderer.setRenderBoundsFromBlock(block);
-            renderer.renderFaceXPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 4, true));
+                block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceXNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 5, true));
 
+                block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
+                renderer.setRenderBoundsFromBlock(block);
+                renderer.renderFaceXPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 4, true));
+
+            }
         }
 
         return true;

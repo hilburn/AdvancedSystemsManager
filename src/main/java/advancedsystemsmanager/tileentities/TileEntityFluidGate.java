@@ -22,7 +22,7 @@ public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHan
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
     }
@@ -193,13 +193,13 @@ public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHan
     }
 
     @Override
-    protected void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         if (tank != null) tank.writeToNBT(tagCompound);
     }
 
     @Override
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         tank = FluidStack.loadFluidStackFromNBT(tagCompound);
     }

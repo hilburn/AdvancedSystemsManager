@@ -10,7 +10,7 @@ public class AECompat extends CompatBase
     @Override
     protected void init()
     {
-        if (BlockRegistry.cableAENode != null)
-            ClusterRegistry.register(TileEntityAENode.class, BlockRegistry.cableAENode);
+//        if (BlockRegistry.cableAENode != null)
+//            ClusterRegistry.register(TileEntityAENode.class, BlockRegistry.cableAENode);
     }
 }

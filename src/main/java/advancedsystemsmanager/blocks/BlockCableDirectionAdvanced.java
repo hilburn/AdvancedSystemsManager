@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -12,6 +13,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,7 +22,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.List;
 
 
-public abstract class BlockCableDirectionAdvanced extends BlockTileBase
+public abstract class BlockCableDirectionAdvanced<T extends TileEntity & IClusterTile> extends BlockClusterElementBase<T>
 {
     public BlockCableDirectionAdvanced(String name)
     {
@@ -92,14 +94,12 @@ public abstract class BlockCableDirectionAdvanced extends BlockTileBase
     {
         int meta = addAdvancedMeta(BlockPistonBase.determineOrientation(world, x, y, z, entity), item.getItemDamage());
 
-        TileEntityClusterElement element = TileEntityCluster.getTileEntity(getTeClass(), world, x, y, z);
+        IClusterTile element = getTileEntity(world, x, y, z);
         if (element != null)
         {
             element.setMetaData(meta);
         }
     }
-
-    protected abstract Class<? extends TileEntityClusterElement> getTeClass();
 
     @Override
     @SuppressWarnings(value = "unchecked")

@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ICluster
 {
-    public List<IClusterElement> getElements();
+    public List<IClusterTile> getTiles();
 }

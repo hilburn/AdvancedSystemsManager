@@ -1,6 +1,7 @@
 package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.network.IPacketReader;
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
@@ -25,7 +26,6 @@ import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
@@ -33,7 +33,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -91,6 +90,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         buttons = ManagerButtonRegistry.getButtons(this);
         variables = new Variable[VariableColor.values().length];
         components = new TIntObjectHashMap<FlowComponent>();
+        triggers = new ArrayList<FlowComponent>();
         network = new TLongObjectHashMap<SystemCoord>();
         for (int i = 0; i < variables.length; i++)
         {
@@ -339,11 +339,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
-                        for (TileEntityClusterElement tileEntityClusterElement : ((TileEntityCluster)te).getElements())
+                        for (IClusterTile tileEntityClusterElement : ((TileEntityCluster)te).getTiles())
                         {
-                            ((TileEntityCluster)te).setWorldObject(tileEntityClusterElement);
+                            ((TileEntityCluster)te).setWorld(tileEntityClusterElement);
                             SystemCoord coord = target.copy();
-                            coord.setTileEntity(tileEntityClusterElement);
+                            coord.setTileEntity((TileEntity)tileEntityClusterElement);
                             addInventory(target);
                         }
                     } else

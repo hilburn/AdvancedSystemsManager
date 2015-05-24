@@ -1,24 +1,19 @@
 package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.util.ClusterMethodRegistration;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
-import java.util.EnumSet;
-
-public interface IClusterElement
+public interface IClusterElement<T extends TileEntity & IClusterTile>
 {
-    ItemStack getItemStack();
+    ItemStack getItemStack(int metadata);
 
-    boolean isPartOfCluster();
+    Block getBlock();
 
-    void setPartOfCluster(boolean partOfCluster);
+    T getClusterTile(World world, int metadata);
 
-    void setMetaData(int meta);
+    boolean isInstance(IClusterTile tile);
 
-    void writeContentToNBT(NBTTagCompound tagCompound);
-
-    void readContentFromNBT(NBTTagCompound tagCompound);
-
-    EnumSet<ClusterMethodRegistration> getRegistrations();
+    byte getId();
 }

@@ -32,7 +32,7 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
     protected boolean blocked;
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }

@@ -66,7 +66,7 @@ public class BlockCableCamouflages extends BlockCamouflageBase
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
     {
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
         if (camouflage != null)
         {
             camouflage.setMetaData(item.getItemDamage());

@@ -102,12 +102,10 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     public void writeContentToNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = new NBTTagList();
-        for (int i = 0; i < data.length; i++)
+        for (int aData : data)
         {
             NBTTagCompound sideTag = new NBTTagCompound();
-
-            sideTag.setShort(NBT_DATA, (short)data[i]);
-
+            sideTag.setShort(NBT_DATA, (short)aData);
             sidesTag.appendTag(sideTag);
         }
 
@@ -116,7 +114,7 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
     }

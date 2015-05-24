@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityBaseGate;
 import advancedsystemsmanager.tileentities.TileEntityBlockGate;
@@ -12,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockCableBlockGate extends BlockCableGate
+public class BlockCableBlockGate extends BlockCableGate<TileEntityBlockGate>
 {
 
     public BlockCableBlockGate()
@@ -24,7 +25,7 @@ public class BlockCableBlockGate extends BlockCableGate
     @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityBaseGate gate = TileEntityCluster.getTileEntity(TileEntityBaseGate.class, world, x, y, z);
+        TileEntityBaseGate gate = getTileEntity(world, x, y, z);
 
         if (gate != null)
         {
@@ -50,5 +51,11 @@ public class BlockCableBlockGate extends BlockCableGate
     public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEntityBlockGate();
+    }
+
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntityBlockGate;
     }
 }

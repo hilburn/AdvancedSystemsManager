@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.gui.ContainerVoid;
 import advancedsystemsmanager.gui.GuiVoid;
@@ -18,7 +19,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.EnumSet;
 
-public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider
+public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider, IClusterTile
 {
 
     @Override
@@ -128,7 +129,7 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.noneOf(ClusterMethodRegistration.class);
     }

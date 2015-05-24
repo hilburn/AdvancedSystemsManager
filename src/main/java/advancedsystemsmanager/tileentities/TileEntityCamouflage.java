@@ -380,7 +380,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
         for (int i = 0; i < list.tagCount(); i++)
@@ -402,7 +402,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    protected void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < getSideCount(); i++)
@@ -428,7 +428,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    protected EnumSet<ClusterMethodRegistration> getRegistrations()
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
         return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
     }

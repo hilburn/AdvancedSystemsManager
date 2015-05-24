@@ -12,6 +12,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 
+import java.util.List;
+
 public class ClusterUncraftingRecipe implements IRecipe
 {
     private static ItemStack cluster = new ItemStack(BlockRegistry.cableCluster);
@@ -86,12 +88,10 @@ public class ClusterUncraftingRecipe implements IRecipe
             {
                 if (stack.hasTagCompound())
                 {
-                    byte[] types = stack.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE).getByteArray(ItemCluster.NBT_TYPES);
                     int stackSize = e.crafting.stackSize;
                     stackSize = stackSize == 0 ? 1 : stackSize;
-                    for (byte type : types)
+                    for (ItemStack component : ItemCluster.getItemStacks(stack.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE)))
                     {
-                        ItemStack component = ClusterRegistry.getRegistryList().get(type).getItemStack().copy();
                         component.stackSize = stackSize;
                         if (!e.player.inventory.addItemStackToInventory(component))
                             e.player.dropPlayerItemWithRandomChoice(component, false);

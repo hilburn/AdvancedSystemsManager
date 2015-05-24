@@ -1,7 +1,6 @@
 package advancedsystemsmanager.compatibility.waila;
 
 
-import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cofh.api.energy.IEnergyProvider;
 import mcp.mobius.waila.api.ITaggedList;
@@ -39,9 +38,9 @@ public class ClusterDataProvider implements IWailaDataProvider
             ((ITaggedList)list).removeEntries("RFEnergyStorage");
         TileEntityCluster cluster = (TileEntityCluster)te;
 
-        for (byte type : cluster.getTypes())
+        for (ItemStack stack : cluster.getStacks())
         {
-            list.add(ClusterRegistry.getRegistryList().get(type).getItemStack().getDisplayName());
+            list.add(stack.getDisplayName());
         }
         return list;
     }

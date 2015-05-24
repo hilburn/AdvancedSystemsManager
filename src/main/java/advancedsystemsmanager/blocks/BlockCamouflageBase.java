@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -13,7 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public abstract class BlockCamouflageBase extends BlockTileBase
+public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEntityCamouflage>
 {
     public static int RENDER_ID;
 
@@ -36,7 +37,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     @Override
     public boolean getBlocksMovement(IBlockAccess world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
 
         return camouflage == null || camouflage.isNormalBlock();
     }
@@ -50,7 +51,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     @Override
     public float getBlockHardness(World world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape() && !camouflage.isUseCollision())
         {
             return 600000;
@@ -62,7 +63,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     @Override
     public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityCamouflage te = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage te = getTileEntity(world, x, y, z);
 
         if (te != null)
         {
@@ -105,7 +106,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     {
         setBlockBoundsBasedOnState(world, x, y, z);
 
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
         {
             if (!camouflage.isUseCollision())
@@ -140,7 +141,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, world, x, y, z);
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
         {
             camouflage.setBlockBounds(this);
@@ -160,7 +161,7 @@ public abstract class BlockCamouflageBase extends BlockTileBase
     @Override
     public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer)
     {
-        TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, worldObj, target.blockX, target.blockY, target.blockZ);
+        TileEntityCamouflage camouflage = getTileEntity(worldObj, target.blockX, target.blockY, target.blockZ);
         if (camouflage != null)
         {
             if (camouflage.addBlockEffect(this, target.sideHit, effectRenderer))
@@ -173,4 +174,10 @@ public abstract class BlockCamouflageBase extends BlockTileBase
 
     @SideOnly(Side.CLIENT)
     public abstract IIcon getDefaultIcon(int side, int blockMeta, int camoMeta);
+
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntityCamouflage;
+    }
 }

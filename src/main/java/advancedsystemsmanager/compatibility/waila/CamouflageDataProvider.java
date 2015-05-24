@@ -1,5 +1,6 @@
 package advancedsystemsmanager.compatibility.waila;
 
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
@@ -25,7 +26,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (te != null && !isShiftDown())
         {
-            TileEntityCamouflage camouflage = TileEntityCluster.getTileEntity(TileEntityCamouflage.class, te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null)
             {
                 int id = camouflage.getId(accessor.getPosition().sideHit);

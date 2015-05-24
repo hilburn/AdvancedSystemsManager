@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
@@ -9,7 +10,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 
-public class BlockCableInput extends BlockTileBase
+public class BlockCableInput extends BlockClusterElementBase<TileEntityReceiver>
 {
     public BlockCableInput()
     {
@@ -46,10 +47,16 @@ public class BlockCableInput extends BlockTileBase
 
     private void updateRedstone(World world, int x, int y, int z)
     {
-        TileEntityReceiver input = TileEntityCluster.getTileEntity(TileEntityReceiver.class, world, x, y, z);
+        TileEntityReceiver input = getTileEntity(world, x, y, z);
         if (input != null)
         {
             input.triggerRedstone();
         }
+    }
+
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntityReceiver;
     }
 }

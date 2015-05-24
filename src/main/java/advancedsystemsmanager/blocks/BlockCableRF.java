@@ -1,5 +1,6 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.relauncher.Side;
@@ -9,7 +10,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockCableRF extends BlockTileBase
+public class BlockCableRF extends BlockClusterElementBase<TileEntityRFNode>
 {
     public BlockCableRF()
     {
@@ -52,5 +53,11 @@ public class BlockCableRF extends BlockTileBase
             if (out) return icons[1];
             return icons[0];
         }
+    }
+
+    @Override
+    public boolean isInstance(IClusterTile tile)
+    {
+        return tile instanceof TileEntityRFNode;
     }
 }

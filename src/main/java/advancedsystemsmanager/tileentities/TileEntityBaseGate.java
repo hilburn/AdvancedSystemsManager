@@ -91,7 +91,7 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
     }
 
     @Override
-    protected void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         if (tagCompound.hasKey(NBT_DIRECTION))
         {
@@ -109,7 +109,7 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
     }
 
     @Override
-    protected void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
     }
