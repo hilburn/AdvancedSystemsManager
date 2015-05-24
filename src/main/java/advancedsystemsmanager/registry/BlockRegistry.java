@@ -1,5 +1,6 @@
 package advancedsystemsmanager.registry;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.blocks.*;
 import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
@@ -10,10 +11,12 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import hilburnlib.registry.ConfigKey;
 import hilburnlib.registry.Register;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -54,14 +57,7 @@ public class BlockRegistry
     @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_SIGN)
     public static BlockCableSign cableSign;
     @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_VOID)
-    public static BlockTileBase cableVoid = new BlockTileBase(Names.CABLE_VOID)
-    {
-        @Override
-        public TileEntity createNewTileEntity(World world, int meta)
-        {
-            return new TileEntityVoid();
-        }
-    };
+    public static BlockCableVoid cableVoid;
 
     //    Mod Cluster Elements
     @ConfigKey(Names.CABLE_AE)

@@ -4,7 +4,6 @@ import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.tileentities.ITileEntityInterface;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.message.FinalSyncMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,8 +75,6 @@ public abstract class ContainerBase<T extends TileEntity & ITileEntityInterface>
     @SideOnly(Side.CLIENT)
     public void sendFinalUpdate(IPacketSync element)
     {
-        if (element != null)
-            MessageHandler.INSTANCE.sendToServer(new FinalSyncMessage(te, element));
     }
 
     @Override

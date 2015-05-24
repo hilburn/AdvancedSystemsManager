@@ -104,7 +104,6 @@ public class BlockManager extends BlockTileBase
         {
             FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
         }
-
         return true;
     }
 

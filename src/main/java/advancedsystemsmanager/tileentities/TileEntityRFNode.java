@@ -1,12 +1,15 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuRF;
 import advancedsystemsmanager.flow.menus.MenuRFInput;
 import advancedsystemsmanager.flow.menus.MenuTargetRF;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.MessageHandler;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.network.message.RFNodeUpdateMessage;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
@@ -22,7 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener
+public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener, IPacketBlock
 {
     public static final int MAX_BUFFER = 96000;
     private static final String STORED = "Stored";
@@ -71,7 +74,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
 
     private void sendUpdatePacket()
     {
-        MessageHandler.INSTANCE.sendToAll(new RFNodeUpdateMessage(this));
+        PacketHandler.sendBlockPacket(this, null, 0);
         updated = false;
     }
 
@@ -85,13 +88,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             return toReceive;
         }
         return 0;
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        writeToNBT(new NBTTagCompound());
-        return MessageHandler.INSTANCE.getPacketFrom(new RFNodeUpdateMessage(this));
     }
 
     public void update(FlowComponent component)
@@ -237,5 +233,19 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     public boolean[] getInputs()
     {
         return inputSides;
+    }
+
+    @Override
+    public void writeData(ASMPacket packet, int id)
+    {
+        packet.writeBooleanArray(outputSides);
+        packet.writeBooleanArray(inputSides);
+    }
+
+    @Override
+    public void readData(ASMPacket packet, int id)
+    {
+        outputSides = packet.readBooleanArray(outputSides.length);
+        inputSides = packet.readBooleanArray(outputSides.length);
     }
 }

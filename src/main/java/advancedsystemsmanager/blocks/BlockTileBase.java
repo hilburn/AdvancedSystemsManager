@@ -8,19 +8,19 @@ import net.minecraft.world.World;
 
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider
 {
-    protected BlockTileBase(String name)
+    public BlockTileBase(String name)
     {
         super(name);
         this.isBlockContainer = true;
     }
 
-    protected BlockTileBase(String name, float hardness)
+    public BlockTileBase(String name, float hardness)
     {
         super(name, hardness);
         this.isBlockContainer = true;
     }
 
-    protected BlockTileBase(String name, int extraIcons)
+    public BlockTileBase(String name, int extraIcons)
     {
         super(name, extraIcons);
         this.isBlockContainer = true;

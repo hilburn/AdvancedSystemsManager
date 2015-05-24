@@ -143,6 +143,29 @@ public class ASMPacket extends PacketBuffer
         }
     }
 
+    public void writeBooleanArray(boolean[] val)
+    {
+        int b = 0;
+        for (boolean aVal : val)
+        {
+            b <<= 1;
+            if (aVal) b |= 1;
+        }
+        writeVarIntToBuffer(b);
+    }
+
+    public boolean[] readBooleanArray(int size)
+    {
+        boolean[] result = new boolean[size];
+        int b = readVarIntFromBuffer();
+        for (int i = 1; i<= size; i++)
+        {
+            if ((b & 1) != 0) result[size - i] = true;
+            b >>= 1;
+        }
+        return result;
+    }
+
     public String readStringFromBuffer()
     {
         return readStringFromBuffer(32);
