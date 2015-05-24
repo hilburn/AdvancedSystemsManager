@@ -10,13 +10,14 @@ import java.util.TimerTask;
 
 public class GuiTextField extends Gui
 {
+    private static final Timer timer = new Timer();
     private int xSize, ySize;
     private int x, y;
     private String text;
     private FontRenderer fontRenderer;
     private int cursorPos = 0;
     private boolean toggleCursor;
-    private Timer timer = new Timer();
+
     public GuiTextField(int width, int height, int x, int y)
     {
         this.x = x;
@@ -25,7 +26,7 @@ public class GuiTextField extends Gui
         this.ySize = height;
         this.text = "";
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        this.timer.scheduleAtFixedRate(new ToggleCursor(), 0, 300);
+        timer.scheduleAtFixedRate(new ToggleCursor(), 0, 300);
     }
 
     protected void fixCursorPos()
@@ -157,7 +158,7 @@ public class GuiTextField extends Gui
 
     public void close()
     {
-        this.timer.cancel();
+        timer.cancel();
     }
 
     private class ToggleCursor extends TimerTask

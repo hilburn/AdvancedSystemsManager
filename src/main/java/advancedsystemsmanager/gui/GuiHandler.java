@@ -58,11 +58,10 @@ public class GuiHandler implements IGuiHandler
                     Item item = stack.getItem();
                     if (item instanceof IItemInterfaceProvider)
                     {
-                        return ((IItemInterfaceProvider)item).getContainer(stack, player);
+                        return ((IItemInterfaceProvider)item).getGui(stack, player);
                     }
                 }
                 break;
-//                return new GuiLabeler(player.getCurrentEquippedItem(), player);
             case 1:
                 TileEntity te = world.getTileEntity(x, y, z);
 
