@@ -3,6 +3,7 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.LabelSyncMessage;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
@@ -23,7 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = Mods.NEI)
 public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, INEIGuiHandler
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Reference.RESOURCE_LOCATION, "textures/gui/GuiLabeler.png");
@@ -277,35 +278,35 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
         return visiblityData;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item)
     {
         return null;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui)
     {
         return null;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button)
     {
         return false;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
     {
         return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);

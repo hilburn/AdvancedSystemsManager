@@ -1,5 +1,6 @@
 package advancedsystemsmanager.gui;
 
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.settings.Settings;
@@ -10,6 +11,7 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import extracells.integration.Integration;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = Mods.NEI)
 public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
     private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
@@ -652,7 +654,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
         visiblityData.showStateButtons = false;
@@ -660,28 +662,28 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item)
     {
         return null;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui)
     {
         return null;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public boolean handleDragNDrop(GuiContainer gui, int mouseX, int mouseY, ItemStack draggedStack, int button)
     {
         return false;
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
     {
         return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);

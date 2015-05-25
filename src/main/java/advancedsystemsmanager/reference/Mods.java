@@ -56,6 +56,7 @@ public class Mods
     public static final String METALLURGY = "Metallurgy";
     public static final String MOBPROPERTIES = "MobProperties";
     public static final String NETHERORES = "NetherOres";
+    public static final String NEI = "NotEnoughItems";
     public static final String OPENBLOCKS = "OpenBlocks";
     public static final String OPENPERIPHERAL = "OpenPeripheral";
     public static final String OPENPERIPHERALCORE = "OpenPeripheralCore";

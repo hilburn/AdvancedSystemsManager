@@ -6,6 +6,7 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +28,7 @@ public class ItemRemoteAccessor extends ItemBase
     public static final String WORLD = "world";
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] icons = new IIcon[2];
+    private IIcon[] icons = new IIcon[3];
 
     public ItemRemoteAccessor()
     {
@@ -65,18 +66,36 @@ public class ItemRemoteAccessor extends ItemBase
     {
         icons[0] = register.registerIcon(getIconString());
         icons[1] = register.registerIcon(getIconString()+"_advanced");
+        icons[2] = register.registerIcon(getIconString()+"_disabled");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int damage)
+    public IIcon getIconIndex(ItemStack stack)
     {
-        return icons[damage % 2];
+        return getIcon(stack, Minecraft.getMinecraft().theWorld);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings(value = "unchecked")
+    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
+    {
+        return getIcon(stack, player.getEntityWorld());
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IIcon getIcon(ItemStack stack, World world)
+    {
+        if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte("World"))
+        {
+            return icons[2];
+        }
+        return icons[stack.getItemDamage() % 2];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings("unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean p_77624_4_)
     {
         if (stack.hasTagCompound())

@@ -7,6 +7,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SecretMessage;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
@@ -29,7 +30,7 @@ import java.util.ListIterator;
 
 
 @SideOnly(Side.CLIENT)
-public class GuiManager extends GuiBase implements INEIGuiHandler
+public class GuiManager extends GuiBase
 {
     private static final ResourceLocation BACKGROUND_1 = registerTexture("Background1");
     private static final ResourceLocation BACKGROUND_2 = registerTexture("Background2");
@@ -146,7 +147,7 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
     }
 
     @Override
-    @Optional.Method(modid = "NotEnoughItems")
+    @Optional.Method(modid = Mods.NEI)
     public VisiblityData modifyVisiblity(GuiContainer guiContainer, VisiblityData visiblityData)
     {
         visiblityData.showNEI = false;

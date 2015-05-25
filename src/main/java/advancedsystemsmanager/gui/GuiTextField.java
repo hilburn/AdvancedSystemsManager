@@ -130,11 +130,10 @@ public class GuiTextField extends Gui
     public void drawText()
     {
         String preCursor = getPreCursor();
-        fontRenderer.drawString(preCursor, this.x + 2, this.y + ySize / 2 - 4, 0xe0e0e0);
-        int x = this.x + 2 + fontRenderer.getStringWidth(preCursor);
+        fontRenderer.drawString(getText(), this.x + 2, this.y + ySize / 2 - 4, 0xe0e0e0);
+        int x = this.x + 1 + fontRenderer.getStringWidth(preCursor);
         if (toggleCursor)
             drawRect(x, this.y + ySize / 2 - 4, x + 1, this.y + ySize / 2 + 4, 0xffe0e0e0);
-        fontRenderer.drawString(getPostCursor(), x + 2, this.y + ySize / 2 - 4, 0xe0e0e0);
     }
 
     public String getPreCursor()
