@@ -14,7 +14,7 @@ public interface IClusterTile
 
     void setMetaData(int meta);
 
-    int getBlockMetadata();
+    int getMetadata();
 
     ItemStack getItemStackFromBlock();
 

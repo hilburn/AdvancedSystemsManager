@@ -26,7 +26,7 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
     {
         if (missingPlaceDirection)
         {
-            setPlaceDirection(getBlockMetadata());
+            setPlaceDirection(getMetadata());
             missingPlaceDirection = false;
         }
         if (worldObj.isRemote)
@@ -87,7 +87,7 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
 
     protected ForgeDirection getDirection()
     {
-        return ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+        return ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class TileEntityBaseGate extends TileEntityClusterElement implem
         {
             if (worldObj != null)
             {
-                setPlaceDirection(getBlockMetadata());
+                setPlaceDirection(getMetadata());
             } else
             {
                 missingPlaceDirection = true;

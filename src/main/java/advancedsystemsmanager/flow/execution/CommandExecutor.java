@@ -13,8 +13,6 @@ import advancedsystemsmanager.flow.menus.MenuListOrder.LoopOrder;
 import advancedsystemsmanager.flow.menus.MenuVariable.VariableMode;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.helpers.StevesEnum;
-import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCreative;
@@ -494,17 +492,20 @@ public class CommandExecutor
 
     public List<SlotInventoryHolder> getRFInput(Menu menu)
     {
-        return getContainers(this.manager, menu, StevesEnum.RF_PROVIDER);
+//        return getContainers(this.manager, menu, StevesEnum.RF_PROVIDER);
+        return null;
     }
 
     public List<SlotInventoryHolder> getRFOutput(Menu menu)
     {
-        return getContainers(this.manager, menu, StevesEnum.RF_RECEIVER);
+//        return getContainers(this.manager, menu, StevesEnum.RF_RECEIVER);
+        return null;
     }
 
     public List<SlotInventoryHolder> getRFStorage(Menu menu)
     {
-        return getContainers(this.manager, menu, StevesEnum.RF_CONNECTION);
+//        return getContainers(this.manager, menu, StevesEnum.RF_CONNECTION);
+        return null;
     }
 
     public List<SlotInventoryHolder> getNodes(Menu menu)

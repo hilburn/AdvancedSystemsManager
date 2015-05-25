@@ -17,7 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
@@ -90,7 +89,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         if (cluster != null)
         {
@@ -106,7 +105,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public void onBlockAdded(World world, int x, int y, int z)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         if (cluster != null)
         {
@@ -128,7 +127,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         return cluster != null && cluster.onBlockActivated(player, side, hitX, hitY, hitZ);
 
@@ -137,7 +136,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         return cluster != null ? cluster.isProvidingWeakPower(side) : 0;
     }
@@ -145,7 +144,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         return cluster != null ? cluster.isProvidingStrongPower(side) : 0;
     }
@@ -156,7 +155,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         int meta = addAdvancedMeta(BlockPistonBase.determineOrientation(world, x, y, z, entity), itemStack.getItemDamage());
         world.setBlockMetadataWithNotify(x, y, z, meta, 2);
 
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         if (cluster != null)
         {
@@ -165,7 +164,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         }
     }
 
-    private TileEntityCluster getTe(IBlockAccess world, int x, int y, int z)
+    private TileEntityCluster getCluster(IBlockAccess world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
         if (te != null && te instanceof TileEntityCluster)
@@ -206,7 +205,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         return cluster != null && cluster.canConnectRedstone(side);
 
@@ -243,7 +242,7 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
     @Override
     public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
     {
-        TileEntityCluster cluster = getTe(world, x, y, z);
+        TileEntityCluster cluster = getCluster(world, x, y, z);
 
         return cluster != null && cluster.shouldCheckWeakPower(side);
 

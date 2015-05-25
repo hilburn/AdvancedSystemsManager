@@ -44,17 +44,17 @@ public class ItemCluster extends ItemAdvanced
     @Override
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        NBTTagCompound compound = item.getTagCompound();
-        if (compound != null && compound.hasKey(NBT_CABLE))
-        {
-            NBTTagCompound cable = compound.getCompoundTag(NBT_CABLE);
-            if (cable.hasKey(NBT_TYPES))
-            {
+//        NBTTagCompound compound = item.getTagCompound();
+//        if (compound != null && compound.hasKey(NBT_CABLE))
+//        {
+//            NBTTagCompound cable = compound.getCompoundTag(NBT_CABLE);
+//            if (cable.hasKey(NBT_TYPES))
+//            {
                 return super.onItemUse(item, player, world, x, y, z, side, hitX, hitY, hitZ);
-            }
-        }
-
-        return false;
+//            }
+//        }
+//
+//        return false;
     }
 
     @Override

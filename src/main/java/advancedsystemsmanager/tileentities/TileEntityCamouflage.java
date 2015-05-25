@@ -13,7 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -68,7 +67,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public CamouflageType getCamouflageType()
     {
-        return CamouflageType.getByID(getBlockMetadata());
+        return CamouflageType.getByID(getMetadata());
     }
 
     @SideOnly(Side.CLIENT)
@@ -439,7 +438,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         IIcon icon = getIcon(side, inside);
         if (icon == null)
         {
-            icon = block.getDefaultIcon(side, world.getBlockMetadata(x, y, z), getBlockMetadata()); //here we actually want to fetch the meta data of the block, rather then getting the tile entity version
+            icon = block.getDefaultIcon(side, world.getBlockMetadata(x, y, z), getMetadata()); //here we actually want to fetch the meta data of the block, rather then getting the tile entity version
         }
 
         return icon;

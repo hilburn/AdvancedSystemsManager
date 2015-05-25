@@ -83,7 +83,7 @@ public class TileEntityValve extends TileEntityClusterElement implements IInvent
         {
             if (itemstack != null)
             {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.cableValve.getSideMeta(getBlockMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.cableValve.getSideMeta(getMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
 
                 double posX = xCoord + 0.5 + direction.offsetX * 0.75;
                 double posY = yCoord + 0.5 + direction.offsetY * 0.75;
@@ -197,7 +197,7 @@ public class TileEntityValve extends TileEntityClusterElement implements IInvent
 
     private boolean canPickUp(EntityItem item)
     {
-        return !item.isDead && (item.delayBeforeCanPickup == 0 || BlockRegistry.cableValve.isAdvanced(getBlockMetadata()));
+        return !item.isDead && (item.delayBeforeCanPickup == 0 || BlockRegistry.cableValve.isAdvanced(getMetadata()));
     }
 
     @Override

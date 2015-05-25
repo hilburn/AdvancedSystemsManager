@@ -43,7 +43,7 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
         super.updateEntity();
         if (inventory != null)
         {
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
 
 
             for (ItemStack itemStack : getInventoryForDrop())
@@ -86,7 +86,7 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
 
         if (itemstack != null && itemstack.getItem() != null && itemstack.stackSize > 0)
         {
-            ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+            ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[placeDirection].getOpposite();
 
 
@@ -213,7 +213,7 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
 
             if (!match)
             {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
 
                 int x = xCoord + direction.offsetX;
                 int y = yCoord + direction.offsetY;
@@ -247,7 +247,7 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
     {
         if (inventory == null)
         {
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
 
             int x = xCoord + direction.offsetX;
             int y = yCoord + direction.offsetY;

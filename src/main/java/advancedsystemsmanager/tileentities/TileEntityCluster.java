@@ -504,7 +504,7 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
 
         private byte getMeta()
         {
-            return (byte)tile.getBlockMetadata();
+            return (byte)tile.getMetadata();
         }
     }
 }

@@ -3,8 +3,6 @@ package advancedsystemsmanager.blocks;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.entity.EntityLivingBase;
@@ -46,7 +44,7 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced<TileEntityRelay
         super.onBlockPlacedBy(world, x, y, z, entity, item);
 
         TileEntityRelay relay = getTileEntity(world, x, y, z);
-        if (relay != null && isAdvanced(relay.getBlockMetadata()) && !world.isRemote)
+        if (relay != null && isAdvanced(relay.getMetadata()) && !world.isRemote)
         {
             relay.setOwner(entity);
         }
@@ -56,7 +54,7 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced<TileEntityRelay
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xSide, float ySide, float zSide)
     {
         TileEntityRelay relay = getTileEntity(world, x, y, z);
-        if (relay != null && isAdvanced(relay.getBlockMetadata()))
+        if (relay != null && isAdvanced(relay.getMetadata()))
         {
             if (!world.isRemote)
             {

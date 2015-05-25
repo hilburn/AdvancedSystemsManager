@@ -48,8 +48,6 @@ public class ItemRemoteAccessor extends ItemBase
             {
                 if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
                     FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
-                else
-                    stack.setTagCompound(null);
             }
         }
         return super.onItemRightClick(stack, world, player);
@@ -108,7 +106,7 @@ public class ItemRemoteAccessor extends ItemBase
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if (player.isSneaking())
+        if (!world.isRemote && player.isSneaking())
         {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TileEntityManager)
@@ -119,8 +117,11 @@ public class ItemRemoteAccessor extends ItemBase
                 tagCompound.setInteger(Y, te.yCoord);
                 tagCompound.setInteger(Z, te.zCoord);
                 stack.setTagCompound(tagCompound);
-                return true;
+            } else
+            {
+                stack.setTagCompound(null);
             }
+            return true;
         }
         return false;
     }

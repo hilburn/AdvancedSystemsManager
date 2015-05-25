@@ -17,7 +17,7 @@ import java.util.List;
 
 public class WailaLabelProvider implements IWailaDataProvider
 {
-    public static final String LABELLED = "advancedfactorymanager.compatibility.waila.labelled";
+    public static final String LABELLED = "asm.waila.labelled";
 
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)

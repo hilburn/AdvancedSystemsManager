@@ -18,7 +18,7 @@ public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHan
     @Override
     public int getPlaceDirection()
     {
-        return getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
+        return getMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
     }
 
     @Override

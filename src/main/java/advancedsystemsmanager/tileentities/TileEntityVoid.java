@@ -131,7 +131,7 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     @Override
     public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        return EnumSet.noneOf(ClusterMethodRegistration.class);
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }
 
     @Override

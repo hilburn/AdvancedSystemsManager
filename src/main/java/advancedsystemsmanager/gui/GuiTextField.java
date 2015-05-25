@@ -17,6 +17,7 @@ public class GuiTextField extends Gui
     private FontRenderer fontRenderer;
     private int cursorPos = 0;
     private boolean toggleCursor;
+    private TimerTask task;
 
     public GuiTextField(int width, int height, int x, int y)
     {
@@ -26,7 +27,7 @@ public class GuiTextField extends Gui
         this.ySize = height;
         this.text = "";
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        timer.scheduleAtFixedRate(new ToggleCursor(), 0, 300);
+        timer.scheduleAtFixedRate(task = new ToggleCursor(), 0, 300);
     }
 
     protected void fixCursorPos()
@@ -158,7 +159,8 @@ public class GuiTextField extends Gui
 
     public void close()
     {
-        timer.cancel();
+        task.cancel();
+        timer.purge();
     }
 
     private class ToggleCursor extends TimerTask

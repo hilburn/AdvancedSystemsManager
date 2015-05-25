@@ -25,7 +25,7 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     @Override
     public ItemStack getItemStackFromBlock()
     {
-        return clusterElement.getItemStack(getBlockMetadata());
+        return clusterElement.getItemStack(getMetadata());
     }
 
     @Override
@@ -67,7 +67,7 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     }
 
     @Override
-    public int getBlockMetadata()
+    public int getMetadata()
     {
         if (isPartOfCluster)
         {

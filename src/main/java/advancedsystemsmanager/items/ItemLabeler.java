@@ -2,12 +2,11 @@ package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.gui.GuiLabeler;
-import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
@@ -23,8 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -99,32 +96,32 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
     {
-        if (isValidTile(player.getEntityWorld(), x, y, z))
-        {
-            if (player.getEntityWorld().isRemote)
-            {
-                String label = ItemLabeler.getLabel(stack);
-                if (label.isEmpty())
-                {
-                    if (NameRegistry.removeName(player.getEntityWorld(), x, y, z))
-                    {
-                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("asm.chat.cleared")));
-                    }
-                } else
-                {
-                    NameRegistry.saveName(player.getEntityWorld(), x, y, z, label);
-                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("asm.chat.saved", label)));
-                }
-            }
-            return true;
-        }
+//        if (isValidTile(player.getEntityWorld(), x, y, z))
+//        {
+//            if (player.getEntityWorld().isRemote)
+//            {
+//                String label = ItemLabeler.getLabel(stack);
+//                if (label.isEmpty())
+//                {
+//                    if (NameRegistry.removeName(player.getEntityWorld(), x, y, z))
+//                    {
+//                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("asm.chat.cleared")));
+//                    }
+//                } else
+//                {
+//                    NameRegistry.saveName(player.getEntityWorld(), x, y, z, label);
+//                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("asm.chat.saved", label)));
+//                }
+//            }
+//            return true;
+//        }
         return false;
     }
 
     public static boolean isValidTile(World world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
-        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof TileEntityClusterElement;
+        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof IClusterTile;
     }
 
     public static String getLabel(ItemStack stack)

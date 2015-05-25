@@ -4,7 +4,6 @@ import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityBaseGate;
 import advancedsystemsmanager.tileentities.TileEntityBlockGate;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +28,7 @@ public class BlockCableBlockGate extends BlockCableGate<TileEntityBlockGate>
 
         if (gate != null)
         {
-            int meta = gate.getBlockMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
+            int meta = gate.getMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
             int direction = gate.getPlaceDirection();
 
             if (side == meta && side == direction)
