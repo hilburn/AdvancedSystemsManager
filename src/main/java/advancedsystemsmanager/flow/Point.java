@@ -52,7 +52,7 @@ public class Point
     public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || !(o instanceof Point)) return false;
 
         Point point = (Point)o;
 
@@ -61,7 +61,7 @@ public class Point
 
     public void adjustToGrid(int grid)
     {
-        x = Math.round((x - 2)/grid) + 2;
-        y = Math.round((y - 4)/grid) + 4;
+        x = Math.round((x - 2) / grid) * grid + 2;
+        y = Math.round((y - 4) / grid) * grid + 4;
     }
 }

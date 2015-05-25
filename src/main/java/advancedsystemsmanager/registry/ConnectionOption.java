@@ -22,8 +22,34 @@ public enum ConnectionOption
     BUD_PULSE_LOW(Names.CONNECTION_ON_LOW_BLOCK_PULSE, ConnectionType.OUTPUT),
     BUD_LOW(Names.CONNECTION_WHILE_LOW_BLOCK, ConnectionType.OUTPUT),
     DELAY_OUTPUT(Names.CONNECTION_DELAY_OUTPUT, ConnectionType.OUTPUT),
-    DYNAMIC_INPUT(null, ConnectionType.INPUT),
-    DYNAMIC_OUTPUT(null, ConnectionType.OUTPUT);
+    DYNAMIC_INPUT(null, ConnectionType.INPUT)
+            {
+                @Override
+                public String getName(FlowComponent component, int id)
+                {
+                    return id < component.getChildrenInputNodes().size() ? component.getChildrenInputNodes().get(id).getName() : "";
+                }
+
+                @Override
+                public boolean isValid(FlowComponent component, int id)
+                {
+                    return id < component.getChildrenInputNodes().size();
+                }
+            },
+    DYNAMIC_OUTPUT(null, ConnectionType.OUTPUT)
+            {
+                @Override
+                public String getName(FlowComponent component, int id)
+                {
+                    return id < component.getChildrenOutputNodes().size() ? component.getChildrenOutputNodes().get(id).getName() : "";
+                }
+
+                @Override
+                public boolean isValid(FlowComponent component, int id)
+                {
+                    return id < component.getChildrenOutputNodes().size();
+                }
+            };
     public String name;
     public ConnectionType type;
 
@@ -38,6 +64,10 @@ public enum ConnectionOption
         return type == ConnectionType.INPUT;
     }
 
+    public boolean isOutput()
+    {
+        return type == ConnectionType.OUTPUT;
+    }
 
     public ConnectionType getType()
     {
@@ -47,21 +77,12 @@ public enum ConnectionOption
 
     public String getName(FlowComponent component, int id)
     {
-        if (name != null)
-        {
-            return name;
-        } else if (this == DYNAMIC_INPUT)
-        {
-            return id < component.getChildrenInputNodes().size() ? component.getChildrenInputNodes().get(id).getName() : "";
-        } else
-        {
-            return id < component.getChildrenOutputNodes().size() ? component.getChildrenOutputNodes().get(id).getName() : "";
-        }
+        return name;
     }
 
     public boolean isValid(FlowComponent component, int id)
     {
-        return name != null || (this == DYNAMIC_INPUT ? id < component.getChildrenInputNodes().size() : id < component.getChildrenOutputNodes().size());
+        return name != null;
     }
 
     public enum ConnectionType

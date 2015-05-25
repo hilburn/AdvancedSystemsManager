@@ -1,5 +1,6 @@
 package advancedsystemsmanager.registry;
 
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.reference.Names;
 
 public enum ConnectionSet
@@ -17,7 +18,20 @@ public enum ConnectionSet
     BUD(Names.CONNECTION_SET_BUD, ConnectionOption.BUD_PULSE_HIGH, ConnectionOption.BUD_HIGH, ConnectionOption.BUD, ConnectionOption.BUD_LOW, ConnectionOption.BUD_PULSE_LOW),
     OUTPUT_NODE(Names.CONNECTION_SET_OUTPUT_NODE, ConnectionOption.STANDARD_INPUT),
     INPUT_NODE(Names.CONNECTION_SET_INPUT_NODE, ConnectionOption.STANDARD_OUTPUT),
-    DYNAMIC(Names.CONNECTION_SET_DYNAMIC, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT),
+    DYNAMIC(Names.CONNECTION_SET_DYNAMIC, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT)
+            {
+                @Override
+                public int getInputCount(FlowComponent component)
+                {
+                    return component.childrenInputNodes.size();
+                }
+
+                @Override
+                public int getOutputCount(FlowComponent component)
+                {
+                    return component.childrenOutputNodes.size();
+                }
+            },
     CHAT(Names.CONNECTION_SET_CHAT, ConnectionOption.STANDARD_OUTPUT),
     DELAYED(Names.CONNECTION_DELAY_OUTPUT, ConnectionOption.STANDARD_INPUT, ConnectionOption.STANDARD_OUTPUT);
 
@@ -38,7 +52,7 @@ public enum ConnectionSet
             if (connection.isInput())
             {
                 inputCount++;
-            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
+            } else if (connection.isOutput())
             {
                 outputCount++;
             } else
@@ -56,12 +70,12 @@ public enum ConnectionSet
         return connections;
     }
 
-    public int getOutputCount()
+    public int getOutputCount(FlowComponent component)
     {
         return outputCount;
     }
 
-    public int getInputCount()
+    public int getInputCount(FlowComponent component)
     {
         return inputCount;
     }

@@ -29,6 +29,8 @@ import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -82,7 +84,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private int timer = 0;
     private TileEntityManager self = this;
     private boolean usingUnlimitedInventories;
-    private FlowComponent currentGroup;
 
     public TileEntityManager()
     {
@@ -99,37 +100,58 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
-    public FlowComponent removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
+    public List<FlowComponent> removeFlowComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
+    {
+        List<FlowComponent> result = new ArrayList<FlowComponent>();
+        Queue<Integer> remove = new PriorityQueue<Integer>();
+        Multimap<FlowComponent, FlowComponent> parents = getParentHierarchy();
+        remove.add(idToRemove);
+        getFlowItem(idToRemove).deleteConnections();
+        while (!remove.isEmpty())
+        {
+            FlowComponent removed = removeComponent(remove.poll(), componentMap);
+            result.add(removed);
+            for (FlowComponent child : parents.get(removed))
+            {
+                remove.add(child.getId());
+            }
+        }
+        for (FlowComponent component : componentMap.valueCollection())
+            component.removeParent(idToRemove);
+        return result;
+    }
+
+    private FlowComponent removeComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
         FlowComponent removed = componentMap.remove(idToRemove);
-
-        if (selectedGroup != null && selectedGroup.getId() == idToRemove)
+        if (selectedGroup == removed)
         {
             selectedGroup = null;
         }
-
-        for (FlowComponent component : componentMap.valueCollection())
-            component.updateConnectionIdsAtRemoval(idToRemove);
-
         return removed;
     }
 
     public void removeFlowComponent(int idToRemove)
     {
-        FlowComponent removed = removeFlowComponent(idToRemove, components);
-        if (removed.getType().getCommandType() == CommandType.TRIGGER) triggers.remove(removed);
-        if (worldObj.isRemote)
+        List<FlowComponent> removed = removeFlowComponent(idToRemove, components);
+        if (!worldObj.isRemote)
         {
-            for (int i = 0; i < zLevelRenderingList.size(); i++)
-            {
-                if (zLevelRenderingList.get(i).getId() == idToRemove)
-                {
-                    zLevelRenderingList.remove(i);
-                    break;
-                }
-            }
+            triggers.removeAll(removed);
+        }else
+        {
+            zLevelRenderingList.removeAll(removed);
         }
         updateVariables();
+    }
+
+    public Multimap<FlowComponent, FlowComponent> getParentHierarchy()
+    {
+        Multimap<FlowComponent, FlowComponent> result = HashMultimap.create();
+        for (FlowComponent component : getFlowItems())
+        {
+            if (component.getParent() != null) result.put(component.getParent(), component);
+        }
+        return result;
     }
 
     public FlowComponent getFlowItem(int i)
@@ -275,7 +297,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 updateInventories();
                 break;
             case 4:
-                removeFlowComponent(packet.readInt());
+                removeFlowComponent(packet.readVarIntFromBuffer());
                 break;
             case PacketHandler.BUTTON_CLICK:
                 int buttonId = packet.readByte();
@@ -593,11 +615,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public SystemCoord getInventory(long selected)
     {
         return network.get(selected);
-    }
-
-    public void setCurrentGroup(FlowComponent currentGroup)
-    {
-        this.currentGroup = currentGroup;
     }
 
     @Override

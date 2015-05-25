@@ -394,11 +394,11 @@ public class CommandExecutor
                             {
                                 if (command.equals(parent.getChildrenOutputNodes().get(var28)))
                                 {
-                                    Connection var30 = parent.getConnection(parent.getConnectionSet().getInputCount() + var28);
-                                    if (var30 != null)
-                                    {
-                                        this.executeCommand(this.manager.getFlowItem(var30.getComponentId()), var30.getConnectionId());
-                                    }
+//                                    Connection var30 = parent.getConnection(parent.getConnectionSet().getInputCount() + var28);
+//                                    if (var30 != null)
+//                                    {
+//                                        this.executeCommand(this.manager.getFlowItem(var30.getComponentId()), var30.getConnectionId());
+//                                    }
 
                                     return;
                                 }
@@ -1404,7 +1404,7 @@ public class CommandExecutor
             return false;
         } else
         {
-            int amount = menu.getParent().getConnectionSet().getOutputCount();
+            int amount = menu.getParent().getConnectionSet().getOutputCount(menu.getParent());
             if (!split.useEmpty())
             {
                 ConnectionOption[] usedId = menu.getParent().getConnectionSet().getConnections();

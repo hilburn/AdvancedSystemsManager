@@ -53,46 +53,46 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
 
     private List<SecretCode> codes = new ArrayList<SecretCode>();
     {
-        codes.add(new SecretCode("animate")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 2);
-            }
-        });
-        codes.add(new SecretCode("animslow")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 1);
-            }
-        });
-        codes.add(new SecretCode("animfast")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 5);
-            }
-        });
-        codes.add(new SecretCode("animrapid")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 20);
-            }
-        });
-        codes.add(new SecretCode("animinstant")
-        {
-            @Override
-            protected void trigger()
-            {
-                controller = new AnimationController(manager, 100);
-            }
-        });
+//        codes.add(new SecretCode("animate")
+//        {
+//            @Override
+//            protected void trigger()
+//            {
+//                controller = new AnimationController(manager, 2);
+//            }
+//        });
+//        codes.add(new SecretCode("animslow")
+//        {
+//            @Override
+//            protected void trigger()
+//            {
+//                controller = new AnimationController(manager, 1);
+//            }
+//        });
+//        codes.add(new SecretCode("animfast")
+//        {
+//            @Override
+//            protected void trigger()
+//            {
+//                controller = new AnimationController(manager, 5);
+//            }
+//        });
+//        codes.add(new SecretCode("animrapid")
+//        {
+//            @Override
+//            protected void trigger()
+//            {
+//                controller = new AnimationController(manager, 20);
+//            }
+//        });
+//        codes.add(new SecretCode("animinstant")
+//        {
+//            @Override
+//            protected void trigger()
+//            {
+//                controller = new AnimationController(manager, 100);
+//            }
+//        });
         codes.add(new SecretCode("buttons")
         {
             @Override
@@ -184,10 +184,10 @@ public class GuiManager extends GuiBase implements INEIGuiHandler
         //update components completely independent on their visibility
         long ticks = Minecraft.getSystemTime();
         float elapsedSeconds = (ticks - this.lastTicks) / 1000F;
-        if (controller != null)
-        {
-            controller.update(elapsedSeconds);
-        }
+//        if (controller != null)
+//        {
+//            controller.update(elapsedSeconds);
+//        }
         for (FlowComponent component : manager.getFlowItems())
         {
             component.update(elapsedSeconds);

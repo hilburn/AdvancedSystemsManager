@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Connection
 {
@@ -22,7 +21,7 @@ public class Connection
     public int componentId;
     public int connectionId;
     public List<Point> nodes;
-    public Point selectedNode;
+    public int selected = -1;
 
     public Connection(int componentId, int connectionId)
     {
@@ -63,20 +62,21 @@ public class Connection
 
     public void addAndSelectNode(int mX, int mY, int id)
     {
-        nodes.add(id, selectedNode = new Point(mX, mY));
+        nodes.add(selected = id, new Point(mX, mY));
     }
 
     @SideOnly(Side.CLIENT)
     public void update(int mX, int mY)
     {
-        if (selectedNode != null)
+        if (selected != -1)
         {
-            selectedNode.setX(mX);
-            selectedNode.setY(mY);
+            Point selected = getSelectedNode();
+            selected.setX(mX);
+            selected.setY(mY);
 
             if (GuiScreen.isShiftKeyDown())
             {
-                selectedNode.adjustToGrid(10);
+                selected.adjustToGrid(10);
             }
         }
     }
@@ -94,15 +94,19 @@ public class Connection
         return nodes;
     }
 
-
     public Point getSelectedNode()
     {
-        return selectedNode;
+        return selected == -1? null : nodes.get(selected);
     }
 
-    public void setSelectedNode(Point selectedNode)
+    public int getSelected()
     {
-        this.selectedNode = selectedNode;
+        return selected;
+    }
+
+    public void setSelected(int selected)
+    {
+        this.selected = selected;
     }
 
     public void writeToNBT(NBTTagCompound tagCompound, int index)

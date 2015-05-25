@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 public interface IGuiElement<Gui extends GuiScreen>
 {
     @SideOnly(Side.CLIENT)
-    public abstract void draw(Gui gui, int mouseX, int mouseY, int zLevel);
+    void draw(Gui gui, int mouseX, int mouseY, int zLevel);
 
     @SideOnly(Side.CLIENT)
     void drawMouseOver(Gui gui, int mouseX, int mouseY);

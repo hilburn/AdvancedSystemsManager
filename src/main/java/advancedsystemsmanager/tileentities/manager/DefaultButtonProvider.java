@@ -90,7 +90,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                     if (id != -1)
                     {
                         FlowComponent item = manager.getFlowItem(id);
-                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager, manager.getFlowItems(), item, Settings.isLimitless(manager));
+                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager, item, Settings.isLimitless(manager));
                         for (FlowComponent add : added)
                         {
                             manager.addNewComponent(add);

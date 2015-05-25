@@ -176,7 +176,7 @@ public class ASMPacket extends PacketBuffer
         }
     }
 
-    public void writeBooleanArray(boolean[] val)
+    public void writeBooleanArray(boolean... val)
     {
         int b = 0;
         for (boolean aVal : val)
