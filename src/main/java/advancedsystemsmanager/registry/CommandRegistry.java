@@ -3,7 +3,10 @@ package advancedsystemsmanager.registry;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.execution.commands.*;
+import advancedsystemsmanager.flow.setting.ItemSetting;
 import gnu.trove.map.hash.TIntIntHashMap;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +15,11 @@ import java.util.List;
 public class CommandRegistry
 {
     public static ICommand TRIGGER;
-    public static ICommand INPUT;
+    public static CommandBase<ItemStack> INPUT;
     public static ICommand OUTPUT;
     public static ICommand CONDITION;
     public static ICommand FLOW_CONTROL;
-    public static ICommand LIQUID_INPUT;
+    public static CommandBase<Fluid> LIQUID_INPUT;
     public static ICommand LIQUID_OUTPUT;
     public static ICommand LIQUID_CONDITION;
     public static ICommand REDSTONE_EMITTER;
@@ -92,9 +95,9 @@ public class CommandRegistry
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuSigns.class, MenuSignText.class));
         registerCommand(new CommandTrigger());
-        registerCommand(new CommandItemInput());
+        registerCommand(INPUT = new CommandItemInput());
         registerCommand(new CommandItemOutput());
-        registerCommand(new CommandFluidInput());
+        registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
 
         registerCommand(new CommandCamouflage());

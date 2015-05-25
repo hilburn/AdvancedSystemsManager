@@ -2,9 +2,10 @@ package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.api.network.IPacketWriter;
 import advancedsystemsmanager.network.ASMPacket;
 
-public abstract class UpdateElement implements IPacketSync
+public abstract class UpdateElement implements IPacketSync, IPacketWriter
 {
     protected IPacketProvider packetProvider;
     private int id;
@@ -27,8 +28,4 @@ public abstract class UpdateElement implements IPacketSync
         if (writeData(packet))
             packetProvider.sendPacketToServer(packet);
     }
-
-    public abstract boolean writeData(ASMPacket packet);
-
-    public abstract boolean readData(ASMPacket packet);
 }

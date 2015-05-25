@@ -3,7 +3,6 @@ package advancedsystemsmanager.helpers;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -54,18 +53,18 @@ public class CopyHelper
     {
         for (FlowComponent component : added.keySet())
         {
-            int i = 0;
             for (Connection entry : component.getConnections())
             {
-                if (entry != null)
+                if (entry != null && entry.getInputId() == component.getId())
                 {
-                    FlowComponent connectTo = added.get(oldComponents.get(entry.getComponentId()));
+                    FlowComponent connectTo = added.get(oldComponents.get(entry.getOutputId()));
+                    FlowComponent connectFrom = added.get(component);
                     if (connectTo != null)
                     {
-                        Connection newConnection = new Connection(connectTo.getId(), entry.getConnectionId());
-                        added.get(component).setConnection(i, newConnection);
+                        Connection newConnection = new Connection(connectFrom.getId(), connectTo.getId(), entry);
+                        connectFrom.setConnection(entry.getInputConnection(), newConnection);
+                        connectTo.setConnection(entry.getOutputConnection(), newConnection);
                     }
-                    i++;
                 }
             }
         }

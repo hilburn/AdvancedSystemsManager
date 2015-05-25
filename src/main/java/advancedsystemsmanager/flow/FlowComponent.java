@@ -214,7 +214,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             NBTTagList connections = nbtTagCompound.getTagList(NBT_CONNECTION, 10);
             for (int i = 0; i < connections.tagCount(); i++)
             {
-                Connection.readFromNBT(component.connections, connections.getCompoundTagAt(i));
+                Connection.readFromNBT(component.connections, connections.getCompoundTagAt(i), id);
             }
 
             if (nbtTagCompound.hasKey(NBT_INTERVAL, Constants.NBT.TAG_SHORT))
@@ -377,7 +377,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             int srcConnectionX = (CollisionHelper.inBounds(location[0], location[1], connectionWidth, connectionHeight, mX, mY)) ? 1 : 0;
 
             Connection current = manager.getCurrentlyConnecting();
-            if (current != null && current.getComponentId() == id && current.getConnectionId() == i)
+            if (current != null && current.getInputId() == id && current.getInputConnection() == i)
             {
                 gui.drawLine(location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY);
             }
@@ -386,9 +386,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             if (connectedConnection != null)
             {
                 hasConnection = true;
-                if (id < connectedConnection.getComponentId())
+                if (connectedConnection.getInputId() == id)
                 {
-                    int[] otherLocation = manager.getFlowItem(connectedConnection.getComponentId()).getConnectionLocationFromId(connectedConnection.getConnectionId());
+                    int[] otherLocation = manager.getFlowItem(connectedConnection.getOutputId()).getConnectionLocationFromId(connectedConnection.getOutputConnection());
                     if (otherLocation == null)
                     {
                         continue;
@@ -663,12 +663,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         Connection connection = connections[id];
         if (connection != null)
         {
-            addConnection(id, null, true);
-            if (connection.getComponentId() >= 0)
-            {
-                FlowComponent component = manager.getFlowItem(connection.getComponentId());
-                if (component != null) component.addConnection(connection.getConnectionId(), null, true);
-            }
+            sendConnectionData(id, false, 0, 0);
+            connection.deleteConnection(manager);
         }
     }
 
@@ -676,13 +672,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     {
         if (sync && getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
         {
-            if (connection != null) {
-                sendConnectionData(id, true, connection.getComponentId(), connection.getConnectionId());
-            }else{
-                sendConnectionData(id, false, 0, 0);
-            }
+            sendConnectionData(id, true, connection.getOutputId(), connection.getOutputConnection());
         }
-        connections[id] = connection;
+        connection.setConnection(manager);
     }
 
     public TileEntityManager getManager()
@@ -851,21 +843,11 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     {
                         if (selected != null)
                         {
-                            int connectionId = i;
-                            boolean reversed = false;
-                            FlowComponent component = this;
-                            if (selected.getComponentId() < id)
-                            {
-                                connectionId = selected.getConnectionId();
-                                component = manager.getFlowItem(selected.getComponentId());
-                                selected = component.getConnection(selected.getConnectionId());
-                                reversed = true;
-                            }
                             if (selected.getNodes().size() < MAX_NODES)
                             {
-                                int id = reversed ? selected.getNodes().size() : 0;
+                                int id = connectionSet.connections[i].isInput() ? selected.getNodes().size() : 0;
                                 selected.addAndSelectNode(mX, mY, id);
-                                component.sendConnectionNodeData(connectionId, id, 1, mX, mY);
+                                sendConnectionNodeData(i, id, 1, mX, mY);
                             }
                         }
                     } else
@@ -877,16 +859,16 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                 removeConnection(i);
                             }
                             manager.setCurrentlyConnecting(new Connection(id, i));
-                        } else if (current.getComponentId() == this.id && current.getConnectionId() == i)
+                        } else if (current.getInputId() == this.id && current.getInputConnection() == i)
                         {
                             manager.setCurrentlyConnecting(null);
-                        } else if (current.getComponentId() != id)
+                        } else if (current.getInputId() != id)
                         {
-                            FlowComponent connectTo = manager.getFlowItem(current.getComponentId());
-                            ConnectionOption connectToOption = connectTo.connectionSet.getConnections()[current.getConnectionId()];
+                            FlowComponent connectTo = manager.getFlowItem(current.getInputId());
+                            ConnectionOption connectToOption = connectTo.connectionSet.getConnections()[current.getInputConnection()];
                             if (connectToOption.isInput() != connection.isInput())
                             {
-                                if (checkForLoops(i, current))
+                                if (checkForLoops(current))
                                 {
                                     return true;
                                 }
@@ -896,9 +878,17 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                     removeConnection(i);
                                 }
 
-                                Connection thisConnection = new Connection(id, i);
-                                connectTo.addConnection(current.getConnectionId(), thisConnection, true);
-                                addConnection(i, manager.getCurrentlyConnecting(), true);
+                                if (connection.isInput())
+                                {
+                                    current.setOutputId(id);
+                                    current.setOutputConnection(i);
+                                    connectTo.addConnection(current.inputConnection, current, true);
+                                }else
+                                {
+                                    current.setInputId(id);
+                                    current.setInputConnection(i);
+                                    addConnection(i, current, true);
+                                }
                                 manager.setCurrentlyConnecting(null);
                             }
                         }
@@ -974,58 +964,35 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? StatCollector.translateToLocal(getType().getName()) : name : textBox.getText();
     }
 
-    public boolean checkForLoops(int connectionId, Connection connection)
+    public boolean checkForLoops(Connection connection)
     {
-        return checkForLoops(new ArrayList<Integer>(), this, connectionId, connection);
+        return checkForLoops(new ArrayList<Integer>(Arrays.asList(id)), connection.getInputId());
     }
 
-    public boolean checkForLoops(List<Integer> usedComponents, FlowComponent currentComponent, int connectionId, Connection connection)
+    public boolean checkForLoops(List<Integer> usedComponents, int id)
     {
-        if (usedComponents.contains(currentComponent.getId()))
+        if (usedComponents.contains(id))
         {
             return true;
         }
-        usedComponents.add(currentComponent.getId());
+        usedComponents.add(id);
+        FlowComponent currentComponent = manager.getFlowItem(id);
 
-        for (int i = 0; i < currentComponent.connectionSet.getConnections().length; i++)
+        for (int i = 0; i < currentComponent.connections.length; i++)
         {
-            if (!currentComponent.connectionSet.getConnections()[i].isInput())
+            if (!currentComponent.connectionSet.isInput(i))
             {
-                Connection c;
-
-                if (connectionId == i && currentComponent.getId() == this.id)
-                {
-                    //the new connection
-                    c = connection;
-                } else if (connection.getComponentId() == currentComponent.getId() && connection.getConnectionId() == i)
-                {
-                    //the new connection in the other direction
-                    c = new Connection(this.getId(), connectionId);
-                } else
-                {
-                    c = currentComponent.connections[i];
-                    //old connection that will be replaced
-                    if (c != null && c.getComponentId() == this.id && c.getConnectionId() == connectionId)
-                    {
-                        c = null;
-                    }
-                }
+                Connection c = currentComponent.getConnection(i);
 
                 if (c != null)
                 {
-                    if (c.getComponentId() >= 0)
+                    if (checkForLoops(usedComponents, c.getOutputId()))
                     {
-                        List<Integer> usedComponentsCopy = new ArrayList<Integer>(usedComponents);
-
-                        if (checkForLoops(usedComponentsCopy, manager.getFlowItem(c.getComponentId()), connectionId, connection))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }
         }
-
         return false;
     }
 
@@ -1252,7 +1219,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    public void linkParentAfterLoad()
+    public void linkAfterLoad()
     {
         if (parentLoadId != -1)
         {
@@ -1260,6 +1227,13 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         } else
         {
             setParent(null);
+        }
+        for (Connection connection : connections)
+        {
+            if (connection != null)
+            {
+                connection.setConnection(manager);
+            }
         }
     }
 
@@ -1309,7 +1283,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             if (connection != null)
             {
                 NBTTagCompound connectionTag = new NBTTagCompound();
-                connection.writeToNBT(connectionTag, i);
+                connection.writeToNBT(connectionTag);
                 connections.appendTag(connectionTag);
             }
         }
@@ -1342,14 +1316,13 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         connections = new Connection[connections.length];
     }
 
-    public void deleteConnections()
+    public void deleteConnections(TileEntityManager manager)
     {
         for (Connection connection : connections)
         {
             if (connection != null)
             {
-                FlowComponent connected = manager.getFlowItem(connection.componentId);
-                connected.connections[connection.connectionId] = null;
+                connection.deleteConnection(manager);
             }
         }
     }
@@ -1560,16 +1533,18 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     break;
                 case 1:
                     int connectionId = packet.readByte();
-                    Connection connection = null;
                     if (packet.readBoolean())
                     {
-                        connection = new Connection(packet.readVarIntFromBuffer(), packet.readByte());
+                        Connection connection = new Connection(this.id, connectionId, packet.readVarIntFromBuffer(), packet.readByte());
+                        connection.setConnection(manager);
+                    }else
+                    {
+                        connections[connectionId].deleteConnection(manager);
                     }
-                    addConnection(connectionId, connection, false);
                     break;
                 case 2:
                     connectionId = packet.readByte();
-                    connection = connections[connectionId];
+                    Connection connection = connections[connectionId];
                     int nodeId = Math.min(packet.readByte(), connection.nodes.size());
                     switch (packet.readByte())
                     {
@@ -1587,7 +1562,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     break;
                 case 3:
                     parentLoadId = packet.readVarIntFromBuffer();
-                    linkParentAfterLoad();
+                    linkAfterLoad();
                     break;
             }
             return false;
@@ -1629,11 +1604,5 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             packet.writeShort(y);
         }
         packet.sendServerPacket();
-    }
-
-    @Override
-    public boolean writeData(ASMPacket packet)
-    {
-        return false;
     }
 }

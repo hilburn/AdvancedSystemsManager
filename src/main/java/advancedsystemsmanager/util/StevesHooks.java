@@ -1,19 +1,13 @@
 package advancedsystemsmanager.util;
 
-import advancedsystemsmanager.api.execution.IHiddenInventory;
-import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuTriggered;
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import cofh.api.energy.IEnergyConnection;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
@@ -94,11 +88,6 @@ public class StevesHooks
                 getIdsToRemove(ids, component.getId(), items);
         }
         ids.add(idToRemove);
-    }
-
-    public static boolean instanceOf(Class clazz, TileEntity entity)
-    {
-        return clazz.isInstance(entity) || entity instanceof IHiddenTank && clazz == IFluidHandler.class || entity instanceof IHiddenInventory && clazz == IInventory.class || clazz == IEnergyConnection.class && (entity instanceof IEnergyProvider || entity instanceof IEnergyReceiver);
     }
 
     public static boolean containerAdvancedSearch(SystemCoord block, String search)

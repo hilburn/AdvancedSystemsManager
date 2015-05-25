@@ -2,8 +2,6 @@ package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.api.IConditionStuffMenu;
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.execution.IHiddenInventory;
-import advancedsystemsmanager.api.execution.IHiddenTank;
 import advancedsystemsmanager.api.execution.IItemBufferElement;
 import advancedsystemsmanager.api.execution.IItemBufferSubElement;
 import advancedsystemsmanager.flow.Connection;
@@ -167,7 +165,6 @@ public class CommandExecutor
 
         for (SlotInventoryHolder slotInventoryHolder : inventories)
         {
-            if (!(slotInventoryHolder.getTile() instanceof IHiddenInventory))
             {
                 IInventory inventory = slotInventoryHolder.getInventory();
                 Map<Integer, SlotSideTarget> validSlots = slotInventoryHolder.getValidSlots();
@@ -243,7 +240,7 @@ public class CommandExecutor
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
+                this.executeCommand(this.manager.getFlowItem(connection.getInputId()), connection.getInputConnection());
             }
         }
     }
@@ -732,11 +729,6 @@ public class CommandExecutor
         MenuStuff menuItem = (MenuStuff)menu;
         for (SlotInventoryHolder inventory : inventories)
         {
-            if (inventory.getTile() instanceof IHiddenInventory)
-            {
-                IHiddenInventory node = (IHiddenInventory)inventory.getTile();
-                node.addItemsToBuffer(menuItem, inventory, itemBuffer, this);
-            } else
             {
                 Iterator<SlotSideTarget> itr;
                 SlotSideTarget slot;
@@ -814,17 +806,6 @@ public class CommandExecutor
         for (SlotInventoryHolder slotHolder : tanks)
         {
             Map<Integer, SlotSideTarget> validTanks = slotHolder.getValidSlots();
-            if (slotHolder.getTile() instanceof IHiddenTank)
-            {
-                SlotSideTarget var13 = validTanks.get(0);
-                if (var13 == null)
-                {
-                    validTanks.put(0, new SlotSideTarget(0, 0));
-                } else
-                {
-                    var13.addSide(0);
-                }
-            } else
             {
                 IFluidHandler tank = slotHolder.getTank();
                 for (int side = 0; side < MenuTarget.directions.length; ++side)
@@ -869,11 +850,7 @@ public class CommandExecutor
         for (SlotInventoryHolder tank : tanks)
         {
             MenuStuff menuItem = (MenuStuff)menu;
-            if (tank.getTile() instanceof IHiddenTank)
-            {
-                IHiddenTank node = (IHiddenTank)tank.getTile();
-                node.addFluidsToBuffer(menuItem, tank, liquidBuffer, this);
-            } else if (tank.getTank() instanceof TileEntityCreative)
+            if (tank.getTank() instanceof TileEntityCreative)
             {
                 Iterator<SlotSideTarget> itr;
                 if (menuItem.useWhiteList())
@@ -1050,7 +1027,7 @@ public class CommandExecutor
     {
         itemBufferElement.prepareSubElements();
 
-        IInventory inventory = inventoryHolder.getTile() instanceof IHiddenInventory ? Null.NULL_INVENTORY : inventoryHolder.getInventory();
+        IInventory inventory = inventoryHolder.getInventory();
         IItemBufferSubElement subElement;
         while ((subElement = itemBufferElement.getSubElement()) != null)
         {
@@ -1075,33 +1052,6 @@ public class CommandExecutor
                     outputCounters.add(outputItemCounter);
                 }
 
-                if (inventoryHolder.getTile() instanceof IHiddenInventory)
-                {
-                    IHiddenInventory hidden = (IHiddenInventory)inventoryHolder.getTile();
-                    int moveCount = Math.min(hidden.getAmountToInsert(itemStack), itemStack.stackSize);
-                    if (moveCount > 0)
-                    {
-                        moveCount = Math.min(subElement.getSizeLeft(), moveCount);
-                        moveCount = outputItemCounter.retrieveItemCount(moveCount);
-                        moveCount = itemBufferElement.retrieveItemCount(moveCount);
-                        if (moveCount > 0)
-                        {
-                            itemBufferElement.decreaseStackSize(moveCount);
-                            outputItemCounter.modifyStackSize(moveCount);
-                            ItemStack toInsert = itemStack.copy();
-                            toInsert.stackSize = moveCount;
-                            hidden.insertItemStack(toInsert);
-                            subElement.reduceBufferAmount(moveCount);
-
-                            if (subElement.getSizeLeft() == 0)
-                            {
-                                subElement.remove();
-                                itemBufferElement.removeSubElement();
-                            }
-                            subElement.onUpdate();
-                        }
-                    }
-                } else
                 {
 
                     for (SlotSideTarget slot : inventoryHolder.getValidSlots().values())
@@ -1169,7 +1119,7 @@ public class CommandExecutor
                 outputCounters.clear();
             }
 
-            IFluidHandler tank = tankHolder.getTile() instanceof IHiddenTank ? ((IHiddenTank)tankHolder.getTile()).getTank() : tankHolder.getTank();
+            IFluidHandler tank = tankHolder.getTank();
 
             for (LiquidBufferElement liquidBufferElement : this.liquidBuffer)
             {
@@ -1287,10 +1237,6 @@ public class CommandExecutor
 
     public void calculateConditionDataItem(Menu menu, SlotInventoryHolder inventoryHolder, Map<Integer, ConditionSettingChecker> conditionSettingCheckerMap)
     {
-        if (inventoryHolder.getTile() instanceof IHiddenInventory)
-        {
-            ((IHiddenInventory)inventoryHolder.getTile()).isItemValid(((MenuStuff)menu).getSettings(), conditionSettingCheckerMap);
-        } else
         {
             for (SlotSideTarget slot : inventoryHolder.getValidSlots().values())
             {
@@ -1324,7 +1270,7 @@ public class CommandExecutor
 
             for (int side : slot.getSides())
             {
-                FluidTankInfo[] currentTankInfos = tank.getTile() instanceof IHiddenTank ? ((IHiddenTank)tank.getTile()).getTank().getTankInfo(null) : tank.getTank().getTankInfo(ForgeDirection.VALID_DIRECTIONS[side]);
+                FluidTankInfo[] currentTankInfos = tank.getTank().getTankInfo(ForgeDirection.VALID_DIRECTIONS[side]);
                 if (currentTankInfos != null)
                 {
                     for (FluidTankInfo fluidTankInfo : currentTankInfos)
@@ -1454,7 +1400,7 @@ public class CommandExecutor
                     }
 
                     CommandExecutor var20 = new CommandExecutor(this.manager, itemBufferSplit, new ArrayList<CraftingBufferFluidElement>(this.craftingBufferHigh), new ArrayList<CraftingBufferFluidElement>(this.craftingBufferLow), liquidBufferSplit, rfBuffer, var17);
-                    var20.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
+                    var20.executeCommand(this.manager.getFlowItem(connection.getInputId()), connection.getInputConnection());
                     ++var14;
                 }
             }

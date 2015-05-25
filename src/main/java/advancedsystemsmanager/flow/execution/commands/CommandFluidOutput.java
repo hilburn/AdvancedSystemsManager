@@ -2,10 +2,9 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
-import advancedsystemsmanager.api.execution.IInternalTank;
+import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.OutputLiquidCounter;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuLiquid;

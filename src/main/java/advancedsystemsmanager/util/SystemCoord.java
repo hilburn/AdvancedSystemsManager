@@ -2,6 +2,7 @@ package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
+import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
@@ -60,8 +61,8 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     private void setKey()
     {
-        this.key = ((long)x & 0xFFFFFF)<<40 | ((long)z & 0xFFFFFF)<<16 | ((long)y & 0xFF)<<8 | dim & 0xFF;
-        if (tileEntity instanceof TileEntityClusterElement) key |= (ClusterRegistry.get((TileEntityClusterElement)tileEntity).getId() & 0xF) << 4;
+        this.key = ((long)x & 0xFFFFFF)<<40 | ((long)z & 0xFFFFFF)<<16 | (y & 0xFF)<<8 | dim & 0xFF;
+        if (tileEntity instanceof IClusterTile) key |= (ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0xF) << 4;
     }
 
     public void addType(ISystemType type)

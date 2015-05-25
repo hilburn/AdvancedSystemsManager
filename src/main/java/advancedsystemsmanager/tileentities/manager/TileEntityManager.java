@@ -106,7 +106,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         Queue<Integer> remove = new PriorityQueue<Integer>();
         Multimap<FlowComponent, FlowComponent> parents = getParentHierarchy();
         remove.add(idToRemove);
-        getFlowItem(idToRemove).deleteConnections();
+        getFlowItem(idToRemove).deleteConnections(this);
         while (!remove.isEmpty())
         {
             FlowComponent removed = removeComponent(remove.poll(), componentMap);
@@ -255,7 +255,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 }
                 for (FlowComponent item : getFlowItems())
                 {
-                    item.linkParentAfterLoad();
+                    item.linkAfterLoad();
                 }
 
                 if (Settings.isAutoCloseGroup())
@@ -366,7 +366,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                             ((TileEntityCluster)te).setWorld(tileEntityClusterElement);
                             SystemCoord coord = target.copy();
                             coord.setTileEntity((TileEntity)tileEntityClusterElement);
-                            addInventory(target);
+                            addInventory(coord);
                         }
                     } else
                     {
@@ -426,7 +426,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     {
         boolean result = components.put(component.getId(), component) != null;
         if (component.getType().getCommandType() == CommandType.TRIGGER) triggers.add(component);
-        if (worldObj.isRemote) zLevelRenderingList.add(0, component);
+        if (worldObj != null && worldObj.isRemote) zLevelRenderingList.add(0, component);
         return result;
     }
 
@@ -570,12 +570,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             NBTTagCompound component = components.getCompoundTagAt(i);
             FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, pickup);
-            this.components.put(flowComponent.getId(), flowComponent);
+            addNewComponent(flowComponent);
         }
 
         for (FlowComponent item : getFlowItems())
         {
-            item.linkParentAfterLoad();
+            item.linkAfterLoad();
         }
 
         NBTTagList variablesTag = nbtTagCompound.getTagList(NBT_VARIABLES, 10);

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.*;
+import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;

@@ -2,6 +2,7 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.items.IClusterItem;
 import advancedsystemsmanager.api.network.IPacketBlock;
+import advancedsystemsmanager.api.tileentities.ICluster;
 import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
@@ -37,7 +38,7 @@ import java.util.*;
         @Optional.Interface(iface = "cofh.api.energy.IEnergyProvider", modid = Mods.COFH_ENERGY),
         @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY)
 })
-public class TileEntityCluster extends TileEntity implements ITileInterfaceProvider, IPacketBlock, IEnergyProvider, IEnergyReceiver
+public class TileEntityCluster extends TileEntity implements ITileInterfaceProvider, ICluster, IPacketBlock, IEnergyProvider, IEnergyReceiver
 {
 
     private static final String NBT_SUB_BLOCKS = "SubBlocks";

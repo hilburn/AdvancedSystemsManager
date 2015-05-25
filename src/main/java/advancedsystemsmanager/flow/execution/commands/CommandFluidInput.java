@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
-import advancedsystemsmanager.api.execution.IInternalTank;
+import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.FluidBufferElement;

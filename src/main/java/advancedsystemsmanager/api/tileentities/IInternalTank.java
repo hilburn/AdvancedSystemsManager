@@ -1,5 +1,6 @@
-package advancedsystemsmanager.api.execution;
+package advancedsystemsmanager.api.tileentities;
 
+import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.flow.menus.MenuLiquid;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.IFluidHandler;

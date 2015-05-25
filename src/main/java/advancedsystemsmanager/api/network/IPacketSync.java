@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.network;
 
-public interface IPacketSync extends IPacketReader, IPacketWriter
+public interface IPacketSync extends IPacketReader
 {
     void onUpdate();
 

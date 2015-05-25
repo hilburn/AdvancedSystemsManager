@@ -1,5 +1,6 @@
 package advancedsystemsmanager.flow;
 
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,48 +12,96 @@ import java.util.List;
 
 public class Connection
 {
-    public static final String NBT_CONNECTION_POS = "CP";
-    public static final String NBT_CONNECTION_TARGET_COMPONENT = "CT";
-    public static final String NBT_CONNECTION_TARGET_CONNECTION = "CC";
+    public static final String NBT_CONNECTION_INPUT_CONNECTION = "ICo";
+    public static final String NBT_CONNECTION_OUTPUT_COMPONENT = "OC";
+    public static final String NBT_CONNECTION_OUTPUT_CONNECTION = "OCo";
     public static final String NBT_NODES = "N";
     public static final String NBT_POS_X = "X";
     public static final String NBT_POS_Y = "Y";
 
-    public int componentId;
-    public int connectionId;
+    public int inputId;
+    public int inputConnection;
+    public int outputId;
+    public int outputConnection;
     public List<Point> nodes;
     public int selected = -1;
 
     public Connection(int componentId, int connectionId)
     {
-        this.componentId = componentId;
-        this.connectionId = connectionId;
+        this(componentId, connectionId, -1, -1);
+    }
+
+    public Connection(int newInput, int newOutput, Connection connection)
+    {
+        this(newInput, connection.getInputConnection(), newOutput, connection.getOutputConnection());
+    }
+
+    public Connection(int inputId, int inputConnection, int outputId, int outputConnection)
+    {
+        this.inputId = inputId;
+        this.inputConnection = inputConnection;
+        this.outputId = outputId;
+        this.outputConnection = outputConnection;
         nodes = new ArrayList<Point>();
     }
 
-    public int getComponentId()
+    public int getInputId()
     {
-        return componentId;
+        return inputId;
     }
 
-    public void setComponentId(int componentId)
+    public void setInputId(int componentId)
     {
-        this.componentId = componentId;
+        this.outputId = this.inputId;
+        this.inputId = componentId;
     }
 
-    public int getConnectionId()
+    public int getInputConnection()
     {
-        return connectionId;
+        return inputConnection;
     }
 
-    public void setConnectionId(int connectionId)
+    public void setInputConnection(int connectionId)
     {
-        this.connectionId = connectionId;
+        this.outputConnection = this.inputConnection;
+        this.inputConnection = connectionId;
+    }
+
+    public void setOutputId(int componentId)
+    {
+        this.outputId = componentId;
+    }
+
+    public void setOutputConnection(int connectionId)
+    {
+        this.outputConnection = connectionId;
+    }
+
+    public void setConnection(TileEntityManager manager)
+    {
+        FlowComponent a = manager.getFlowItem(inputId);
+        FlowComponent b = manager.getFlowItem(outputId);
+        if (a != null && !a.equals(b))
+        {
+            a.setConnection(inputConnection, this);
+            if (b!= null)b.setConnection(outputConnection, this);
+        }
+    }
+
+    public void deleteConnection(TileEntityManager manager)
+    {
+        FlowComponent a = manager.getFlowItem(inputId);
+        FlowComponent b = manager.getFlowItem(outputId);
+        if (a != null)
+        {
+            a.setConnection(inputConnection, null);
+            if (b != null) b.setConnection(outputConnection, null);
+        }
     }
 
     public Connection copy()
     {
-        Connection copy = new Connection(this.componentId, this.connectionId);
+        Connection copy = new Connection(inputId, inputConnection, outputId, outputConnection);
         for (Point node : nodes)
         {
             copy.nodes.add(node.copy());
@@ -109,11 +158,11 @@ public class Connection
         this.selected = selected;
     }
 
-    public void writeToNBT(NBTTagCompound tagCompound, int index)
+    public void writeToNBT(NBTTagCompound tagCompound)
     {
-        tagCompound.setByte(NBT_CONNECTION_POS, (byte)index);
-        tagCompound.setInteger(NBT_CONNECTION_TARGET_COMPONENT, getComponentId());
-        tagCompound.setByte(NBT_CONNECTION_TARGET_CONNECTION, (byte)getConnectionId());
+        tagCompound.setByte(NBT_CONNECTION_INPUT_CONNECTION, (byte)getInputConnection());
+        tagCompound.setInteger(NBT_CONNECTION_OUTPUT_COMPONENT, getOutputId());
+        tagCompound.setByte(NBT_CONNECTION_OUTPUT_CONNECTION, (byte)getOutputConnection());
 
 
         NBTTagList nodes = new NBTTagList();
@@ -130,10 +179,10 @@ public class Connection
         tagCompound.setTag(NBT_NODES, nodes);
     }
 
-    public static void readFromNBT(Connection[] connections, NBTTagCompound tagCompound)
+    public static void readFromNBT(Connection[] connections, NBTTagCompound tagCompound, int inputId)
     {
-        int componentId = tagCompound.getInteger(NBT_CONNECTION_TARGET_COMPONENT);
-        Connection connection = new Connection(componentId, tagCompound.getByte(NBT_CONNECTION_TARGET_CONNECTION));
+        Connection connection = new Connection(inputId, tagCompound.getByte(NBT_CONNECTION_INPUT_CONNECTION),
+                tagCompound.getInteger(NBT_CONNECTION_OUTPUT_COMPONENT), tagCompound.getByte(NBT_CONNECTION_OUTPUT_CONNECTION));
 
         if (tagCompound.hasKey(NBT_NODES))
         {
@@ -146,7 +195,16 @@ public class Connection
                 connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
             }
         }
+        connections[connection.getInputConnection()] = connection;
+    }
 
-        connections[(int)tagCompound.getByte(NBT_CONNECTION_POS)] = connection;
+    public int getOutputId()
+    {
+        return outputId;
+    }
+
+    public int getOutputConnection()
+    {
+        return outputConnection;
     }
 }

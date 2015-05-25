@@ -64,7 +64,7 @@ public class Executor implements IBufferProvider
     {
         for (Connection connection : connections)
         {
-            this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
+            this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputId());
         }
     }
 
@@ -89,7 +89,7 @@ public class Executor implements IBufferProvider
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                this.executeCommand(this.manager.getFlowItem(connection.getComponentId()), connection.getConnectionId());
+                this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputConnection());
             }
         }
     }

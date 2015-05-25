@@ -49,7 +49,10 @@ public abstract class CommandBase<Type> implements ICommand
     {
         List<SystemCoord> result = new ArrayList<SystemCoord>();
         for (long selected : container.getSelectedInventories())
-            result.add(manager.getInventory(selected));
+        {
+            SystemCoord coord = manager.getInventory(selected);
+            if (coord != null) result.add(coord);
+        }
         return result;
     }
 

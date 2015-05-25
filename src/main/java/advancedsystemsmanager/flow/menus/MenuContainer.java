@@ -3,6 +3,7 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.ScrollController;
@@ -32,7 +33,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
-public class MenuContainer extends Menu
+public class MenuContainer extends Menu implements IPacketSync
 {
     public static final int BACK_SRC_X = 46;
     public static final int BACK_SRC_Y = 52;
@@ -78,12 +79,13 @@ public class MenuContainer extends Menu
     public List<Button> buttons;
     public List<Variable> filterVariables;
     public boolean clientUpdate; //ugly quick way to fix client/server issue
+    public int packetId;
 
     public MenuContainer(FlowComponent parent, ISystemType type)
     {
         super(parent);
         this.type = type;
-
+        parent.registerSyncable(this);
         selectedInventories = new ArrayList<Long>();
         filterVariables = new ArrayList<Variable>();
         radioButtonsMulti = new RadioButtonList(getParent());
@@ -171,11 +173,18 @@ public class MenuContainer extends Menu
                     }
                 } else
                 {
-//                    MenuContainer.this.needsSync = true;
                     long id = iContainerSelection.getId();
-                    if (selectedInventories.contains(id)) selectedInventories.remove(id);
-                    else selectedInventories.add(id);
-                    //TODO: Better syncing
+                    int index = selectedInventories.indexOf(id);
+                    if (index >= 0)
+                    {
+                        selectedInventories.remove(index);
+                        removeInventory(index);
+                    }
+                    else
+                    {
+                        selectedInventories.add(id);
+                        addInventory(id);
+                    }
                 }
             }
 
@@ -899,6 +908,53 @@ public class MenuContainer extends Menu
     public void setSelectedInventories(List<Long> selectedInventories)
     {
         this.selectedInventories = selectedInventories;
+    }
+
+    @Override
+    public void onUpdate()
+    {
+
+    }
+
+    @Override
+    public void setId(int id)
+    {
+        packetId = id;
+    }
+
+    @Override
+    public boolean readData(ASMPacket packet)
+    {
+        if (packet.readBoolean())
+        {
+            selectedInventories.remove(packet.readShort());
+        }else
+        {
+            selectedInventories.add(packet.readLong());
+        }
+        return false;
+    }
+
+    private void addInventory(long inventory)
+    {
+        ASMPacket packet = getBasePacket(false);
+        packet.writeLong(inventory);
+        packet.sendServerPacket();
+    }
+
+    private void removeInventory(int index)
+    {
+        ASMPacket packet = getBasePacket(true);
+        packet.writeShort(index);
+        packet.sendServerPacket();
+    }
+
+    private ASMPacket getBasePacket(boolean remove)
+    {
+        ASMPacket packet = parent.getSyncPacket();
+        packet.writeByte(packetId);
+        packet.writeBooleanArray(remove);
+        return packet;
     }
 
     public enum Page

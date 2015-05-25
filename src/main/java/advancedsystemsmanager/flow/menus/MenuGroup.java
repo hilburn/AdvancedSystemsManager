@@ -7,7 +7,6 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -40,7 +39,7 @@ public class MenuGroup extends Menu
                     for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
                     {
                         Connection connection = flowComponent.getConnection(i);
-                        if (connection != null && connection.getComponentId() == parent.getId())
+                        if (connection != null && connection.getInputId() == parent.getId())
                         {
                             flowComponent.removeConnection(i); //remove all connections to the component we're moving stuff into
                         }
@@ -65,7 +64,7 @@ public class MenuGroup extends Menu
                 Connection connection = component.getConnection(i);
                 if (connection != null)
                 {
-                    findCluster(components, component.getManager().getFlowItem(connection.getComponentId()), parent);
+                    findCluster(components, component.getManager().getFlowItem(connection.getInputId()), parent);
                 }
             }
         }

@@ -1,14 +1,11 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
-import advancedsystemsmanager.api.execution.IInternalInventory;
+import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.execution.ConditionSettingChecker;
 import advancedsystemsmanager.flow.menus.MenuItem;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;

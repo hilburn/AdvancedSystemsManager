@@ -95,4 +95,9 @@ public enum ConnectionSet
     {
         return name;
     }
+
+    public boolean isInput(int i)
+    {
+        return connections[i].isInput();
+    }
 }

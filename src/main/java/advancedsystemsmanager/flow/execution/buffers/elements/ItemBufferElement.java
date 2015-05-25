@@ -17,7 +17,7 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
         this.whitelist = whitelist;
     }
 
-    public ItemBufferElement(int id, IInventory inventory, int slot)
+    private ItemBufferElement(int id, IInventory inventory, int slot)
     {
         super(id);
         this.inventory = inventory;
@@ -55,7 +55,7 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
     @Override
     public ItemBufferElement getSplitElement(int elementAmount, int id, boolean fair)
     {
-        ItemBufferElement element = new ItemBufferElement(this.id, this.inventory, this.slot);
+        ItemBufferElement element = new ItemBufferElement(this.id, this.inventory, this.slot, this.setting, this.whitelist);
         int oldAmount = getSizeLeft();
         int amount = oldAmount / elementAmount;
         if (!fair)
