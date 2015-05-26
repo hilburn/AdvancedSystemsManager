@@ -40,7 +40,7 @@ public class ItemRemoteAccessor extends ItemBase
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (!world.isRemote && stack.hasTagCompound())
+        if (!world.isRemote && !player.isSneaking() && stack.hasTagCompound())
         {
             World managerWorld = stack.getItemDamage() == 0 ? world : DimensionManager.getWorld(stack.getTagCompound().getByte(WORLD));
             int x = stack.getTagCompound().getInteger(X);
@@ -129,7 +129,7 @@ public class ItemRemoteAccessor extends ItemBase
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if (!world.isRemote && player.isSneaking())
+        if (player.isSneaking())
         {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TileEntityManager)
@@ -144,7 +144,7 @@ public class ItemRemoteAccessor extends ItemBase
             {
                 stack.setTagCompound(null);
             }
-            return true;
+            return !world.isRemote;
         }
         return false;
     }

@@ -388,7 +388,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 hasConnection = true;
                 if (connectedConnection.getInputId() == id)
                 {
-                    int[] otherLocation = manager.getFlowItem(connectedConnection.getOutputId()).getConnectionLocationFromId(connectedConnection.getOutputConnection());
+                    FlowComponent other = manager.getFlowItem(connectedConnection.getOutputId());
+                    if (other == null)
+                    {
+                        continue;
+                    }
+                    int[] otherLocation = other.getConnectionLocationFromId(connectedConnection.getOutputConnection());
                     if (otherLocation == null)
                     {
                         continue;
@@ -1008,6 +1013,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
+    public void deleteConnections()
+    {
+        for (Connection connection : connections)
+        {
+            if (connection != null) connection.deleteConnection(manager);
+        }
+    }
+
     public void onDrag(int mX, int mY)
     {
         followMouse(mX, mY);
@@ -1258,9 +1271,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         for (Menu menu : menus)
         {
             NBTTagCompound menuTag = new NBTTagCompound();
-
             menu.writeToNBT(menuTag, pickup);
-
             menuTagList.appendTag(menuTag);
 
         }
@@ -1274,7 +1285,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         {
             Connection connection = this.connections[i];
 
-            if (connection != null)
+            if (connection != null && connection.getInputId() == id)
             {
                 NBTTagCompound connectionTag = new NBTTagCompound();
                 connection.writeToNBT(connectionTag);
@@ -1308,17 +1319,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public void clearConnections()
     {
         connections = new Connection[connections.length];
-    }
-
-    public void deleteConnections(TileEntityManager manager)
-    {
-        for (Connection connection : connections)
-        {
-            if (connection != null)
-            {
-                connection.deleteConnection(manager);
-            }
-        }
     }
 
     public String getComponentName()

@@ -92,11 +92,8 @@ public class Connection
     {
         FlowComponent a = manager.getFlowItem(inputId);
         FlowComponent b = manager.getFlowItem(outputId);
-        if (a != null)
-        {
-            a.setConnection(inputConnection, null);
-            if (b != null) b.setConnection(outputConnection, null);
-        }
+        if (a != null) a.setConnection(inputConnection, null);
+        if (b != null) b.setConnection(outputConnection, null);
     }
 
     public Connection copy()

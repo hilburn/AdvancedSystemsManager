@@ -106,7 +106,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         Queue<Integer> remove = new PriorityQueue<Integer>();
         Multimap<FlowComponent, FlowComponent> parents = getParentHierarchy();
         remove.add(idToRemove);
-        getFlowItem(idToRemove).deleteConnections(this);
+        getFlowItem(idToRemove).deleteConnections();
         while (!remove.isEmpty())
         {
             FlowComponent removed = removeComponent(remove.poll(), componentMap);
@@ -116,14 +116,13 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 remove.add(child.getId());
             }
         }
-        for (FlowComponent component : componentMap.valueCollection())
-            component.removeParent(idToRemove);
         return result;
     }
 
     private FlowComponent removeComponent(int idToRemove, TIntObjectHashMap<FlowComponent> componentMap)
     {
-        FlowComponent removed = componentMap.remove(idToRemove);
+        FlowComponent removed = componentMap.get(idToRemove);
+        componentMap.remove(idToRemove);
         if (selectedGroup == removed)
         {
             selectedGroup = null;
@@ -291,7 +290,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             case PacketHandler.SYNC_COMPONENT:
                 IPacketReader nr = getFlowItem(packet.readVarIntFromBuffer());
 
-                result =  nr != null && nr.readData(packet);
+                result = nr != null && nr.readData(packet);
                 break;
             case 3:
                 updateInventories();

@@ -92,10 +92,25 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
                 {
                     return selectedSetting.isLimitedByAmount();
                 }
+
+                @Override
+                public boolean readData(ASMPacket packet)
+                {
+                    Setting<Type> setting = settings.get(packet.readByte());
+                    setting.setLimitedByAmount(packet.readBoolean());
+                    if (!setting.isLimitedByAmount()) selectedSetting.setDefaultAmount();
+                    return false;
+                }
+
+                @Override
+                public boolean writeData(ASMPacket packet)
+                {
+                    packet.writeByte(selectedSetting.getAmount());
+                    return super.writeData(packet);
+                }
             });
         }
 
-        //final MenuStuff self = this;
         scrollControllerSearch = new ScrollController<Type>(getParent(), true)
         {
             @Override
