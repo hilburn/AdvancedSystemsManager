@@ -73,8 +73,8 @@ public class CommandItemInput extends CommandInput<ItemStack>
                 {
                     if (target.activatedDirections[i])
                     {
-                        int start = target.useRangeForDirections[i] ? target.getStart(i) : 0;
-                        int end = target.useRangeForDirections[i] ? target.getEnd(i) : maxSize;
+                        int start = target.advancedDirections[i] ? target.getStart(i) : 0;
+                        int end = target.advancedDirections[i] ? target.getEnd(i) : maxSize;
 
                         int[] slots;
                         if (inventory instanceof ISidedInventory)

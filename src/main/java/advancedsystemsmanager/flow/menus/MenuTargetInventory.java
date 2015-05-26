@@ -7,6 +7,7 @@ import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,14 +31,46 @@ public class MenuTargetInventory extends MenuTarget
         super(parent);
 
         textBoxes = new TextBoxNumberList();
-        textBoxes.addTextBox(startTextBox = new TextBoxNumber(getParent(), 39, 49, 2, false));
-        textBoxes.addTextBox(endTextBox = new TextBoxNumber(getParent(), 60, 49, 2, false));
+        textBoxes.addTextBox(startTextBox = new TextBoxNumber(getParent(), 39, 49, 2, false)
+        {
+            @Override
+            public boolean writeData(ASMPacket packet)
+            {
+                packet.writeByte(selectedDirectionId);
+                packet.writeByte(number);
+                return true;
+            }
+
+            @Override
+            public boolean readData(ASMPacket packet)
+            {
+                startRange[packet.readByte()] = packet.readUnsignedByte();
+                return false;
+            }
+        });
+        textBoxes.addTextBox(endTextBox = new TextBoxNumber(getParent(), 60, 49, 2, false)
+        {
+            @Override
+            public boolean writeData(ASMPacket packet)
+            {
+                packet.writeByte(selectedDirectionId);
+                packet.writeByte(number);
+                return true;
+            }
+
+            @Override
+            public boolean readData(ASMPacket packet)
+            {
+                endRange[packet.readByte()] = packet.readUnsignedByte();
+                return false;
+            }
+        });
     }
 
     @Override
     public Button getSecondButton()
     {
-        return new Button(27)
+        return new Button(getParent(), 27)
         {
             @Override
             public String getLabel()
@@ -46,15 +79,19 @@ public class MenuTargetInventory extends MenuTarget
             }
 
             @Override
-            public String getMouseOverText()
+            public boolean writeData(ASMPacket packet)
             {
-                return useAdvancedSetting(selectedDirectionId) ? Names.ALL_SLOTS_LONG : Names.ID_RANGE_LONG;
+                packet.writeByte(selectedDirectionId << 1 | (useAdvancedSetting(selectedDirectionId) ? 0 : 1));
+                advancedDirections[selectedDirectionId] = !advancedDirections[selectedDirectionId];
+                return true;
             }
 
             @Override
-            public void onClicked()
+            public boolean readData(ASMPacket packet)
             {
-                writeData(DataTypeHeader.USE_ADVANCED_SETTING, useAdvancedSetting(selectedDirectionId) ? 0 : 1);
+                int data = packet.readByte();
+                advancedDirections[data >> 1] = (data & 1) == 1;
+                return false;
             }
         };
     }
@@ -65,26 +102,6 @@ public class MenuTargetInventory extends MenuTarget
         MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
         startRange[i] = menuTarget.startRange[i];
         endRange[i] = menuTarget.endRange[i];
-    }
-
-    @Override
-    public void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i)
-    {
-        MenuTargetInventory newDataTarget = (MenuTargetInventory)newData;
-
-        if (startRange[i] != newDataTarget.startRange[i])
-        {
-            startRange[i] = newDataTarget.startRange[i];
-
-            //writeUpdatedData(container, i, DataTypeHeader.START_OR_TANK_DATA, startRange[i]);
-        }
-
-        if (endRange[i] != newDataTarget.endRange[i])
-        {
-            endRange[i] = newDataTarget.endRange[i];
-
-            //writeUpdatedData(container, i, DataTypeHeader.END, endRange[i]);
-        }
     }
 
     @Override
@@ -153,12 +170,6 @@ public class MenuTargetInventory extends MenuTarget
     @Override
     public boolean onKeyStroke(GuiManager gui, char c, int k)
     {
-        if (selectedDirectionId != -1 && useAdvancedSetting(selectedDirectionId))
-        {
-            return textBoxes.onKeyStroke(gui, c, k);
-        }
-
-
-        return false;
+        return selectedDirectionId != -1 && useAdvancedSetting(selectedDirectionId) && textBoxes.onKeyStroke(gui, c, k);
     }
 }

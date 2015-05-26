@@ -16,35 +16,11 @@ public class MenuTargetRF extends MenuTarget
     @Override
     public Button getSecondButton()
     {
-        return new Button(-300)
-        {
-            @Override
-            public String getLabel()
-            {
-                return "";
-            }
-
-            @Override
-            public String getMouseOverText()
-            {
-                return "";
-            }
-
-            @Override
-            public void onClicked()
-            {
-            }
-        };
+        return null;
     }
 
     @Override
     public void copyAdvancedSetting(Menu menu, int i)
-    {
-
-    }
-
-    @Override
-    public void refreshAdvancedComponentData(ContainerManager containerManager, Menu menu, int i)
     {
 
     }

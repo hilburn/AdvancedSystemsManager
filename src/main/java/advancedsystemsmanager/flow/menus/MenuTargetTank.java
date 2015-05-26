@@ -35,7 +35,7 @@ public class MenuTargetTank extends MenuTarget
     @Override
     public Button getSecondButton()
     {
-        return new Button(27)
+        return new Button(getParent(), 27)
         {
             @Override
             public String getLabel()
@@ -44,15 +44,19 @@ public class MenuTargetTank extends MenuTarget
             }
 
             @Override
-            public String getMouseOverText()
+            public boolean writeData(ASMPacket packet)
             {
-                return useAdvancedSetting(selectedDirectionId) ? Names.ADVANCED_MODE_LONG : Names.SIMPLE_MODE_LONG;
+                packet.writeByte(selectedDirectionId << 1 | (useAdvancedSetting(selectedDirectionId) ? 0 : 1));
+                advancedDirections[selectedDirectionId] = !advancedDirections[selectedDirectionId];
+                return true;
             }
 
             @Override
-            public void onClicked()
+            public boolean readData(ASMPacket packet)
             {
-                writeData(DataTypeHeader.USE_ADVANCED_SETTING, useAdvancedSetting(selectedDirectionId) ? 0 : 1);
+                int data = packet.readByte();
+                advancedDirections[data >> 1] = (data & 1) == 1;
+                return false;
             }
         };
     }
@@ -62,23 +66,6 @@ public class MenuTargetTank extends MenuTarget
     {
         MenuTargetTank menuTarget = (MenuTargetTank)menu;
         onlyFull[i] = menuTarget.onlyFull[i];
-    }
-
-    @Override
-    public void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i)
-    {
-        MenuTargetTank newDataTarget = (MenuTargetTank)newData;
-
-        if (onlyFull[i] != newDataTarget.onlyFull[i])
-        {
-            onlyFull[i] = newDataTarget.onlyFull[i];
-
-            ASMPacket dw = getWriterForClientComponentPacket(container);
-            dw.writeByte(i);
-            dw.writeByte(DataTypeHeader.START_OR_TANK_DATA.getId());
-            dw.writeBoolean(onlyFull[i]);
-            PacketHandler.sendDataToListeningClients(container, dw);
-        }
     }
 
     @Override

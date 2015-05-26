@@ -1,7 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.UpdateElement;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -39,38 +41,42 @@ public abstract class MenuTarget extends Menu
     public static final int BUTTON_TEXT_Y = 5;
     public static final String NBT_DIRECTIONS = "Directions";
     public static final String NBT_ACTIVE = "Active";
-    public static final String NBT_RANGE = "UseRange";
+    public static final String NBT_ADVANCED = "Advanced";
     public static ForgeDirection[] directions = ForgeDirection.VALID_DIRECTIONS;
     public int selectedDirectionId;
-    public Button[] buttons = {new Button(5)
-    {
-        @Override
-        public String getLabel()
-        {
-            return isActive(selectedDirectionId) ? Names.DEACTIVATE : Names.ACTIVATE;
-        }
-
-        @Override
-        public String getMouseOverText()
-        {
-            return isActive(selectedDirectionId) ? Names.DEACTIVATE_LONG : Names.ACTIVATE_LONG;
-        }
-
-        @Override
-        public void onClicked()
-        {
-            writeData(DataTypeHeader.ACTIVATE, isActive(selectedDirectionId) ? 0 : 1);
-        }
-    },
-            getSecondButton()};
+    public Button[] buttons;
     public boolean[] activatedDirections = new boolean[directions.length];
-    public boolean[] useRangeForDirections = new boolean[directions.length];
+    public boolean[] advancedDirections = new boolean[directions.length];
 
 
     public MenuTarget(FlowComponent parent)
     {
         super(parent);
+        buttons = new Button[]{new Button(parent, 5)
+        {
+            @Override
+            public String getLabel()
+            {
+                return isActive(selectedDirectionId) ? Names.DEACTIVATE : Names.ACTIVATE;
+            }
 
+            @Override
+            public boolean writeData(ASMPacket packet)
+            {
+                packet.writeByte(selectedDirectionId << 1 | (isActive(selectedDirectionId) ? 0 : 1));
+                activatedDirections[selectedDirectionId] = !activatedDirections[selectedDirectionId];
+                return true;
+            }
+
+            @Override
+            public boolean readData(ASMPacket packet)
+            {
+                int data = packet.readByte();
+                activatedDirections[data >> 1] = (data & 1) == 1;
+                return false;
+            }
+        },
+                getSecondButton()};
         selectedDirectionId = -1;
 
     }
@@ -89,8 +95,6 @@ public abstract class MenuTarget extends Menu
     {
         for (int i = 0; i < directions.length; i++)
         {
-            ForgeDirection direction = directions[i];
-
             int x = getDirectionX(i);
             int y = getDirectionY(i);
 
@@ -136,7 +140,7 @@ public abstract class MenuTarget extends Menu
 
     public boolean useAdvancedSetting(int i)
     {
-        return useRangeForDirections[i];
+        return advancedDirections[i];
     }
 
     public int getDirectionY(int i)
@@ -155,6 +159,7 @@ public abstract class MenuTarget extends Menu
                 if (CollisionHelper.inBounds(BUTTON_X, button.y, BUTTON_SIZE_W, BUTTON_SIZE_H, mX, mY))
                 {
                     gui.drawMouseOver(button.getMouseOverText(), mX, mY);
+                    return;
                 }
             }
         }
@@ -176,7 +181,7 @@ public abstract class MenuTarget extends Menu
                     refreshAdvancedComponent();
                 }
 
-                break;
+                return;
             }
         }
 
@@ -186,8 +191,8 @@ public abstract class MenuTarget extends Menu
             {
                 if (CollisionHelper.inBounds(BUTTON_X, optionButton.y, BUTTON_SIZE_W, BUTTON_SIZE_H, mX, mY))
                 {
-                    optionButton.onClicked();
-                    break;
+                    optionButton.onUpdate();
+                    return;
                 }
             }
 
@@ -218,28 +223,12 @@ public abstract class MenuTarget extends Menu
         for (int i = 0; i < directions.length; i++)
         {
             activatedDirections[i] = menuTarget.activatedDirections[i];
-            useRangeForDirections[i] = menuTarget.useRangeForDirections[i];
+            advancedDirections[i] = menuTarget.advancedDirections[i];
             copyAdvancedSetting(menu, i);
         }
     }
 
     public abstract void copyAdvancedSetting(Menu menuTarget, int i);
-
-    public abstract void refreshAdvancedComponentData(ContainerManager container, Menu newData, int i);
-
-    public void writeUpdatedData(ContainerManager container, int id, DataTypeHeader header, int data)
-    {
-        ASMPacket dw = getWriterForClientComponentPacket(container);
-        writeData(dw, id, header, data);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
-    public void writeData(ASMPacket dw, int id, DataTypeHeader header, int data)
-    {
-        dw.writeByte(id);
-        dw.writeByte(header.id);
-        dw.writeByte(data);
-    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
@@ -250,7 +239,7 @@ public abstract class MenuTarget extends Menu
         {
             NBTTagCompound directionTag = directionTagList.getCompoundTagAt(i);
             activatedDirections[i] = directionTag.getBoolean(NBT_ACTIVE);
-            useRangeForDirections[i] = directionTag.getBoolean(NBT_RANGE);
+            advancedDirections[i] = directionTag.getBoolean(NBT_ADVANCED);
             loadAdvancedComponent(directionTag, i);
         }
     }
@@ -266,7 +255,7 @@ public abstract class MenuTarget extends Menu
         {
             NBTTagCompound directionTag = new NBTTagCompound();
             directionTag.setBoolean(NBT_ACTIVE, isActive(i));
-            directionTag.setBoolean(NBT_RANGE, useAdvancedSetting(i));
+            directionTag.setBoolean(NBT_ADVANCED, useAdvancedSetting(i));
             saveAdvancedComponent(directionTag, i);
             directionTagList.appendTag(directionTag);
         }
@@ -297,52 +286,26 @@ public abstract class MenuTarget extends Menu
     @SideOnly(Side.CLIENT)
     public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
 
-    public void writeData(DataTypeHeader header, int data)
-    {
-        ASMPacket dw = getParent().getSyncPacket();
-        writeData(dw, selectedDirectionId, header, data);
-        PacketHandler.sendDataToServer(dw);
-    }
-
     public void setActive(int side)
     {
         activatedDirections[side] = true;
     }
 
-
-    public enum DataTypeHeader
-    {
-        ACTIVATE(0),
-        USE_ADVANCED_SETTING(1),
-        START_OR_TANK_DATA(2),
-        END(3);
-
-        public int id;
-
-        DataTypeHeader(int header)
-        {
-            this.id = header;
-        }
-
-        public int getId()
-        {
-            return id;
-        }
-    }
-
-    public abstract class Button
+    public abstract class Button extends UpdateElement
     {
         public int y;
 
-        public Button(int y)
+        public Button(IPacketProvider provider, int y)
         {
+            super(provider);
             this.y = y;
         }
 
         public abstract String getLabel();
 
-        public abstract String getMouseOverText();
-
-        public abstract void onClicked();
+        public String getMouseOverText()
+        {
+            return getLabel() + "Long";
+        }
     }
 }

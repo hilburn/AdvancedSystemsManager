@@ -90,8 +90,8 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                         slots = new TreeSet<Integer>();
                         for (int side : validSides)
                         {
-                            int start = target.useRangeForDirections[side] ? target.getStart(side) : 0;
-                            int end = target.useRangeForDirections[side] ? target.getEnd(side) : inventory.getSizeInventory();
+                            int start = target.advancedDirections[side] ? target.getStart(side) : 0;
+                            int end = target.advancedDirections[side] ? target.getEnd(side) : inventory.getSizeInventory();
 
                             if (inventory instanceof ISidedInventory)
                             {

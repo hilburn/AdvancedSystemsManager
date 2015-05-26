@@ -1,6 +1,5 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.blocks.*;
 import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
@@ -11,18 +10,14 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import hilburnlib.registry.ConfigKey;
 import hilburnlib.registry.Register;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 public class BlockRegistry
 {
