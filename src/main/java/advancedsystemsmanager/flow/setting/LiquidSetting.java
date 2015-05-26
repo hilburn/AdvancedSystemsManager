@@ -78,18 +78,6 @@ public class LiquidSetting extends Setting<Fluid>
     }
 
     @Override
-    public void writeData(ASMPacket dw)
-    {
-        dw.writeShort(content.getID());
-    }
-
-    @Override
-    public void readData(ASMPacket dr)
-    {
-        content = FluidRegistry.getFluid(dr.readShort());
-    }
-
-    @Override
     public void copyFrom(Setting setting)
     {
         content = ((LiquidSetting)setting).content;
@@ -98,7 +86,6 @@ public class LiquidSetting extends Setting<Fluid>
     @Override
     public void load(NBTTagCompound settingTag)
     {
-        //TODO load properly
         content = FluidRegistry.getFluid(settingTag.getShort(NBT_FLUID_ID));
         amount = settingTag.getInteger(NBT_FLUID_AMOUNT);
     }
@@ -109,12 +96,6 @@ public class LiquidSetting extends Setting<Fluid>
         //TODO save properly
         settingTag.setShort(NBT_FLUID_ID, (short)content.getID());
         settingTag.setInteger(NBT_FLUID_AMOUNT, amount);
-    }
-
-    @Override
-    public boolean isContentEqual(Setting otherSetting)
-    {
-        return content == ((LiquidSetting)otherSetting).content;
     }
 
     @Override
@@ -143,5 +124,17 @@ public class LiquidSetting extends Setting<Fluid>
     public Fluid getFluid()
     {
         return content;
+    }
+
+    @Override
+    public void readContentData(ASMPacket packet)
+    {
+        setLiquidFromId(packet.readShort());
+    }
+
+    @Override
+    public void writeContentData(ASMPacket packet)
+    {
+        packet.writeShort(content.getID());
     }
 }

@@ -56,17 +56,16 @@ public abstract class Setting<Type>
 
     public abstract boolean isValid();
 
-    public abstract void writeData(ASMPacket dw);
+    public void setFuzzyType(int id)
+    {
 
-    public abstract void readData(ASMPacket dr);
+    }
 
     public abstract void copyFrom(Setting setting);
 
     public abstract void load(NBTTagCompound settingTag);
 
     public abstract void save(NBTTagCompound settingTag);
-
-    public abstract boolean isContentEqual(Setting otherSetting);
 
     public abstract void setContent(Type obj);
 
@@ -81,4 +80,8 @@ public abstract class Setting<Type>
     {
         clear();
     }
+
+    public abstract void writeContentData(ASMPacket packet);
+
+    public abstract void readContentData(ASMPacket packet);
 }

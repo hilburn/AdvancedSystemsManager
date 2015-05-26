@@ -1189,12 +1189,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return id;
     }
 
-    @Override
-    public void onUpdate()
-    {
-
-    }
-
     public void setId(int id)
     {
         this.id = id;

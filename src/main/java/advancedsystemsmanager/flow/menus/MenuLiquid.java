@@ -7,6 +7,7 @@ import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.reference.Null;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.fluids.Fluid;
@@ -15,6 +16,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class MenuLiquid extends MenuStuff<Fluid>
 {
@@ -25,14 +27,13 @@ public class MenuLiquid extends MenuStuff<Fluid>
     public MenuLiquid(FlowComponent parent)
     {
         this(parent, true);
-        //this(parent, !Settings.isAutoBlacklist());
     }
 
     public MenuLiquid(FlowComponent parent, boolean whitelist)
     {
         super(parent);
 
-        numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(getParent(), 10, 50, 3, true)
+        numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(Null.NULL_PACKET, 10, 50, 3, true)
         {
             @Override
             public boolean isVisible()
@@ -41,13 +42,14 @@ public class MenuLiquid extends MenuStuff<Fluid>
             }
 
             @Override
-            public void onUpdate()
+            public void setNumber(int number)
             {
-                sendAmountData();
+                super.setNumber(number);
+                selectedSetting.setAmount(selectedSetting.getAmount() % 1000 + number * 1000);
             }
         });
 
-        numberTextBoxes.addTextBox(amountTextBoxMilli = new TextBoxNumber(getParent(), 60, 50, 3, true)
+        numberTextBoxes.addTextBox(amountTextBoxMilli = new TextBoxNumber(Null.NULL_PACKET, 60, 50, 3, true)
         {
             @Override
             public boolean isVisible()
@@ -56,23 +58,25 @@ public class MenuLiquid extends MenuStuff<Fluid>
             }
 
             @Override
-            public void onUpdate()
+            public void setNumber(int number)
             {
-                sendAmountData();
+                super.setNumber(number);
+                selectedSetting.setAmount((selectedSetting.getAmount() / 1000) * 1000 + number);
             }
         });
         setFirstRadioButtonSelected(whitelist);
     }
 
     @Override
+    protected boolean readSpecificData(ASMPacket packet, int action, Setting<Fluid> setting)
+    {
+        return false;
+    }
+
+    @Override
     public Setting<Fluid> getSetting(int id)
     {
         return new LiquidSetting(id);
-    }
-
-    public void sendAmountData()
-    {
-        selectedSetting.setAmount(amountTextBoxBuckets.getNumber() * 1000 + amountTextBoxMilli.getNumber());
     }
 
     @Override
@@ -90,11 +94,6 @@ public class MenuLiquid extends MenuStuff<Fluid>
             gui.drawCenteredString(Names.BUCKETS, amountTextBoxBuckets.getX(), amountTextBoxBuckets.getY() - 7, 0.7F, amountTextBoxBuckets.getWidth(), 0x404040);
             gui.drawCenteredString(Names.MILLI_BUCKETS, amountTextBoxMilli.getX(), amountTextBoxMilli.getY() - 7, 0.55F, amountTextBoxMilli.getWidth(), 0x404040);
         }
-    }
-
-    public LiquidSetting getSelectedSetting()
-    {
-        return (LiquidSetting)selectedSetting;
     }
 
     @SideOnly(Side.CLIENT)
@@ -133,46 +132,30 @@ public class MenuLiquid extends MenuStuff<Fluid>
         amountTextBoxMilli.setNumber(amount % 1000);
     }
 
-    @Override
-    public void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting)
-    {
-        LiquidSetting liquidSetting = (LiquidSetting)setting;
-        switch (header)
-        {
-            case SET_ITEM:
-                dw.writeShort(liquidSetting.getLiquidId());
-        }
-    }
-
 
     @SideOnly(Side.CLIENT)
     @Override
-    public List updateSearch(String search, boolean showAll)
+    public List<Fluid> updateSearch(String search, boolean showAll)
     {
-        List ret = new ArrayList(FluidRegistry.getRegisteredFluids().values());
-
-        Iterator<Fluid> itemIterator = ret.iterator();
-
+        List<Fluid> ret = new ArrayList<Fluid>(FluidRegistry.getRegisteredFluids().values());
+        Iterator<Fluid> itr = ret.iterator();
+        Pattern pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
         if (!showAll)
         {
-            while (itemIterator.hasNext())
+            while (itr.hasNext())
             {
-
-                Fluid fluid = itemIterator.next();
-
-                if (!getDisplayName(fluid).toLowerCase().contains(search))
+                Fluid fluid = itr.next();
+                if (pattern.matcher(getDisplayName(fluid)).find())
                 {
-                    itemIterator.remove();
+                    itr.remove();
                 }
             }
         }
-
         return ret;
     }
 
     public static String getDisplayName(Fluid fluid)
     {
-        //different mods store the name in different ways apparently
         String name = fluid.getLocalizedName(null);
         if (name.contains("."))
         {

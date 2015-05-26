@@ -4,7 +4,6 @@ import advancedsystemsmanager.flow.menus.MenuItem;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
@@ -88,20 +87,6 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public void writeData(ASMPacket dw)
-    {
-        dw.writeItemStackToBuffer(content);
-        dw.writeByte(fuzzyMode.ordinal());
-    }
-
-    @Override
-    public void readData(ASMPacket dr)
-    {
-        content = dr.readItemStackFromBuffer();
-        fuzzyMode = FuzzyMode.values()[dr.readByte()];
-    }
-
-    @Override
     public void copyFrom(Setting setting)
     {
         content = ((ItemSetting)setting).getItem().copy();
@@ -125,12 +110,6 @@ public class ItemSetting extends Setting<ItemStack>
     {
         if (content != null) content.writeToNBT(settingTag);
         settingTag.setByte(NBT_SETTING_FUZZY, (byte)fuzzyMode.ordinal());
-    }
-
-    @Override
-    public boolean isContentEqual(Setting otherSetting)
-    {
-        return ItemStack.areItemStacksEqual(content,((ItemSetting)otherSetting).content) && ItemStack.areItemStackTagsEqual(content, ((ItemSetting)otherSetting).content);
     }
 
     @Override
@@ -189,13 +168,26 @@ public class ItemSetting extends Setting<ItemStack>
         return fuzzyMode;
     }
 
-    public void setFuzzyMode(FuzzyMode fuzzy)
+    @Override
+    public void setFuzzyType(int id)
     {
-        this.fuzzyMode = fuzzy;
+        fuzzyMode = FuzzyMode.values()[id];
     }
 
     public boolean canChangeMetaData()
     {
         return true;
+    }
+
+    @Override
+    public void writeContentData(ASMPacket packet)
+    {
+        packet.writeItemStackToBuffer(content);
+    }
+
+    @Override
+    public void readContentData(ASMPacket packet)
+    {
+        content = packet.readItemStackFromBuffer();
     }
 }

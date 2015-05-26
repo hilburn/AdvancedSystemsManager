@@ -104,14 +104,14 @@ public class TextBoxNumber extends UpdateElement
     @Override
     public boolean writeData(ASMPacket packet)
     {
-        packet.writeVarIntToBuffer(number);
+        packet.writeVarIntToBuffer(getNumber());
         return true;
     }
 
     @Override
     public boolean readData(ASMPacket packet)
     {
-        number = packet.readVarIntFromBuffer();
+        setNumber(packet.readVarIntFromBuffer());
         return false;
     }
 }

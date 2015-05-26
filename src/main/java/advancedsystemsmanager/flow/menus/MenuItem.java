@@ -56,6 +56,13 @@ public class MenuItem extends MenuStuff<ItemStack>
                 {
                     return selectedSetting.isLimitedByAmount();
                 }
+
+                @Override
+                public void setNumber(int number)
+                {
+                    super.setNumber(number);
+                    selectedSetting.setAmount(number);
+                }
             });
         }
 
@@ -66,9 +73,29 @@ public class MenuItem extends MenuStuff<ItemStack>
             {
                 return getSelectedSetting().canChangeMetaData() && getSelectedSetting().getFuzzyMode().requiresMetaData();
             }
+
+            @Override
+            public void setNumber(int number)
+            {
+                super.setNumber(number);
+                if (selectedSetting.isValid())
+                    selectedSetting.content.setItemDamage(number);
+            }
         });
 
         setFirstRadioButtonSelected(whitelist);
+    }
+
+    @Override
+    protected boolean readSpecificData(ASMPacket packet, int action, Setting<ItemStack> setting)
+    {
+        switch (action)
+        {
+            case 2:
+                setting.setFuzzyType(packet.readByte());
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -202,8 +229,11 @@ public class MenuItem extends MenuStuff<ItemStack>
                     {
                         id = 0;
                     }
-                    getSelectedSetting().setFuzzyMode(FuzzyMode.values()[id]);
-                    //TODO: What?
+                    getSelectedSetting().setFuzzyType(id);
+                    ASMPacket packet = getSyncPacket();
+                    packet.writeByte(2);
+                    packet.writeByte(id);
+                    packet.sendServerPacket();
                     break;
                 }
             }
@@ -224,26 +254,9 @@ public class MenuItem extends MenuStuff<ItemStack>
         damageValueTextBox.setNumber(getSelectedSetting().getItem().getItemDamage());
     }
 
-    @Override
-    public void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting)
-    {
-        ItemSetting itemSetting = (ItemSetting)setting;
-        switch (header)
-        {
-            case SET_ITEM:
-                dw.writeItemStackToBuffer(itemSetting.getItem());
-                break;
-            case USE_FUZZY:
-                dw.writeByte(itemSetting.getFuzzyMode().ordinal());
-                break;
-            case META:
-                dw.writeShort(itemSetting.getItem().getItemDamage());
-        }
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
-    public List updateSearch(String search, boolean showAll)
+    public List<ItemStack> updateSearch(String search, boolean showAll)
     {
         Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll));
         thread.start();

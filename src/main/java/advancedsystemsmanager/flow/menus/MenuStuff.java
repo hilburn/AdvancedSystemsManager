@@ -1,5 +1,6 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.setting.Setting;
@@ -15,7 +16,7 @@ import net.minecraft.nbt.NBTTagList;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class MenuStuff<Type> extends Menu
+public abstract class MenuStuff<Type> extends Menu implements IPacketSync
 {
     public static final int RADIO_BUTTON_X_LEFT = 5;
     public static final int RADIO_BUTTON_X_RIGHT = 65;
@@ -44,21 +45,21 @@ public abstract class MenuStuff<Type> extends Menu
     public static final String NBT_SETTINGS = "Settings";
     public static final String NBT_SETTING_ID = "Id";
     public static final String NBT_SETTING_USE_SIZE = "SizeLimit";
-    public ScrollController scrollControllerSearch;
+    public ScrollController<Type> scrollControllerSearch;
     public ScrollController<Setting<Type>> scrollControllerSelected;
     public List<Setting<Type>> settings;
     public List<Setting<Type>> externalSettings;
-    public Setting selectedSetting;
+    public Setting<Type> selectedSetting;
     public boolean editSetting;
     public TextBoxNumberList numberTextBoxes;
     public RadioButtonList radioButtons;
     public CheckBoxList checkBoxes;
+    private int id;
 
     public MenuStuff(FlowComponent parent)
     {
         super(parent);
-
-
+        parent.registerSyncable(this);
         settings = new ArrayList<Setting<Type>>();
         externalSettings = new ArrayList<Setting<Type>>();
         for (int i = 0; i < getSettingCount(); i++)
@@ -83,6 +84,7 @@ public abstract class MenuStuff<Type> extends Menu
                 public void setValue(boolean val)
                 {
                     selectedSetting.setLimitedByAmount(val);
+                    if (!val) selectedSetting.setDefaultAmount();
                 }
 
                 @Override
@@ -94,35 +96,39 @@ public abstract class MenuStuff<Type> extends Menu
         }
 
         //final MenuStuff self = this;
-        scrollControllerSearch = new ScrollController(getParent(), true)
+        scrollControllerSearch = new ScrollController<Type>(getParent(), true)
         {
             @Override
-            public List updateSearch(String search, boolean all)
+            public List<Type> updateSearch(String search, boolean all)
             {
                 if (search.equals(""))
                 {
-                    return new ArrayList();
+                    return new ArrayList<Type>();
                 }
 
                 return MenuStuff.this.updateSearch(search, all);
             }
 
             @Override
-            public void onClick(Object o, int mX, int mY, int button)
+            public void onClick(Type o, int mX, int mY, int button)
             {
                 selectedSetting.setContent(o);
+                ASMPacket packet = getSyncPacket();
+                packet.writeByte(1);
+                selectedSetting.writeContentData(packet);
+                packet.sendServerPacket();
                 selectedSetting = null;
                 updateScrolling();
             }
 
             @Override
-            public void draw(GuiManager gui, Object o, int x, int y, boolean hover)
+            public void draw(GuiManager gui, Type o, int x, int y, boolean hover)
             {
                 drawResultObject(gui, o, x, y);
             }
 
             @Override
-            public void drawMouseOver(GuiManager gui, Object o, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, Type o, int mX, int mY)
             {
                 if (o != null)
                 {
@@ -140,12 +146,10 @@ public abstract class MenuStuff<Type> extends Menu
             }
 
             @Override
-            public void onClick(Setting setting, int mX, int mY, int button)
+            public void onClick(Setting<Type> setting, int mX, int mY, int button)
             {
                 selectedSetting = setting;
                 editSetting = button == 1 && doAllowEdit();
-
-
                 if (editSetting && !selectedSetting.isValid())
                 {
                     selectedSetting = null;
@@ -185,6 +189,53 @@ public abstract class MenuStuff<Type> extends Menu
         };
     }
 
+    @Override
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    protected ASMPacket getSyncPacket()
+    {
+        ASMPacket packet = parent.getSyncPacket();
+        packet.writeByte(this.id);
+        packet.writeByte(selectedSetting.getId());
+        return packet;
+    }
+
+    @Override
+    public boolean readData(ASMPacket packet)
+    {
+        Setting<Type> setting = settings.get(packet.readByte());
+        int action = packet.readByte();
+
+        switch (action) {
+            case 0:
+                setting.clear();
+                selectedSetting = null;
+                break;
+            case 1:
+                setting.readContentData(packet);
+                if (isEditing()) {
+                    updateTextBoxes();
+                }
+                break;
+            default:
+                return readSpecificData(packet, action, setting);
+
+        }
+        return false;
+    }
+
+    protected void sendClear()
+    {
+        ASMPacket packet = getSyncPacket();
+        packet.writeByte(0);
+        packet.sendServerPacket();
+    }
+
+    protected abstract boolean readSpecificData(ASMPacket packet, int action, Setting<Type> setting);
+
     public abstract Setting<Type> getSetting(int id);
 
     public void initRadioButtons()
@@ -222,15 +273,13 @@ public abstract class MenuStuff<Type> extends Menu
         dw.writeBoolean(value);
     }
 
-    public abstract void writeSpecificHeaderData(ASMPacket dw, DataTypeHeader header, Setting setting);
-
     public void onSettingContentChange()
     {
 
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract List updateSearch(String search, boolean showAll);
+    public abstract List<Type> updateSearch(String search, boolean showAll);
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -329,7 +378,7 @@ public abstract class MenuStuff<Type> extends Menu
             if (inDeleteBounds(mX, mY))
             {
                 selectedSetting.delete();
-                //needsSync = true;
+                sendClear();
                 selectedSetting = null;
                 getScrollingList().updateScrolling();
             }
@@ -422,9 +471,8 @@ public abstract class MenuStuff<Type> extends Menu
         nbtTagCompound.setBoolean(NBT_RADIO_SELECTION, isFirstRadioButtonSelected());
 
         NBTTagList settingTagList = new NBTTagList();
-        for (int i = 0; i < settings.size(); i++)
+        for (Setting<Type> setting : settings)
         {
-            Setting setting = settings.get(i);
             if (setting.isValid())
             {
                 NBTTagCompound settingTag = new NBTTagCompound();
@@ -462,7 +510,7 @@ public abstract class MenuStuff<Type> extends Menu
         if (isSearching())
         {
             scrollControllerSearch.update(partial);
-        } else if (!isSearching() && !isEditing())
+        } else if (!isEditing())
         {
             scrollControllerSelected.update(partial);
         }
@@ -474,7 +522,7 @@ public abstract class MenuStuff<Type> extends Menu
         if (isSearching())
         {
             scrollControllerSearch.doScroll(scroll);
-        } else if (!isSearching() && !isEditing())
+        } else if (!isEditing())
         {
             scrollControllerSelected.doScroll(scroll);
         }
@@ -513,23 +561,6 @@ public abstract class MenuStuff<Type> extends Menu
     public void setBlackList()
     {
         setFirstRadioButtonSelected(false);
-    }
-
-    public enum DataTypeHeader
-    {
-        CLEAR(0),
-        SET_ITEM(1),
-        USE_AMOUNT(2),
-        USE_FUZZY(3),
-        AMOUNT(4),
-        META(5);
-
-        public int id;
-
-        DataTypeHeader(int header)
-        {
-            this.id = header;
-        }
     }
 }
 

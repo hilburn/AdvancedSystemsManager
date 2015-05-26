@@ -911,12 +911,6 @@ public class MenuContainer extends Menu implements IPacketSync
     }
 
     @Override
-    public void onUpdate()
-    {
-
-    }
-
-    @Override
     public void setId(int id)
     {
         packetId = id;
