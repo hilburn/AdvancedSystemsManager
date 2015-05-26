@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -28,7 +29,7 @@ public class ItemRemoteAccessor extends ItemBase
     public static final String WORLD = "world";
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] icons = new IIcon[3];
+    private IIcon[] icons = new IIcon[5];
 
     public ItemRemoteAccessor()
     {
@@ -57,7 +58,7 @@ public class ItemRemoteAccessor extends ItemBase
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return super.getUnlocalizedName(stack) + (stack.getItemDamage() != 0 ? "_advanced" : "");
+        return super.getUnlocalizedName(stack) + (stack.getItemDamage() != 0 ? Names.ADVANCED_SUFFIX : "");
     }
 
     @Override
@@ -66,7 +67,9 @@ public class ItemRemoteAccessor extends ItemBase
     {
         icons[0] = register.registerIcon(getIconString());
         icons[1] = register.registerIcon(getIconString()+"_advanced");
-        icons[2] = register.registerIcon(getIconString()+"_disabled");
+        icons[2] = register.registerIcon(getIconString()+"_off");
+        icons[3] = register.registerIcon(getIconString()+"_off_advanced");
+        icons[4] = register.registerIcon(getIconString()+"_disabled");
     }
 
     @Override
@@ -86,11 +89,11 @@ public class ItemRemoteAccessor extends ItemBase
     @SideOnly(Side.CLIENT)
     private IIcon getIcon(ItemStack stack, World world)
     {
-        if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte("World"))
+        if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte(WORLD))
         {
-            return icons[2];
+            return icons[5];
         }
-        return icons[stack.getItemDamage() % 2];
+        return icons[stack.getItemDamage() + (stack.hasTagCompound() ? 0 : 2)];
     }
 
     @Override
@@ -100,7 +103,8 @@ public class ItemRemoteAccessor extends ItemBase
     {
         if (stack.hasTagCompound())
         {
-            if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != stack.getTagCompound().getByte("World"))
+            int dim = stack.getTagCompound().getByte(WORLD);
+            if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != dim)
             {
                 list.add("§cWrong Dimension");
             }
@@ -108,8 +112,8 @@ public class ItemRemoteAccessor extends ItemBase
             int y = stack.getTagCompound().getInteger(Y);
             int z = stack.getTagCompound().getInteger(Z);
             list.add("Linked to Manager at:");
-            list.add("x: " + x + " y: " + y + " z: " + z);
-            list.add(DimensionManager.getProvider(stack.getTagCompound().getByte("World")).getDimensionName());
+            list.add(StatCollector.translateToLocalFormatted(Names.LOCATION, x, y, z));
+            list.add(DimensionManager.getProvider(dim).getDimensionName());
         }
     }
 
