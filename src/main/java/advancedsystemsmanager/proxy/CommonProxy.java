@@ -1,6 +1,5 @@
 package advancedsystemsmanager.proxy;
 
-
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import hilburnlib.registry.IRenderRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
