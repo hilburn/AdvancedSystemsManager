@@ -78,6 +78,11 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
         }
     }
 
+    public void markBlockForUpdate()
+    {
+        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    }
+
     @Override
     public void writeContentToNBT(NBTTagCompound tagCompound)
     {

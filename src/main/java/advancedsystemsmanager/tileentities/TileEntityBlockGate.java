@@ -1,5 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.network.IPacketBlock;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import com.mojang.authlib.GameProfile;
@@ -11,6 +14,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -20,16 +25,19 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityBlockGate extends TileEntityBaseGate implements IInventory
+public class TileEntityBlockGate extends TileEntityClusterElement implements IInventory, IPacketBlock
 {
 
     private static final String FAKE_PLAYER_NAME = "[ASM_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
-
+    protected boolean missingPlaceDirection;
+    protected static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
+    protected static final String NBT_DIRECTION = "Direction";
     private List<ItemStack> inventory;
     private List<ItemStack> inventoryCache;
     private boolean broken;
     protected boolean blocked;
+    protected int placeDirection;
 
     @Override
     public EnumSet<ClusterMethodRegistration> getRegistrations()
@@ -38,9 +46,76 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
     }
 
     @Override
+    public Packet getDescriptionPacket()
+    {
+        PacketHandler.sendBlockPacket(this, null, 0);
+        return null;
+    }
+
+    public int getPlaceDirection()
+    {
+        return placeDirection;
+    }
+
+    public void setPlaceDirection(int placeDirection)
+    {
+        if (this.placeDirection != placeDirection)
+        {
+            this.placeDirection = placeDirection;
+
+            if (!isPartOfCluster() && worldObj != null && !worldObj.isRemote)
+            {
+                PacketHandler.sendBlockPacket(this, null, 0);
+            }
+        }
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        if (tagCompound.hasKey(NBT_DIRECTION))
+        {
+            setPlaceDirection(tagCompound.getByte(NBT_DIRECTION));
+        } else
+        {
+            if (worldObj != null)
+            {
+                setPlaceDirection(getMetadata());
+            } else
+            {
+                missingPlaceDirection = true;
+            }
+        }
+    }
+
+    @Override
+    public void writeData(ASMPacket packet, int id)
+    {
+        packet.writeByte(placeDirection);
+    }
+
+    @Override
+    public void readData(ASMPacket packet, int id)
+    {
+        placeDirection = packet.readByte();
+        markBlockForUpdate();
+    }
+
+    @Override
+    public void writeContentToNBT(NBTTagCompound tagCompound)
+    {
+        tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
+    }
+
+    @Override
     public void updateEntity()
     {
         super.updateEntity();
+        if (missingPlaceDirection)
+        {
+            setPlaceDirection(getMetadata());
+            missingPlaceDirection = false;
+        }
         if (inventory != null)
         {
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
@@ -377,7 +452,6 @@ public class TileEntityBlockGate extends TileEntityBaseGate implements IInventor
         return true;
     }
 
-    @Override
     public boolean isBlocked()
     {
         return blocked;

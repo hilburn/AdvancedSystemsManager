@@ -17,6 +17,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -27,9 +28,6 @@ import java.util.Random;
 
 public class TileEntityCamouflage extends TileEntityClusterElement implements IPacketBlock
 {
-
-    private static final Random rand = new Random();
-    private static final int UPDATE_BUFFER_DISTANCE = 5;
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_ID = "Id";
     private static final String NBT_META = "Meta";
@@ -41,7 +39,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     private byte[] bounds = {0, 32, 0, 32, 0, 32};
     private int[] ids = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
     private int[] metas = new int[ForgeDirection.VALID_DIRECTIONS.length * 2];
-    private boolean hasClientUpdatedData;
     private boolean isServerDirty;
 
     public boolean isNormalBlock()
@@ -81,9 +78,9 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
                 if (block != null)
                 {
                     float f = 0.1F;
-                    double x = (double)xCoord + rand.nextDouble() * (camoBlock.getBlockBoundsMaxX() - camoBlock.getBlockBoundsMinX() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinX();
-                    double y = (double)yCoord + rand.nextDouble() * (camoBlock.getBlockBoundsMaxY() - camoBlock.getBlockBoundsMinY() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinY();
-                    double z = (double)zCoord + rand.nextDouble() * (camoBlock.getBlockBoundsMaxZ() - camoBlock.getBlockBoundsMinZ() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinZ();
+                    double x = (double)xCoord + worldObj.rand.nextDouble() * (camoBlock.getBlockBoundsMaxX() - camoBlock.getBlockBoundsMinX() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinX();
+                    double y = (double)yCoord + worldObj.rand.nextDouble() * (camoBlock.getBlockBoundsMaxY() - camoBlock.getBlockBoundsMinY() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinY();
+                    double z = (double)zCoord + worldObj.rand.nextDouble() * (camoBlock.getBlockBoundsMaxZ() - camoBlock.getBlockBoundsMinZ() - (double)(f * 2.0F)) + (double)f + camoBlock.getBlockBoundsMinZ();
 
                     switch (sideHit)
                     {
@@ -275,23 +272,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             }
             for (int bound : bounds)
             {
-                //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
-                //0 -> 01
-                //32 -> 11
-                //1 to 31 ->  bin(bound) << 1
-
-                if (bound == 0)
-                {
-                    dw.writeBoolean(true);
-                    dw.writeBoolean(false);
-                } else if (bound == 32)
-                {
-                    dw.writeBoolean(true);
-                    dw.writeBoolean(true);
-                } else
-                {
-                    dw.writeByte(bound << 1);
-                }
+                dw.writeByte(bound);
             }
         }
     }
@@ -320,28 +301,11 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         if (getCamouflageType().useSpecialShape())
         {
             useCollision = dr.readBoolean();
-            if (useCollision)
-            {
-                fullCollision = dr.readBoolean();
-            } else
-            {
-                fullCollision = false;
-            }
+            fullCollision = useCollision && dr.readBoolean();
 
             for (int i = 0; i < bounds.length; i++)
             {
-                //This is done since 0 and 32 are the most common values and the final bit would only be used by 32 anyways
-                //0 -> 01
-                //32 -> 11
-                //1 to 31 ->  bin(bound) << 1
-
-                if (dr.readBoolean())
-                {
-                    bounds[i] = (byte)(dr.readBoolean() ? 32 : 0);
-                } else
-                {
-                    bounds[i] = (byte)(dr.readByte() - 1);
-                }
+                bounds[i] = dr.readByte();
             }
         }
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -350,10 +314,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     @Override
     public void updateEntity()
     {
-        if (worldObj.isRemote)
-        {
-            keepClientDataUpdated();
-        } else
+        if (!worldObj.isRemote)
         {
             if (isServerDirty)
             {
@@ -363,19 +324,11 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    private void keepClientDataUpdated()
+    @Override
+    public Packet getDescriptionPacket()
     {
-        double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-
-        if (distance > PacketHandler.BLOCK_UPDATE_SQ)
-        {
-            hasClientUpdatedData = false;
-        } else if (!hasClientUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
-        {
-            hasClientUpdatedData = true;
-            PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 0);
-        }
+        PacketHandler.sendBlockPacket(this, null, 0);
+        return null;
     }
 
     @Override

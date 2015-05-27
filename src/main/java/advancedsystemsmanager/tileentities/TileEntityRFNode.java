@@ -14,6 +14,7 @@ import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,7 +29,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     private static final String STORED = "Stored";
     private boolean[] inputSides = new boolean[6];
     private boolean[] outputSides = new boolean[6];
-    private Set<TileEntityManager> managers = new HashSet<TileEntityManager>();
     private Set<FlowComponent> components = new HashSet<FlowComponent>();
     private boolean updated = true;
     private int stored;
@@ -39,12 +39,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         super.updateEntity();
         if (!worldObj.isRemote)
         {
-            if (!managers.isEmpty())
-            {
-                for (TileEntityManager manager : managers)
-                    for (FlowComponent component : manager.getFlowItems()) update(component);
-                managers.clear();
-            }
             if (!this.isPartOfCluster() && updated) sendUpdatePacket();
             for (int i = 0; i < inputSides.length; i++)
             {
@@ -67,6 +61,13 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     private TileEntity getTileEntity(ForgeDirection dir)
     {
         return worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+    }
+
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        PacketHandler.sendBlockPacket(this, null, 0);
+        return null;
     }
 
     private void sendUpdatePacket()
@@ -187,9 +188,9 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     }
 
     @Override
-    public void added(TileEntityManager tileEntityManager)
+    public void added(TileEntityManager manager)
     {
-        managers.add(tileEntityManager);
+        for (FlowComponent component : manager.getFlowItems()) update(component);
     }
 
     @Override
@@ -212,26 +213,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         return outputSides[side];
     }
 
-    public void setOutputSides(boolean[] outputSides)
-    {
-        this.outputSides = outputSides;
-    }
-
-    public void setInputSides(boolean[] inputSides)
-    {
-        this.inputSides = inputSides;
-    }
-
-    public boolean[] getOutputs()
-    {
-        return outputSides;
-    }
-
-    public boolean[] getInputs()
-    {
-        return inputSides;
-    }
-
     @Override
     public void writeData(ASMPacket packet, int id)
     {
@@ -244,5 +225,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     {
         outputSides = packet.readBooleanArray(outputSides.length);
         inputSides = packet.readBooleanArray(outputSides.length);
+        markBlockForUpdate();
     }
 }

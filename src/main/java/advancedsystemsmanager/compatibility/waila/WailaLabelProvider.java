@@ -26,15 +26,17 @@ public class WailaLabelProvider implements IWailaDataProvider
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
-        if (iWailaDataAccessor.getBlock() != null)
+        ITaggedList tagged = (ITaggedList)list;
+        if (iWailaDataAccessor.getBlock() != null && tagged.getEntries(LABELLED).isEmpty())
         {
             BlockCoord coord = new BlockCoord(iWailaDataAccessor.getPosition().blockX, iWailaDataAccessor.getPosition().blockY, iWailaDataAccessor.getPosition().blockZ);
             String label = NameRegistry.getSavedName(iWailaDataAccessor.getWorld().provider.dimensionId, coord);
             if (label != null)
             {
-                list.add(StatCollector.translateToLocalFormatted(LABELLED, label));
+                tagged.add(StatCollector.translateToLocalFormatted(LABELLED, label), LABELLED);
             }
         }
         return list;

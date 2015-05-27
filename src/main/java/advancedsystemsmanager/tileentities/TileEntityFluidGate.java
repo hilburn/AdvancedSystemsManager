@@ -10,21 +10,20 @@ import net.minecraftforge.fluids.*;
 
 import java.util.EnumSet;
 
-public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHandler
+public class TileEntityFluidGate extends TileEntityClusterElement implements IFluidHandler
 {
     protected FluidStack tank;
     protected FluidStack cachedStack;
 
-    @Override
-    public int getPlaceDirection()
+    public ForgeDirection getDirection()
     {
-        return getMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
+        return ForgeDirection.getOrientation(getMetadata());
     }
 
     @Override
     public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
     }
 
     @Override
@@ -43,16 +42,21 @@ public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHan
                 }
                 tank.amount += amount;
             }
-            if (tank != null && tank.amount == FluidContainerRegistry.BUCKET_VOLUME)
-            {
-                Fluid fluid = tank.getFluid();
-                ForgeDirection direction = getDirection();
-                if (fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, false) == FluidContainerRegistry.BUCKET_VOLUME)
-                    fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, true);
-            }
+            tryPlaceFluid();
             return amount;
         }
         return 0;
+    }
+
+    public void tryPlaceFluid()
+    {
+        if (tank != null && tank.amount == FluidContainerRegistry.BUCKET_VOLUME)
+        {
+            Fluid fluid = tank.getFluid();
+            ForgeDirection direction = getDirection();
+            if (fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, false) == FluidContainerRegistry.BUCKET_VOLUME)
+                fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, true);
+        }
     }
 
     @Override
@@ -204,15 +208,14 @@ public class TileEntityFluidGate extends TileEntityBaseGate implements IFluidHan
         tank = FluidStack.loadFluidStackFromNBT(tagCompound);
     }
 
-    @Override
     public boolean isBlocked()
     {
         return cachedStack != null;
     }
 
-    @Override
-    public void onNeighbourBlockChange(World world, int x, int y, int z, Block block)
+    public void onNeighbourBlockChange()
     {
         drainBlock(false);
+        if (!isBlocked()) tryPlaceFluid();
     }
 }
