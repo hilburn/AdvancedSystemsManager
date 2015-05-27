@@ -86,8 +86,8 @@ public class CommandFluidInput extends CommandInput<Fluid>
                 {
                     Setting<Fluid> setting = isValid(validSettings, entry.getValue().fluid.getFluid());
                     boolean whitelist = settings.isFirstRadioButtonSelected();
-                    if (setting == null && whitelist) continue;
-                    subElements.add(new FluidBufferElement(id, tank, entry.getKey(), entry.getValue().fluid.amount, entry.getValue().fluid.getFluid(), setting, whitelist));
+                    if ((setting == null) != whitelist)
+                        subElements.add(new FluidBufferElement(id, tank, entry.getKey(), entry.getValue().fluid.amount, entry.getValue().fluid.getFluid(), setting, whitelist));
                 }
             }
         }

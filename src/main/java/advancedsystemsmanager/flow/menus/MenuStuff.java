@@ -98,7 +98,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
                 {
                     Setting<Type> setting = settings.get(packet.readByte());
                     setting.setLimitedByAmount(packet.readBoolean());
-                    if (!setting.isLimitedByAmount()) selectedSetting.setDefaultAmount();
+                    if (!setting.isLimitedByAmount()) setting.setDefaultAmount();
                     return false;
                 }
 

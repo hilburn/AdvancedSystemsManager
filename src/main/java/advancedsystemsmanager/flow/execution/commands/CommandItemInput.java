@@ -102,7 +102,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
             Setting<ItemStack> setting = isValid(settings, stack);
-            if (!(setting == null && whitelist))
+            if ((setting == null) != whitelist)
                 subElements.add(new ItemBufferElement(id, inventory, slot, setting, whitelist));
             checked.add(slot);
         }

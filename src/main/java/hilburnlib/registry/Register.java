@@ -1,10 +1,7 @@
 package hilburnlib.registry;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.IItemRenderer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,11 +20,11 @@ public @interface Register
 
     public Class<? extends TileEntity> tileEntity() default TileEntity.class;
 
-    public Class<? extends TileEntitySpecialRenderer> TESR() default TileEntitySpecialRenderer.class;
+    public Class TESR() default Object.class;
 
-    public Class<IItemRenderer> IItemRenderer() default IItemRenderer.class;
+    public Class IItemRenderer() default Object.class;
 
-    public Class<? extends ISimpleBlockRenderingHandler> SBRH() default ISimpleBlockRenderingHandler.class;
+    public Class SBRH() default Object.class;
 
     public Class<? extends ItemBlock> itemBlock() default ItemBlock.class;
 }

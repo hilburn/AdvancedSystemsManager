@@ -1,31 +1,21 @@
 package advancedsystemsmanager.network;
 
-
 import advancedsystemsmanager.gui.ContainerBase;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.settings.Settings;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static advancedsystemsmanager.AdvancedSystemsManager.packetHandler;
-import static advancedsystemsmanager.reference.Reference.ID;
 
 public class ASMPacket extends PacketBuffer
 {

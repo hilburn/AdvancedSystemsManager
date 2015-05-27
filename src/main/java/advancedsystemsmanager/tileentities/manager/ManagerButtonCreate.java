@@ -28,7 +28,11 @@ public class ManagerButtonCreate extends ManagerButton
     {
         if (Settings.isLimitless(manager) || manager.getFlowItems().size() < TileEntityManager.MAX_COMPONENT_AMOUNT)
         {
-            FlowComponent component = new FlowComponent(manager, 50, 50, type);
+            if (!manager.getWorldObj().isRemote)
+            {
+                packet.setInt(packet.readerIndex(), manager.getNextFreeID());
+            }
+            FlowComponent component = new FlowComponent(manager, 50, 50, packet.readInt(), type);
 
             boolean hasParent = packet.readBoolean();
             if (hasParent)
@@ -88,6 +92,7 @@ public class ManagerButtonCreate extends ManagerButton
     @Override
     public boolean writeData(ASMPacket packet)
     {
+        packet.writeInt(0);
         if (manager.selectedGroup != null)
         {
             packet.writeBoolean(true);

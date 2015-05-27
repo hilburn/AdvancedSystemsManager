@@ -28,34 +28,22 @@ public class WailaLabelProvider implements IWailaDataProvider
     @Override
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
-        return list;
-    }
 
-    @Override
-    @SuppressWarnings(value = "unchecked")
-    public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
-    {
-        ITaggedList tagged = (ITaggedList)list;
-        if (iWailaDataAccessor.getBlock() != null && tagged.getEntries(LABELLED).isEmpty())
+        if (iWailaDataAccessor.getBlock() != null)
         {
             BlockCoord coord = new BlockCoord(iWailaDataAccessor.getPosition().blockX, iWailaDataAccessor.getPosition().blockY, iWailaDataAccessor.getPosition().blockZ);
             String label = NameRegistry.getSavedName(iWailaDataAccessor.getWorld().provider.dimensionId, coord);
             if (label != null)
             {
-                tagged.add(StatCollector.translateToLocalFormatted(LABELLED, label), LABELLED);
-//                int size = tagged.size();
-//                if (size > 1)
-//                {
-//                    for (Iterator<String> itr = tagged.iterator(); itr.hasNext() && size > 1; size--)
-//                    {
-//                        String val = itr.next();
-//                        Set<String> tags = tagged.getTags(val);
-//                        itr.remove();
-//                        tagged.add(val, tags);
-//                    }
-//                }
+                list.add(StatCollector.translateToLocalFormatted(LABELLED, label));
             }
         }
+        return list;
+    }
+
+    @Override
+    public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
+    {
         return list;
     }
 

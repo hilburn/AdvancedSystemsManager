@@ -17,12 +17,12 @@ public class WailaCompat extends CompatBase
     public static void callbackRegister(IWailaRegistrar registrar)
     {
         WailaLabelProvider labelProvider = new WailaLabelProvider();
-        registrar.registerBodyProvider(labelProvider, IInventory.class);
-        registrar.registerBodyProvider(labelProvider, IFluidHandler.class);
-        registrar.registerBodyProvider(labelProvider, IEnergyProvider.class);
-        registrar.registerBodyProvider(labelProvider, IEnergyReceiver.class);
-        registrar.registerBodyProvider(labelProvider, TileEntityClusterElement.class);
-        registrar.registerBodyProvider(labelProvider, TileEntityCluster.class);
+        registrar.registerHeadProvider(labelProvider, IInventory.class);
+        registrar.registerHeadProvider(labelProvider, IFluidHandler.class);
+        registrar.registerHeadProvider(labelProvider, IEnergyProvider.class);
+        registrar.registerHeadProvider(labelProvider, IEnergyReceiver.class);
+        registrar.registerHeadProvider(labelProvider, TileEntityClusterElement.class);
+        registrar.registerHeadProvider(labelProvider, TileEntityCluster.class);
 
         registrar.registerBodyProvider(new ClusterDataProvider(), TileEntityCluster.class);
         registrar.registerBodyProvider(new RedstoneOutputDataProvider(), BlockCableOutput.class);

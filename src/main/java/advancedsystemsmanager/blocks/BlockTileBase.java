@@ -5,7 +5,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-
 public abstract class BlockTileBase extends BlockBase implements ITileEntityProvider
 {
     public BlockTileBase(String name)

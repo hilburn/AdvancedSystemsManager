@@ -82,8 +82,8 @@ public class Registerer
             }
             if (!annotation.unlocalizedName().isEmpty()) item.setUnlocalizedName(annotation.unlocalizedName());
             GameRegistry.registerItem(item, getName(annotation).isEmpty() ? item.getUnlocalizedName() : getName(annotation));
-            if (annotation.IItemRenderer() != IItemRenderer.class)
-                renderRegistry.registerItemRenderer(item, annotation.IItemRenderer().newInstance());
+            if (annotation.IItemRenderer() != Object.class)
+                renderRegistry.registerItemRenderer(item, (IItemRenderer)annotation.IItemRenderer().newInstance());
         } catch (Exception e)
         {
             log.warn("Failed to register item " + annotation.name());
@@ -109,21 +109,22 @@ public class Registerer
             GameRegistry.registerBlock(block, annotation.itemBlock(), getName(annotation).isEmpty() ? block.getUnlocalizedName() : getName(annotation));
             if (annotation.tileEntity() != TileEntity.class)
                 GameRegistry.registerTileEntity(annotation.tileEntity(), annotation.name());
-            if (annotation.SBRH() != ISimpleBlockRenderingHandler.class)
+            if (annotation.SBRH() != Object.class)
             {
-                ISimpleBlockRenderingHandler handler = annotation.SBRH().newInstance();
+                ISimpleBlockRenderingHandler handler = getConstructed(annotation.SBRH());
                 renderRegistry.registerSimpleBlockRenderer(block.getRenderType(), handler);
             }
-            else if (annotation.tileEntity() != TileEntity.class && annotation.TESR() != TileEntitySpecialRenderer.class)
-                renderRegistry.registerTileEntityRenderer(annotation.tileEntity(), annotation.TESR().newInstance());
-            if (annotation.IItemRenderer() != IItemRenderer.class)
-                renderRegistry.registerItemRenderer(Item.getItemFromBlock(block), annotation.IItemRenderer().newInstance());
+            else if (annotation.tileEntity() != TileEntity.class && annotation.TESR() != Object.class)
+                renderRegistry.registerTileEntityRenderer(annotation.tileEntity(), (TileEntitySpecialRenderer)annotation.TESR().newInstance());
+            if (annotation.IItemRenderer() != Object.class)
+                renderRegistry.registerItemRenderer(Item.getItemFromBlock(block), (IItemRenderer)annotation.IItemRenderer().newInstance());
         } catch (Exception e)
         {
             log.warn("Failed to register block " + annotation.name());
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> T getConstructed(Class clazz)
     {
         try
