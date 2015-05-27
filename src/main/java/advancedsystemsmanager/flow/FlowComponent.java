@@ -786,6 +786,11 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 {
                     isLarge = !isLarge;
                 }
+            } else if (!Settings.isLargeOpenHitBox() && internalY < COMPONENT_SIZE_H)
+            {
+                mouseStartX = mouseDragX = mX;
+                mouseStartY = mouseDragY = mY;
+                isDragging = true;
             } else if (isLarge)
             {
 
