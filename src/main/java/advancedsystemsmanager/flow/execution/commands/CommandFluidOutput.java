@@ -48,7 +48,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
                 FluidStack fluidStack = new FluidStack(fluidBufferElement.getContent(), 0);
                 Setting<Fluid> setting = isValid(validSettings, fluidBufferElement.getContent());
                 boolean whitelist = menuLiquid.useWhiteList();
-                if (setting == null && whitelist) continue;
+                if ((setting == null) == whitelist) continue;
                 for (int side : validSides)
                 {
                     FluidStack temp = fluidStack.copy();

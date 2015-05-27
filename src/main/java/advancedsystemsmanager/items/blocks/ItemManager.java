@@ -49,4 +49,10 @@ public class ItemManager extends ItemBlock
         }
         return true;
     }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return super.getUnlocalizedName(stack) + (stack.getItemDamage() == 0 ? "" : "_unlimited");
+    }
 }

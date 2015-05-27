@@ -2,8 +2,9 @@
 #				BLOCKS
 # ======================================
 
-tile.system_manager.name=Machine Inventory Manager
-tile.system_cable.name=Inventory Cable
+tile.system_manager.name=Systems Manager
+tile.system_manager_unlimited.name=Unlimited Systems Manager
+tile.system_cable.name=System Cable
 tile.system_cable_relay.name=Inventory Relay
 tile.system_cable_relay_advanced.name=Advanced Inventory Relay
 tile.system_cable_output.name=Redstone Emitter
