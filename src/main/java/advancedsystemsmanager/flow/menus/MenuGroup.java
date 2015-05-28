@@ -39,9 +39,9 @@ public class MenuGroup extends Menu
                     for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
                     {
                         Connection connection = flowComponent.getConnection(i);
-                        if (connection != null && connection.getInputId() == parent.getId())
+                        if (connection != null && (connection.getInputId() == parent.getId() || connection.getOutputId() == parent.getId()))
                         {
-                            flowComponent.removeConnection(i); //remove all connections to the component we're moving stuff into
+                            flowComponent.removeConnection(i);
                         }
                     }
                 }
@@ -49,7 +49,7 @@ public class MenuGroup extends Menu
         } else if (!component.equals(parent))
         {
             component.setParent(parent);
-            component.removeAllConnections();
+            component.deleteConnections();
         }
     }
 
@@ -64,7 +64,7 @@ public class MenuGroup extends Menu
                 Connection connection = component.getConnection(i);
                 if (connection != null)
                 {
-                    findCluster(components, component.getManager().getFlowItem(connection.getInputId()), parent);
+                    findCluster(components, component.getManager().getFlowItem(connection.getOutputId() == component.getId() ? connection.getInputId() : connection.getOutputId()), parent);
                 }
             }
         }
@@ -85,7 +85,6 @@ public class MenuGroup extends Menu
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -102,7 +101,6 @@ public class MenuGroup extends Menu
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -116,10 +114,8 @@ public class MenuGroup extends Menu
                 {
                     if (!component.equals(getParent()))
                     {
-                        ASMPacket dw = component.getSyncPacket();
-                        dw.writeVarIntToBuffer(component.getId());
-                        dw.writeBoolean(GuiScreen.isShiftKeyDown());
-                        PacketHandler.sendDataToServer(dw);
+                        component.sendNewParentData(getParent(), GuiScreen.isShiftKeyDown());
+                        moveComponents(component, getParent(), GuiScreen.isShiftKeyDown());
                     }
                     break;
                 }
@@ -141,18 +137,5 @@ public class MenuGroup extends Menu
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
     }
-
-//    @Override
-//    public void readData(ByteBuf dr)
-//    {
-//        super.readData(dr);
-//        if (!getParent().getManager().getWorldObj().isRemote)
-//        {
-//            int id = dr.readInt();
-//            FlowComponent component = getParent().getManager().getFlowItem(id);
-//            boolean moveCluster = dr.readBoolean();
-//            moveComponents(component, getParent(), moveCluster);
-//        }
-//    }
 
 }

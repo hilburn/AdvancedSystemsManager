@@ -7,6 +7,7 @@ import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -169,7 +170,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         menus = new ArrayList<Menu>();
         type.getMenus(this, menus);
-        menus.add(new MenuResult(this));
+        if (type.getSets().length > 1) menus.add(new MenuResult(this));
 
         openMenuId = -1;
         connections = new Connection[connectionSet.getConnections().length];
@@ -226,7 +227,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             NBTTagList menuTagList = nbtTagCompound.getTagList(NBT_MENUS, 10);
             int menuId = 0;
-            for (int i = 0; i < menuTagList.tagCount(); i++)
+            for (int i = 0; i < menuTagList.tagCount() && i < component.menus.size(); i++)
             {
                 NBTTagCompound menuTag = menuTagList.getCompoundTagAt(i);
 
@@ -1345,29 +1346,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public void setParent(FlowComponent parent)
     {
-        if (this.parent != null)
-        {
-            if (getConnectionSet() == ConnectionSet.INPUT_NODE || getConnectionSet() == ConnectionSet.OUTPUT_NODE)
-            {
-                this.parent.childrenInputNodes.remove(this);
-                this.parent.childrenOutputNodes.remove(this);
-                Collections.sort(this.parent.childrenInputNodes);
-                Collections.sort(this.parent.childrenOutputNodes);
-            }
-        }
+        type.moveComponent(this, this.parent, parent);
         this.parent = parent;
-        if (this.parent != null)
-        {
-            if (getConnectionSet() == ConnectionSet.INPUT_NODE && !this.parent.childrenInputNodes.contains(this))
-            {
-                this.parent.childrenInputNodes.add(this);
-                Collections.sort(this.parent.childrenInputNodes);
-            } else if (getConnectionSet() == ConnectionSet.OUTPUT_NODE && !this.parent.childrenOutputNodes.contains(this))
-            {
-                this.parent.childrenOutputNodes.add(this);
-                Collections.sort(this.parent.childrenOutputNodes);
-            }
-        }
     }
 
     @Override
@@ -1561,8 +1541,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     }
                     break;
                 case 3:
-                    parentLoadId = packet.readVarIntFromBuffer();
-                    linkAfterLoad();
+                    int parentId = packet.readVarIntFromBuffer();
+                    FlowComponent newParent = parentId == -1? null : manager.getFlowItem(parentId);
+                    MenuGroup.moveComponents(this, newParent, packet.readBoolean());
                     break;
             }
             return false;
@@ -1604,6 +1585,15 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             packet.writeShort(x);
             packet.writeShort(y);
         }
+        packet.sendServerPacket();
+    }
+
+    public void sendNewParentData(FlowComponent parent, boolean shift)
+    {
+        ASMPacket packet = getSyncPacket();
+        packet.writeByte(networkSyncList.size() + 3);
+        packet.writeVarIntToBuffer(parent == null ? -1 : parent.id);
+        packet.writeBoolean(shift);
         packet.sendServerPacket();
     }
 }

@@ -96,6 +96,9 @@ public class CommandRegistry
         registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
 
+        registerCommand(new CommandGroup());
+        registerCommand(NODE = new CommandGroupNode());
+
         registerCommand(new CommandCamouflage());
         registerCommand(new CommandSign());
     }

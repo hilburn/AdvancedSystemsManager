@@ -303,7 +303,6 @@ public class CommandExecutor
                             {
                                 this.executeChildCommands(command, EnumSet.of(ConnectionOption.CONDITION_FALSE));
                             }
-
                             return;
                         }
 
@@ -329,31 +328,6 @@ public class CommandExecutor
                             this.craftingBufferLow.add(element);
                         }
                         break;
-                    case 13:
-                        if (connectionId < command.getChildrenInputNodes().size())
-                        {
-                            this.executeChildCommands(command.getChildrenInputNodes().get(connectionId), EnumSet.allOf(ConnectionOption.class));
-                        }
-                        return;
-                    case 14:
-                        FlowComponent parent = command.getParent();
-                        if (parent != null)
-                        {
-                            for (int var28 = 0; var28 < parent.getChildrenOutputNodes().size(); ++var28)
-                            {
-                                if (command.equals(parent.getChildrenOutputNodes().get(var28)))
-                                {
-//                                    Connection var30 = parent.getConnection(parent.getConnectionSet().getInputCount() + var28);
-//                                    if (var30 != null)
-//                                    {
-//                                        this.executeCommand(this.manager.getFlowItem(var30.getComponentId()), var30.getConnectionId());
-//                                    }
-
-                                    return;
-                                }
-                            }
-                        }
-                        return;
                     case 17:
                         List<SlotInventoryHolder> inputStorage = this.getRFInput(command.getMenus().get(0));
                         if (inputStorage != null)

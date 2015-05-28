@@ -33,7 +33,9 @@ public interface ICommand
 
     void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider);
 
-    List<Connection> getActiveChildren(FlowComponent command);
+    List<Connection> getActiveChildren(FlowComponent command, int connectionId);
+
+    void moveComponent(FlowComponent component, FlowComponent oldParent, FlowComponent newParent);
 
     public static enum CommandType
     {

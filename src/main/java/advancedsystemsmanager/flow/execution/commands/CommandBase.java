@@ -29,6 +29,8 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int FLUID_INPUT = 5;
     protected static final int FLUID_OUTPUT = 6;
     protected static final int FLUID_CONDITION = 7;
+    protected static final int GROUP = 13;
+    protected static final int GROUP_NODE = 14;
     protected static final int CAMOUFLAGE = 15;
     protected static final int SIGN = 16;
 
@@ -129,7 +131,7 @@ public abstract class CommandBase<Type> implements ICommand
     }
 
     @Override
-    public List<Connection> getActiveChildren(FlowComponent command)
+    public List<Connection> getActiveChildren(FlowComponent command, int connectionId)
     {
         List<Connection> connections = new ArrayList<Connection>();
         for (int i = 0; i < command.getConnectionSet().getConnections().length; ++i)
@@ -144,5 +146,8 @@ public abstract class CommandBase<Type> implements ICommand
         return connections;
     }
 
-
+    @Override
+    public void moveComponent(FlowComponent component, FlowComponent oldParent, FlowComponent newParent)
+    {
+    }
 }

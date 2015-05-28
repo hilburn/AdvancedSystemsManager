@@ -367,7 +367,13 @@ public class GuiManager extends GuiBase
             FlowComponent released = (FlowComponent)selectedComponent;
             if (!manager.justSentServerComponentRemovalPacket)
             {
-                released.onRelease(x, y, button);
+                for (FlowComponent itemBase : manager.getZLevelRenderingList())
+                {
+                    if (itemBase.isVisible())
+                    {
+                        itemBase.onRelease(x, y, button);
+                    }
+                }
             }
             released.postRelease();
         }

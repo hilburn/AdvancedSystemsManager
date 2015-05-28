@@ -56,7 +56,7 @@ public class Executor implements IBufferProvider
         {
             this.usedCommands.add(command.getId());
             command.getType().execute(command, connectionId, this);
-            this.executeChildCommands(command.getType().getActiveChildren(command));
+            this.executeChildCommands(command.getType().getActiveChildren(command, connectionId));
         }
     }
 
@@ -64,7 +64,7 @@ public class Executor implements IBufferProvider
     {
         for (Connection connection : connections)
         {
-            this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputId());
+            this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputConnection());
         }
     }
 

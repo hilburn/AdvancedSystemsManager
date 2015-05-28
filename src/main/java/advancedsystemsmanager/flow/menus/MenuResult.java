@@ -1,11 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -13,9 +11,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.List;
+
 public class MenuResult extends Menu
 {
-
     public static final int RADIO_X = 5;
     public static final int RADIO_Y = 5;
     public static final int RADIO_MARGIN = 13;
@@ -35,7 +34,6 @@ public class MenuResult extends Menu
             public void setSelectedOption(int selectedOption)
             {
                 super.setSelectedOption(selectedOption);
-
                 getParent().setConnectionSet(sets[radioButtons.getSelectedOption()]);
 
                 if (getParent().getType() == CommandRegistry.VARIABLE)
@@ -43,6 +41,13 @@ public class MenuResult extends Menu
                     getParent().getManager().updateVariables();
                 } else if (getParent().getType() == CommandRegistry.NODE)
                 {
+                    boolean inputNode = selectedOption == 1;
+                    List<FlowComponent> childrenNodes = inputNode ? getParent().getParent().childrenInputNodes : getParent().getParent().childrenOutputNodes;
+                    int index = childrenNodes.indexOf(getParent());
+                    if (index != -1)
+                    {
+                        getParent().getParent().removeConnection(index + (inputNode ? 0 : 5));
+                    }
                     getParent().setParent(getParent().getParent());
                 }
             }
@@ -63,11 +68,6 @@ public class MenuResult extends Menu
                 break;
             }
         }
-    }
-
-    public void writeData(ASMPacket dw, int val)
-    {
-        dw.writeByte(val);
     }
 
     @Override

@@ -73,7 +73,7 @@ public class RadioButtonList extends UpdateElement
 
     public void updateSelectedOption(int selectedOption)
     {
-        this.selectedOption = selectedOption;
+        setSelectedOption(selectedOption);
         onUpdate();
     }
 
@@ -97,7 +97,7 @@ public class RadioButtonList extends UpdateElement
     @Override
     public boolean readData(ASMPacket packet)
     {
-        selectedOption = packet.readByte();
+        setSelectedOption(packet.readByte());
         return false;
     }
 }

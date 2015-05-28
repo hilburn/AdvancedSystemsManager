@@ -33,7 +33,7 @@ public enum ConnectionSet
                 }
             },
     CHAT(Names.CONNECTION_SET_CHAT, ConnectionOption.STANDARD_OUTPUT),
-    DELAYED(Names.CONNECTION_DELAY_OUTPUT, ConnectionOption.STANDARD_INPUT, ConnectionOption.STANDARD_OUTPUT);
+    DELAYED(Names.CONNECTION_DELAY_OUTPUT, ConnectionOption.STANDARD_INPUT, ConnectionOption.DELAY_OUTPUT);
 
 
     public ConnectionOption[] connections;
