@@ -1,6 +1,7 @@
-package advancedsystemsmanager.settings;
+package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.gui.GuiSettings;
 import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
@@ -14,7 +15,6 @@ import java.util.Map;
 public final class Settings
 {
 
-    private static final String NAME = "AdvancedSystemsManagerSettings";
     public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
 
     static
@@ -58,7 +58,7 @@ public final class Settings
     @SideOnly(Side.CLIENT)
     public static void openMenu(TileEntityManager manager)
     {
-        manager.specialRenderer = new SettingsScreen(manager);
+        manager.specialRenderer = new GuiSettings(manager);
     }
 
     public static void loadDefault()

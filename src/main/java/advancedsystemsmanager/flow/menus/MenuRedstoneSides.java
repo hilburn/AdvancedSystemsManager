@@ -30,7 +30,7 @@ public abstract class MenuRedstoneSides extends Menu
     public static final int TEXT_MARGIN_X = 5;
     public static final int TEXT_Y = 5;
     public static final String NBT_ACTIVE = "Selection";
-    public static final String NBT_ALL = "RequrieAll";
+    public static final String NBT_ALL = "RequireAll";
     public CheckBoxList checkBoxList;
     public RadioButtonList radioButtonList;
     public int selection;
@@ -95,7 +95,6 @@ public abstract class MenuRedstoneSides extends Menu
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -108,13 +107,11 @@ public abstract class MenuRedstoneSides extends Menu
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

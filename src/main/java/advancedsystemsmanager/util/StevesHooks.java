@@ -4,6 +4,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuTriggered;
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import com.google.common.collect.HashMultimap;
@@ -42,9 +43,9 @@ public class StevesHooks
             ItemStack stack = ((IDeepStorageUnit)tileEntity).getStoredItemType();
             String contains = "\n";
             if (stack == null || stack.isItemEqual(Null.NULL_STACK))
-                contains += StatCollector.translateToLocal("asm.idsucompat.isEmpty");
+                contains += StatCollector.translateToLocal(Names.BARREL_EMTPTY);
             else
-                contains += StatCollector.translateToLocalFormatted("asm.idsucompat.contains", stack.getDisplayName());
+                contains += StatCollector.translateToLocalFormatted(Names.BARREL_CONTAINS, stack.getDisplayName());
             result += contains;
         } else if (tileEntity instanceof IFluidHandler)
         {
@@ -59,8 +60,8 @@ public class StevesHooks
                     tankInfo += info.fluid.getLocalizedName() + (i++ < fluidTankInfo.length ? ", " : "");
                 }
             }
-            if (tankInfo.isEmpty()) result += "\n" + StatCollector.translateToLocal("asm.idsucompat.isEmpty");
-            else result += "\n" + StatCollector.translateToLocalFormatted("asm.idsucompat.contains", tankInfo);
+            if (tankInfo.isEmpty()) result += "\n" + StatCollector.translateToLocal(Names.BARREL_EMTPTY);
+            else result += "\n" + StatCollector.translateToLocalFormatted(Names.BARREL_CONTAINS, tankInfo);
         }
         return result;
     }

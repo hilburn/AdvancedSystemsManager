@@ -2,6 +2,7 @@ package advancedsystemsmanager.compatibility.waila;
 
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.reference.Names;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -17,7 +18,6 @@ import java.util.List;
 
 public class WailaLabelProvider implements IWailaDataProvider
 {
-    public static final String LABELLED = "asm.waila.labelled";
 
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
@@ -30,13 +30,13 @@ public class WailaLabelProvider implements IWailaDataProvider
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
         ITaggedList tagged = (ITaggedList)list;
-        if (iWailaDataAccessor.getBlock() != null && tagged.getEntries(LABELLED).isEmpty())
+        if (iWailaDataAccessor.getBlock() != null && tagged.getEntries(Names.LABELLED).isEmpty())
         {
             BlockCoord coord = new BlockCoord(iWailaDataAccessor.getPosition().blockX, iWailaDataAccessor.getPosition().blockY, iWailaDataAccessor.getPosition().blockZ);
             String label = NameRegistry.getSavedName(iWailaDataAccessor.getWorld().provider.dimensionId, coord);
             if (label != null)
             {
-                tagged.add(StatCollector.translateToLocalFormatted(LABELLED, label), LABELLED);
+                tagged.add(StatCollector.translateToLocalFormatted(Names.LABELLED, label), Names.LABELLED);
             }
         }
         return list;

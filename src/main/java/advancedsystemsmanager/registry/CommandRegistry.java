@@ -69,9 +69,6 @@ public class CommandRegistry
 //        registerCommand(LIQUID_CONDITION = new Command(7, CommandType.COMMAND_CONTROL, Localization.LIQUID_CONDITION_SHORT, Localization.LIQUID_CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuTankCondition.class, MenuTargetTank.class, MenuLiquidCondition.class));
-//        registerCommand(REDSTONE_EMITTER = new Command(8, CommandType.OUTPUT, Localization.REDSTONE_EMITTER_SHORT, Localization.REDSTONE_EMITTER_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuEmitters.class, MenuRedstoneSidesEmitter.class, MenuRedstoneOutput.class, MenuPulse.class));
 //        registerCommand(REDSTONE_CONDITION = new Command(9, CommandType.COMMAND_CONTROL, Localization.REDSTONE_CONDITION_SHORT, Localization.REDSTONE_CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuNodes.class, MenuRedstoneSidesNodes.class, MenuRedstoneStrengthNodes.class));
@@ -84,17 +81,16 @@ public class CommandRegistry
 //        registerCommand(AUTO_CRAFTING = new Command(12, CommandType.CRAFTING, Localization.AUTO_CRAFTER_SHORT, Localization.AUTO_CRAFTER_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD},
 //                MenuCrafting.class, MenuCraftingPriority.class, MenuContainerScrap.class));
-//        registerCommand(GROUP = new Command(13, CommandType.MISC, Localization.GROUP_SHORT, Localization.GROUP_LONG,
-//                new ConnectionSet[]{ConnectionSet.DYNAMIC},
-//                MenuGroup.class));
-//        registerCommand(NODE = new Command(14, CommandType.MISC, Localization.NODE_SHORT, Localization.NODE_LONG,
-//                new ConnectionSet[]{ConnectionSet.INPUT_NODE, ConnectionSet.OUTPUT_NODE},
-//                MenuResult.class));
         registerCommand(new CommandTrigger());
         registerCommand(INPUT = new CommandItemInput());
         registerCommand(new CommandItemOutput());
+
         registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
+
+        registerCommand(new CommandRedstoneOutput());
+
+
 
         registerCommand(new CommandGroup());
         registerCommand(NODE = new CommandGroupNode());

@@ -3,7 +3,7 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;

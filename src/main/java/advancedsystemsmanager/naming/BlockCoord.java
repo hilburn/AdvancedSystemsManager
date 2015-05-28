@@ -55,7 +55,7 @@ public class BlockCoord
             BlockCoord other = (BlockCoord)obj;
             return other.x == x && other.z == z && other.y == y;
         }
-        return true;
+        return false;
     }
 
     @Override

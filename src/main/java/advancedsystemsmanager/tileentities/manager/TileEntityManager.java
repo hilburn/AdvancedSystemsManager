@@ -23,7 +23,7 @@ import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.*;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;

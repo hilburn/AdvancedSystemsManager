@@ -16,7 +16,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,7 +30,6 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, IPacketSync, IPacketProvider

@@ -102,6 +102,9 @@ allprojects {
     version = "${config.version.minecraft}-${config.version.mod.major}.${config.version.mod.minor}.${config.version.mod.revis}"
 
     jar {
+        manifest {
+            attributes 'FMLAT': 'asm_at.cfg'
+        }
         dependsOn ":copyBuildXml"
         destinationDir = file (rootProject.getRootDir().getPath() + '/output')
     }

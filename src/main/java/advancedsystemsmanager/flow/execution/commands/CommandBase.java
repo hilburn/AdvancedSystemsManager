@@ -29,6 +29,8 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int FLUID_INPUT = 5;
     protected static final int FLUID_OUTPUT = 6;
     protected static final int FLUID_CONDITION = 7;
+    protected static final int REDSTONE_OUTPUT = 8;
+    protected static final int REDSTONE_CONDITION = 9;
     protected static final int GROUP = 13;
     protected static final int GROUP_NODE = 14;
     protected static final int CAMOUFLAGE = 15;

@@ -4,6 +4,7 @@ import advancedsystemsmanager.items.ItemDuplicator;
 import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SearchRegistryGenerateMessage;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -82,12 +83,12 @@ public class EventHandler
                     {
                         if (NameRegistry.removeName(world, x, y, z))
                         {
-                            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("asm.chat.cleared")));
+                            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(Names.LABEL_CLEARED)));
                         }
                     } else
                     {
                         NameRegistry.saveName(world, x, y, z, label);
-                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("asm.chat.saved", label)));
+                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(Names.LABEL_SAVED, label)));
                     }
                     event.setCanceled(true);
                 }

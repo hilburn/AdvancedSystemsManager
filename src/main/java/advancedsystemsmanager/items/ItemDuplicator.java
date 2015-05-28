@@ -7,12 +7,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 public class ItemDuplicator extends ItemBase
 {
+    public static final String AUTHOR = "Author";
+    public static final String CONTENTS = "ManagerContents";
+
     public ItemDuplicator()
     {
         super(Names.DUPLICATOR);
@@ -24,24 +28,23 @@ public class ItemDuplicator extends ItemBase
     {
         if (stack.hasTagCompound() && validateNBT(stack))
         {
-            if (stack.getTagCompound().hasKey("Author"))
+            if (stack.getTagCompound().hasKey(AUTHOR))
             {
-                list.add("Manager setup authored by:");
-                list.add(stack.getTagCompound().getString("Author"));
+                list.add(StatCollector.translateToLocalFormatted(Names.AUTHORED, stack.getTagCompound().getString(AUTHOR)));
             } else
             {
-                int x = stack.getTagCompound().getInteger("x");
-                int y = stack.getTagCompound().getInteger("y");
-                int z = stack.getTagCompound().getInteger("z");
-                list.add("Data stored from Manager at:");
-                list.add("x: " + x + " y: " + y + " z: " + z);
+                int x = stack.getTagCompound().getInteger(X);
+                int y = stack.getTagCompound().getInteger(Y);
+                int z = stack.getTagCompound().getInteger(Z);
+                list.add(StatCollector.translateToLocal(Names.STORED_LOCATION));
+                list.add(StatCollector.translateToLocalFormatted(Names.LOCATION, x, y, z));
             }
         }
     }
 
     public static boolean validateNBT(ItemStack stack)
     {
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ManagerContents"))
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey(CONTENTS))
             return true;
         stack.setTagCompound(null);
         return false;
@@ -63,10 +66,10 @@ public class ItemDuplicator extends ItemBase
                 {
                     NBTTagCompound tagCompound = new NBTTagCompound();
                     ((TileEntityManager)te).writeContentToNBT(tagCompound, false);
-                    tagCompound.setBoolean("ManagerContents", true);
-                    tagCompound.setInteger("x", x);
-                    tagCompound.setInteger("y", y);
-                    tagCompound.setInteger("z", z);
+                    tagCompound.setBoolean(CONTENTS, true);
+                    tagCompound.setInteger(X, x);
+                    tagCompound.setInteger(Y, y);
+                    tagCompound.setInteger(Z, z);
                     tagCompound.setTag("ench", new NBTTagList());
                     stack.setTagCompound(tagCompound);
                 }

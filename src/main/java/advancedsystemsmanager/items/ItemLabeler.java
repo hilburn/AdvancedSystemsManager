@@ -22,6 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -30,6 +31,8 @@ import java.util.List;
 
 public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
 {
+    public static final String LABEL = "Label";
+
     public ItemLabeler()
     {
         super(Names.LABELER);
@@ -50,7 +53,7 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
 
     public static void setLabel(ItemStack stack, String string)
     {
-        stack.getTagCompound().setString("Label", string);
+        stack.getTagCompound().setString(LABEL, string);
     }
 
     public static void saveStrings(ItemStack stack, List<String> strings)
@@ -82,8 +85,8 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     {
         super.addInformation(stack, player, list, extra);
         String label = getLabel(stack);
-        if (label.isEmpty()) list.add("Clear Label");
-        else list.add("Label: " + label);
+        if (label.isEmpty()) list.add(StatCollector.translateToLocal(Names.CLEAR_LABEL));
+        else list.add(StatCollector.translateToLocalFormatted(Names.LABELLED, label));
     }
 
     @SideOnly(Side.CLIENT)
@@ -96,25 +99,6 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
     {
-//        if (isValidTile(player.getEntityWorld(), x, y, z))
-//        {
-//            if (player.getEntityWorld().isRemote)
-//            {
-//                String label = ItemLabeler.getLabel(stack);
-//                if (label.isEmpty())
-//                {
-//                    if (NameRegistry.removeName(player.getEntityWorld(), x, y, z))
-//                    {
-//                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("asm.chat.cleared")));
-//                    }
-//                } else
-//                {
-//                    NameRegistry.saveName(player.getEntityWorld(), x, y, z, label);
-//                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted("asm.chat.saved", label)));
-//                }
-//            }
-//            return true;
-//        }
         return false;
     }
 
@@ -126,7 +110,7 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
 
     public static String getLabel(ItemStack stack)
     {
-        return stack.hasTagCompound() ? stack.getTagCompound().getString("Label") : "";
+        return stack.hasTagCompound() ? stack.getTagCompound().getString(LABEL) : "";
     }
 
     @Override

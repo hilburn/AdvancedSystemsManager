@@ -1,6 +1,6 @@
 package advancedsystemsmanager.proxy;
 
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.threading.ThreadSafeHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;

@@ -7,7 +7,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
 import advancedsystemsmanager.tileentities.manager.ManagerButton;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

@@ -354,4 +354,14 @@ public class Names
     public static final String PERMISSION_INVENTORY = GUI_PREFIX + "PermissionInventory";
     public static final String PERMISSION_DENIED = GUI_PREFIX + "PermissionDenied";
 
+    public static final String AUTHORED = GUI_PREFIX + "authored";
+    public static final String STORED_LOCATION = GUI_PREFIX + "stored_location";
+    public static final String LINKED_LOCATION = GUI_PREFIX + "linked_location";
+    public static final String WRONG_DIMENSION = GUI_PREFIX + "wrongDim";
+    public static final String LABELLED = GUI_PREFIX + "labelled";
+    public static final String CLEAR_LABEL = GUI_PREFIX + "clearLabel";
+    public static final String BARREL_EMTPTY = GUI_PREFIX + "idsucompat.isEmpty";
+    public static final String BARREL_CONTAINS = GUI_PREFIX + "idsucompat.contains";
+    public static final String LABEL_SAVED = GUI_PREFIX + "chat.saved";
+    public static final String LABEL_CLEARED = GUI_PREFIX + "chat.cleared";
 }

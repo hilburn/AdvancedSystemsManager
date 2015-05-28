@@ -41,14 +41,17 @@ public class MenuResult extends Menu
                     getParent().getManager().updateVariables();
                 } else if (getParent().getType() == CommandRegistry.NODE)
                 {
-                    boolean inputNode = selectedOption == 1;
-                    List<FlowComponent> childrenNodes = inputNode ? getParent().getParent().childrenInputNodes : getParent().getParent().childrenOutputNodes;
-                    int index = childrenNodes.indexOf(getParent());
-                    if (index != -1)
+                    if (getParent().getParent() != null)
                     {
-                        getParent().getParent().removeConnection(index + (inputNode ? 0 : 5));
+                        boolean inputNode = selectedOption == 1;
+                        List<FlowComponent> childrenNodes = inputNode ? getParent().getParent().childrenInputNodes : getParent().getParent().childrenOutputNodes;
+                        int index = childrenNodes.indexOf(getParent());
+                        if (index != -1)
+                        {
+                            getParent().getParent().removeConnection(index + (inputNode ? 0 : 5));
+                        }
+                        getParent().setParent(getParent().getParent());
                     }
-                    getParent().setParent(getParent().getParent());
                 }
             }
         };

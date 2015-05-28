@@ -8,7 +8,7 @@ import advancedsystemsmanager.helpers.CopyHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 
 import java.util.ArrayList;
 import java.util.Collection;

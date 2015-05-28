@@ -2,7 +2,6 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.commands.CommandPastebin;
 import advancedsystemsmanager.reference.Mods;
-import advancedsystemsmanager.settings.Settings;
 import cpw.mods.fml.common.Loader;
 import hilburnlib.registry.IConfigLock;
 import net.minecraftforge.common.config.Configuration;
@@ -48,6 +47,7 @@ public class Config implements IConfigLock
         }
 
         config.addCustomCategoryComment(CATEGORY_ENABLE, "Set true to enable, false to disable");
+        config.setCategoryRequiresWorldRestart(CATEGORY_ENABLE, true);
 
         config.save();
     }

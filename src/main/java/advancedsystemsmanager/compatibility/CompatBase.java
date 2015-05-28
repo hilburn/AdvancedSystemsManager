@@ -4,7 +4,7 @@ import advancedsystemsmanager.AdvancedSystemsManager;
 
 public abstract class CompatBase
 {
-    private ModCompat mod;
+    protected ModCompat mod;
 
     public boolean load(ModCompat mod)
     {

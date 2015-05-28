@@ -8,7 +8,7 @@ import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.menus.MenuTarget;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.settings.Settings;
+import advancedsystemsmanager.helpers.Settings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 

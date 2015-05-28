@@ -6,6 +6,10 @@ import net.minecraft.item.Item;
 
 public class ItemBase extends Item
 {
+    public static final String X = "x";
+    public static final String Y = "y";
+    public static final String Z = "z";
+
     public ItemBase(String name)
     {
         this.setCreativeTab(AdvancedSystemsManager.creativeTab);

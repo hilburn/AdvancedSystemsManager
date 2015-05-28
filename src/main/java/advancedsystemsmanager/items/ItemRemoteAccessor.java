@@ -23,9 +23,6 @@ import java.util.List;
 
 public class ItemRemoteAccessor extends ItemBase
 {
-    public static final String X = "x";
-    public static final String Y = "y";
-    public static final String Z = "z";
     public static final String WORLD = "world";
 
     @SideOnly(Side.CLIENT)
@@ -107,12 +104,12 @@ public class ItemRemoteAccessor extends ItemBase
             int dim = stack.getTagCompound().getByte(WORLD);
             if (stack.getItemDamage() == 0 && player.getEntityWorld().provider.dimensionId != dim)
             {
-                list.add("§cWrong Dimension");
+                list.add("§c" + StatCollector.translateToLocal(Names.WRONG_DIMENSION));
             }
             int x = stack.getTagCompound().getInteger(X);
             int y = stack.getTagCompound().getInteger(Y);
             int z = stack.getTagCompound().getInteger(Z);
-            list.add("Linked to Manager at:");
+            list.add(StatCollector.translateToLocal(Names.LINKED_LOCATION));
             list.add(StatCollector.translateToLocalFormatted(Names.LOCATION, x, y, z));
             list.add(DimensionManager.getProvider(dim).getDimensionName());
         }

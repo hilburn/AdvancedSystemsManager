@@ -1,17 +1,16 @@
-package advancedsystemsmanager.settings;
+package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
+public class GuiSettings implements IInterfaceRenderer, IPacketProvider
 {
     private static final int CHECK_BOX_WIDTH = 100;
     private static final int START_X = 10;
@@ -44,7 +43,7 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
     private int offsetY;
     private GuiManager cachedGui;
 
-    public SettingsScreen(final TileEntityManager manager)
+    public GuiSettings(final TileEntityManager manager)
     {
         this.manager = manager;
 
@@ -209,7 +208,7 @@ public class SettingsScreen implements IInterfaceRenderer, IPacketProvider
 
         private CheckBoxSetting(String name)
         {
-            this(SettingsScreen.this, name);
+            this(GuiSettings.this, name);
         }
 
         private CheckBoxSetting(IPacketProvider provider, String name)

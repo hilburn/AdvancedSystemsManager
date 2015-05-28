@@ -89,7 +89,6 @@ public class MenuRedstoneOutput extends Menu
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -105,13 +104,11 @@ public class MenuRedstoneOutput extends Menu
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @SideOnly(Side.CLIENT)

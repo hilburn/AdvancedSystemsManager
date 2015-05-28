@@ -277,21 +277,10 @@ public class CommandExecutor
                             {
                                 this.executeChildCommands(command, EnumSet.of(ConnectionOption.CONDITION_FALSE));
                             }
-
                             return;
                         }
 
                         return;
-                    case 8:
-                        List<SlotInventoryHolder> emitters = this.getEmitters(command.getMenus().get(0));
-                        if (emitters != null)
-                        {
-                            for (SlotInventoryHolder emitter : emitters)
-                            {
-                                emitter.getEmitter().updateState((MenuRedstoneSidesEmitter)command.getMenus().get(1), (MenuRedstoneOutput)command.getMenus().get(2), (MenuPulse)command.getMenus().get(3));
-                            }
-                        }
-                        break;
                     case 9:
                         List<SlotInventoryHolder> nodes = this.getNodes(command.getMenus().get(0));
                         if (nodes != null)
