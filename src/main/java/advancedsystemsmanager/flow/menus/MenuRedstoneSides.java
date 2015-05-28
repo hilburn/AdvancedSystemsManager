@@ -8,7 +8,6 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

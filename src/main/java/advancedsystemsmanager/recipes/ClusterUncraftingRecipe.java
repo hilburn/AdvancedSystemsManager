@@ -2,7 +2,6 @@ package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.ClusterRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.inventory.IInventory;
@@ -11,8 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
-
-import java.util.List;
 
 public class ClusterUncraftingRecipe implements IRecipe
 {

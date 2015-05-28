@@ -17,7 +17,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class CraftingBufferFluidElement implements IItemBufferElement, IItemBufferSubElement
 {
@@ -235,60 +238,60 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
 
         HashMap<Integer, ItemStack> foundItems = new HashMap<Integer, ItemStack>();
 
-        for (ItemBufferElement itemBufferElement : this.executor.itemBuffer)
-        {
-            int count = itemBufferElement.retrieveItemCount(9);
-            Iterator iterator = itemBufferElement.getSubElements().iterator();
-
-            while (iterator.hasNext())
-            {
-                IItemBufferSubElement itemBufferSubElement = (IItemBufferSubElement)iterator.next();
-                ItemStack itemstack = itemBufferSubElement.getKey();
-                int subCount = Math.min(count, itemBufferSubElement.getSizeLeft());
-
-                for (int i = 0; i < 9; ++i)
-                {
-                    CraftingSetting setting = settings.get(i);
-                    if (foundItems.get(i) == null)
-                    {
-                        if (!setting.isValid())
-                        {
-                            foundItems.put(i, DUMMY_ITEM);
-                            break;
-                        }
-                        if (subCount > 0 && setting.isEqualForCommandExecutor(itemstack))
-                        {
-                            foundItems.put(i, itemstack.copy());
-                            if (this.craftingMenu.getDummy().isItemValidForRecipe(this.recipe, this.craftingMenu.getResultItem(), foundItems, this.useAdvancedDetection()))
-                            {
-                                --subCount;
-                                --count;
-                                if (remove)
-                                {
-                                    if (itemstack.getItem().hasContainerItem(itemstack))
-                                    {
-                                        this.containerItems.add(itemstack.getItem().getContainerItem(itemstack));
-                                    }
-
-                                    itemBufferElement.decreaseStackSize(1);
-                                    itemBufferSubElement.reduceBufferAmount(1);
-                                    if (itemBufferSubElement.getSizeLeft() == 0)
-                                    {
-                                        itemBufferSubElement.remove();
-                                        iterator.remove();
-                                    }
-
-                                    this.inventories.add(((SlotStackInventoryHolder)itemBufferSubElement).getInventory());
-                                }
-                            } else
-                            {
-                                foundItems.remove(Integer.valueOf(i));
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        for (ItemBufferElement itemBufferElement : this.executor.itemBuffer)
+//        {
+//            int count = itemBufferElement.retrieveItemCount(9);
+//            Iterator iterator = itemBufferElement.getSubElements().iterator();
+//
+//            while (iterator.hasNext())
+//            {
+//                IItemBufferSubElement itemBufferSubElement = (IItemBufferSubElement)iterator.next();
+//                ItemStack itemstack = itemBufferSubElement.getKey();
+//                int subCount = Math.min(count, itemBufferSubElement.getSizeLeft());
+//
+//                for (int i = 0; i < 9; ++i)
+//                {
+//                    CraftingSetting setting = settings.get(i);
+//                    if (foundItems.get(i) == null)
+//                    {
+//                        if (!setting.isValid())
+//                        {
+//                            foundItems.put(i, DUMMY_ITEM);
+//                            break;
+//                        }
+//                        if (subCount > 0 && setting.isEqualForCommandExecutor(itemstack))
+//                        {
+//                            foundItems.put(i, itemstack.copy());
+//                            if (this.craftingMenu.getDummy().isItemValidForRecipe(this.recipe, this.craftingMenu.getResultItem(), foundItems, this.useAdvancedDetection()))
+//                            {
+//                                --subCount;
+//                                --count;
+//                                if (remove)
+//                                {
+//                                    if (itemstack.getItem().hasContainerItem(itemstack))
+//                                    {
+//                                        this.containerItems.add(itemstack.getItem().getContainerItem(itemstack));
+//                                    }
+//
+//                                    itemBufferElement.decreaseStackSize(1);
+//                                    itemBufferSubElement.reduceBufferAmount(1);
+//                                    if (itemBufferSubElement.getSizeLeft() == 0)
+//                                    {
+//                                        itemBufferSubElement.remove();
+//                                        iterator.remove();
+//                                    }
+//
+//                                    this.inventories.add(((SlotStackInventoryHolder)itemBufferSubElement).getInventory());
+//                                }
+//                            } else
+//                            {
+//                                foundItems.remove(Integer.valueOf(i));
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         if (foundItems.size() < 9)
         {
@@ -314,40 +317,40 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
 
             if (fluids.size() > 0)
             {
-                for (LiquidBufferElement liquidBufferElement : this.executor.liquidBuffer)
-                {
-                    if (fluids.isEmpty()) break;
-                    Iterator<StackTankHolder> itr = liquidBufferElement.getHolders().iterator();
-                    while (itr.hasNext())
-                    {
-                        StackTankHolder tank = itr.next();
-                        for (Iterator<FluidElement> fluidItr = fluids.iterator(); fluidItr.hasNext(); )
-                        {
-                            FluidElement fluidElement = fluidItr.next();
-                            int maxAmount = liquidBufferElement.retrieveItemCount(fluidElement.amountToFind);
-                            if (tank.getFluidStack().isFluidEqual(fluidElement.fluid))
-                            {
-                                maxAmount = Math.min(maxAmount, tank.getSizeLeft());
-                                fluidElement.amountToFind -= maxAmount;
-                                if (remove)
-                                {
-                                    tank.reduceAmount(maxAmount);
-                                    FluidStack toRemove = fluidElement.fluid;
-                                    toRemove.amount = maxAmount;
-                                    tank.getTank().drain(tank.getSide(), maxAmount, true);
-                                }
-                                if (fluidElement.amountToFind == 0)
-                                {
-                                    fluidItr.remove();
-                                    for (int i : fluidElement.slots)
-                                        foundItems.put(i, fluidElement.bucket);
-                                    break;
-                                }
-                            }
-                        }
-                        if (tank.getSizeLeft() == 0) itr.remove();
-                    }
-                }
+//                for (LiquidBufferElement liquidBufferElement : this.executor.liquidBuffer)
+//                {
+//                    if (fluids.isEmpty()) break;
+//                    Iterator<StackTankHolder> itr = liquidBufferElement.getHolders().iterator();
+//                    while (itr.hasNext())
+//                    {
+//                        StackTankHolder tank = itr.next();
+//                        for (Iterator<FluidElement> fluidItr = fluids.iterator(); fluidItr.hasNext(); )
+//                        {
+//                            FluidElement fluidElement = fluidItr.next();
+//                            int maxAmount = liquidBufferElement.retrieveItemCount(fluidElement.amountToFind);
+//                            if (tank.getFluidStack().isFluidEqual(fluidElement.fluid))
+//                            {
+//                                maxAmount = Math.min(maxAmount, tank.getSizeLeft());
+//                                fluidElement.amountToFind -= maxAmount;
+//                                if (remove)
+//                                {
+//                                    tank.reduceAmount(maxAmount);
+//                                    FluidStack toRemove = fluidElement.fluid;
+//                                    toRemove.amount = maxAmount;
+//                                    tank.getTank().drain(tank.getSide(), maxAmount, true);
+//                                }
+//                                if (fluidElement.amountToFind == 0)
+//                                {
+//                                    fluidItr.remove();
+//                                    for (int i : fluidElement.slots)
+//                                        foundItems.put(i, fluidElement.bucket);
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                        if (tank.getSizeLeft() == 0) itr.remove();
+//                    }
+//                }
             }
         }
 

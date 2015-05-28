@@ -48,10 +48,10 @@ public abstract class CommandBase<Type> implements ICommand
         this.type = type;
     }
 
-    public List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
+    public static List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
     {
         List<SystemCoord> result = new ArrayList<SystemCoord>();
-        for (Iterator<Long> itr = container.getSelectedInventories().listIterator(); itr.hasNext();)
+        for (Iterator<Long> itr = container.getSelectedInventories().listIterator(); itr.hasNext(); )
         {
             long selected = itr.next();
             SystemCoord coord = manager.getInventory(selected);

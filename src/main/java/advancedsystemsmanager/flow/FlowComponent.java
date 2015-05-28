@@ -3,8 +3,8 @@ package advancedsystemsmanager.flow;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
-import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
@@ -27,7 +27,9 @@ import net.minecraftforge.common.util.Constants;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, IPacketSync, IPacketProvider
@@ -893,7 +895,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                                     current.setOutputId(id);
                                     current.setOutputConnection(i);
                                     connectTo.addConnection(current.inputConnection, current, true);
-                                }else
+                                } else
                                 {
                                     current.setInputId(id);
                                     current.setInputConnection(i);
@@ -1521,8 +1523,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         if (id < networkSyncList.size())
         {
             return networkSyncList.get(id).readData(packet);
-        }
-        else
+        } else
         {
             switch (id - networkSyncList.size())
             {
@@ -1536,7 +1537,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     {
                         Connection connection = new Connection(this.id, connectionId, packet.readVarIntFromBuffer(), packet.readByte());
                         connection.setConnection(manager);
-                    }else
+                    } else
                     {
                         connections[connectionId].deleteConnection(manager);
                     }
@@ -1583,7 +1584,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         packet.writeByte(networkSyncList.size() + 1);
         packet.writeByte(connectionId);
         packet.writeBoolean(add);
-        if (add) {
+        if (add)
+        {
             packet.writeVarIntToBuffer(targetComponent);
             packet.writeByte(targetConnection);
         }

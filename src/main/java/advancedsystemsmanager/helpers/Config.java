@@ -9,7 +9,10 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +44,7 @@ public class Config implements IConfigLock
 
         for (Map.Entry<String, Boolean> entry : managerSettings.entrySet())
         {
-            entry.setValue(config.getBoolean(entry.getKey(), CATEGORY_SETTINGS,  entry.getValue(), LocalizationHelper.translate("gui.asm.Settings." + entry.getKey())));
+            entry.setValue(config.getBoolean(entry.getKey(), CATEGORY_SETTINGS, entry.getValue(), LocalizationHelper.translate("gui.asm.Settings." + entry.getKey())));
         }
 
         config.addCustomCategoryComment(CATEGORY_ENABLE, "Set true to enable, false to disable");
@@ -80,7 +83,7 @@ public class Config implements IConfigLock
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
 
-            Pattern pattern = Pattern.compile("(.*"+name+"=)");
+            Pattern pattern = Pattern.compile("(.*" + name + "=)");
             Matcher matcher;
             for (String s : strings)
             {
@@ -95,8 +98,7 @@ public class Config implements IConfigLock
 
             bw.flush();
             bw.close();
-        }
-        catch (Throwable t)
+        } catch (Throwable t)
         {
             t.printStackTrace();
         }
@@ -126,8 +128,8 @@ public class Config implements IConfigLock
 
             for (Map.Entry<String, Boolean> entry : settings.entrySet())
             {
-                pattern = Pattern.compile("(.*"+entry.getKey()+"=)");
-                for (int i = 0; i< strings.size(); i++)
+                pattern = Pattern.compile("(.*" + entry.getKey() + "=)");
+                for (int i = 0; i < strings.size(); i++)
                 {
                     String s = strings.get(i);
                     if ((matcher = pattern.matcher(s)).find())
@@ -149,8 +151,7 @@ public class Config implements IConfigLock
             bw.close();
 
             managerSettings.putAll(settings);
-        }
-        catch (Throwable t)
+        } catch (Throwable t)
         {
             t.printStackTrace();
         }

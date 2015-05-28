@@ -1,9 +1,6 @@
 package advancedsystemsmanager.compatibility.rf;
 
 import advancedsystemsmanager.compatibility.CompatBase;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.ClusterRegistry;
-import advancedsystemsmanager.tileentities.TileEntityRFNode;
 
 public class RFCompat extends CompatBase
 {

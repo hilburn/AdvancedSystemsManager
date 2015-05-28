@@ -3,7 +3,6 @@ package advancedsystemsmanager.registry;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.flow.execution.commands.*;
-import advancedsystemsmanager.flow.setting.ItemSetting;
 import gnu.trove.map.hash.TIntIntHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;

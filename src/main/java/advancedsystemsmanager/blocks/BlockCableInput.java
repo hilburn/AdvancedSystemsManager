@@ -2,7 +2,6 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;

@@ -3,8 +3,6 @@ package advancedsystemsmanager.blocks;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockPistonBase;

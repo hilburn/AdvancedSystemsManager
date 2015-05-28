@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.elements;
 
 
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;

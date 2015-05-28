@@ -33,7 +33,9 @@ public class ParentCommand extends CommandBase
     public static boolean commandExists(String name)
     {
         return commands.containsKey(name);
-    }    @Override
+    }
+
+    @Override
     public String getCommandName()
     {
         return "asm";
@@ -43,7 +45,9 @@ public class ParentCommand extends CommandBase
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
         return true;
-    }    @Override
+    }
+
+    @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/" + getCommandName() + " help";
@@ -91,9 +95,6 @@ public class ParentCommand extends CommandBase
         }
         throw new CommandNotFoundException("asm.command.notFound");
     }
-
-
-
 
 
 }

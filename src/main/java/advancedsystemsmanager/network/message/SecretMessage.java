@@ -69,9 +69,9 @@ public class SecretMessage implements IMessage, IMessageHandler<SecretMessage, I
                         break;
                     }
                 }
-            }else
+            } else
             {
-                world.createExplosion(player, player.posX, player.posY + player.eyeHeight/2, player.posZ, 4F, false);
+                world.createExplosion(player, player.posX, player.posY + player.eyeHeight / 2, player.posZ, 4F, false);
             }
 
         }

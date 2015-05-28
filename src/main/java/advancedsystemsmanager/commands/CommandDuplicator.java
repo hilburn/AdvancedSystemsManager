@@ -27,7 +27,9 @@ public abstract class CommandDuplicator implements ISubCommand
                 tagCompound.removeTag(key);
         }
         return tagCompound;
-    }    public static ItemStack getDuplicator(ICommandSender sender)
+    }
+
+    public static ItemStack getDuplicator(ICommandSender sender)
     {
         if (sender instanceof EntityPlayerMP)
         {
@@ -45,7 +47,9 @@ public abstract class CommandDuplicator implements ISubCommand
             if (!tagCompound.hasKey(key)) tagCompound.setTag(key, defaultTagCompound.getTag(key));
         }
         return tagCompound;
-    }    @Override
+    }
+
+    @Override
     public void handleCommand(ICommandSender sender, String[] arguments)
     {
         if (!isVisible(sender))
@@ -61,9 +65,6 @@ public abstract class CommandDuplicator implements ISubCommand
             throw new CommandException("asm.command.noDuplicator");
         }
     }
-
-
-
 
 
     public abstract void doCommand(ItemStack duplicator, EntityPlayerMP sender, String[] arguments);

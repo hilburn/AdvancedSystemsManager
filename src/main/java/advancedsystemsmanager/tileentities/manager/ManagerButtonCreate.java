@@ -9,7 +9,6 @@ import advancedsystemsmanager.flow.menus.MenuTarget;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.settings.Settings;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 

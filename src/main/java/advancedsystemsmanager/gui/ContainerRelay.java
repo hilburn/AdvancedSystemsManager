@@ -3,7 +3,6 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
 import advancedsystemsmanager.util.UserPermission;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 

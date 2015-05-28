@@ -22,6 +22,7 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
     {
         if (!bufferProvider.containsBuffer(bufferKey))

@@ -1,14 +1,5 @@
 package advancedsystemsmanager.animation;
 
-import advancedsystemsmanager.flow.Connection;
-import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.Point;
-import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-
-import java.util.*;
-
 public class AnimationController
 {
 

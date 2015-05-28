@@ -2,7 +2,6 @@ package advancedsystemsmanager.items.blocks;
 
 import advancedsystemsmanager.api.items.IClusterItem;
 import advancedsystemsmanager.api.tileentities.IClusterElement;
-import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -10,6 +9,7 @@ import net.minecraft.item.ItemStack;
 public class ItemClusterElement extends ItemBlock implements IClusterItem
 {
     private IClusterElement element;
+
     public ItemClusterElement(Block block)
     {
         super(block);

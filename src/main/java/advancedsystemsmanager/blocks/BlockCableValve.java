@@ -3,7 +3,6 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityValve;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

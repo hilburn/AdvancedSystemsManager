@@ -2,7 +2,6 @@ package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EffectRenderer;

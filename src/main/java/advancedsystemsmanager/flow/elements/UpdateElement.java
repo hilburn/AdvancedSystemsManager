@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.elements;
 
-import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.network.IPacketWriter;
 import advancedsystemsmanager.network.ASMPacket;
 

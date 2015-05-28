@@ -2,21 +2,17 @@ package advancedsystemsmanager.recipes;
 
 
 import advancedsystemsmanager.api.items.IClusterItem;
-import advancedsystemsmanager.api.tileentities.ICluster;
 import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;

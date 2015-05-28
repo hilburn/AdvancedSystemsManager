@@ -1,11 +1,7 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.tileentities.IRedstoneEmitter;
-import advancedsystemsmanager.api.tileentities.IRedstoneNode;
-import advancedsystemsmanager.api.tileentities.IRedstoneReceiver;
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.tileentities.IInternalInventory;
-import advancedsystemsmanager.api.tileentities.IInternalTank;
+import advancedsystemsmanager.api.tileentities.*;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
@@ -192,7 +188,9 @@ public class SystemTypeRegistry
         public String toString()
         {
             return name;
-        }        public boolean isGroup()
+        }
+
+        public boolean isGroup()
         {
             return group;
         }

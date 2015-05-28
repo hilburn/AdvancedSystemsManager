@@ -9,11 +9,13 @@ import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.ScrollController;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.elements.VariableColor;
-import advancedsystemsmanager.gui.*;
+import advancedsystemsmanager.gui.Color;
+import advancedsystemsmanager.gui.GuiBase;
+import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.gui.IAdvancedTooltip;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.StevesHooks;
@@ -179,8 +181,7 @@ public class MenuContainer extends Menu implements IPacketSync
                     {
                         selectedInventories.remove(index);
                         removeInventory(index);
-                    }
-                    else
+                    } else
                     {
                         selectedInventories.add(id);
                         addInventory(id);
@@ -922,7 +923,7 @@ public class MenuContainer extends Menu implements IPacketSync
         if (packet.readBoolean())
         {
             selectedInventories.remove(packet.readShort());
-        }else
+        } else
         {
             selectedInventories.add(packet.readLong());
         }

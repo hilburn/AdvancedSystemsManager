@@ -84,7 +84,7 @@ public class Connection
         if (a != null && !a.equals(b))
         {
             a.setConnection(inputConnection, this);
-            if (b!= null)b.setConnection(outputConnection, this);
+            if (b != null) b.setConnection(outputConnection, this);
         }
     }
 
@@ -142,7 +142,7 @@ public class Connection
 
     public Point getSelectedNode()
     {
-        return selected == -1? null : nodes.get(selected);
+        return selected == -1 ? null : nodes.get(selected);
     }
 
     public int getSelected()

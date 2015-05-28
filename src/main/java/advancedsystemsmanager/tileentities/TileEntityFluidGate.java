@@ -159,7 +159,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
         {
             if (block instanceof IFluidBlock)
             {
-                IFluidBlock fluidBlock = (IFluidBlock) block;
+                IFluidBlock fluidBlock = (IFluidBlock)block;
                 if (!fluidBlock.canDrain(world, x, y, z))
                 {
                     return cachedStack = null;
@@ -168,8 +168,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
                 if (doDrain)
                 {
                     cachedStack = null;
-                }
-                else
+                } else
                 {
                     cachedStack = result;
                 }
@@ -185,7 +184,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
                 {
                     cachedStack = null;
                     world.setBlockToAir(x, y, z);
-                }else
+                } else
                 {
                     cachedStack = result;
                 }

@@ -11,7 +11,6 @@ import advancedsystemsmanager.settings.Settings;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
 import advancedsystemsmanager.tileentities.manager.ManagerButton;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;

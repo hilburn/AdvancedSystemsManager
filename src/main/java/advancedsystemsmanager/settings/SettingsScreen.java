@@ -1,7 +1,7 @@
 package advancedsystemsmanager.settings;
 
-import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.gui.GuiManager;

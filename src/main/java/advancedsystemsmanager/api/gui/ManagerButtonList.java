@@ -2,7 +2,6 @@ package advancedsystemsmanager.api.gui;
 
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;

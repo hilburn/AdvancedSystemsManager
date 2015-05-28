@@ -36,7 +36,7 @@ public class ClusterRegistry
 
     public static ItemStack getItemStack(int id)
     {
-        return getItemStack((byte)(id & 0xFF), id>>8);
+        return getItemStack((byte)(id & 0xFF), id >> 8);
     }
 
     public static ItemStack getItemStack(byte id, int meta)

@@ -311,7 +311,6 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     }
 
 
-
     @Override
     public int getSizeInventory()
     {

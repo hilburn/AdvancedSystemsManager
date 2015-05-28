@@ -50,7 +50,7 @@ public class ItemCluster extends ItemAdvanced
 //            NBTTagCompound cable = compound.getCompoundTag(NBT_CABLE);
 //            if (cable.hasKey(NBT_TYPES))
 //            {
-                return super.onItemUse(item, player, world, x, y, z, side, hitX, hitY, hitZ);
+        return super.onItemUse(item, player, world, x, y, z, side, hitX, hitY, hitZ);
 //            }
 //        }
 //
@@ -79,7 +79,7 @@ public class ItemCluster extends ItemAdvanced
         List<ItemStack> stacks = new ArrayList<ItemStack>();
         byte[] types = tag.getByteArray(NBT_TYPES);
         byte[] damages = tag.hasKey(NBT_DAMAGE) ? tag.getByteArray(NBT_DAMAGE) : new byte[types.length];
-        for (int i = 0; i< types.length; i++)
+        for (int i = 0; i < types.length; i++)
         {
             ItemStack stack = ClusterRegistry.getItemStack(types[i], damages[i]);
             if (stack != null) stacks.add(stack);

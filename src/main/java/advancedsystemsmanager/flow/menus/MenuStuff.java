@@ -224,14 +224,16 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         Setting<Type> setting = settings.get(packet.readByte());
         int action = packet.readByte();
 
-        switch (action) {
+        switch (action)
+        {
             case 0:
                 setting.clear();
                 selectedSetting = null;
                 break;
             case 1:
                 setting.readContentData(packet);
-                if (isEditing()) {
+                if (isEditing())
+                {
                     updateTextBoxes();
                 }
                 break;

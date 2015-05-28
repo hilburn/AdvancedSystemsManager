@@ -16,8 +16,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.List;
-
 
 public class PacketHandler
 {

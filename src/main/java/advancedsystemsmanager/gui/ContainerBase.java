@@ -84,7 +84,7 @@ public abstract class ContainerBase<T extends TileEntity & ITileInterfaceProvide
     @Override
     public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot)
     {
-        Slot slotObject = (Slot) inventorySlots.get(slot);
+        Slot slotObject = (Slot)inventorySlots.get(slot);
         ItemStack stack = null;
 
         if (slotObject != null && slotObject.getHasStack())

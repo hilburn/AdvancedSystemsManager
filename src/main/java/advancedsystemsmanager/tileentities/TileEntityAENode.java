@@ -6,7 +6,7 @@ import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.compatibility.appliedenergistics.AEFluidBufferElement;
 import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.compatibility.appliedenergistics.AEItemBufferElement;
-import advancedsystemsmanager.flow.execution.*;
+import advancedsystemsmanager.flow.execution.ConditionSettingChecker;
 import advancedsystemsmanager.flow.menus.MenuItem;
 import advancedsystemsmanager.flow.menus.MenuLiquid;
 import advancedsystemsmanager.flow.menus.MenuStuff;
@@ -42,6 +42,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     private IGridNode gridNode;
     private IFluidHandler tank;
     private boolean isReady;
+
     public TileEntityAENode()
     {
         this.gridBlock = new GridBlock();

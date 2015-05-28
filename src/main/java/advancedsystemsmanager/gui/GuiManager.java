@@ -11,7 +11,6 @@ import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
-import codechicken.nei.api.INEIGuiHandler;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -53,6 +52,7 @@ public class GuiManager extends GuiBase
     public IGuiElement<GuiManager> hoverComponent;
 
     private List<SecretCode> codes = new ArrayList<SecretCode>();
+
     {
 //        codes.add(new SecretCode("animate")
 //        {
@@ -505,7 +505,7 @@ public class GuiManager extends GuiBase
                     triggerNumber = 0;
                     keyTyped(c, k);
                 }
-            }else if (code[triggerNumber] == k)
+            } else if (code[triggerNumber] == k)
             {
                 triggerNumber++;
                 if (triggerNumber == code.length)

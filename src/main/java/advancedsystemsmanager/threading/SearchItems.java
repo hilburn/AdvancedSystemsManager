@@ -2,7 +2,6 @@ package advancedsystemsmanager.threading;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.flow.elements.ScrollController;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;

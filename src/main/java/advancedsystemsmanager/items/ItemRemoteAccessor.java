@@ -66,10 +66,10 @@ public class ItemRemoteAccessor extends ItemBase
     public void registerIcons(IIconRegister register)
     {
         icons[0] = register.registerIcon(getIconString());
-        icons[1] = register.registerIcon(getIconString()+"_advanced");
-        icons[2] = register.registerIcon(getIconString()+"_off");
-        icons[3] = register.registerIcon(getIconString()+"_off_advanced");
-        icons[4] = register.registerIcon(getIconString()+"_disabled");
+        icons[1] = register.registerIcon(getIconString() + "_advanced");
+        icons[2] = register.registerIcon(getIconString() + "_off");
+        icons[3] = register.registerIcon(getIconString() + "_off_advanced");
+        icons[4] = register.registerIcon(getIconString() + "_disabled");
     }
 
     @Override

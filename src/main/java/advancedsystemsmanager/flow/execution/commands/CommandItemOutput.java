@@ -1,9 +1,15 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.*;
+import advancedsystemsmanager.api.execution.IBuffer;
+import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.IBufferProvider;
+import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.*;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuContainer;
+import advancedsystemsmanager.flow.menus.MenuItem;
+import advancedsystemsmanager.flow.menus.MenuTargetInventory;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
@@ -82,7 +88,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                         }
                     }
 
-                }else
+                } else
                 {
                     Set<Integer> slots;
                     if (!cachedSlots.containsKey(inventory))
@@ -95,10 +101,11 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
 
                             if (inventory instanceof ISidedInventory)
                             {
-                                for (int slot : ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side)) slots.add(slot);
+                                for (int slot : ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side))
+                                    slots.add(slot);
                             } else
                             {
-                                for (int slot = start; slot < end; slot++ ) slots.add(slot);
+                                for (int slot = start; slot < end; slot++) slots.add(slot);
                             }
                         }
                         cachedSlots.put(inventory, slots);

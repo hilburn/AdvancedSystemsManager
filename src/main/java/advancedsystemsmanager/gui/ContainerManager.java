@@ -35,12 +35,12 @@ public class ContainerManager extends ContainerBase<TileEntityManager>
     @SideOnly(Side.CLIENT)
     public void detectAndSendChanges()
     {
-       //TODO: Whatttt
+        //TODO: Whatttt
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return super.canInteractWith (entityplayer) || entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor;
+        return super.canInteractWith(entityplayer) || entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == ItemRegistry.remoteAccessor;
     }
 }

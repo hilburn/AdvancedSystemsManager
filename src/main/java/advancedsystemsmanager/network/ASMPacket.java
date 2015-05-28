@@ -181,7 +181,7 @@ public class ASMPacket extends PacketBuffer
     {
         boolean[] result = new boolean[size];
         int b = readVarIntFromBuffer();
-        for (int i = 1; i<= size; i++)
+        for (int i = 1; i <= size; i++)
         {
             if ((b & 1) != 0) result[size - i] = true;
             b >>= 1;

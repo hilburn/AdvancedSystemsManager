@@ -1,12 +1,12 @@
 package advancedsystemsmanager.tileentities.manager;
 
+import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.api.gui.IManagerButton;
+import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
-import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.gui.IManagerButton;
-import advancedsystemsmanager.api.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -136,7 +136,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         if (!worldObj.isRemote)
         {
             triggers.removeAll(removed);
-        }else
+        } else
         {
             zLevelRenderingList.removeAll(removed);
         }
@@ -238,7 +238,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public boolean readData(ASMPacket packet, EntityPlayer player)
     {
         boolean result = false;
-        switch(packet.readByte())
+        switch (packet.readByte())
         {
             case PacketHandler.SYNC_ALL:
                 updateInventories();
@@ -284,7 +284,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     for (FlowComponent item : items) {
                         item.adjustEverythingToGridFine();
                     } */
-                    result =  false;
+                    result = false;
                 }
                 break;
             case PacketHandler.SYNC_COMPONENT:

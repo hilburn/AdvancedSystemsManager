@@ -31,6 +31,7 @@ public class CommandTrigger extends CommandBase
     @Override
     public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
     {
-
+        MenuTriggered trigger = (MenuTriggered)command.getMenus().get(6);
+        trigger.setCountdown();
     }
 }

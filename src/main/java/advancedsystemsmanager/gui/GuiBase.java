@@ -11,7 +11,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import extracells.integration.Integration;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -472,7 +471,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(32826);
         GL11.glEnable(2903);
         GL11.glEnable(2896);
-        this.zLevel ++;
+        this.zLevel++;
         itemRender.zLevel = zLevel;
 
 

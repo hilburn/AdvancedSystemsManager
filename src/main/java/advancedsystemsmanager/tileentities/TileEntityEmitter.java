@@ -5,14 +5,14 @@ import advancedsystemsmanager.api.tileentities.IRedstoneEmitter;
 import advancedsystemsmanager.flow.menus.MenuPulse;
 import advancedsystemsmanager.flow.menus.MenuRedstoneOutput;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;
-import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -304,7 +304,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             dw.writeBoolean(isOn);
             if (isOn)
             {
-                dw.writeByte(updatedStrength[i] | (updatedStrong[i] ? 1 << 5: 0));
+                dw.writeByte(updatedStrength[i] | (updatedStrong[i] ? 1 << 5 : 0));
             }
         }
     }

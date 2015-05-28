@@ -9,7 +9,6 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,8 +60,9 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     private void setKey()
     {
-        this.key = ((long)x & 0xFFFFFF)<<40 | ((long)z & 0xFFFFFF)<<16 | (y & 0xFF)<<8 | dim & 0xFF;
-        if (tileEntity instanceof IClusterTile) key |= (ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0xF) << 4;
+        this.key = ((long)x & 0xFFFFFF) << 40 | ((long)z & 0xFFFFFF) << 16 | (y & 0xFF) << 8 | dim & 0xFF;
+        if (tileEntity instanceof IClusterTile)
+            key |= (ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0xF) << 4;
     }
 
     public void addType(ISystemType type)

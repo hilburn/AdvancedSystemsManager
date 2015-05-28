@@ -4,13 +4,13 @@ import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
-import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.item.ItemBlock;
@@ -23,7 +23,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 
 public class TileEntityCamouflage extends TileEntityClusterElement implements IPacketBlock

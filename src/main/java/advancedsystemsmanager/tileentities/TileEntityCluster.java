@@ -8,7 +8,8 @@ import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.helpers.PlayerHelper;
 import advancedsystemsmanager.items.blocks.ItemCluster;
-import advancedsystemsmanager.network.*;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
@@ -32,7 +33,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Optional.InterfaceList({
         @Optional.Interface(iface = "cofh.api.energy.IEnergyProvider", modid = Mods.COFH_ENERGY),
@@ -72,7 +75,7 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
             NBTTagCompound cable = compound.getCompoundTag(ItemCluster.NBT_CABLE);
             byte[] types = cable.getByteArray(ItemCluster.NBT_TYPES);
             byte[] metas = cable.hasKey(ItemCluster.NBT_DAMAGE) ? cable.getByteArray(ItemCluster.NBT_DAMAGE) : new byte[types.length];
-            for (int i = 0; i< types.length; i++)
+            for (int i = 0; i < types.length; i++)
             {
                 addElement(types[i], metas[i]);
             }
@@ -346,7 +349,7 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
     {
         setWorldObject((TileEntity)tile);
     }
-    
+
     public void setWorldObject(TileEntity te)
     {
         if (!te.hasWorldObj())
@@ -403,7 +406,7 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
                 {
                     addElement(packet.readByte(), packet.readByte());
                 }
-            }else
+            } else
             {
                 ASMPacket response = PacketHandler.constructBlockPacket(this, this, 1);
                 response.setPlayers(packet.getPlayers());
@@ -422,7 +425,8 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
     private ClusterPair addElement(IClusterElement element, byte meta)
     {
         TileEntity tile = element.getClusterTile(getWorldObj(), meta);
-        if ((interfaceObject != null && tile instanceof ITileInterfaceProvider) || (camouflageObject != null && tile instanceof TileEntityCamouflage)) return null;
+        if ((interfaceObject != null && tile instanceof ITileInterfaceProvider) || (camouflageObject != null && tile instanceof TileEntityCamouflage))
+            return null;
         ClusterPair pair = new ClusterPair(element, (IClusterTile)tile);
         elements.add(element);
         pairs.add(pair);
