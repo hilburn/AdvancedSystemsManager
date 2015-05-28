@@ -18,7 +18,7 @@ public class CommandCamouflage extends CommandBase
 {
     public CommandCamouflage()
     {
-        super(15, Names.CAMOUFLAGE, CommandType.MISC, ConnectionSet.STANDARD);
+        super(CAMOUFLAGE, Names.CAMOUFLAGE, CommandType.MISC, ConnectionSet.STANDARD);
     }
 
     @Override

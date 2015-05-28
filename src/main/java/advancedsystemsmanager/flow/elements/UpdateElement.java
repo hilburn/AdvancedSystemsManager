@@ -23,6 +23,11 @@ public abstract class UpdateElement implements IPacketSync, IPacketWriter
 
     public void onUpdate()
     {
+        sendSyncPacket();
+    }
+
+    public void sendSyncPacket()
+    {
         ASMPacket packet = packetProvider.getSyncPacket();
         packet.writeByte(id);
         if (writeData(packet))

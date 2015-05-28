@@ -169,6 +169,22 @@ public class MenuSignText extends Menu
         }
     }
 
+    @Override
+    public void update(float partial)
+    {
+        for (int i = 0; i < hasChanged.length; i++)
+        {
+            if (hasChanged[i] > 0)
+            {
+                hasChanged[i] -= partial;
+                if (hasChanged[i] <= 0)
+                {
+                    textBoxes[i].sendSyncPacket();
+                }
+            }
+        }
+    }
+
     public void onSelectedChange()
     {
         update(IDLE_TIME);

@@ -400,33 +400,6 @@ public class CommandExecutor
                             }
                         }
                         return;
-                    case 15:
-                        List<SlotInventoryHolder> camouflage = this.getCamouflage(command.getMenus().get(0));
-                        if (camouflage != null)
-                        {
-                            MenuCamouflageShape var29 = (MenuCamouflageShape)command.getMenus().get(1);
-                            MenuCamouflageInside var31 = (MenuCamouflageInside)command.getMenus().get(2);
-                            MenuCamouflageSides var32 = (MenuCamouflageSides)command.getMenus().get(3);
-                            MenuCamouflageItems items = (MenuCamouflageItems)command.getMenus().get(4);
-                            if (items.isFirstRadioButtonSelected() || items.getSettings().get(0).isValid())
-                            {
-                                ItemStack itemStack = items.isFirstRadioButtonSelected() ? null : ((ItemSetting)items.getSettings().get(0)).getItem();
-
-                                for (SlotInventoryHolder slotInventoryHolder : camouflage)
-                                {
-                                    slotInventoryHolder.getCamouflage().setBounds(var29);
-
-                                    for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; ++i)
-                                    {
-                                        if (var32.isSideRequired(i))
-                                        {
-                                            slotInventoryHolder.getCamouflage().setItem(itemStack, i, var31.getCurrentType());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
                     case 16:
                         List<SlotInventoryHolder> sign = this.getSign(command.getMenus().get(0));
                         if (sign != null)

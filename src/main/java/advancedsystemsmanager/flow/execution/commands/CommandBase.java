@@ -15,6 +15,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class CommandBase<Type> implements ICommand
@@ -28,6 +29,8 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int FLUID_INPUT = 5;
     protected static final int FLUID_OUTPUT = 6;
     protected static final int FLUID_CONDITION = 7;
+    protected static final int CAMOUFLAGE = 15;
+    protected static final int SIGN = 16;
 
     protected int id;
     protected String name;
@@ -48,10 +51,17 @@ public abstract class CommandBase<Type> implements ICommand
     public List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
     {
         List<SystemCoord> result = new ArrayList<SystemCoord>();
-        for (long selected : container.getSelectedInventories())
+        for (Iterator<Long> itr = container.getSelectedInventories().listIterator(); itr.hasNext();)
         {
+            long selected = itr.next();
             SystemCoord coord = manager.getInventory(selected);
-            if (coord != null) result.add(coord);
+            if (coord != null)
+            {
+                result.add(coord);
+            } else
+            {
+                itr.remove();
+            }
         }
         return result;
     }

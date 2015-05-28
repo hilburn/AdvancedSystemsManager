@@ -91,9 +91,6 @@ public class CommandRegistry
 //        registerCommand(NODE = new Command(14, CommandType.MISC, Localization.NODE_SHORT, Localization.NODE_LONG,
 //                new ConnectionSet[]{ConnectionSet.INPUT_NODE, ConnectionSet.OUTPUT_NODE},
 //                MenuResult.class));
-//        registerCommand(SIGN = new Command(16, CommandType.MISC, Localization.SIGN_SHORT, Localization.SIGN_LONG,
-//                new ConnectionSet[]{ConnectionSet.STANDARD},
-//                MenuSigns.class, MenuSignText.class));
         registerCommand(new CommandTrigger());
         registerCommand(INPUT = new CommandItemInput());
         registerCommand(new CommandItemOutput());
@@ -101,5 +98,6 @@ public class CommandRegistry
         registerCommand(new CommandFluidOutput());
 
         registerCommand(new CommandCamouflage());
+        registerCommand(new CommandSign());
     }
 }
