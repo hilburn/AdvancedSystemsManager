@@ -4,6 +4,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import hilburnlib.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -39,7 +40,7 @@ public class Registerer
         this.configLock = configLock;
     }
 
-    public void scan(Class<?> targetClass)
+    public void scan(Class<?> targetClass, Side side)
     {
         for (Field field : targetClass.getFields())
         {
@@ -54,10 +55,10 @@ public class Registerer
                 {
                     if (Item.class.isAssignableFrom(clazz))
                     {
-                        registerItem(field, annotation, clazz);
+                        registerItem(field, annotation, clazz, side);
                     } else if (Block.class.isAssignableFrom(clazz))
                     {
-                        registerBlock(field, annotation, clazz);
+                        registerBlock(field, annotation, clazz, side);
                     } else
                     {
                         log.warn("Can only register Blocks and Items - " + field.getName() + " unrecognised");
@@ -70,7 +71,7 @@ public class Registerer
         }
     }
 
-    private void registerItem(Field field, Register annotation, Class<? extends Item> clazz)
+    private void registerItem(Field field, Register annotation, Class<? extends Item> clazz, Side side)
     {
         try
         {
@@ -82,8 +83,11 @@ public class Registerer
             }
             if (!annotation.unlocalizedName().isEmpty()) item.setUnlocalizedName(annotation.unlocalizedName());
             GameRegistry.registerItem(item, getName(annotation).isEmpty() ? item.getUnlocalizedName() : getName(annotation));
-            if (annotation.IItemRenderer() != Object.class)
-                renderRegistry.registerItemRenderer(item, (IItemRenderer)annotation.IItemRenderer().newInstance());
+            if (side == Side.CLIENT)
+            {
+                if (annotation.IItemRenderer() != Object.class)
+                    renderRegistry.registerItemRenderer(item, (IItemRenderer)annotation.IItemRenderer().newInstance());
+            }
         } catch (Exception e)
         {
             log.warn("Failed to register item " + annotation.name());
@@ -95,7 +99,7 @@ public class Registerer
         return annotation.name().isEmpty() ? annotation.unlocalizedName() : annotation.name();
     }
 
-    private void registerBlock(Field field, Register annotation, Class<? extends Block> clazz)
+    private void registerBlock(Field field, Register annotation, Class<? extends Block> clazz, Side side)
     {
         try
         {
@@ -109,15 +113,17 @@ public class Registerer
             GameRegistry.registerBlock(block, annotation.itemBlock(), getName(annotation).isEmpty() ? block.getUnlocalizedName() : getName(annotation));
             if (annotation.tileEntity() != TileEntity.class)
                 GameRegistry.registerTileEntity(annotation.tileEntity(), annotation.name());
-            if (annotation.SBRH() != Object.class)
+            if (side == Side.CLIENT)
             {
-                ISimpleBlockRenderingHandler handler = getConstructed(annotation.SBRH());
-                renderRegistry.registerSimpleBlockRenderer(block.getRenderType(), handler);
+                if (annotation.SBRH() != Object.class)
+                {
+                    ISimpleBlockRenderingHandler handler = getConstructed(annotation.SBRH());
+                    renderRegistry.registerSimpleBlockRenderer(block.getRenderType(), handler);
+                } else if (annotation.tileEntity() != TileEntity.class && annotation.TESR() != Object.class)
+                    renderRegistry.registerTileEntityRenderer(annotation.tileEntity(), (TileEntitySpecialRenderer)annotation.TESR().newInstance());
+                if (annotation.IItemRenderer() != Object.class)
+                    renderRegistry.registerItemRenderer(Item.getItemFromBlock(block), (IItemRenderer)annotation.IItemRenderer().newInstance());
             }
-            else if (annotation.tileEntity() != TileEntity.class && annotation.TESR() != Object.class)
-                renderRegistry.registerTileEntityRenderer(annotation.tileEntity(), (TileEntitySpecialRenderer)annotation.TESR().newInstance());
-            if (annotation.IItemRenderer() != Object.class)
-                renderRegistry.registerItemRenderer(Item.getItemFromBlock(block), (IItemRenderer)annotation.IItemRenderer().newInstance());
         } catch (Exception e)
         {
             log.warn("Failed to register block " + annotation.name());

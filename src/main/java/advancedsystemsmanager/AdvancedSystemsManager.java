@@ -80,8 +80,8 @@ public class AdvancedSystemsManager
         };
 
         registerer = new Registerer(log, PROXY, config);
-        registerer.scan(BlockRegistry.class);
-        registerer.scan(ItemRegistry.class);
+        registerer.scan(BlockRegistry.class, event.getSide());
+        registerer.scan(ItemRegistry.class, event.getSide());
 
         MessageHandler.init();
 

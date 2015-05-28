@@ -136,6 +136,7 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiScreen getGui(ItemStack stack, EntityPlayer player)
     {
         return new GuiLabeler(stack, player);

@@ -29,7 +29,7 @@ public class ItemRemoteAccessor extends ItemBase
     public static final String WORLD = "world";
 
     @SideOnly(Side.CLIENT)
-    private IIcon[] icons = new IIcon[5];
+    private IIcon[] icons;
 
     public ItemRemoteAccessor()
     {
@@ -65,6 +65,7 @@ public class ItemRemoteAccessor extends ItemBase
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
     {
+        icons = new IIcon[5];
         icons[0] = register.registerIcon(getIconString());
         icons[1] = register.registerIcon(getIconString() + "_advanced");
         icons[2] = register.registerIcon(getIconString() + "_off");
