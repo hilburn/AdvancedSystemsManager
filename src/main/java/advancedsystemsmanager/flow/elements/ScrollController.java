@@ -344,7 +344,7 @@ public abstract class ScrollController<T>
 
     public void doScroll(int scroll)
     {
-        if (!disabledScroll)
+        if (!disabledScroll && result.size() > itemsPerRow)
         {
             moveOffset(scroll / -20);
         }

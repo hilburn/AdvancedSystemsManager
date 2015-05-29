@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.gui.GuiManager;
@@ -8,6 +7,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ public class MenuCamouflageItems extends MenuItem
     public MenuCamouflageItems(FlowComponent parent)
     {
         super(parent);
+        scrollControllerSelected.setDisabledScroll(true);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class MenuCamouflageItems extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public List updateSearch(String search, boolean showAll)
+    public List<ItemStack> updateSearch(String search, boolean showAll)
     {
         Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll, true));
         thread.start();
