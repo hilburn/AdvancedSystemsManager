@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
@@ -22,11 +21,6 @@ public class CommandGroup extends CommandBase
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
         menus.add(new MenuGroup(component));
-    }
-
-    @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
-    {
     }
 
     @Override

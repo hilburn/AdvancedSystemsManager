@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.registry.ConnectionSet;
 
 public abstract class CommandOutput<Type> extends CommandBase<Type>
@@ -16,10 +16,10 @@ public abstract class CommandOutput<Type> extends CommandBase<Type>
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
-        if (bufferProvider.containsBuffer(bufferKey))
-            outputFromBuffer(command, bufferProvider.getBuffer(bufferKey));
+        if (executor.containsBuffer(bufferKey))
+            outputFromBuffer(command, executor.getBuffer(bufferKey));
     }
 
     protected abstract void outputFromBuffer(FlowComponent component, IBuffer<Type> buffer);

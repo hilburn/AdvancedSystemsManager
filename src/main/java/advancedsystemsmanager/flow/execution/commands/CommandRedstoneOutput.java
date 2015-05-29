@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.SlotInventoryHolder;
+import advancedsystemsmanager.flow.execution.Executor;
+
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -29,7 +29,7 @@ public class CommandRedstoneOutput extends CommandBase
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
         List<SystemCoord> coords = getContainers(command.getManager(), (MenuContainer)command.menus.get(0));
         if (coords != null)

@@ -1,7 +1,6 @@
 package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.api.execution.IBuffer;
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -11,7 +10,7 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.*;
 
-public class Executor implements IBufferProvider
+public class Executor
 {
     public TileEntityManager manager;
     public List<Integer> usedCommands;
@@ -24,26 +23,33 @@ public class Executor implements IBufferProvider
         this.usedCommands = new ArrayList<Integer>();
     }
 
-    public Executor(TileEntityManager manager, HashMap<String, IBuffer> buffers, List<Integer> usedCommands)
+    public Executor(TileEntityManager manager, Map<String, IBuffer> buffers, List<Integer> usedCommands)
     {
         this.manager = manager;
         this.buffers = buffers;
         this.usedCommands = usedCommands;
     }
 
-    @Override
     public <T extends IBuffer> T getBuffer(String buffer)
     {
         return (T)buffers.get(buffer);
     }
 
-    @Override
+    public Set<String> getBuffers()
+    {
+        return buffers.keySet();
+    }
+
+    public List<Integer> usedCommands()
+    {
+        return usedCommands;
+    }
+
     public boolean containsBuffer(String key)
     {
         return buffers.containsKey(key);
     }
 
-    @Override
     public void setBuffer(String key, IBuffer buffer)
     {
         if (!buffers.containsKey(key))

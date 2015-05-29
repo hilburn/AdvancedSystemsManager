@@ -2,10 +2,10 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuItem;
@@ -29,16 +29,17 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    @SuppressWarnings("unchecked")
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
-        if (bufferProvider.containsBuffer(IBuffer.CRAFT_HIGH))
-            outputFromBuffer(command, bufferProvider.getBuffer(IBuffer.CRAFT_HIGH));
+        if (executor.containsBuffer(IBuffer.CRAFT_HIGH))
+            outputFromBuffer(command, executor.getBuffer(IBuffer.CRAFT_HIGH));
 
-        if (bufferProvider.containsBuffer(IBuffer.ITEM))
-            outputFromBuffer(command, bufferProvider.getBuffer(IBuffer.ITEM));
+        if (executor.containsBuffer(IBuffer.ITEM))
+            outputFromBuffer(command, executor.getBuffer(IBuffer.ITEM));
 
-        if (bufferProvider.containsBuffer(IBuffer.CRAFT_LOW))
-            outputFromBuffer(command, bufferProvider.getBuffer(IBuffer.CRAFT_LOW));
+        if (executor.containsBuffer(IBuffer.CRAFT_LOW))
+            outputFromBuffer(command, executor.getBuffer(IBuffer.CRAFT_LOW));
     }
 
     @Override

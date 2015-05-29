@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -29,7 +29,7 @@ public class CommandTrigger extends CommandBase
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
         MenuTriggered trigger = (MenuTriggered)command.getMenus().get(6);
         trigger.setCountdown();

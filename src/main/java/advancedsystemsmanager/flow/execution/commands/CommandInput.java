@@ -2,8 +2,8 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -23,11 +23,11 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
 
     @Override
     @SuppressWarnings("unchecked")
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
-        if (!bufferProvider.containsBuffer(bufferKey))
-            bufferProvider.setBuffer(bufferKey, getNewBuffer());
-        addToBuffer(getBufferSubElements(command.id, getContainers(command.manager, (MenuContainer)command.menus.get(0)), command.menus), bufferProvider.getBuffer(bufferKey));
+        if (!executor.containsBuffer(bufferKey))
+            executor.setBuffer(bufferKey, getNewBuffer());
+        addToBuffer(getBufferSubElements(command.id, getContainers(command.manager, (MenuContainer)command.menus.get(0)), command.menus), executor.getBuffer(bufferKey));
     }
 
     protected abstract IBuffer getNewBuffer();

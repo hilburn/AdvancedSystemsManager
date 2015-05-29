@@ -4,6 +4,7 @@ import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Textures;
@@ -94,6 +95,11 @@ public abstract class CommandBase<Type> implements ICommand
         for (Setting<Type> setting : settings)
             if (setting.isContentEqual(check)) return setting;
         return null;
+    }
+
+    @Override
+    public void execute(FlowComponent command, int connectionId, Executor executor)
+    {
     }
 
     @Override

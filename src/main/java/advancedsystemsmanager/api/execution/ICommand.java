@@ -2,6 +2,7 @@ package advancedsystemsmanager.api.execution;
 
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +32,7 @@ public interface ICommand
     @SideOnly(Side.CLIENT)
     ResourceLocation getTexture();
 
-    void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider);
+    void execute(FlowComponent command, int connectionId, Executor executor);
 
     List<Connection> getActiveChildren(FlowComponent command, int connectionId);
 

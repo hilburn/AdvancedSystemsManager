@@ -63,9 +63,6 @@ public class CommandRegistry
 //        registerCommand(CONDITION = new Command(3, CommandType.COMMAND_CONTROL, Localization.CONDITION_SHORT, Localization.CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuInventoryCondition.class, MenuTargetInventory.class, MenuItemCondition.class));
-//        registerCommand(FLOW_CONTROL = new Command(4, CommandType.COMMAND_CONTROL, Localization.FLOW_CONTROL_SHORT, Localization.FLOW_CONTROL_LONG,
-//                new ConnectionSet[]{ConnectionSet.MULTIPLE_INPUT_2, ConnectionSet.MULTIPLE_INPUT_5, ConnectionSet.MULTIPLE_OUTPUT_2, ConnectionSet.MULTIPLE_OUTPUT_5},
-//                MenuSplit.class));
 //        registerCommand(LIQUID_CONDITION = new Command(7, CommandType.COMMAND_CONTROL, Localization.LIQUID_CONDITION_SHORT, Localization.LIQUID_CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuTankCondition.class, MenuTargetTank.class, MenuLiquidCondition.class));
@@ -85,6 +82,7 @@ public class CommandRegistry
         registerCommand(INPUT = new CommandItemInput());
         registerCommand(new CommandItemOutput());
 
+        registerCommand(new CommandSplit());
         registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
 

@@ -32,6 +32,10 @@ public interface IBuffer<Type>
 
     Iterator<Key<Type>> getKeyIterator();
 
+    boolean shouldSplit();
+
+    IBuffer split(int amount, int i, boolean fair);
+
 //    void addToOrderedList(IBufferSubElement<Type> subElement);
 //
 //    Iterator<IBufferSubElement<Type>> getOrderedIterator();

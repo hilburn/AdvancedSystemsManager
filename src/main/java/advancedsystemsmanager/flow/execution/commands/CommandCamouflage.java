@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.reference.Names;
@@ -32,7 +32,7 @@ public class CommandCamouflage extends CommandBase
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
         List<SystemCoord> camouflageBlocks = getContainers(command.getManager(), (MenuContainer)command.getMenus().get(0));
         if (camouflageBlocks != null)

@@ -6,6 +6,7 @@ import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
+import advancedsystemsmanager.flow.execution.buffers.ItemBuffer;
 import advancedsystemsmanager.flow.execution.buffers.elements.ItemBufferElement;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
@@ -41,14 +42,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
     @Override
     protected IBuffer getNewBuffer()
     {
-        return new Buffer<ItemStack>()
-        {
-            @Override
-            public Key<ItemStack> getKey(ItemStack key)
-            {
-                return new Key.ItemKey(key);
-            }
-        };
+        return new ItemBuffer();
     }
 
     @Override

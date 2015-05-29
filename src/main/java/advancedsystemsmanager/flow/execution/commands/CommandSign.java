@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.execution.commands;
 
-import advancedsystemsmanager.api.execution.IBufferProvider;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuSignText;
@@ -28,7 +28,7 @@ public class CommandSign extends CommandBase
     }
 
     @Override
-    public void execute(FlowComponent command, int connectionId, IBufferProvider bufferProvider)
+    public void execute(FlowComponent command, int connectionId, Executor executor)
     {
         List<SystemCoord> signBlocks = getContainers(command.getManager(), (MenuContainer)command.getMenus().get(0));
         if (signBlocks != null)

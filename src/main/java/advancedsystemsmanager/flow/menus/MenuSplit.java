@@ -6,7 +6,6 @@ import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -68,23 +67,6 @@ public class MenuSplit extends Menu
                 return useEmpty();
             }
         });
-    }
-
-    public void writeData(ASMPacket dw, int id)
-    {
-        dw.writeByte(id);
-        switch (id)
-        {
-            case 0:
-                dw.writeBoolean(useSplit());
-                break;
-            case 1:
-                dw.writeBoolean(useFair());
-                break;
-            case 2:
-                dw.writeBoolean(useEmpty());
-                break;
-        }
     }
 
     public boolean useSplit()

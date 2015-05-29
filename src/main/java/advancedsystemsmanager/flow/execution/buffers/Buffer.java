@@ -13,7 +13,6 @@ public class Buffer<Type> implements IBuffer<Type>
 {
     private LinkedListMultimap<Key<Type>, IBufferElement<Type>> multiMap = LinkedListMultimap.create();
 
-
     @Override
     public boolean contains(Type type)
     {
@@ -58,6 +57,35 @@ public class Buffer<Type> implements IBuffer<Type>
     public Iterator<Key<Type>> getKeyIterator()
     {
         return multiMap.keySet().iterator();
+    }
+
+    @Override
+    public boolean shouldSplit()
+    {
+        return true;
+    }
+
+    @Override
+    public IBuffer split(int amount, int i, boolean fair)
+    {
+        Buffer<Type> buffer = getNewBuffer();
+        if (amount == 1)
+        {
+            buffer.multiMap.putAll(multiMap);
+            return buffer;
+        } else
+        {
+            for (Map.Entry<Key<Type>, IBufferElement<Type>> entry : multiMap.entries())
+            {
+                buffer.multiMap.put(entry.getKey(), entry.getValue().getSplitElement(amount, i, fair));
+            }
+        }
+        return buffer;
+    }
+
+    public Buffer<Type> getNewBuffer()
+    {
+        return new Buffer<Type>();
     }
 
     public Key<Type> getKey(Type key)
