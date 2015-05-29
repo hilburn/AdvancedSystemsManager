@@ -9,6 +9,7 @@ import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.helpers.Settings;
+import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 int idToRemove = packet.readVarIntFromBuffer();
                 if (idToRemove != -1)
                 {
-                    manager.removeFlowComponent(idToRemove);
+                    manager.removeFlowComponent(idToRemove, packet.readBoolean());
                     return true;
                 }
                 return false;
@@ -60,6 +61,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                     if (item.isBeingMoved())
                     {
                         packet.writeVarIntToBuffer(item.getId());
+                        packet.writeBoolean(GuiScreen.isShiftKeyDown() && Settings.getSetting(Settings.SHIFT_MODIFIER));
                         return true;
                     }
                 }
@@ -89,7 +91,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                     if (id != -1)
                     {
                         FlowComponent item = manager.getFlowItem(id);
-                        Collection<FlowComponent> added = CopyHelper.copyConnectionsWithChildren(manager, item, Settings.isLimitless(manager));
+                        Collection<FlowComponent> added = CopyHelper.copyCommandsWithChildren(manager, item, Settings.isLimitless(manager), packet.readBoolean());
                         for (FlowComponent add : added)
                         {
                             manager.addNewComponent(add);
@@ -126,6 +128,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                     if (item.isBeingMoved())
                     {
                         packet.writeVarIntToBuffer(item.getId());
+                        packet.writeBoolean(GuiScreen.isShiftKeyDown() && Settings.getSetting(Settings.SHIFT_MODIFIER));
                         return true;
                     }
                 }

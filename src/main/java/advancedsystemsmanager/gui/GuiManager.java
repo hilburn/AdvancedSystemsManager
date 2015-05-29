@@ -336,7 +336,7 @@ public class GuiManager extends GuiBase
         if (selectedComponent instanceof FlowComponent)
         {
             FlowComponent dragged = (FlowComponent)selectedComponent;
-            dragged.onDrag(x, y);
+            dragged.onDrag(x, y, button);
         }
     }
 

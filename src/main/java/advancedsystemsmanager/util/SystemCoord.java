@@ -172,7 +172,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
         if (GuiScreen.isShiftKeyDown())
         {
-            for (Variable variable : gui.getManager().getVariables())
+            for (Variable variable : gui.getManager().getVariableArray())
             {
                 if (isPartOfVariable(variable))
                 {

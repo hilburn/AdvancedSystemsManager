@@ -1028,9 +1028,9 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    public void onDrag(int mX, int mY)
+    public void onDrag(int mX, int mY, int button)
     {
-        followMouse(mX, mY);
+        followMouse(mX, mY, button);
 
         for (int i = 0; i < menus.size(); i++)
         {
@@ -1051,13 +1051,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     }
 
     @SideOnly(Side.CLIENT)
-    public void followMouse(int mX, int mY)
+    public void followMouse(int mX, int mY, int button)
     {
         if (isDragging)
         {
+            int startX = x;
+            int startY = y;
             x += mX - mouseDragX;
             y += mY - mouseDragY;
-
 
             if (GuiScreen.isShiftKeyDown())
             {
@@ -1069,7 +1070,24 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 mouseDragX = mX;
                 mouseDragY = mY;
             }
+
+            if (button == 2)
+            {
+                List<FlowComponent> connected = new ArrayList<FlowComponent>();
+                MenuGroup.findCluster(connected, this, null);
+                for (FlowComponent component : connected)
+                {
+                    if (!component.equals(this))
+                        component.shiftLocation(x - startX, y - startY);
+                }
+            }
         }
+    }
+
+    public void shiftLocation(int dx, int dy)
+    {
+        x += dx;
+        y += dy;
     }
 
     public void adjustToGrid(int grid)
@@ -1080,10 +1098,10 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public void onRelease(int mX, int mY, int button)
     {
-        followMouse(mX, mY);
+        followMouse(mX, mY, button);
         if (isDragging)
         {
-            sendLocationData();
+            sendLocationData(button == 2);
         }
 
         for (int i = 0; i < menus.size(); i++)
@@ -1507,8 +1525,23 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             switch (id - networkSyncList.size())
             {
                 case 0:
-                    x = packet.readShort();
-                    y = packet.readShort();
+                    int newX = packet.readShort();
+                    int newY = packet.readShort();
+                    if (packet.readBoolean())
+                    {
+                        newX -= x;
+                        newY -= y;
+                        List<FlowComponent> connected = new ArrayList<FlowComponent>();
+                        MenuGroup.findCluster(connected, this, null);
+                        for (FlowComponent component : connected)
+                        {
+                            component.shiftLocation(newX, newY);
+                        }
+                    } else
+                    {
+                        x = newX;
+                        y = newY;
+                    }
                     break;
                 case 1:
                     int connectionId = packet.readByte();
@@ -1549,13 +1582,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    private void sendLocationData()
+    private void sendLocationData(boolean moveConnected)
     {
-        ASMPacket dw = PacketHandler.getComponentPacket(this);
-        dw.writeByte(networkSyncList.size());
-        dw.writeShort(x);
-        dw.writeShort(y);
-        PacketHandler.sendDataToServer(dw);
+        ASMPacket packet = PacketHandler.getComponentPacket(this);
+        packet.writeByte(networkSyncList.size());
+        packet.writeShort(x);
+        packet.writeShort(y);
+        packet.writeBoolean(moveConnected);
+        PacketHandler.sendDataToServer(packet);
     }
 
     private void sendConnectionData(int connectionId, boolean add, int targetComponent, int targetConnection)

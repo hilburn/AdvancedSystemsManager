@@ -69,7 +69,7 @@ public class CommandExecutor
         {
             ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
             List<SystemCoord> inventories = manager.getConnectedInventories();
-            Variable[] variables = manager.getVariables();
+            Variable[] variables = manager.getVariableArray();
 
             int i;
             label50:
@@ -209,7 +209,7 @@ public class CommandExecutor
 
     public void executeTriggerCommand(FlowComponent command, EnumSet<ConnectionOption> validTriggerOutputs)
     {
-        for (Variable variable : this.manager.getVariables())
+        for (Variable variable : this.manager.getVariableArray())
         {
             if (variable.isValid() && (!variable.hasBeenExecuted() || ((MenuVariable)variable.getDeclaration().getMenus().get(0)).getVariableMode() == VariableMode.LOCAL))
             {
@@ -906,7 +906,7 @@ public class CommandExecutor
     public void updateVariable(List<SlotInventoryHolder> tiles, MenuVariable menuVariable, MenuListOrder menuOrder)
     {
         VariableMode mode = menuVariable.getVariableMode();
-        Variable variable = this.manager.getVariables()[menuVariable.getSelectedVariable()];
+        Variable variable = this.manager.getVariableArray()[menuVariable.getSelectedVariable()];
         if (variable.isValid())
         {
             boolean remove = mode == VariableMode.REMOVE;

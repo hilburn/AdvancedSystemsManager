@@ -395,6 +395,7 @@ gui.system.Settings.autoSide=Automatically select one side for inputs, outputs a
 gui.system.Settings.autoBlacklist=Automatically select an empty blacklist for input commands as well. (Output commands start with an empty blacklist regardless of this setting.)
 gui.system.Settings.enlargeInterfaces=Enlarge interfaces to fit the full screen, unless they do that already. (Interfaces are always made smaller to fit the screen regardless of this setting.)
 gui.system.Settings.priorityMoveFirst=Set the default option for new crafting commands to prioritize movement.
+gui.system.Settings.shiftModifier=If this is active, holding [SHIFT] will make the Copy and Delete commands work on all the connected commands.
 gui.system.Settings.limitless=Remove all limits of this manager. Without this selected there's a limit of 511 commands, 1023 connected inventories and a max reach of 128 blocks. [Creative only]
 
 # ======================================

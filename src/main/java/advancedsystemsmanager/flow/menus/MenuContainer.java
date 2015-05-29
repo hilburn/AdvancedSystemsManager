@@ -72,6 +72,7 @@ public class MenuContainer extends Menu implements IPacketSync
     public static boolean hasUpdated;
     public Page currentPage;
     public List<Long> selectedInventories;
+    public List<Integer> selectedVariables;
     public List<IContainerSelection<GuiManager>> inventories;
     public RadioButtonList radioButtonsMulti;
     public ScrollController<IContainerSelection<GuiManager>> scrollController;
@@ -525,19 +526,6 @@ public class MenuContainer extends Menu implements IPacketSync
         return ret;
     }
 
-    public void writeRadioButtonData(ASMPacket dw, int option)
-    {
-        dw.writeBoolean(true);
-        dw.writeByte(option);
-    }
-
-    public void setSelectedInventoryAndSync(long val, boolean select)
-    {
-//        DataWriter dw = getWriterForServerComponentPacket();
-//        writeData(dw, val, select);
-//        PacketHandler.sendDataToServer(dw);
-    }
-
     public void writeData(ASMPacket dw, long id, boolean select)
     {
         dw.writeBoolean(false);
@@ -552,10 +540,10 @@ public class MenuContainer extends Menu implements IPacketSync
         List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>();
         filterVariables.clear();
 
-        for (int i = 0; i < manager.getVariables().length; i++)
+        for (int i = 0; i < manager.getVariableArray().length; i++)
         {
-            Variable variable = manager.getVariables()[i];
-            if (isVariableAllowed(validTypes, i))
+            Variable variable = manager.getVariableArray()[i];
+            if (isVariableAllowed(validTypes, variable))
             {
                 ret.add(variable);
                 filterVariables.add(variable);
@@ -586,9 +574,8 @@ public class MenuContainer extends Menu implements IPacketSync
         return new HashSet<ISystemType>(Arrays.asList(type));
     }
 
-    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
+    public boolean isVariableAllowed(Set<ISystemType> validTypes, Variable variable)
     {
-        Variable variable = getParent().getManager().getVariables()[i];
         if (variable.isValid())
         {
             Set<ISystemType> variableValidTypes = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();

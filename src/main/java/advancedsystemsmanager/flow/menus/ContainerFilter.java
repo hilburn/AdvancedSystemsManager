@@ -245,7 +245,7 @@ public class ContainerFilter
                     case 3:
                         if (radioButtonVariable.getSelectedOption() == 0)
                         {
-                            for (Variable variable : manager.getVariables())
+                            for (Variable variable : manager.getVariableArray())
                             {
                                 if (block.isPartOfVariable(variable))
                                 {
@@ -258,7 +258,7 @@ public class ContainerFilter
                         {
                             boolean variableMatch = false;
 
-                            for (Variable variable : manager.getVariables())
+                            for (Variable variable : manager.getVariableArray())
                             {
                                 if (filterVariableSelection.contains(variable.getId()) && block.isPartOfVariable(variable))
                                 {

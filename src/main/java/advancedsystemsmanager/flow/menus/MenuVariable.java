@@ -184,7 +184,7 @@ public class MenuVariable extends Menu
 
     public Variable getVariable()
     {
-        return getParent().getManager().getVariables()[getSelectedVariable()];
+        return getParent().getManager().getVariableArray()[getSelectedVariable()];
     }
 
     public int getSelectedVariable()
@@ -221,7 +221,7 @@ public class MenuVariable extends Menu
     @Override
     public void addErrors(List<String> errors)
     {
-        Variable variable = getParent().getManager().getVariables()[selectedVariable];
+        Variable variable = getParent().getManager().getVariableArray()[selectedVariable];
         if (!variable.isValid())
         {
             errors.add(Names.NOT_DECLARED_ERROR);

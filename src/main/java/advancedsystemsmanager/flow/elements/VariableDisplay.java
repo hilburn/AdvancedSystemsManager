@@ -37,7 +37,7 @@ public abstract class VariableDisplay
             gui.drawString(name, x + TEXT_X, y + TEXT_Y, 0x404040);
         }
 
-        gui.getManager().getVariables()[getValue()].draw(gui, x + VARIABLE_X, y);
+        gui.getManager().getVariableArray()[getValue()].draw(gui, x + VARIABLE_X, y);
 
         for (int i = 0; i < 2; i++)
         {
@@ -60,7 +60,7 @@ public abstract class VariableDisplay
     {
         if (CollisionHelper.inBounds(x + VARIABLE_X, y, VARIABLE_SIZE, VARIABLE_SIZE, mX, mY))
         {
-            gui.drawMouseOver(gui.getManager().getVariables()[getValue()].getDescription(gui), mX, mY);
+            gui.drawMouseOver(gui.getManager().getVariableArray()[getValue()].getDescription(gui), mX, mY);
         }
     }
 

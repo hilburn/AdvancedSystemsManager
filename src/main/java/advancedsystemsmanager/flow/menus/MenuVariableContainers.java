@@ -33,7 +33,7 @@ public class MenuVariableContainers extends MenuContainer
         } else
         {
             int variableId = ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
-            Variable variable = getParent().getManager().getVariables()[variableId];
+            Variable variable = getParent().getManager().getVariableArray()[variableId];
             if (variable.isValid())
             {
                 return ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
@@ -45,9 +45,9 @@ public class MenuVariableContainers extends MenuContainer
     }
 
     @Override
-    public boolean isVariableAllowed(Set<ISystemType> validTypes, int i)
+    public boolean isVariableAllowed(Set<ISystemType> validTypes, Variable variable)
     {
-        return super.isVariableAllowed(validTypes, i) && i != ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
+        return super.isVariableAllowed(validTypes, variable);// && i != ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
     }
 
     @Override

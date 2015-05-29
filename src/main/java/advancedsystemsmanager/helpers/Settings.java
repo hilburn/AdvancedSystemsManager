@@ -14,20 +14,30 @@ import java.util.Map;
 
 public final class Settings
 {
-
     public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
+    public static final String AUTO_CLOSE_GROUP = "autoCloseGroup";
+    public static final String LARGE_OPEN = "largeOpenHitBox";
+    public static final String LARGE_OPEN_MENU = "largeOpenHitBoxMenu";
+    public static final String QUICK_GROUP_OPEN = "quickGroupOpen";
+    public static final String COMMAND_TYPES = "commandTypes";
+    public static final String AUTO_SIDE = "autoSide";
+    public static final String AUTO_BLACKLIST = "autoBlacklist";
+    public static final String CRAFT_MOVE_FIRST = "priorityMoveFirst";
+    public static final String ENLARGE_INTERFACES = "enlargeInterfaces";
+    public static final String SHIFT_MODIFIER = "shiftModifier";
 
     static
     {
-        registerSetting("autoCloseGroup", false);
-        registerSetting("largeOpenHitBox", true);
-        registerSetting("largeOpenHitBoxMenu", true);
-        registerSetting("quickGroupOpen", false);
-        registerSetting("commandTypes", false);
-        registerSetting("autoSide", true);
-        registerSetting("autoBlacklist", true);
-        registerSetting("priorityMoveFirst", false);
-        registerSetting("enlargeInterfaces", false);
+        registerSetting(AUTO_CLOSE_GROUP, false);
+        registerSetting(LARGE_OPEN, true);
+        registerSetting(LARGE_OPEN_MENU, true);
+        registerSetting(QUICK_GROUP_OPEN, false);
+        registerSetting(COMMAND_TYPES, false);
+        registerSetting(AUTO_SIDE, true);
+        registerSetting(AUTO_BLACKLIST, true);
+        registerSetting(CRAFT_MOVE_FIRST, false);
+        registerSetting(ENLARGE_INTERFACES, false);
+        registerSetting(SHIFT_MODIFIER, true);
     }
 
     private Settings()
@@ -68,47 +78,47 @@ public final class Settings
 
     public static boolean isAutoCloseGroup()
     {
-        return settingsRegistry.get("autoCloseGroup");
+        return settingsRegistry.get(AUTO_CLOSE_GROUP);
     }
 
     public static boolean isLargeOpenHitBox()
     {
-        return settingsRegistry.get("largeOpenHitBox");
+        return settingsRegistry.get(LARGE_OPEN);
     }
 
     public static boolean isLargeOpenHitBoxMenu()
     {
-        return settingsRegistry.get("largeOpenHitBoxMenu");
+        return settingsRegistry.get(LARGE_OPEN_MENU);
     }
 
     public static boolean isQuickGroupOpen()
     {
-        return settingsRegistry.get("quickGroupOpen");
+        return settingsRegistry.get(QUICK_GROUP_OPEN);
     }
 
     public static boolean isCommandTypes()
     {
-        return settingsRegistry.get("commandTypes");
+        return settingsRegistry.get(COMMAND_TYPES);
     }
 
     public static boolean isAutoSide()
     {
-        return settingsRegistry.get("autoSide");
+        return settingsRegistry.get(AUTO_SIDE);
     }
 
     public static boolean isAutoBlacklist()
     {
-        return settingsRegistry.get("autoBlacklist");
+        return settingsRegistry.get(AUTO_BLACKLIST);
     }
 
     public static boolean isEnlargeInterfaces()
     {
-        return settingsRegistry.get("enlargeInterfaces");
+        return settingsRegistry.get(ENLARGE_INTERFACES);
     }
 
     public static boolean isPriorityMoveFirst()
     {
-        return settingsRegistry.get("priorityMoveFirst");
+        return settingsRegistry.get(CRAFT_MOVE_FIRST);
     }
 
     public static boolean isLimitless(TileEntityManager manager)

@@ -2,22 +2,31 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import com.google.common.collect.Multimap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CopyHelper
 {
-    public static Collection<FlowComponent> copyConnectionsWithChildren(TileEntityManager manager, FlowComponent toCopy, boolean limitless)
+    public static Collection<FlowComponent> copyCommandsWithChildren(TileEntityManager manager, FlowComponent toCopy, boolean limitless, boolean connected)
     {
         Map<FlowComponent, FlowComponent> added = new LinkedHashMap<FlowComponent, FlowComponent>();
         Multimap<FlowComponent, FlowComponent> existingParents = manager.getParentHierarchy();
-        copyConnectionsWithChildren(manager, added, toCopy, toCopy.getParent(), existingParents, true);
+        if (!connected)
+        {
+            copyCommandsWithChildren(manager, added, toCopy, toCopy.getParent(), existingParents, true);
+        } else
+        {
+            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
+            MenuGroup.findCluster(cluster, toCopy, null);
+            for (FlowComponent component : cluster)
+            {
+                copyCommandsWithChildren(manager, added, component, component.getParent(), existingParents, false);
+            }
+        }
         int maxSize = 511 - manager.components.size();
         if (added.size() > maxSize && !limitless)
         {
@@ -32,8 +41,8 @@ public class CopyHelper
         return added.values();
     }
 
-    private static void copyConnectionsWithChildren(TileEntityManager manager, Map<FlowComponent, FlowComponent> added, FlowComponent toCopy, FlowComponent newParent,
-                                                    Multimap<FlowComponent, FlowComponent> existingParents, boolean reset)
+    private static void copyCommandsWithChildren(TileEntityManager manager, Map<FlowComponent, FlowComponent> added, FlowComponent toCopy, FlowComponent newParent,
+                                                 Multimap<FlowComponent, FlowComponent> existingParents, boolean reset)
     {
         FlowComponent newComponent = toCopy.copy();
         newComponent.clearConnections();
@@ -48,7 +57,7 @@ public class CopyHelper
         added.put(toCopy, newComponent);
         for (FlowComponent component : existingParents.get(toCopy))
         {
-            copyConnectionsWithChildren(manager, added, component, newComponent, existingParents, false);
+            copyCommandsWithChildren(manager, added, component, newComponent, existingParents, false);
         }
     }
 

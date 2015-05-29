@@ -4,8 +4,6 @@ import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;

@@ -163,11 +163,11 @@ public class MenuVariableLoop extends Menu
 
     public Variable getListVariable()
     {
-        return getParent().getManager().getVariables()[selectedList];
+        return getParent().getManager().getVariableArray()[selectedList];
     }
 
     public Variable getElementVariable()
     {
-        return getParent().getManager().getVariables()[selectedElement];
+        return getParent().getManager().getVariableArray()[selectedElement];
     }
 }
