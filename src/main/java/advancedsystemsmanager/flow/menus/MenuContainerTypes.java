@@ -47,6 +47,7 @@ public class MenuContainerTypes extends Menu
             checked[i] = true;
         }
         checkBoxes = new CheckBoxList();
+
         for (int i = 0; i < types.size(); i++)
         {
             final int id = i;
@@ -57,17 +58,27 @@ public class MenuContainerTypes extends Menu
                 @Override
                 public void setValue(boolean val)
                 {
-                    MenuContainerTypes.this.checked[id] = val;
+                    setChecked(id, val);
                 }
 
                 @Override
                 public boolean getValue()
                 {
-                    return MenuContainerTypes.this.checked[id];
+                    return isChecked(id);
                 }
             });
         }
 
+    }
+
+    protected boolean isChecked(int id)
+    {
+        return checked[id];
+    }
+
+    protected void setChecked(int id, boolean value)
+    {
+        checked[id] = value;
     }
 
     @Override

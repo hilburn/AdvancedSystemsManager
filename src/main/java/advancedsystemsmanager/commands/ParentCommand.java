@@ -23,6 +23,7 @@ public class ParentCommand extends CommandBase
         register(CommandLoad.instance);
         register(CommandClear.instance);
         register(CommandPastebin.instance);
+        register(new CommandColour());
     }
 
     public static void register(ISubCommand command)

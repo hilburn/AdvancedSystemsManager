@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SystemTypeRegistry
 {
@@ -111,6 +112,12 @@ public class SystemTypeRegistry
         {
             return 2;
         }
+
+        @Override
+        public boolean containsGroup(Set<ISystemType> types)
+        {
+            return types.contains(EMITTER) || types.contains(RECEIVER);
+        }
     });
     public static final ISystemType BUD = register(new SystemType<TileEntityBUD>(Names.TYPE_BUD, false)
     {
@@ -160,7 +167,31 @@ public class SystemTypeRegistry
             super.initRadioButtons(radioButtonsMulti);
         }
     });
+    public static final ISystemType VARIABLE = new SystemType(Names.TYPE_VARIABLE, false)
+    {
 
+        @Override
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+        {
+            return false;
+        }
+
+        @Override
+        public void initRadioButtons(RadioButtonList radioButtonsMulti)
+        {
+        }
+
+        @Override
+        public int getDefaultRadioButton()
+        {
+            return 0;
+        }
+
+        @Override
+        public void addErrors(List errors, MenuContainer container)
+        {
+        }
+    };
     public static ISystemType register(ISystemType type)
     {
         types.add(type);
@@ -200,6 +231,12 @@ public class SystemTypeRegistry
         public Type getType(TileEntity tileEntity)
         {
             return (Type)tileEntity;
+        }
+
+        @Override
+        public boolean containsGroup(Set<ISystemType> types)
+        {
+            return false;
         }
 
         @Override

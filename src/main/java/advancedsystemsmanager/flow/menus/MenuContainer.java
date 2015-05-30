@@ -8,8 +8,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.ScrollController;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.elements.VariableColor;
-import advancedsystemsmanager.gui.Color;
+import advancedsystemsmanager.gui.TextColour;
 import advancedsystemsmanager.gui.GuiBase;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IAdvancedTooltip;
@@ -18,7 +17,6 @@ import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -72,7 +70,6 @@ public class MenuContainer extends Menu implements IPacketSync
     public static boolean hasUpdated;
     public Page currentPage;
     public List<Long> selectedInventories;
-    public List<Integer> selectedVariables;
     public List<IContainerSelection<GuiManager>> inventories;
     public RadioButtonList radioButtonsMulti;
     public ScrollController<IContainerSelection<GuiManager>> scrollController;
@@ -142,15 +139,10 @@ public class MenuContainer extends Menu implements IPacketSync
                     } else if (!element.isVariable())
                     {
                         SystemCoord block = (SystemCoord)element;
-                        if (noFilter)
+                        if (noFilter || ((all || block.containerAdvancedSearch(search) || block.getName(cachedInterface).toLowerCase().contains(search))
+                                && filter.matches(getParent().getManager(), selectedInventories, block)))
                         {
                             continue;
-                        } else if (all || StevesHooks.containerAdvancedSearch(block, search) || block.getName(cachedInterface).toLowerCase().contains(search))
-                        {
-                            if (filter.matches(getParent().getManager(), selectedInventories, block))
-                            {
-                                continue;
-                            }
                         }
                     }
 
@@ -252,7 +244,7 @@ public class MenuContainer extends Menu implements IPacketSync
                         }
 
                         lines.add("");
-                        lines.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_EXTRA_INFO));
+                        lines.add(TextColour.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_EXTRA_INFO));
                     }
 
                     gui.drawMouseOver(lines, mX, mY);
@@ -296,7 +288,7 @@ public class MenuContainer extends Menu implements IPacketSync
                             text.add(gui.getItemName(item));
                         }
                         String side = LocalizationHelper.getDirectionString(direction.ordinal());
-                        text.add(Color.YELLOW + StatCollector.translateToLocal(side));
+                        text.add(TextColour.YELLOW + StatCollector.translateToLocal(side));
 
                         TileEntity te = world.getTileEntity(targetX, targetY, targetZ);
                         if (te instanceof TileEntitySign)
@@ -306,7 +298,7 @@ public class MenuContainer extends Menu implements IPacketSync
                             {
                                 if (!txt.isEmpty())
                                 {
-                                    text.add(Color.GRAY + txt);
+                                    text.add(TextColour.GRAY + txt);
                                 }
                             }
                         }
@@ -316,15 +308,15 @@ public class MenuContainer extends Menu implements IPacketSync
 
                     prefix = getMouseOverForContainer(block, selectedInventories);
                     prefix.add("");
-                    prefix.add(Color.LIGHT_BLUE + StatCollector.translateToLocal(Names.TOOLTIP_ADJACENT));
+                    prefix.add(TextColour.LIGHT_BLUE + StatCollector.translateToLocal(Names.TOOLTIP_ADJACENT));
 
                     suffix = new ArrayList<String>();
-                    suffix.add(Color.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_LOCK));
+                    suffix.add(TextColour.GRAY + StatCollector.translateToLocal(Names.TOOLTIP_LOCK));
 
                     lockedSuffix = gui.getLinesFromText(StatCollector.translateToLocal(Names.TOOLTIP_UNLOCK), getMinWidth(gui));
                     for (int i = 0; i < lockedSuffix.size(); i++)
                     {
-                        lockedSuffix.set(i, Color.GRAY + lockedSuffix.get(i));
+                        lockedSuffix.set(i, TextColour.GRAY + lockedSuffix.get(i));
                     }
 
                 }
@@ -520,7 +512,7 @@ public class MenuContainer extends Menu implements IPacketSync
             Collections.addAll(ret, desc);
             if (selected.contains(iContainerSelection.getId()))
             {
-                ret.add(Color.GREEN + StatCollector.translateToLocal(Names.SELECTED));
+                ret.add(TextColour.GREEN + StatCollector.translateToLocal(Names.SELECTED));
             }
         }
         return ret;
@@ -540,9 +532,8 @@ public class MenuContainer extends Menu implements IPacketSync
         List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>();
         filterVariables.clear();
 
-        for (int i = 0; i < manager.getVariableArray().length; i++)
+        for (Variable variable : manager.getVariables())
         {
-            Variable variable = manager.getVariableArray()[i];
             if (isVariableAllowed(validTypes, variable))
             {
                 ret.add(variable);
@@ -857,7 +848,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
     public boolean hasMultipleInventories()
     {
-        return selectedInventories.size() > 1 || (selectedInventories.size() > 0 && selectedInventories.get(0) < VariableColor.values().length);
+        return selectedInventories.size() > 1 || (selectedInventories.size() == 0 && (selectedInventories.get(0) & Variable.NEGATIVE) != 0);
     }
 
     @Override

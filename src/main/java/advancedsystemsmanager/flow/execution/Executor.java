@@ -76,9 +76,9 @@ public class Executor
 
     public void executeTriggerCommand(FlowComponent component, EnumSet<ConnectionOption> validTriggerOutputs)
     {
-        for (Variable variable : this.manager.getVariableArray())
+        for (Variable variable : this.manager.getVariables())
         {
-            if (variable.isValid() && (!variable.hasBeenExecuted() || ((MenuVariable)variable.getDeclaration().getMenus().get(0)).getVariableMode() == MenuVariable.VariableMode.LOCAL))
+            if (variable.isValid() && !variable.hasBeenExecuted())
             {
                 this.executeCommand(variable.getDeclaration(), 0);
                 variable.setExecuted(true);

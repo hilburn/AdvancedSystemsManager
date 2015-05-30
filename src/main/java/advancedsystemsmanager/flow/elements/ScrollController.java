@@ -6,6 +6,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.reference.Null;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -53,6 +54,11 @@ public abstract class ScrollController<T>
     public long lastUpdate;
     public float left;
 
+    protected ScrollController()
+    {
+        this.hasSearchBox = true;
+    }
+
     public ScrollController(IPacketProvider packetProvider, boolean hasSearchBox)
     {
         this(packetProvider, hasSearchBox ? "" : null);
@@ -63,7 +69,7 @@ public abstract class ScrollController<T>
         this.hasSearchBox = defaultText != null;
         if (hasSearchBox)
         {
-            textBox = new TextBoxLogic(packetProvider, Integer.MAX_VALUE, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
+            textBox = new TextBoxLogic(Null.NULL_PACKET, Integer.MAX_VALUE, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
             {
                 @Override
                 public void onUpdate()
@@ -155,7 +161,7 @@ public abstract class ScrollController<T>
         List<Point> points = new ArrayList<Point>();
 
         int start = getFirstRow();
-        for (int row = start; row < start + visibleRows + 1; row++)
+        for (int row = start; row <= start + visibleRows; row++)
         {
             for (int col = 0; col < itemsPerRow; col++)
             {
@@ -256,7 +262,7 @@ public abstract class ScrollController<T>
     {
         if (canScroll)
         {
-            int srcArrowX = canScroll ? clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 : 3;
+            int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 ;
             int srcArrowY = down ? 1 : 0;
 
             gui.drawTexture(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
@@ -344,10 +350,15 @@ public abstract class ScrollController<T>
 
     public void doScroll(int scroll)
     {
-        if (!disabledScroll && result.size() > itemsPerRow)
+        if (canScroll())
         {
             moveOffset(scroll / -20);
         }
+    }
+
+    public boolean canScroll()
+    {
+        return !disabledScroll && result.size() > itemsPerRow;
     }
 
     public void setDisabledScroll(boolean disabledScroll)

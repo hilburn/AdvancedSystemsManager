@@ -66,37 +66,10 @@ public class StevesHooks
         return result;
     }
 
-    private static String getLabel(TileEntity tileEntity)
+    public static String getLabel(TileEntity tileEntity)
     {
         BlockCoord coord = new BlockCoord(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
         return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
-    }
-
-    public static List<Integer> getIdsToRemove(int idToRemove, Collection<FlowComponent> items)
-    {
-        List<Integer> ids = new ArrayList<Integer>();
-        getIdsToRemove(ids, idToRemove, items);
-        Collections.sort(ids);
-        Collections.reverse(ids);
-        return ids;
-    }
-
-    private static void getIdsToRemove(List<Integer> ids, int idToRemove, Collection<FlowComponent> items)
-    {
-        for (FlowComponent component : items)
-        {
-            if (component.getParent() != null && component.getParent().getId() == idToRemove)
-                getIdsToRemove(ids, component.getId(), items);
-        }
-        ids.add(idToRemove);
-    }
-
-    public static boolean containerAdvancedSearch(SystemCoord block, String search)
-    {
-        TileEntity tileEntity = block.tileEntity;
-        String toSearch = getLabel(tileEntity);
-        Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
-        return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(getContentString(tileEntity)).find();
     }
 
     public static void registerTicker(FlowComponent component, MenuTriggered menu)

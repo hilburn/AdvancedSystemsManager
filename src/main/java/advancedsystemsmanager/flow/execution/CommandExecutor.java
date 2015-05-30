@@ -5,7 +5,6 @@ import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.menus.MenuListOrder.LoopOrder;
 import advancedsystemsmanager.flow.menus.MenuVariable.VariableMode;
@@ -69,7 +68,7 @@ public class CommandExecutor
         {
             ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
             List<SystemCoord> inventories = manager.getConnectedInventories();
-            Variable[] variables = manager.getVariableArray();
+            Variable[] variables = new Variable[0];//manager.getVariableArray();
 
             int i;
             label50:
@@ -82,7 +81,7 @@ public class CommandExecutor
                     {
                         if (val == i)
                         {
-                            List<Integer> selection = selected.getContainers();
+                            List<Integer> selection = new ArrayList<Integer>();//selected.getContainers();
                             Iterator<Integer> i$1 = selection.iterator();
 
                             while (true)
@@ -102,8 +101,8 @@ public class CommandExecutor
 
             for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
             {
-                long var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
-                addContainer(inventories, ret, (int)var14, menuContainer, type, SystemTypeRegistry.getTypes());
+//                long var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
+//                addContainer(inventories, ret, (int)var14, menuContainer, type, SystemTypeRegistry.getTypes());
             }
 
             if (ret.isEmpty())
@@ -209,9 +208,9 @@ public class CommandExecutor
 
     public void executeTriggerCommand(FlowComponent command, EnumSet<ConnectionOption> validTriggerOutputs)
     {
-        for (Variable variable : this.manager.getVariableArray())
+        for (Variable variable : this.manager.getVariables())
         {
-            if (variable.isValid() && (!variable.hasBeenExecuted() || ((MenuVariable)variable.getDeclaration().getMenus().get(0)).getVariableMode() == VariableMode.LOCAL))
+            if (variable.isValid() && !variable.hasBeenExecuted())
             {
                 this.executeCommand(variable.getDeclaration(), 0);
                 variable.setExecuted(true);
@@ -259,12 +258,6 @@ public class CommandExecutor
                         }
 
                         return;
-                    case 4:
-                        if (MenuSplit.isSplitConnection(command) && this.splitFlow(command.getMenus().get(0)))
-                        {
-                            return;
-                        }
-                        break;
                     case 7:
                         List<SlotInventoryHolder> conditionTank = this.getTanks(command.getMenus().get(0));
                         if (conditionTank != null)
@@ -906,7 +899,7 @@ public class CommandExecutor
     public void updateVariable(List<SlotInventoryHolder> tiles, MenuVariable menuVariable, MenuListOrder menuOrder)
     {
         VariableMode mode = menuVariable.getVariableMode();
-        Variable variable = this.manager.getVariableArray()[menuVariable.getSelectedVariable()];
+        Variable variable = menuVariable.getVariable();
         if (variable.isValid())
         {
             boolean remove = mode == VariableMode.REMOVE;
@@ -915,11 +908,11 @@ public class CommandExecutor
                 variable.clearContainers();
             }
 
-            List<Integer> idList = new ArrayList<Integer>();
+            List<Long> idList = new ArrayList<Long>();
 
             for (SlotInventoryHolder validTypes : tiles)
             {
-                idList.add(validTypes.getId());
+                //idList.add(validTypes.getId());
             }
 
             if (!menuVariable.isDeclaration())
@@ -930,15 +923,16 @@ public class CommandExecutor
             List<SystemCoord> inventories1 = this.manager.getConnectedInventories();
             Set<ISystemType> validTypes1 = ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
 
-            for (int id : idList)
+            for (long id : idList)
             {
                 if (remove)
                 {
                     variable.remove(id);
-                } else if (id >= 0 && id < inventories1.size() && (inventories1.get(id)).isOfAnyType(validTypes1))
-                {
-                    variable.add(id);
                 }
+//                } else if (id >= 0 && id < inventories1.size() && (inventories1.get(id)).isOfAnyType(validTypes1))
+//                {
+//                    variable.add(id);
+//                }
             }
         }
     }
@@ -949,16 +943,16 @@ public class CommandExecutor
         Variable element = variableMenu.getElementVariable();
         if (list.isValid() && element.isValid())
         {
-            List<Integer> selection = this.applyOrder(list.getContainers(), orderMenu);
+            List<Long> selection = this.applyOrder(list.getContainers(), orderMenu);
             Set<ISystemType> validTypes = typesMenu.getValidTypes();
             validTypes.addAll(((MenuContainerTypes)element.getDeclaration().getMenus().get(1)).getValidTypes());
             List<SystemCoord> inventories = this.manager.getConnectedInventories();
 
-            for (int selected : selection)
+            for (long selected : selection)
             {
                 if (selected >= 0 && selected < inventories.size())
                 {
-                    SystemCoord inventory = inventories.get(selected);
+                    SystemCoord inventory = inventories.get((int)selected);
                     if (inventory.isOfAnyType(validTypes))
                     {
                         element.clearContainers();
@@ -970,9 +964,9 @@ public class CommandExecutor
         }
     }
 
-    public List<Integer> applyOrder(List<Integer> original, MenuListOrder orderMenu)
+    public List<Long> applyOrder(List<Long> original, MenuListOrder orderMenu)
     {
-        ArrayList<Integer> ret = new ArrayList<Integer>(original);
+        ArrayList<Long> ret = new ArrayList<Long>(original);
         if (orderMenu.getOrder() == LoopOrder.RANDOM)
         {
             Collections.shuffle(ret);

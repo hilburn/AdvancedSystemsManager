@@ -7,6 +7,7 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ISystemType<Type>
 {
@@ -15,6 +16,8 @@ public interface ISystemType<Type>
     public Type getType(TileEntity tileEntity);
 
     public boolean isGroup();
+
+    public boolean containsGroup(Set<ISystemType> types);
 
     public String getName();
 

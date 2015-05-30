@@ -1,9 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.elements.VariableDisplay;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
@@ -21,8 +19,8 @@ public class MenuVariableLoop extends Menu
     public static final int DISPLAY_Y_BOT = 25;
     public static final String NBT_LIST = "List";
     public static final String NBT_ELEMENT = "Element";
-    public VariableDisplay listDisplay;
-    public VariableDisplay elementDisplay;
+//    public VariableDisplay listDisplay;
+//    public VariableDisplay elementDisplay;
     public int selectedList;
     public int selectedElement;
 
@@ -30,47 +28,47 @@ public class MenuVariableLoop extends Menu
     {
         super(parent);
 
-        listDisplay = new VariableDisplay(Names.VARIABLE_LIST, DISPLAY_X, DISPLAY_Y_TOP)
-        {
-            @Override
-            public int getValue()
-            {
-                return selectedList;
-            }
-
-            @Override
-            public void setValue(int val)
-            {
-                selectedList = val;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(true);
-            }
-        };
-
-        elementDisplay = new VariableDisplay(Names.VARIABLE_ELEMENT, DISPLAY_X, DISPLAY_Y_BOT)
-        {
-            @Override
-            public int getValue()
-            {
-                return selectedElement;
-            }
-
-            @Override
-            public void setValue(int val)
-            {
-                selectedElement = val;
-            }
-
-            @Override
-            public void onUpdate()
-            {
-                sendServerData(false);
-            }
-        };
+//        listDisplay = new VariableDisplay(Names.VARIABLE_LIST, DISPLAY_X, DISPLAY_Y_TOP)
+//        {
+//            @Override
+//            public int getValue()
+//            {
+//                return selectedList;
+//            }
+//
+//            @Override
+//            public void setValue(int val)
+//            {
+//                selectedList = val;
+//            }
+//
+//            @Override
+//            public void onUpdate()
+//            {
+//                sendServerData(true);
+//            }
+//        };
+//
+//        elementDisplay = new VariableDisplay(Names.VARIABLE_ELEMENT, DISPLAY_X, DISPLAY_Y_BOT)
+//        {
+//            @Override
+//            public int getValue()
+//            {
+//                return selectedElement;
+//            }
+//
+//            @Override
+//            public void setValue(int val)
+//            {
+//                selectedElement = val;
+//            }
+//
+//            @Override
+//            public void onUpdate()
+//            {
+//                sendServerData(false);
+//            }
+//        };
 
         selectedList = 0;
         selectedElement = 1;
@@ -95,35 +93,33 @@ public class MenuVariableLoop extends Menu
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        listDisplay.draw(gui, mX, mY);
-        elementDisplay.draw(gui, mX, mY);
+//        listDisplay.draw(gui, mX, mY);
+//        elementDisplay.draw(gui, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        listDisplay.drawMouseOver(gui, mX, mY);
-        elementDisplay.drawMouseOver(gui, mX, mY);
+//        listDisplay.drawMouseOver(gui, mX, mY);
+//        elementDisplay.drawMouseOver(gui, mX, mY);
     }
 
     @Override
     public void onClick(int mX, int mY, int button)
     {
-        listDisplay.onClick(mX, mY);
-        elementDisplay.onClick(mX, mY);
+//        listDisplay.onClick(mX, mY, this);
+//        elementDisplay.onClick(mX, mY, this);
     }
 
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -163,11 +159,11 @@ public class MenuVariableLoop extends Menu
 
     public Variable getListVariable()
     {
-        return getParent().getManager().getVariableArray()[selectedList];
+        return getParent().getManager().getVariable(selectedList);
     }
 
     public Variable getElementVariable()
     {
-        return getParent().getManager().getVariableArray()[selectedElement];
+        return getParent().getManager().getVariable(selectedElement);
     }
 }

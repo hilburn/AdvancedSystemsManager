@@ -10,7 +10,6 @@ import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.elements.VariableColor;
 import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
@@ -73,14 +72,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public TIntObjectHashMap<FlowComponent> components;
     public TIntObjectHashMap<Variable> variables;
     public TLongObjectHashMap<SystemCoord> network;
-
     public FlowComponent selectedGroup;
     @SideOnly(Side.CLIENT)
     public IInterfaceRenderer specialRenderer;
     private Connection currentlyConnecting;
     private List<FlowComponent> zLevelRenderingList;
-
-    private Variable[] variableArray;
     private int maxID;
     private int triggerOffset;
     private boolean firstInventoryUpdate = true;
@@ -93,14 +89,10 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     {
         zLevelRenderingList = new ArrayList<FlowComponent>();
         buttons = ManagerButtonRegistry.getButtons(this);
-        variableArray = new Variable[VariableColor.values().length];
         components = new TIntObjectHashMap<FlowComponent>();
         triggers = new ArrayList<FlowComponent>();
         network = new TLongObjectHashMap<SystemCoord>();
-        for (int i = 0; i < variableArray.length; i++)
-        {
-            variableArray[i] = new Variable(i);
-        }
+        variables = Variable.getDefaultVariables();
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
@@ -443,9 +435,26 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         return result;
     }
 
+    public void removeVariableDeclaration(int colour, FlowComponent component)
+    {
+        Variable variable = variables.get(colour);
+        if (variable != null && variable.getDeclaration() == component)
+            variable.setDeclaration(null);
+    }
+
+    public void updateDeclaration(FlowComponent component, int colour)
+    {
+        if (variables.containsKey(colour))
+        {
+            Variable variable = variables.get(colour);
+            if (!variable.isValid())
+                variable.setDeclaration(component);
+        }
+    }
+
     public void updateVariables()
     {
-        for (Variable variable : variableArray)
+        for (Variable variable : variables.valueCollection())
         {
             variable.setDeclaration(null);
         }
@@ -455,7 +464,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
             {
                 int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
-                variableArray[selectedVariable].setDeclaration(item);
+                Variable variable = variables.get(selectedVariable);
+                if (variable != null && !variable.isValid())
+                {
+                    variable.setDeclaration(item);
+                }
             }
         }
     }
@@ -469,11 +482,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public boolean isUsingUnlimitedStuff()
     {
         return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
-    }
-
-    public Variable[] getVariableArray()
-    {
-        return variableArray;
     }
 
     public void triggerBUD(TileEntityBUD tileEntityBUD)
@@ -565,11 +573,14 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
 
 
         NBTTagList variablesTag = new NBTTagList();
-        for (Variable variable : variableArray)
+        for (Variable variable : variables.valueCollection())
         {
-            NBTTagCompound variableTag = new NBTTagCompound();
-            variable.writeToNBT(variableTag);
-            variablesTag.appendTag(variableTag);
+            if (variable.isValid())
+            {
+                NBTTagCompound variableTag = new NBTTagCompound();
+                variable.writeToNBT(variableTag);
+                variablesTag.appendTag(variableTag);
+            }
         }
         nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
     }
@@ -595,9 +606,34 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         for (int i = 0; i < variablesTag.tagCount(); i++)
         {
             NBTTagCompound variableTag = variablesTag.getCompoundTagAt(i);
-            variableArray[i].readFromNBT(variableTag);
+            addVariable(new Variable(variableTag));
         }
+    }
 
+    private void addVariable(Variable variable)
+    {
+        variables.put(variable.colour, variable);
+    }
+
+    public Collection<Variable> getVariables()
+    {
+        return variables.valueCollection();
+    }
+
+    public int getNextColour(int colour, int direction)
+    {
+        List<Variable> variables = new ArrayList<Variable>(getVariables());
+        Collections.sort(variables);
+        for (int i = 0; i < variables.size(); i++)
+        {
+            if (variables.get(i).colour == colour)
+            {
+                int returnVar = (i + direction) % variables.size();
+                if (returnVar < 0) returnVar += variables.size();
+                return variables.get(returnVar).colour;
+            }
+        }
+        return variables.get(0).colour;
     }
 
     public String getUniqueComponentName(FlowComponent component)
@@ -642,5 +678,10 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             packet.writeNBTTagCompoundToBuffer(tagCompound);
         }
         return true;
+    }
+
+    public Variable getVariable(int selectedVariable)
+    {
+        return variables.get(selectedVariable);
     }
 }

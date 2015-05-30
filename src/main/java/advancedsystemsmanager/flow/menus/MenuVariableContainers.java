@@ -4,6 +4,9 @@ import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,13 +16,7 @@ public class MenuVariableContainers extends MenuContainer
 {
     public MenuVariableContainers(FlowComponent parent)
     {
-        super(parent, null);
-    }
-
-    @Override
-    public void initRadioButtons()
-    {
-        //nothing
+        super(parent, SystemTypeRegistry.VARIABLE);
     }
 
     @Override
@@ -32,8 +29,7 @@ public class MenuVariableContainers extends MenuContainer
             return componentMenuContainerTypes.getValidTypes();
         } else
         {
-            int variableId = ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
-            Variable variable = getParent().getManager().getVariableArray()[variableId];
+            Variable variable = ((MenuVariable)getParent().getMenus().get(0)).getVariable();
             if (variable.isValid())
             {
                 return ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
@@ -47,12 +43,6 @@ public class MenuVariableContainers extends MenuContainer
     @Override
     public boolean isVariableAllowed(Set<ISystemType> validTypes, Variable variable)
     {
-        return super.isVariableAllowed(validTypes, variable);// && i != ((MenuVariable)getParent().getMenus().get(0)).getSelectedVariable();
-    }
-
-    @Override
-    public String getName()
-    {
-        return Names.VARIABLE_CONTAINERS_MENU;
+        return super.isVariableAllowed(validTypes, variable) && variable != ((MenuVariable)getParent().getMenus().get(0)).getVariable();
     }
 }

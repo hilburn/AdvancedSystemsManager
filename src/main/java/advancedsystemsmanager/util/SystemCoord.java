@@ -15,10 +15,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection<GuiManager>
 {
@@ -60,9 +63,9 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     private void setKey()
     {
-        this.key = ((long)x & 0xFFFFFF) << 40 | ((long)z & 0xFFFFFF) << 16 | (y & 0xFF) << 8 | dim & 0xFF;
+        this.key = ((long)dim & 0xFF) << 48 | ((long)x & 0xFFFFF) << 28 | (z & 0xFFFFF) << 8 | (y & 0xFF);
         if (tileEntity instanceof IClusterTile)
-            key |= (ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0xF) << 4;
+            key |= ((long)ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
     }
 
     public void addType(ISystemType type)
@@ -90,7 +93,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public static boolean isOfType(Set<ISystemType> types, ISystemType type)
     {
-        return type == null || types.contains(type) || (type == SystemTypeRegistry.NODE && (types.contains(SystemTypeRegistry.RECEIVER) || types.contains(SystemTypeRegistry.EMITTER)));
+        return type == null || types.contains(type) || (type.isGroup() && type.containsGroup(types));
     }
 
     @Override
@@ -167,22 +170,22 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     @SideOnly(Side.CLIENT)
     private String getVariableTag(GuiManager gui)
     {
-        int count = 0;
+        boolean isInVariable = false;
         String result = "";
 
         if (GuiScreen.isShiftKeyDown())
         {
-            for (Variable variable : gui.getManager().getVariableArray())
+            for (Variable variable : gui.getManager().getVariables())
             {
                 if (isPartOfVariable(variable))
                 {
                     result += "\n" + variable.getDescription(gui);
-                    count++;
+                    isInVariable = true;
                 }
             }
         }
 
-        return count == 0 ? "" : result;
+        return isInVariable ? "" : result;
     }
 
     @SideOnly(Side.CLIENT)
@@ -200,5 +203,12 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     {
         this.tileEntity = tileEntity;
         setKey();
+    }
+
+    public boolean containerAdvancedSearch(String search)
+    {
+        String toSearch = StevesHooks.getLabel(tileEntity);
+        Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
+        return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(StevesHooks.getContentString(tileEntity)).find();
     }
 }

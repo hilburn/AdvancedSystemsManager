@@ -180,7 +180,7 @@ public class Names
     public static final String VARIABLE_MENU = GUI_PREFIX + "VariableMenu";
     public static final String NOT_DECLARED_ERROR = GUI_PREFIX + "NotDeclaredError";
     public static final String ALREADY_DECLARED_ERROR = GUI_PREFIX + "AlreadyDeclaredError";
-    public static final String VARIABLE_CONTAINERS_MENU = GUI_PREFIX + "VariableContainersMenu";
+    public static final String TYPE_VARIABLE = GUI_PREFIX + "VariableContainers";
     public static final String VARIABLE_LIST = GUI_PREFIX + "VariableList";
     public static final String VARIABLE_ELEMENT = GUI_PREFIX + "VariableElement";
     public static final String LOOP_VARIABLE_MENU = GUI_PREFIX + "LoopVariableMenu";
@@ -191,7 +191,7 @@ public class Names
     public static final String VARIABLE_MAGENTA = GUI_PREFIX + "VariableMagenta";
     public static final String VARIABLE_LIGHT_BLUE = GUI_PREFIX + "VariableLightBlue";
     public static final String VARIABLE_YELLOW = GUI_PREFIX + "VariableYellow";
-    public static final String VARiABLE_LIME = GUI_PREFIX + "VariableLime";
+    public static final String VARIABLE_LIME = GUI_PREFIX + "VariableLime";
     public static final String VARIABLE_PINK = GUI_PREFIX + "VariablePink";
     public static final String VARIABLE_GRAY = GUI_PREFIX + "VariableGray";
     public static final String VARIABLE_LIGHT_GRAY = GUI_PREFIX + "VariableLightGray";

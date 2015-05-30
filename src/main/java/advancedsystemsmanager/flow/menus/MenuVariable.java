@@ -1,9 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
-
+import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -12,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 
-public class MenuVariable extends Menu
+public class MenuVariable extends Menu implements IPacketSync
 {
     public static final int RADIO_BUTTON_X = 5;
     public static final int RADIO_BUTTON_Y = 28;
@@ -23,108 +24,58 @@ public class MenuVariable extends Menu
     public static final String NBT_MODE = "Mode";
     public static final String NBT_EXECUTED = "Executed";
     public RadioButtonList radioButtons;
-    public VariableDisplay varDisplay;
-    public int selectedVariable = 0;
-    public CheckBoxList checkBoxes;
+    ScrollController<Variable> variables;
+    public int selectedVariable;
+    private byte id;
     public boolean executed;
 
-    public MenuVariable(FlowComponent parent)
+    public MenuVariable(final FlowComponent parent)
     {
         super(parent);
 
-        int declarationCount = 0;
-        int modificationCount = 0;
+        parent.registerSyncable(this);
+        selectedVariable = -1;
 
-        radioButtons = new RadioButtonList(getParent())
+        radioButtons = new RadioButtonList(getParent());
+
+        for (VariableMode mode : VariableMode.values())
         {
-            @Override
-            public int getSelectedOption()
-            {
-                int id = super.getSelectedOption();
-                VariableMode mode = VariableMode.values()[id];
-                if (mode.declaration != isDeclaration())
-                {
-                    setSelectedOption(id = getDefaultId());
-                }
-
-                return id;
-            }
-
-            @Override
-            public void setSelectedOption(int selectedOption)
-            {
-                super.setSelectedOption(selectedOption);
-
-                if (isDeclaration())
-                {
-                    getParent().getManager().updateVariables();
-                }
-            }
-        };
-
-        for (int i = 0; i < VariableMode.values().length; i++)
-        {
-            final VariableMode mode = VariableMode.values()[i];
-            int id = mode.declaration ? declarationCount++ : modificationCount++;
-
-            radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + id * RADIO_BUTTON_SPACING, mode.toString())
+            radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + mode.ordinal() * RADIO_BUTTON_SPACING, mode.toString())
             {
                 @Override
                 public boolean isVisible()
                 {
-                    return mode.declaration == isDeclaration();
+                    return !isDeclaration();
                 }
             });
         }
 
-        radioButtons.setSelectedOption(getDefaultId());
-
-        varDisplay = new VariableDisplay(null, 5, 5)
+        variables = new ScrollVariable(parent)
         {
+
             @Override
-            public int getValue()
+            public void onClick(Variable variable, int mX, int mY, int button)
             {
-                return selectedVariable;
+                setSelectedVariable(variable.colour);
+                sendUpdatePacket();
             }
 
             @Override
-            public void setValue(int val)
+            public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
             {
-                setSelectedVariable(val);
+                int srcInventoryX = selectedVariable == variable.colour ? 1 : 0;
+                int srcInventoryY = hover ? 1 : 0;
+
+                gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
+                variable.draw(gui, x, y);
             }
         };
 
-        checkBoxes = new CheckBoxList();
-        checkBoxes.addCheckBox(new CheckBox(getParent(), Names.GLOBAL_VALUE_SET, CHECK_BOX_X, CHECK_BOX_Y)
-        {
-            @Override
-            public void setValue(boolean val)
-            {
-                executed = val;
-            }
-
-            @Override
-            public boolean getValue()
-            {
-                return executed;
-            }
-
-            @Override
-            public boolean isVisible()
-            {
-                return getVariableMode() == VariableMode.GLOBAL;
-            }
-        });
     }
 
     public boolean isDeclaration()
     {
         return getParent().getConnectionSet() == ConnectionSet.EMPTY;
-    }
-
-    public int getDefaultId()
-    {
-        return isDeclaration() ? 1 : 2;
     }
 
     public VariableMode getVariableMode()
@@ -143,35 +94,51 @@ public class MenuVariable extends Menu
     public void draw(GuiManager gui, int mX, int mY)
     {
         radioButtons.draw(gui, mX, mY);
-        varDisplay.draw(gui, mX, mY);
-        checkBoxes.draw(gui, mX, mY);
+        variables.draw(gui, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        varDisplay.drawMouseOver(gui, mX, mY);
+        variables.drawMouseOver(gui, mX, mY);
     }
 
     @Override
     public void onClick(int mX, int mY, int button)
     {
         radioButtons.onClick(mX, mY, button);
-        varDisplay.onClick(mX, mY);
-        checkBoxes.onClick(mX, mY);
+        variables.onClick(mX, mY, button);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return variables.onKeyStroke(gui, c, k);
     }
 
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        variables.onRelease(mX, mY);
+    }
+
+    @Override
+    public void doScroll(int scroll)
+    {
+        variables.doScroll(scroll);
+    }
+
+    @Override
+    public void update(float partial)
+    {
+        variables.update(partial);
     }
 
     @Override
@@ -184,7 +151,7 @@ public class MenuVariable extends Menu
 
     public Variable getVariable()
     {
-        return getParent().getManager().getVariableArray()[getSelectedVariable()];
+        return getParent().getManager().getVariable(getSelectedVariable());
     }
 
     public int getSelectedVariable()
@@ -194,18 +161,19 @@ public class MenuVariable extends Menu
 
     public void setSelectedVariable(int val)
     {
-        selectedVariable = val;
-
-        if (isDeclaration())
+        boolean declaration = isDeclaration();
+        if (declaration)
         {
-            getParent().getManager().updateVariables();
+            getParent().getManager().removeVariableDeclaration(selectedVariable, getParent());
+            selectedVariable = val;
+            getParent().getManager().updateDeclaration(getParent(), selectedVariable);
         }
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        setSelectedVariable(nbtTagCompound.getByte(NBT_VARIABLE));
+        setSelectedVariable(nbtTagCompound.getInteger(NBT_VARIABLE));
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_MODE));
         executed = nbtTagCompound.getBoolean(NBT_EXECUTED);
     }
@@ -213,7 +181,7 @@ public class MenuVariable extends Menu
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setByte(NBT_VARIABLE, (byte)selectedVariable);
+        nbtTagCompound.setInteger(NBT_VARIABLE, selectedVariable);
         nbtTagCompound.setByte(NBT_MODE, (byte)radioButtons.getSelectedOption());
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
     }
@@ -221,8 +189,8 @@ public class MenuVariable extends Menu
     @Override
     public void addErrors(List<String> errors)
     {
-        Variable variable = getParent().getManager().getVariableArray()[selectedVariable];
-        if (!variable.isValid())
+        Variable variable = getVariable();
+        if (variable == null || !variable.isValid())
         {
             errors.add(Names.NOT_DECLARED_ERROR);
         } else if (isDeclaration() && variable.getDeclaration().getId() != getParent().getId())
@@ -231,28 +199,45 @@ public class MenuVariable extends Menu
         }
     }
 
+    @Override
+    public void setId(int id)
+    {
+        this.id = (byte)id;
+    }
+
+    private void sendUpdatePacket()
+    {
+        ASMPacket packet = parent.getSyncPacket();
+        packet.writeByte(id);
+        packet.writeMedium(selectedVariable);
+        packet.sendServerPacket();
+    }
+
+    @Override
+    public boolean readData(ASMPacket packet)
+    {
+        setSelectedVariable(packet.readUnsignedMedium());
+        return false;
+    }
+
 
     public enum VariableMode
     {
-        GLOBAL(Names.GLOBAL, true),
-        LOCAL(Names.LOCAL, true),
-        ADD(Names.ADD, false),
-        REMOVE(Names.REMOVE, false),
-        SET(Names.SET, false);
+        ADD(Names.ADD),
+        REMOVE(Names.REMOVE),
+        SET(Names.SET);
 
-        public boolean declaration;
         public String name;
 
-        VariableMode(String name, boolean declaration)
+        VariableMode(String name)
         {
             this.name = name;
-            this.declaration = declaration;
         }
 
         @Override
         public String toString()
         {
-            return super.toString().charAt(0) + super.toString().substring(1).toLowerCase();
+            return name;
         }
     }
 }

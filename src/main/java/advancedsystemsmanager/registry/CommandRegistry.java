@@ -69,9 +69,6 @@ public class CommandRegistry
 //        registerCommand(REDSTONE_CONDITION = new Command(9, CommandType.COMMAND_CONTROL, Localization.REDSTONE_CONDITION_SHORT, Localization.REDSTONE_CONDITION_LONG,
 //                new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION},
 //                MenuNodes.class, MenuRedstoneSidesNodes.class, MenuRedstoneStrengthNodes.class));
-//        registerCommand(VARIABLE = new Command(10, CommandType.MISC, Localization.CONTAINER_VARIABLE_SHORT, Localization.CONTAINER_VARIABLE_LONG,
-//                new ConnectionSet[]{ConnectionSet.EMPTY, ConnectionSet.STANDARD},
-//                MenuVariable.class, MenuContainerTypesVariable.class, MenuVariableContainers.class, MenuListOrderVariable.class));
 //        registerCommand(FOR_EACH = new Command(11, CommandType.COMMAND_CONTROL, Localization.FOR_EACH_LOOP_SHORT, Localization.FOR_EACH_LOOP_LONG,
 //                new ConnectionSet[]{ConnectionSet.FOR_EACH},
 //                MenuVariableLoop.class, MenuContainerTypes.class, MenuListOrder.class));
@@ -88,11 +85,11 @@ public class CommandRegistry
 
         registerCommand(new CommandRedstoneOutput());
 
+        registerCommand(new CommandVariable());
 
 
         registerCommand(new CommandGroup());
         registerCommand(NODE = new CommandGroupNode());
-
         registerCommand(new CommandCamouflage());
         registerCommand(new CommandSign());
     }

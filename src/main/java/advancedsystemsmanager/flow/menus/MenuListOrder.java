@@ -151,7 +151,6 @@ public class MenuListOrder extends Menu
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -165,13 +164,11 @@ public class MenuListOrder extends Menu
     @Override
     public void onDrag(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @SideOnly(Side.CLIENT)
@@ -209,7 +206,7 @@ public class MenuListOrder extends Menu
         nbtTagCompound.setByte(NBT_ORDER, (byte)radioButtons.getSelectedOption());
     }
 
-    public Comparator<? super Integer> getComparator()
+    public Comparator<? super Long> getComparator()
     {
         return getOrder().comparator;
     }
@@ -229,20 +226,25 @@ public class MenuListOrder extends Menu
         return all;
     }
 
+    public List<Long> applyOrder(List<Long> inventories)
+    {
+        return getOrder().applyOrder(inventories, this);
+    }
+
     public enum LoopOrder
     {
         NORMAL(Names.ORDER_STANDARD, null),
-        CABLE(Names.ORDER_CABLE, new Comparator<Integer>()
+        CABLE(Names.ORDER_CABLE, new Comparator<Long>()
         {
             @Override
-            public int compare(Integer o1, Integer o2)
+            public int compare(Long o1, Long o2)
             {
                 return o1 < o2 ? -1 : 1;
             }
         })
                 {
                     @Override
-                    protected void sort(List<Integer> inventories)
+                    protected void sort(List<Long> inventories)
                     {
                         Collections.sort(inventories, comparator);
                     }
@@ -250,24 +252,24 @@ public class MenuListOrder extends Menu
         RANDOM(Names.ORDER_RANDOM, null)
                 {
                     @Override
-                    protected void sort(List<Integer> inventories)
+                    protected void sort(List<Long> inventories)
                     {
                         Collections.shuffle(inventories);
                     }
                 };
 
         public String name;
-        public Comparator<Integer> comparator;
+        public Comparator<Long> comparator;
 
-        LoopOrder(String name, final Comparator<Integer> comparator)
+        LoopOrder(String name, final Comparator<Long> comparator)
         {
             this.name = name;
             this.comparator = comparator;
         }
 
-        public List<Integer> applyOrder(List<Integer> inventories, MenuListOrder menu)
+        public List<Long> applyOrder(List<Long> inventories, MenuListOrder menu)
         {
-            ArrayList<Integer> ret = new ArrayList<Integer>(inventories);
+            ArrayList<Long> ret = new ArrayList<Long>(inventories);
             sort(ret);
             if (menu.isReversed()) Collections.reverse(ret);
             if (!menu.useAll())
@@ -282,7 +284,7 @@ public class MenuListOrder extends Menu
             return ret;
         }
 
-        protected void sort(List<Integer> inventories)
+        protected void sort(List<Long> inventories)
         {
         }
 
