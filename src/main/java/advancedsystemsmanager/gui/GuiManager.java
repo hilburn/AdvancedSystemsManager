@@ -365,7 +365,7 @@ public class GuiManager extends GuiBase
         if (selectedComponent instanceof FlowComponent)
         {
             FlowComponent released = (FlowComponent)selectedComponent;
-            if (!manager.justSentServerComponentRemovalPacket)
+            if (!manager.serverPacket)
             {
                 for (FlowComponent itemBase : manager.getZLevelRenderingList())
                 {

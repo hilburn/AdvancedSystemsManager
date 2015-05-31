@@ -112,7 +112,7 @@ public class ManagerButtonRegistry
                     if (item.isBeingMoved())
                     {
                         //For the server only
-                        manager.justSentServerComponentRemovalPacket = true;
+                        manager.serverPacket = true;
                         packet.writeInt(item.getId());
                         packet.writeBoolean(GuiScreen.isShiftKeyDown());
                         item.resetPosition();

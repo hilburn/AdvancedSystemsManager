@@ -24,7 +24,9 @@ public class PacketHandler
     public static final int SYNC_ALL = 0;
     public static final byte SETTING_MESSAGE = 1;
     public static final int SYNC_COMPONENT = 2;
+    public static final int NEW_VARIABLE = 4;
     public static final int BUTTON_CLICK = 5;
+
 
 
     public static void sendDataToServer(ASMPacket dw)
@@ -208,9 +210,17 @@ public class PacketHandler
     public static void sendButtonPacket(int index, IManagerButton button)
     {
         ASMPacket packet = PacketHandler.getWriterForServerPacket();
-        packet.writeByte(PacketHandler.BUTTON_CLICK);
+        packet.writeByte(BUTTON_CLICK);
         packet.writeByte(index);
         if (button.writeData(packet))
             PacketHandler.sendDataToServer(packet);
+    }
+
+    public static void sendVariablePacket(int colour)
+    {
+        ASMPacket packet = PacketHandler.getWriterForServerPacket();
+        packet.writeByte(NEW_VARIABLE);
+        packet.writeMedium(colour);
+        packet.sendServerPacket();
     }
 }

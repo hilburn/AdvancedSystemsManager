@@ -2,11 +2,13 @@ package advancedsystemsmanager.gui;
 
 import advancedsystemsmanager.api.gui.IDraggable;
 import advancedsystemsmanager.api.gui.IGuiElement;
+import advancedsystemsmanager.flow.elements.TextBoxNumber;
+import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.util.ColourUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
 {
@@ -43,6 +45,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     private boolean isDragging, moveHue, clicked, scrollHue, hasUpdated;
     private int[] colour = new int[3];
     private int[] hueValue, oldColour;
+    private TextBoxNumberList textBoxes;
 
     public GuiColourSelector(int x, int y)
     {
@@ -53,6 +56,49 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     {
         this.x = x;
         this.y = y;
+        textBoxes = new TextBoxNumberList();
+        textBoxes.addTextBox(new TextBoxNumber(Null.NULL_PACKET, x + OUTPUT_X, y + 45, 3, false)
+        {
+            @Override
+            public void onUpdate()
+            {
+                setColour(number, colour[1], colour[2]);
+            }
+
+            @Override
+            public int getMaxNumber()
+            {
+                return 255;
+            }
+        });
+        textBoxes.addTextBox(new TextBoxNumber(Null.NULL_PACKET, x + OUTPUT_X, y + 60, 3, false)
+        {
+            @Override
+            public void onUpdate()
+            {
+                setColour(colour[0], number, colour[2]);
+            }
+
+            @Override
+            public int getMaxNumber()
+            {
+                return 255;
+            }
+        });
+        textBoxes.addTextBox(new TextBoxNumber(Null.NULL_PACKET, x + OUTPUT_X, y + 75, 3, false)
+        {
+            @Override
+            public void onUpdate()
+            {
+                setColour(colour[0], colour[1], number);
+            }
+
+            @Override
+            public int getMaxNumber()
+            {
+                return 255;
+            }
+        });
         setRGB(rgb);
     }
 
@@ -76,6 +122,14 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
         setColour(rgb);
         float[] hsv = new float[3];
         ColourUtils.HextoHSV(rgb, hsv);
+        setByHue(hsv);
+        setColour();
+    }
+
+    public void setColour(int r, int g, int b)
+    {
+        float[] hsv = new float[3];
+        ColourUtils.RGBtoHSV(r, g, b, hsv);
         setByHue(hsv);
         setColour();
     }
@@ -134,6 +188,9 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     private void setColour()
     {
         colour = ColourUtils.HSBtoRGB((float)hue / (HEIGHT * SCALING), (float)saturation / (HEIGHT * SCALING), 1F - (float)value / (HEIGHT * SCALING));
+        textBoxes.getTextBox(0).setNumber(colour[0]);
+        textBoxes.getTextBox(1).setNumber(colour[1]);
+        textBoxes.getTextBox(2).setNumber(colour[2]);
         hasUpdated = true;
     }
 
@@ -145,6 +202,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
         guiBase.drawTexture(x + DRAG_X, y + hue / SCALING - 2, DRAG_SRC_X, DRAG_SRC_Y, DRAG_WIDTH, DRAG_HEIGHT);
         guiBase.drawGradientRectangle(x, y, x + HEIGHT, y + HEIGHT, WHITE, hueValue, BLACK, BLACK);
         guiBase.drawTexture(x + saturation / SCALING - 2, y + value / SCALING - 2, SV_DRAG_SRC_X, DRAG_SRC_Y, SV_DRAG_WIDTH, SV_DRAG_HEIGHT);
+        textBoxes.draw(guiBase, mouseX, mouseY);
         drawColourOutput(guiBase);
     }
 
@@ -178,7 +236,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     @Override
     public boolean onKeyStroke(GuiBase guiBase, char character, int key)
     {
-        return false;
+        return textBoxes.onKeyStroke(guiBase, character, key);
     }
 
     @Override
@@ -191,6 +249,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
         {
             return startDragging(mouseX, mouseY, false);
         }
+        textBoxes.onClick(mouseX, mouseY, button);
         return false;
     }
 

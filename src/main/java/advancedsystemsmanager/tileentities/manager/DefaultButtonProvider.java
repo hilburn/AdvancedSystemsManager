@@ -55,7 +55,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             @Override
             public boolean writeData(ASMPacket packet)
             {
-                manager.justSentServerComponentRemovalPacket = true;
+                manager.serverPacket = true;
                 for (FlowComponent item : manager.getZLevelRenderingList())
                 {
                     if (item.isBeingMoved())

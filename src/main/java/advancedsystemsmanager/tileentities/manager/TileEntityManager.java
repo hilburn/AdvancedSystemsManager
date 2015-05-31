@@ -68,7 +68,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private static final String NBT_VARIABLES = "Variables";
     public List<FlowComponent> triggers;
     public ManagerButtonList buttons;
-    public boolean justSentServerComponentRemovalPacket;
+    public boolean serverPacket;
+    public boolean variableUpdate;
     public TIntObjectHashMap<FlowComponent> components;
     public TIntObjectHashMap<Variable> variables;
     public TLongObjectHashMap<SystemCoord> network;
@@ -261,6 +262,14 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     addNewComponent(component);
                     if (worldObj.isRemote) zLevelRenderingList.add(component);
                 }
+                variables.clear();
+                int variableCount = packet.readVarIntFromBuffer();
+                for (int i = 0; i < variableCount; i++)
+                {
+                    int colour = packet.readUnsignedMedium();
+                    String name = packet.readStringFromBuffer();
+                    addVariable(new Variable(colour, name));
+                }
                 for (FlowComponent item : getFlowItems())
                 {
                     item.linkAfterLoad();
@@ -277,6 +286,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     }
                 }
                 result = false;
+                variableUpdate = true;
                 break;
             case PacketHandler.SETTING_MESSAGE:
                 if (!worldObj.isRemote)
@@ -303,6 +313,9 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 break;
             case 3:
                 updateInventories();
+                break;
+            case PacketHandler.NEW_VARIABLE:
+                addNewVariable(new Variable(packet.readMedium()));
                 break;
             case PacketHandler.BUTTON_CLICK:
                 int buttonId = packet.readByte();
@@ -524,7 +537,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     @Override
     public void updateEntity()
     {
-        justSentServerComponentRemovalPacket = false;
+        serverPacket = false;
         if (!worldObj.isRemote)
         {
             StevesHooks.tickTriggers(this);
@@ -575,12 +588,9 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         NBTTagList variablesTag = new NBTTagList();
         for (Variable variable : variables.valueCollection())
         {
-            if (variable.isValid())
-            {
-                NBTTagCompound variableTag = new NBTTagCompound();
-                variable.writeToNBT(variableTag);
-                variablesTag.appendTag(variableTag);
-            }
+            NBTTagCompound variableTag = new NBTTagCompound();
+            variable.writeToNBT(variableTag);
+            variablesTag.appendTag(variableTag);
         }
         nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
     }
@@ -677,11 +687,22 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             flowComponent.writeToNBT(tagCompound, false);
             packet.writeNBTTagCompoundToBuffer(tagCompound);
         }
+        packet.writeVarIntToBuffer(variables.size());
+        for (Variable variable : variables.valueCollection())
+        {
+            packet.writeMedium(variable.colour);
+            packet.writeStringToBuffer(variable.getNameFromColor());
+        }
         return true;
     }
 
     public Variable getVariable(int selectedVariable)
     {
         return variables.get(selectedVariable);
+    }
+
+    public void addNewVariable(Variable variable)
+    {
+        variables.put(variable.colour, variable);
     }
 }

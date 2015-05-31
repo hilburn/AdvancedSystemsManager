@@ -32,9 +32,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     private static final String NBT_NAME = "Name";
     private float[] hsv = new float[3];
     public int colour;
-    byte red;
-    byte blue;
-    byte green;
+    private int[] rgb = new int[3];
     public TextColour textColour;
     public FlowComponent declaration;
     public List<Long> containers = new ArrayList<Long>();
@@ -77,7 +75,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     {
         setColour(tagCompound.getInteger(NBT_COLOUR));
         readFromNBT(tagCompound);
-        if (defaultVariables.containsKey(colour))
+        if (defaultName != null && defaultVariables.containsKey(colour))
         {
             defaultName = defaultVariables.get(colour);
         } else
@@ -89,9 +87,9 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     private void setColour(int colour)
     {
         this.colour = colour;
-        this.red = (byte)((colour >> 16) & 0xFF);
-        this.green = (byte)((colour >> 8) & 0xFF);
-        this.blue = (byte)(colour & 0xFF);
+        this.rgb[0]= (colour >> 16) & 0xFF;
+        this.rgb[1] = (colour >> 8) & 0xFF;
+        this.rgb[2] = colour & 0xFF;
         textColour = TextColour.getClosestColour(colour);
         ColourUtils.HextoHSV(colour, hsv);
     }
@@ -111,15 +109,13 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     @SideOnly(Side.CLIENT)
     public void draw(GuiManager gui, int x, int y)
     {
-        applyColor();
-        gui.drawTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        gui.drawColouredTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE, rgb);
     }
 
     @SideOnly(Side.CLIENT)
     public void applyColor()
     {
-        GL11.glColor4ub(red, green, blue, (byte)0xFF);
+//        GL11.glColor4ub(red, green, blue, (byte)0xFF);
     }
 
     @Override
