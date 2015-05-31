@@ -119,7 +119,9 @@ public class MenuContainer extends Menu implements IPacketSync
 
                 if (search.equals(".var"))
                 {
-                    return new ArrayList<IContainerSelection<GuiManager>>(filterVariables);
+                    List<Variable> variables = new ArrayList<Variable>(getParent().getManager().getVariables());
+                    Collections.sort(variables);
+                    return new ArrayList<IContainerSelection<GuiManager>>(variables);
                 }
 
 
@@ -482,6 +484,7 @@ public class MenuContainer extends Menu implements IPacketSync
                 {
                     scrollController.setTextAndCursor(".var");
                 }
+                scrollController.updateSearch();
             }
         });
 

@@ -4,6 +4,7 @@ import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.setting.Setting;
@@ -58,20 +59,43 @@ public abstract class CommandBase<Type> implements ICommand
 
     public static List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
     {
+        return getContainers(manager, container.selectedInventories);
+    }
+
+    private static List<SystemCoord> getContainers(TileEntityManager manager, List<Long> selectedInventories)
+    {
         List<SystemCoord> result = new ArrayList<SystemCoord>();
-        for (Iterator<Long> itr = container.getSelectedInventories().listIterator(); itr.hasNext(); )
+        for (Iterator<Long> itr = selectedInventories.iterator(); itr.hasNext(); )
         {
             long selected = itr.next();
-            SystemCoord coord = manager.getInventory(selected);
-            if (coord != null)
+            if (selected >= 0)
             {
-                result.add(coord);
+                SystemCoord coord = manager.getInventory(selected);
+                if (coord != null)
+                {
+                    result.add(coord);
+                } else
+                {
+//                    itr.remove();
+                }
             } else
             {
-                itr.remove();
+                Variable variable = manager.getVariable((int)selected);
+                if (variable != null)
+                {
+                    result.addAll(getContainers(manager, variable.getContainers()));
+                } else
+                {
+//                    itr.remove();
+                }
             }
         }
         return result;
+    }
+
+    public boolean isValidSetting(boolean whitelist, Setting<Type> setting)
+    {
+        return ((setting != null) == whitelist) || (setting != null && setting.isLimitedByAmount());
     }
 
     @Override

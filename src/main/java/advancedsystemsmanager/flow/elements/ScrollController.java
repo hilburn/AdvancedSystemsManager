@@ -107,7 +107,7 @@ public abstract class ScrollController<T>
 
     public void updateScrolling()
     {
-        canScroll = result.size() > itemsPerRow * visibleRows;
+        canScroll = result.size() > itemsPerRow * getVisibleRows();
         if (!canScroll)
         {
             offset = 0;
@@ -161,7 +161,7 @@ public abstract class ScrollController<T>
         List<Point> points = new ArrayList<Point>();
 
         int start = getFirstRow();
-        for (int row = start; row <= start + visibleRows; row++)
+        for (int row = start; row <= start + getVisibleRows(); row++)
         {
             for (int col = 0; col < itemsPerRow; col++)
             {
@@ -169,10 +169,10 @@ public abstract class ScrollController<T>
                 if (id >= 0 && id < result.size())
                 {
                     int x = getScrollingStartX() + ITEM_SIZE_WITH_MARGIN * col;
-                    int y = getScrollingStartY() + row * ITEM_SIZE_WITH_MARGIN - offset;
-                    if (y > scrollingUpperLimit && y + ITEM_SIZE < FlowComponent.getMenuOpenSize())
+                    int y = row * ITEM_SIZE_WITH_MARGIN - offset;
+                    if (y >= 0 && y + ITEM_SIZE < getVisibleRows() * ITEM_SIZE_WITH_MARGIN + 15)
                     {
-                        points.add(new Point(id, x, y));
+                        points.add(new Point(id, x, y + getScrollingStartY()));
                     }
                 }
             }
@@ -286,7 +286,7 @@ public abstract class ScrollController<T>
     {
         offset += change;
         int min = 0;
-        int max = ((int)(Math.ceil(((float)result.size() / itemsPerRow)) - visibleRows)) * ITEM_SIZE_WITH_MARGIN - (ITEM_SIZE_WITH_MARGIN - ITEM_SIZE);
+        int max = ((int)(Math.ceil(((float)result.size() / itemsPerRow)) - getVisibleRows())) * ITEM_SIZE_WITH_MARGIN - (ITEM_SIZE_WITH_MARGIN - ITEM_SIZE);
         if (offset < min)
         {
             offset = min;
@@ -371,6 +371,10 @@ public abstract class ScrollController<T>
         return lastUpdate;
     }
 
+    public int getVisibleRows()
+    {
+        return visibleRows;
+    }
 
     public class Point
     {

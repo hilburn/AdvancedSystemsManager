@@ -3,6 +3,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
+import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -30,7 +31,8 @@ public class MenuVariableContainers extends MenuContainer
         } else
         {
             Variable variable = ((MenuVariable)getParent().getMenus().get(0)).getVariable();
-            if (variable.isValid())
+
+            if (variable != null && variable.isValid())
             {
                 return ((MenuContainerTypes)variable.getDeclaration().getMenus().get(1)).getValidTypes();
             } else

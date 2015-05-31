@@ -38,7 +38,7 @@ public class MenuResult extends Menu
 
                 if (getParent().getType() == CommandRegistry.VARIABLE)
                 {
-                    getParent().getManager().updateVariables();
+                    ((MenuVariable)getParent().menus.get(0)).variables.updateSearch();
                 } else if (getParent().getType() == CommandRegistry.NODE)
                 {
                     if (getParent().getParent() != null)

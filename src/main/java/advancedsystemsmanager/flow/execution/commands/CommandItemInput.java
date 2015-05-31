@@ -52,6 +52,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
         MenuItem settings = (MenuItem)menus.get(2);
         List<Setting<ItemStack>> validSettings = getValidSettings(settings.settings);
         List<IBufferElement<ItemStack>> subElements = new ArrayList<IBufferElement<ItemStack>>();
+        //TODO: Have a think about this.
         for (SystemCoord block : blocks)
         {
             TileEntity entity = block.tileEntity;
@@ -96,7 +97,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
             Setting<ItemStack> setting = isValid(settings, stack);
-            if ((setting == null) != whitelist)
+            if (isValidSetting(whitelist, setting))
                 subElements.add(new ItemBufferElement(id, inventory, slot, setting, whitelist));
             checked.add(slot);
         }

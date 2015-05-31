@@ -1,10 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.ScrollVariable;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,70 +16,13 @@ public class MenuVariableLoop extends Menu
     public static final int DISPLAY_X = 45;
     public static final int DISPLAY_Y_TOP = 5;
     public static final int DISPLAY_Y_BOT = 25;
-    public static final String NBT_LIST = "List";
     public static final String NBT_ELEMENT = "Element";
-//    public VariableDisplay listDisplay;
-//    public VariableDisplay elementDisplay;
-    public int selectedList;
-    public int selectedElement;
+    private ScrollVariable variables;
 
     public MenuVariableLoop(FlowComponent parent)
     {
         super(parent);
-
-//        listDisplay = new VariableDisplay(Names.VARIABLE_LIST, DISPLAY_X, DISPLAY_Y_TOP)
-//        {
-//            @Override
-//            public int getValue()
-//            {
-//                return selectedList;
-//            }
-//
-//            @Override
-//            public void setValue(int val)
-//            {
-//                selectedList = val;
-//            }
-//
-//            @Override
-//            public void onUpdate()
-//            {
-//                sendServerData(true);
-//            }
-//        };
-//
-//        elementDisplay = new VariableDisplay(Names.VARIABLE_ELEMENT, DISPLAY_X, DISPLAY_Y_BOT)
-//        {
-//            @Override
-//            public int getValue()
-//            {
-//                return selectedElement;
-//            }
-//
-//            @Override
-//            public void setValue(int val)
-//            {
-//                selectedElement = val;
-//            }
-//
-//            @Override
-//            public void onUpdate()
-//            {
-//                sendServerData(false);
-//            }
-//        };
-
-        selectedList = 0;
-        selectedElement = 1;
-    }
-
-    public void sendServerData(boolean useList)
-    {
-        int val = useList ? selectedList : selectedElement;
-        ASMPacket dw = getParent().getSyncPacket();
-        dw.writeBoolean(useList);
-        dw.writeByte(val);
-        PacketHandler.sendDataToServer(dw);
+        variables = new ScrollVariable(parent);
     }
 
     @Override
@@ -93,23 +35,20 @@ public class MenuVariableLoop extends Menu
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-//        listDisplay.draw(gui, mX, mY);
-//        elementDisplay.draw(gui, mX, mY);
+        variables.draw(gui, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-//        listDisplay.drawMouseOver(gui, mX, mY);
-//        elementDisplay.drawMouseOver(gui, mX, mY);
+        variables.drawMouseOver(gui, mX, mY);
     }
 
     @Override
     public void onClick(int mX, int mY, int button)
     {
-//        listDisplay.onClick(mX, mY, this);
-//        elementDisplay.onClick(mX, mY, this);
+        variables.onClick(mX, mY, button);
     }
 
     @Override
@@ -120,50 +59,43 @@ public class MenuVariableLoop extends Menu
     @Override
     public void onRelease(int mX, int mY, boolean isMenuOpen)
     {
+        if (isMenuOpen)
+        {
+            variables.onRelease(mX, mY);
+        }
     }
 
     @Override
     public void copyFrom(Menu menu)
     {
-        selectedList = ((MenuVariableLoop)menu).selectedList;
-        selectedElement = ((MenuVariableLoop)menu).selectedElement;
+        variables.selected = ((MenuVariableLoop)menu).variables.selected;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        selectedList = nbtTagCompound.getByte(NBT_LIST);
-        selectedElement = nbtTagCompound.getByte(NBT_ELEMENT);
+        variables.selected = nbtTagCompound.getInteger(NBT_ELEMENT);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setByte(NBT_LIST, (byte)selectedList);
-        nbtTagCompound.setByte(NBT_ELEMENT, (byte)selectedElement);
+        nbtTagCompound.setInteger(NBT_ELEMENT, variables.selected);
     }
 
     @Override
     public void addErrors(List<String> errors)
     {
-        if (!getListVariable().isValid())
+        Variable variable = getVariable();
+        if (variable == null || !getVariable().isValid())
         {
             errors.add(Names.LIST_NOT_DECLARED);
         }
-
-        if (!getElementVariable().isValid())
-        {
-            errors.add(Names.ELEMENT_NOT_DECLARED);
-        }
     }
 
-    public Variable getListVariable()
+    public Variable getVariable()
     {
-        return getParent().getManager().getVariable(selectedList);
+        return getParent().getManager().getVariable(variables.selected);
     }
 
-    public Variable getElementVariable()
-    {
-        return getParent().getManager().getVariable(selectedElement);
-    }
 }

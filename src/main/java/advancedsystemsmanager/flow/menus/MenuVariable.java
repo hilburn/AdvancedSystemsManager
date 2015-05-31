@@ -1,10 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -13,34 +11,29 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 
-public class MenuVariable extends Menu implements IPacketSync
+public class MenuVariable extends Menu
 {
     public static final int RADIO_BUTTON_X = 5;
-    public static final int RADIO_BUTTON_Y = 28;
+    public static final int RADIO_BUTTON_Y = 40;
     public static final int RADIO_BUTTON_SPACING = 12;
-    public static final int CHECK_BOX_X = 5;
-    public static final int CHECK_BOX_Y = 52;
     public static final String NBT_VARIABLE = "Variable";
     public static final String NBT_MODE = "Mode";
     public static final String NBT_EXECUTED = "Executed";
     public RadioButtonList radioButtons;
-    ScrollController<Variable> variables;
-    public int selectedVariable;
-    private byte id;
+    public ScrollVariable variables;
     public boolean executed;
 
     public MenuVariable(final FlowComponent parent)
     {
         super(parent);
 
-        parent.registerSyncable(this);
-        selectedVariable = -1;
-
         radioButtons = new RadioButtonList(getParent());
 
         for (VariableMode mode : VariableMode.values())
         {
-            radioButtons.add(new RadioButton(RADIO_BUTTON_X, RADIO_BUTTON_Y + mode.ordinal() * RADIO_BUTTON_SPACING, mode.toString())
+            int y = 52 ;
+            int x = RADIO_BUTTON_X + mode.ordinal() * 34;
+            radioButtons.add(new RadioButton(x, y, mode.toString())
             {
                 @Override
                 public boolean isVisible()
@@ -52,24 +45,28 @@ public class MenuVariable extends Menu implements IPacketSync
 
         variables = new ScrollVariable(parent)
         {
-
             @Override
-            public void onClick(Variable variable, int mX, int mY, int button)
+            public void setSelected(int val)
             {
-                setSelectedVariable(variable.colour);
-                sendUpdatePacket();
+                boolean declaration = isDeclaration();
+                if (declaration)
+                {
+                    getParent().getManager().removeVariableDeclaration(variables.selected, getParent());
+                    selected = val;
+                    getParent().getManager().updateDeclaration(getParent(), variables.selected);
+                } else
+                {
+                    selected = val;
+                }
             }
 
             @Override
-            public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
+            public int getVisibleRows()
             {
-                int srcInventoryX = selectedVariable == variable.colour ? 1 : 0;
-                int srcInventoryY = hover ? 1 : 0;
-
-                gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
-                variable.draw(gui, x, y);
+                return isDeclaration() ? super.getVisibleRows() : 1;
             }
         };
+        variables.selected = -1;
 
     }
 
@@ -144,7 +141,7 @@ public class MenuVariable extends Menu implements IPacketSync
     @Override
     public void copyFrom(Menu menu)
     {
-        setSelectedVariable(((MenuVariable)menu).selectedVariable);
+        variables.setSelected(((MenuVariable)menu).getSelectedVariable());
         radioButtons.setSelectedOption(((MenuVariable)menu).radioButtons.getSelectedOption());
         executed = ((MenuVariable)menu).executed;
     }
@@ -156,24 +153,13 @@ public class MenuVariable extends Menu implements IPacketSync
 
     public int getSelectedVariable()
     {
-        return selectedVariable;
-    }
-
-    public void setSelectedVariable(int val)
-    {
-        boolean declaration = isDeclaration();
-        if (declaration)
-        {
-            getParent().getManager().removeVariableDeclaration(selectedVariable, getParent());
-            selectedVariable = val;
-            getParent().getManager().updateDeclaration(getParent(), selectedVariable);
-        }
+        return variables.selected;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        setSelectedVariable(nbtTagCompound.getInteger(NBT_VARIABLE));
+        variables.setSelected(nbtTagCompound.getInteger(NBT_VARIABLE));
         radioButtons.setSelectedOption(nbtTagCompound.getByte(NBT_MODE));
         executed = nbtTagCompound.getBoolean(NBT_EXECUTED);
     }
@@ -181,7 +167,7 @@ public class MenuVariable extends Menu implements IPacketSync
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setInteger(NBT_VARIABLE, selectedVariable);
+        nbtTagCompound.setInteger(NBT_VARIABLE, variables.selected);
         nbtTagCompound.setByte(NBT_MODE, (byte)radioButtons.getSelectedOption());
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
     }
@@ -199,33 +185,11 @@ public class MenuVariable extends Menu implements IPacketSync
         }
     }
 
-    @Override
-    public void setId(int id)
-    {
-        this.id = (byte)id;
-    }
-
-    private void sendUpdatePacket()
-    {
-        ASMPacket packet = parent.getSyncPacket();
-        packet.writeByte(id);
-        packet.writeMedium(selectedVariable);
-        packet.sendServerPacket();
-    }
-
-    @Override
-    public boolean readData(ASMPacket packet)
-    {
-        setSelectedVariable(packet.readUnsignedMedium());
-        return false;
-    }
-
-
     public enum VariableMode
     {
         ADD(Names.ADD),
-        REMOVE(Names.REMOVE),
-        SET(Names.SET);
+        SET(Names.SET),
+        REMOVE(Names.REMOVE);
 
         public String name;
 

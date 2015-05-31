@@ -62,7 +62,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                 IBufferElement<ItemStack> itemBufferElement = iterator.next().getValue();
                 Setting<ItemStack> setting = isValid(validSettings, itemBufferElement.getContent());
                 boolean whitelist = menuItem.useWhiteList();
-                if ((setting == null) == whitelist) continue;
+                if (!isValidSetting(whitelist, setting)) continue;
                 ItemStack itemStack = itemBufferElement.getContent();
                 if (block.tileEntity instanceof IInternalInventory)
                 {

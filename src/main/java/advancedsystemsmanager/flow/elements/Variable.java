@@ -5,6 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.TextColour;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.util.ColourUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -91,7 +92,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         this.green = (byte)((colour >> 8) & 0xFF);
         this.blue = (byte)(colour & 0xFF);
         textColour = TextColour.getClosestColour(colour);
-        TextColour.RGBtoHSV(colour, hsv);
+        ColourUtils.RGBtoHSV(colour, hsv);
     }
 
     public boolean isValid()

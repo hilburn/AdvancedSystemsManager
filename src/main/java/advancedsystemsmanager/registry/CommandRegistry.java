@@ -85,8 +85,8 @@ public class CommandRegistry
 
         registerCommand(new CommandRedstoneOutput());
 
-        registerCommand(new CommandVariable());
-
+        registerCommand(VARIABLE = new CommandVariable());
+        registerCommand(new CommandLoop());
 
         registerCommand(new CommandGroup());
         registerCommand(NODE = new CommandGroupNode());

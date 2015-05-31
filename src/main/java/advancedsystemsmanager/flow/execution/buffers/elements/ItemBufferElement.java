@@ -12,9 +12,14 @@ public class ItemBufferElement extends BufferElementBase<ItemStack>
 
     public ItemBufferElement(int id, IInventory inventory, int slot, Setting<ItemStack> setting, boolean whitelist)
     {
-        this(id, inventory, slot);
+        //this(id, inventory, slot);
+        super(id);
         this.setting = setting;
         this.whitelist = whitelist;
+        this.inventory = inventory;
+        this.content = inventory.getStackInSlot(slot);
+        this.slot = slot;
+        this.amount = getMaxWithSetting(content.stackSize);
     }
 
     private ItemBufferElement(int id, IInventory inventory, int slot)

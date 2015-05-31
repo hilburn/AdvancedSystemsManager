@@ -49,6 +49,16 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return new ResourceLocation(Reference.RESOURCE_LOCATION, Textures.GUI + name + ".png");
     }
 
+    public float getZLevel()
+    {
+        return zLevel;
+    }
+
+    public void setZLevel(float val)
+    {
+        this.zLevel = val;
+    }
+
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
     {
         float scale = getScale();
@@ -63,7 +73,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         );
     }
 
-    private double fixScaledCoordinate(int val, float scale, int size)
+    public double fixScaledCoordinate(int val, float scale, int size)
     {
         double d = val / scale;
         d *= size;
@@ -72,6 +82,106 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         d *= scale;
 
         return d;
+    }
+
+    public void drawRectangle(int x, int y, int x2, int y2, int[] colour)
+    {
+        float scale = getScale();
+
+        drawScaledRectangle(
+                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
+                fixScaledCoordinate(guiLeft + x2, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y2, scale, this.mc.displayHeight),
+                colour);
+    }
+
+    public void drawScaledRectangle(double x, double y, double x2, double y2, int[] colour)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        tessellator.addVertex(x, y2, 0.0D);
+        tessellator.addVertex(x2, y2, 0.0D);
+        tessellator.addVertex(x2, y, 0.0D);
+        tessellator.addVertex(x, y, 0.0D);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
+    public void drawGradientRectangle(int x, int y, int x2, int y2, int[] colourXY, int[] colourX2Y, int[] colourX2Y2, int[] colourXY2)
+    {
+        float scale = getScale();
+
+        drawScaledGradientRectangle(
+                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
+                fixScaledCoordinate(guiLeft + x2, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y2, scale, this.mc.displayHeight),
+                colourXY, colourX2Y, colourX2Y2, colourXY2);
+    }
+
+    public void drawScaledGradientRectangle(double x, double y, double x2, double y2, int[] colourXY, int[] colourX2Y, int[] colourX2Y2, int[] colourXY2)
+    {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+
+        tessellator.setColorOpaque(colourXY2[0], colourXY2[1], colourXY2[2]);
+        tessellator.addVertex(x, y2, 0.0D);
+        tessellator.setColorOpaque(colourX2Y2[0], colourX2Y2[1], colourX2Y2[2]);
+        tessellator.addVertex(x2, y2, 0.0D);
+        tessellator.setColorOpaque(colourX2Y[0], colourX2Y[1], colourX2Y[2]);
+        tessellator.addVertex(x2, y, 0.0D);
+        tessellator.setColorOpaque(colourXY[0], colourXY[1], colourXY[2]);
+        tessellator.addVertex(x, y, 0.0D);
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+
+    public void drawRainbowRectangle(int x, int y, int x2, int y2, int[][]colours)
+    {
+        float scale = getScale();
+
+        drawScaledRainbowRectangle(
+                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
+                fixScaledCoordinate(guiLeft + x + x2, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y + y2, scale, this.mc.displayHeight),
+                colours);
+    }
+
+    public void drawScaledRainbowRectangle(double x, double y, double x2, double y2, int[][]colours)
+    {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        double dy = (y2 - y)/(colours.length - 1);
+        double startY = y;
+        for (int i = 0; i < colours.length - 1; i++)
+        {
+            y = startY + i * dy;
+            y2 = y + dy;
+            tessellator.setColorOpaque(colours[i+1][0], colours[i+1][1], colours[i][2]);
+            tessellator.addVertex(x, y2, 0.0D);
+            tessellator.setColorOpaque(colours[i+1][0], colours[i+1][1], colours[i+1][2]);
+            tessellator.addVertex(x2, y2, 0.0D);
+            tessellator.setColorOpaque(colours[i][0], colours[i][1], colours[i][2]);
+            tessellator.addVertex(x2, y, 0.0D);
+            tessellator.setColorOpaque(colours[i][0], colours[i][1], colours[i][2]);
+            tessellator.addVertex(x, y, 0.0D);
+        }
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     public void drawScaleFriendlyTexture(double x, double y, double srcX, double srcY, double w, double h)

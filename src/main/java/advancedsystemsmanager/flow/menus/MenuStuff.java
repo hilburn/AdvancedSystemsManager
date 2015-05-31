@@ -105,7 +105,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
                 @Override
                 public boolean writeData(ASMPacket packet)
                 {
-                    packet.writeByte(selectedSetting.getAmount());
+                    packet.writeByte(selectedSetting.getId());
                     return super.writeData(packet);
                 }
             });

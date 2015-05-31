@@ -16,7 +16,7 @@ public class CommandVariable extends CommandBase
 {
     public CommandVariable()
     {
-        super(VARIABLE, Names.CONTAINER_VARIABLE, CommandType.MISC, ConnectionSet.EMPTY, ConnectionSet.STANDARD);
+        super(VARIABLE, Names.CONTAINER_VARIABLE, CommandType.MISC, ConnectionSet.EMPTY); //, ConnectionSet.STANDARD
     }
 
     @Override

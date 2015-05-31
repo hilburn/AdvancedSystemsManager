@@ -90,7 +90,7 @@ public class MenuItem extends MenuStuff<ItemStack>
     {
         switch (action)
         {
-            case 2:
+            case 3:
                 setting.setFuzzyType(packet.readByte());
                 break;
         }
@@ -230,7 +230,7 @@ public class MenuItem extends MenuStuff<ItemStack>
                     }
                     getSelectedSetting().setFuzzyType(id);
                     ASMPacket packet = getSyncPacket();
-                    packet.writeByte(2);
+                    packet.writeByte(3);
                     packet.writeByte(id);
                     packet.sendServerPacket();
                     break;

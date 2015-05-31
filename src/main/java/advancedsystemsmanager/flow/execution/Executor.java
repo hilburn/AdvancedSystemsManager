@@ -13,17 +13,17 @@ import java.util.*;
 public class Executor
 {
     public TileEntityManager manager;
-    public List<Integer> usedCommands;
+    public Set<Integer> usedCommands;
     private Map<String, IBuffer> buffers;
 
     public Executor(TileEntityManager manager)
     {
         this.manager = manager;
         this.buffers = new HashMap<String, IBuffer>();
-        this.usedCommands = new ArrayList<Integer>();
+        this.usedCommands = new HashSet<Integer>();
     }
 
-    public Executor(TileEntityManager manager, Map<String, IBuffer> buffers, List<Integer> usedCommands)
+    public Executor(TileEntityManager manager, Map<String, IBuffer> buffers, Set<Integer> usedCommands)
     {
         this.manager = manager;
         this.buffers = buffers;
@@ -40,11 +40,6 @@ public class Executor
         return buffers.keySet();
     }
 
-    public List<Integer> usedCommands()
-    {
-        return usedCommands;
-    }
-
     public boolean containsBuffer(String key)
     {
         return buffers.containsKey(key);
@@ -58,7 +53,7 @@ public class Executor
 
     public void executeCommand(FlowComponent command, int connectionId)
     {
-        if (command != null && !usedCommands.contains(command.getId()))
+        if (command != null)
         {
             this.usedCommands.add(command.getId());
             command.getType().execute(command, connectionId, this);
@@ -78,10 +73,9 @@ public class Executor
     {
         for (Variable variable : this.manager.getVariables())
         {
-            if (variable.isValid() && !variable.hasBeenExecuted())
+            if (variable.isValid())
             {
                 this.executeCommand(variable.getDeclaration(), 0);
-                variable.setExecuted(true);
             }
         }
         this.executeChildCommands(component, validTriggerOutputs);
@@ -95,7 +89,8 @@ public class Executor
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputConnection());
+                if (!usedCommands.contains(connection.getOutputId()))
+                    this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputConnection());
             }
         }
     }

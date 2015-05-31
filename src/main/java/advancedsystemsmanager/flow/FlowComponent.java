@@ -115,6 +115,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final String NBT_NAME = "Na";
     public static final String NBT_PARENT = "P";
     private static final String NBT_ID = "ID";
+    private static final String NBT_SET = "S";
     public int x;
     public int y;
     public int mouseDragX;
@@ -198,6 +199,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             int typeId = nbtTagCompound.getByte(NBT_TYPE);
             int id = nbtTagCompound.getInteger(NBT_ID);
             component = new FlowComponent(manager, x, y, id, CommandRegistry.getCommand(typeId));
+            component.setConnectionSet(component.getType().getSets()[nbtTagCompound.getByte(NBT_SET)]);
             component.isLoading = true;
 
             if (nbtTagCompound.hasKey(NBT_NAME))
@@ -1275,6 +1277,15 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         nbtTagCompound.setShort(NBT_POS_Y, (short)y);
         nbtTagCompound.setByte(NBT_TYPE, (byte)type.getId());
         nbtTagCompound.setInteger(NBT_ID, id);
+        for (int i = 0; i < type.getSets().length; i++)
+        {
+            if (type.getSets()[i] == getConnectionSet())
+            {
+                nbtTagCompound.setByte(NBT_SET, (byte)i);
+                break;
+            }
+        }
+
 
         if (name != null)
         {
@@ -1306,7 +1317,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public NBTTagList getConnectionNBT()
     {
         NBTTagList connections = new NBTTagList();
-        for (int i = 0; i < connectionSet.getConnections().length; i++)
+        for (int i = 0; i < connectionSet.getConnections().length & i < this.connections.length; i++)
         {
             Connection connection = this.connections[i];
 

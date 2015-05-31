@@ -289,17 +289,6 @@ public class CommandExecutor
                         }
 
                         return;
-                    case 10:
-                        List<SlotInventoryHolder> tiles = this.getTiles(command.getMenus().get(2));
-                        if (tiles != null)
-                        {
-                            this.updateVariable(tiles, (MenuVariable)command.getMenus().get(0), (MenuListOrder)command.getMenus().get(3));
-                        }
-                        break;
-                    case 11:
-                        this.updateForLoop(command, (MenuVariableLoop)command.getMenus().get(0), (MenuContainerTypes)command.getMenus().get(1), (MenuListOrder)command.getMenus().get(2));
-                        this.executeChildCommands(command, EnumSet.of(ConnectionOption.STANDARD_OUTPUT));
-                        return;
                     case 12:
                         CraftingBufferFluidElement element = new CraftingBufferFluidElement(this, (MenuCrafting)command.getMenus().get(0), (MenuContainerScrap)command.getMenus().get(2));
                         if (((MenuCraftingPriority)command.getMenus().get(1)).shouldPrioritizeCrafting())
@@ -348,11 +337,6 @@ public class CommandExecutor
         }
     }
 
-    public List<SlotInventoryHolder> getEmitters(Menu menu)
-    {
-        return getContainers(this.manager, menu, SystemTypeRegistry.EMITTER);
-    }
-
     public List<SlotInventoryHolder> getInventories(Menu menu)
     {
         return getContainers(this.manager, menu, SystemTypeRegistry.INVENTORY);
@@ -384,11 +368,6 @@ public class CommandExecutor
     public List<SlotInventoryHolder> getNodes(Menu menu)
     {
         return getContainers(this.manager, menu, SystemTypeRegistry.NODE);
-    }
-
-    public List<SlotInventoryHolder> getTiles(Menu menu)
-    {
-        return getContainers(this.manager, menu, null);
     }
 
     public void getValidRFStorage(Menu menu, List<SlotInventoryHolder> cells)
@@ -937,45 +916,15 @@ public class CommandExecutor
         }
     }
 
-    public void updateForLoop(FlowComponent command, MenuVariableLoop variableMenu, MenuContainerTypes typesMenu, MenuListOrder orderMenu)
-    {
-        Variable list = variableMenu.getListVariable();
-        Variable element = variableMenu.getElementVariable();
-        if (list.isValid() && element.isValid())
-        {
-            List<Long> selection = this.applyOrder(list.getContainers(), orderMenu);
-            Set<ISystemType> validTypes = typesMenu.getValidTypes();
-            validTypes.addAll(((MenuContainerTypes)element.getDeclaration().getMenus().get(1)).getValidTypes());
-            List<SystemCoord> inventories = this.manager.getConnectedInventories();
-
-            for (long selected : selection)
-            {
-                if (selected >= 0 && selected < inventories.size())
-                {
-                    SystemCoord inventory = inventories.get((int)selected);
-                    if (inventory.isOfAnyType(validTypes))
-                    {
-                        element.clearContainers();
-                        element.add(selected);
-                        this.executeChildCommands(command, EnumSet.of(ConnectionOption.FOR_EACH));
-                    }
-                }
-            }
-        }
-    }
-
     public List<Long> applyOrder(List<Long> original, MenuListOrder orderMenu)
     {
         ArrayList<Long> ret = new ArrayList<Long>(original);
         if (orderMenu.getOrder() == LoopOrder.RANDOM)
         {
             Collections.shuffle(ret);
-        } else if (orderMenu.getOrder() == LoopOrder.NORMAL)
+        } else if (orderMenu.getOrder() == LoopOrder.NORMAL && !orderMenu.isReversed())
         {
-            if (!orderMenu.isReversed())
-            {
-                Collections.reverse(ret);
-            }
+            Collections.reverse(ret);
         } else
         {
             Collections.sort(ret, orderMenu.getComparator());

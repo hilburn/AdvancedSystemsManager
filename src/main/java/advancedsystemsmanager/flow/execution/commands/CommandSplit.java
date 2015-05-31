@@ -60,7 +60,7 @@ public class CommandSplit extends CommandBase
                     FlowComponent output = command.getManager().getFlowItem(connections.get(i).getOutputId());
                     if (output != null)
                     {
-                        new Executor(command.manager, newBuffers, new ArrayList<Integer>(executor.usedCommands)).executeCommand(output, connections.get(i).getOutputConnection());
+                        new Executor(command.manager, newBuffers, new HashSet<Integer>(executor.usedCommands)).executeCommand(output, connections.get(i).getOutputConnection());
                     }
                 }
             } else
