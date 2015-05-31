@@ -2,6 +2,13 @@ package advancedsystemsmanager.util;
 
 public class ColourUtils
 {
+    public static String RGBtoHex(int r, int g, int b)
+    {
+        String val = Integer.toHexString(r << 16 | g << 8 | b);
+        while (val.length() < 6) val = "0" + val;
+        return val;
+    }
+
     public static int[] HSBtoRGB(float hue, float saturation, float brightness) {
         int r = 0, g = 0, b = 0;
         if (saturation == 0) {
@@ -48,11 +55,16 @@ public class ColourUtils
         return new int[]{r, g, b};
     }
 
-    public static void RGBtoHSV(int RGB, float[] values)
+    public static void HextoHSV(int RGB, float[] values)
     {
         int r = RGB >> 16;
         int g = (RGB >> 8) & 0xFF;
         int b = RGB & 0xFF;
+        RGBtoHSV(r, g, b, values);
+    }
+    
+    public static void RGBtoHSV(int r, int g, int b, float[] values)
+    {
         float hue, saturation, brightness;
         int cmax = (r > g) ? r : g;
         if (b > cmax) cmax = b;

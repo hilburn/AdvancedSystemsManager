@@ -37,6 +37,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
     private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
     protected ContainerBase container;
+    protected boolean cached;
+    protected float scale;
 
     public GuiBase(ContainerBase container)
     {
@@ -63,13 +65,43 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         float scale = getScale();
 
-        drawScaleFriendlyTexture(
+        drawScaledTexture(
                 fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
                 fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
                 fixScaledCoordinate(srcX, scale, 256),
                 fixScaledCoordinate(srcY, scale, 256),
                 fixScaledCoordinate(w, scale, this.mc.displayWidth),
                 fixScaledCoordinate(h, scale, this.mc.displayHeight)
+        );
+    }
+
+    public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, int[] colour)
+    {
+        float scale = getScale();
+
+        drawScaledColouredTexture(
+                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
+                fixScaledCoordinate(srcX, scale, 256),
+                fixScaledCoordinate(srcY, scale, 256),
+                fixScaledCoordinate(w, scale, this.mc.displayWidth),
+                fixScaledCoordinate(h, scale, this.mc.displayHeight),
+                colour
+        );
+    }
+
+    public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, float mult, int[] colour)
+    {
+        float scale = getScale();
+
+        drawScaledColouredTexture(
+                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
+                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
+                fixScaledCoordinate(srcX, scale, 256),
+                fixScaledCoordinate(srcY, scale, 256),
+                fixScaledCoordinate(w, scale, this.mc.displayWidth),
+                fixScaledCoordinate(h, scale, this.mc.displayHeight),
+                mult, colour
         );
     }
 
@@ -184,36 +216,63 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    public void drawScaleFriendlyTexture(double x, double y, double srcX, double srcY, double w, double h)
+    private void drawScaledTexture(double x, double y, double srcX, double srcY, double w, double h)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, w, h);
+    }
+
+    private void drawScaledColouredTexture(double x, double y, double srcX, double srcY, double w, double h, int[] colour)
+    {
+        drawScaledColouredTexture(x, y, w, h, srcX, srcY, w, h, colour);
+    }
+
+    private void drawScaledColouredTexture(double x, double y, double srcX, double srcY, double w, double h, double mult, int[] colour)
+    {
+        drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, w, h, colour);
+    }
+
+    private void drawScaledColouredTexture(double x, double y, double w, double h, double srcX, double srcY, double u, double v, int[] colour)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
+    }
+
+    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, double srcX, double srcY, double u, double v)
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x + 0, y + h, (double)this.zLevel, (srcX + 0) * f, (srcY + h) * f1);
-        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + w) * f, (srcY + h) * f1);
-        tessellator.addVertexWithUV(x + w, y + 0, (double)this.zLevel, (srcX + w) * f, (srcY + 0) * f1);
-        tessellator.addVertexWithUV(x + 0, y + 0, (double)this.zLevel, (srcX + 0) * f, (srcY + 0) * f1);
+        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * f, (srcY + v) * f1);
+        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * f, (srcY + v) * f1);
+        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * f, srcY * f1);
+        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * f, srcY * f1);
         tessellator.draw();
     }
 
     protected float getScale()
     {
-
-        ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-        float w = scaledresolution.getScaledWidth() * 0.9F;
-        float h = scaledresolution.getScaledHeight() * 0.9F;
-        float multX = w / xSize;
-        float multY = h / ySize;
-        float mult = Math.min(multX, multY);
-        if (mult > 1F && !Settings.isEnlargeInterfaces())
+        if (cached)
         {
-            mult = 1F;
+            return scale;
+        } else
+        {
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+            float w = scaledresolution.getScaledWidth() * 0.9F;
+            float h = scaledresolution.getScaledHeight() * 0.9F;
+            float multX = w / xSize;
+            float multY = h / ySize;
+            float mult = Math.min(multX, multY);
+            if (mult > 1F && !Settings.isEnlargeInterfaces())
+            {
+                mult = 1F;
+            }
+            scale = (float)(Math.floor(mult * 1000)) / 1000F;
+            cached = true;
+            return scale;
         }
-
-        mult = (float)(Math.floor(mult * 1000)) / 1000F;
-
-        return mult;
     }
 
     public void drawStringFormatted(String str, int x, int y, float mult, int color, Object... args)
@@ -684,6 +743,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     @Override
     public void drawScreen(int x, int y, float f)
     {
+        cached = false;
+
         super.drawScreen(scaleX(x), scaleY(y), f);
 
         stopScaling();
@@ -715,8 +776,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawFluid(Fluid fluid, int x, int y)
     {
-
-
         IIcon icon = fluid.getIcon();
 
         if (icon == null)
@@ -752,7 +811,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         float[] colorComponents = new float[3];
         for (int i = 0; i < colorComponents.length; i++)
         {
-            colorComponents[i] = ((color & (255 << (i * 8))) >> (i * 8)) / 255F;
+            colorComponents[i] = ((color >> (i * 8)) & 255) / 255F;
         }
         GL11.glColor4f(colorComponents[2], colorComponents[1], colorComponents[0], 1F);
     }

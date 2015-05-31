@@ -384,7 +384,10 @@ public class GuiManager extends GuiBase
     {
         if (hasSpecialRenderer())
         {
-            getSpecialRenderer().onKeyTyped(this, c, k);
+            if (getSpecialRenderer().onKeyTyped(this, c, k))
+            {
+                return;
+            }
         } else
         {
 

@@ -49,6 +49,7 @@ public abstract class ScrollController<T>
     public int itemsPerRow = 5;
     public int visibleRows = 2;
     public int startX = 5;
+    protected int x, y;
     public int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
     public boolean disabledScroll;
     public long lastUpdate;
@@ -121,7 +122,7 @@ public abstract class ScrollController<T>
 
     public void onClick(int mX, int mY, int button)
     {
-        if (CollisionHelper.inBounds(TEXT_BOX_X, TEXT_BOX_Y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, mX, mY))
+        if (CollisionHelper.inBounds(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, mX, mY))
         {
             if (button == 0 || !selected)
             {
@@ -172,7 +173,7 @@ public abstract class ScrollController<T>
                     int y = row * ITEM_SIZE_WITH_MARGIN - offset;
                     if (y >= 0 && y + ITEM_SIZE < getVisibleRows() * ITEM_SIZE_WITH_MARGIN + 15)
                     {
-                        points.add(new Point(id, x, y + getScrollingStartY()));
+                        points.add(new Point(id, this.x + x, this.y + y + getScrollingStartY()));
                     }
                 }
             }
@@ -198,7 +199,7 @@ public abstract class ScrollController<T>
 
     public boolean inArrowBounds(boolean down, int mX, int mY)
     {
-        return CollisionHelper.inBounds(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
+        return CollisionHelper.inBounds(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
     }
 
     public void onRelease(int mX, int mY)
@@ -227,17 +228,17 @@ public abstract class ScrollController<T>
 
         if (hasSearchBox)
         {
-            gui.drawTexture(TEXT_BOX_X, TEXT_BOX_Y, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H);
-            gui.drawString(textBox.getText(), TEXT_BOX_X + TEXT_BOX_TEXT_X, TEXT_BOX_Y + TEXT_BOX_TEXT_Y, 0xFFFFFF);
+            gui.drawTexture(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H);
+            gui.drawString(textBox.getText(), x + TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_Y + TEXT_BOX_TEXT_Y, 0xFFFFFF);
 
             if (selected)
             {
-                gui.drawCursor(TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, TEXT_BOX_Y + CURSOR_Y, CURSOR_Z, 0xFFFFFFFF);
+                gui.drawCursor(x + TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, y + TEXT_BOX_Y + CURSOR_Y, CURSOR_Z, 0xFFFFFFFF);
             }
 
             if (textBox.getText().length() > 0 || result.size() > 0)
             {
-                gui.drawStringFormatted(Names.ITEMS_FOUND, AMOUNT_TEXT_X, AMOUNT_TEXT_Y, 0.7F, 0x404040, result.size());
+                gui.drawStringFormatted(Names.ITEMS_FOUND, x + AMOUNT_TEXT_X, y + AMOUNT_TEXT_Y, 0.7F, 0x404040, result.size());
             }
         }
 
@@ -265,7 +266,7 @@ public abstract class ScrollController<T>
             int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 ;
             int srcArrowY = down ? 1 : 0;
 
-            gui.drawTexture(ARROW_X, down ? ARROW_Y_DOWN : ARROW_Y_UP, ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
+            gui.drawTexture(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
         }
     }
 
@@ -378,7 +379,7 @@ public abstract class ScrollController<T>
 
     public class Point
     {
-        int id, x, y;
+        protected int id, x, y;
 
         public Point(int id, int x, int y)
         {

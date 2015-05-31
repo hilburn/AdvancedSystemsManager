@@ -1,5 +1,6 @@
 package advancedsystemsmanager.gui;
 
+import advancedsystemsmanager.helpers.CollisionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -17,6 +18,7 @@ public class GuiTextField extends Gui
     private FontRenderer fontRenderer;
     private int cursorPos = 0;
     private boolean toggleCursor;
+    private boolean selected = true;
     private TimerTask task;
 
     public GuiTextField(int width, int height, int x, int y)
@@ -35,82 +37,90 @@ public class GuiTextField extends Gui
         cursorPos = text.length();
     }
 
+    public void onClick(int mouseX, int mouseY, int button)
+    {
+        selected = CollisionHelper.inBounds(x, y, xSize, ySize, mouseX, mouseY);
+    }
+
     public void keyTyped(char c, int keycode)
     {
-        if (Character.isLetterOrDigit(c))
+        if (isSelected())
         {
-            if (cursorPos != this.text.length())
+            if (Character.isLetterOrDigit(c))
             {
-                setText(this.text.substring(0, cursorPos) + c + this.text.substring(cursorPos));
+                if (cursorPos != this.text.length())
+                {
+                    setText(this.text.substring(0, cursorPos) + c + this.text.substring(cursorPos));
+                } else
+                {
+                    setText(this.text + c);
+                }
+
+                cursorPos++;
             } else
             {
-                setText(this.text + c);
-            }
+                switch (keycode)
+                {
+                    case Keyboard.KEY_BACK:
+                        if (this.text.length() > 0)
+                        {
+                            if (cursorPos == this.text.length())
+                            {
+                                setText(this.text.substring(0, cursorPos - 1));
+                            } else if (cursorPos > 1)
+                            {
+                                setText(this.text.substring(0, cursorPos - 1) + this.text.substring(cursorPos));
+                            } else if (cursorPos == 1)
+                            {
+                                setText(this.text.substring(1));
+                            }
 
-            cursorPos++;
-        } else
-        {
-            switch (keycode)
-            {
-                case Keyboard.KEY_BACK:
-                    if (this.text.length() > 0)
-                    {
-                        if (cursorPos == this.text.length())
-                        {
-                            setText(this.text.substring(0, cursorPos - 1));
-                        } else if (cursorPos > 1)
-                        {
-                            setText(this.text.substring(0, cursorPos - 1) + this.text.substring(cursorPos));
-                        } else if (cursorPos == 1)
-                        {
-                            setText(this.text.substring(1));
+                            if (cursorPos > 0)
+                            {
+                                cursorPos--;
+                            }
                         }
-
+                        break;
+                    case Keyboard.KEY_DELETE:
+                        if (this.text.length() > 0)
+                        {
+                            if (cursorPos == 0)
+                            {
+                                setText(this.text.substring(1));
+                            } else if (cursorPos > 0 && cursorPos < this.text.length())
+                            {
+                                setText(this.text.substring(0, cursorPos) + this.text.substring(cursorPos + 1));
+                            }
+                        }
+                        break;
+                    case Keyboard.KEY_SPACE:
+                        if (cursorPos <= this.text.length())
+                        {
+                            cursorPos++;
+                        }
+                        setText(this.text + " ");
+                        break;
+                    case Keyboard.KEY_LEFT:
                         if (cursorPos > 0)
                         {
                             cursorPos--;
                         }
-                    }
-                    break;
-                case Keyboard.KEY_DELETE:
-                    if (this.text.length() > 0)
-                    {
-                        if (cursorPos == 0)
+                        break;
+                    case Keyboard.KEY_RIGHT:
+                        if (cursorPos < this.text.length())
                         {
-                            setText(this.text.substring(1));
-                        } else if (cursorPos > 0 && cursorPos < this.text.length())
-                        {
-                            setText(this.text.substring(0, cursorPos) + this.text.substring(cursorPos + 1));
+                            cursorPos++;
                         }
-                    }
-                    break;
-                case Keyboard.KEY_SPACE:
-                    if (cursorPos <= this.text.length())
-                    {
-                        cursorPos++;
-                    }
-                    setText(this.text + " ");
-                    break;
-                case Keyboard.KEY_LEFT:
-                    if (cursorPos > 0)
-                    {
-                        cursorPos--;
-                    }
-                    break;
-                case Keyboard.KEY_RIGHT:
-                    if (cursorPos < this.text.length())
-                    {
-                        cursorPos++;
-                    }
-                    break;
-                case Keyboard.KEY_HOME:
-                    cursorPos = 0;
-                    break;
-                case Keyboard.KEY_END:
-                    cursorPos = this.text.length();
-                    break;
-                default:
-                    break;
+                        break;
+                    case Keyboard.KEY_HOME:
+                        cursorPos = 0;
+                        break;
+                    case Keyboard.KEY_END:
+                        cursorPos = this.text.length();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -132,7 +142,7 @@ public class GuiTextField extends Gui
         String preCursor = getPreCursor();
         fontRenderer.drawString(getText(), this.x + 2, this.y + ySize / 2 - 4, 0xe0e0e0);
         int x = this.x + 1 + fontRenderer.getStringWidth(preCursor);
-        if (toggleCursor)
+        if (toggleCursor && isSelected())
             drawRect(x, this.y + ySize / 2 - 4, x + 1, this.y + ySize / 2 + 4, 0xffe0e0e0);
     }
 
@@ -160,6 +170,11 @@ public class GuiTextField extends Gui
     {
         task.cancel();
         timer.purge();
+    }
+
+    public boolean isSelected()
+    {
+        return selected;
     }
 
     private class ToggleCursor extends TimerTask

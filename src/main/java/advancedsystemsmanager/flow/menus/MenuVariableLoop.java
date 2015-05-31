@@ -68,19 +68,19 @@ public class MenuVariableLoop extends Menu
     @Override
     public void copyFrom(Menu menu)
     {
-        variables.selected = ((MenuVariableLoop)menu).variables.selected;
+        variables.variable = ((MenuVariableLoop)menu).variables.variable;
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        variables.selected = nbtTagCompound.getInteger(NBT_ELEMENT);
+        variables.variable = nbtTagCompound.getInteger(NBT_ELEMENT);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setInteger(NBT_ELEMENT, variables.selected);
+        nbtTagCompound.setInteger(NBT_ELEMENT, variables.variable);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MenuVariableLoop extends Menu
 
     public Variable getVariable()
     {
-        return getParent().getManager().getVariable(variables.selected);
+        return getParent().getManager().getVariable(variables.variable);
     }
 
 }

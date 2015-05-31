@@ -6,6 +6,7 @@ import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,29 +17,31 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
 {
     private FlowComponent command;
     private int id;
-    public int selected = -1;
+    public int variable = -1;
 
     public ScrollVariable(FlowComponent command)
     {
         this.command = command;
-        command.registerSyncable(this);
+        if (command != null)
+            command.registerSyncable(this);
         textBox = new TextBoxLogic(Null.NULL_PACKET, Integer.MAX_VALUE, TEXT_BOX_SIZE_W - TEXT_BOX_TEXT_X * 2)
         {
             @Override
             public void onUpdate()
             {
-                if (getText().length() > 0)
-                {
-                    updateSearch();
-                } else
-                {
-                    result.clear();
-                    updateScrolling();
-                }
+                updateSearch();
             }
         };
         textBox.setTextAndCursor("");
         updateSearch();
+    }
+
+    public ScrollVariable(FlowComponent command, int x, int y, int rows, int width)
+    {
+        this(command);
+        this.x = x;
+        this.y = y;
+        this.visibleRows = rows;
     }
 
     @Override
@@ -54,18 +57,23 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
         updateScrolling();
     }
 
+    public TileEntityManager getManager()
+    {
+        return command.getManager();
+    }
+
     @Override
     public void onClick(Variable variable, int mX, int mY, int button)
     {
         int newSelected = variable.colour;
-        setSelected(newSelected == selected ? -1 : newSelected);
+        setSelected(newSelected == this.variable ? -1 : newSelected);
         sendUpdate();
     }
 
     @Override
     public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
     {
-        int srcInventoryX = selected == variable.colour ? 1 : 0;
+        int srcInventoryX = this.variable == variable.colour ? 1 : 0;
         int srcInventoryY = hover ? 1 : 0;
 
         gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
@@ -78,11 +86,11 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
         List<Variable> variables = new ArrayList<Variable>();
         if (all)
         {
-            variables.addAll(command.getManager().getVariables());
+            variables.addAll(getManager().getVariables());
         } else
         {
             Pattern pattern = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
-            for (Variable variable : command.getManager().getVariables())
+            for (Variable variable : getManager().getVariables())
             {
                 if (pattern.matcher(variable.getNameFromColor()).find()) variables.add(variable);
             }
@@ -99,14 +107,14 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
 
     public void setSelected(int val)
     {
-        selected = val;
+        variable = val;
     }
 
     public void sendUpdate()
     {
         ASMPacket packet = command.getSyncPacket();
         packet.writeByte(id);
-        packet.writeMedium(selected);
+        packet.writeMedium(variable);
         packet.sendServerPacket();
     }
 

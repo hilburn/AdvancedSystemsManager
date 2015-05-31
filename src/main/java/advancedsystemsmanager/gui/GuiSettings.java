@@ -172,9 +172,9 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
     }
 
     @Override
-    public void onKeyTyped(GuiManager gui, char c, int k)
+    public boolean onKeyTyped(GuiManager gui, char c, int k)
     {
-
+        return false;
     }
 
     @Override

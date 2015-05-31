@@ -1,7 +1,6 @@
 package advancedsystemsmanager.flow.elements;
 
-
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,7 +23,7 @@ public class TextBoxNumberList
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         for (TextBoxNumber textBox : textBoxes)
         {
@@ -60,18 +59,16 @@ public class TextBoxNumberList
                 {
                     selectedTextBox = textBox;
                 }
-
                 break;
             }
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         if (selectedTextBox != null && selectedTextBox.isVisible())
         {
-
             if (Character.isDigit(c))
             {
                 int number = Integer.parseInt(String.valueOf(c));

@@ -29,6 +29,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public static final String NBT_SELECTION = "Selection";
     public static final String NBT_SELECTION_ID = "Id";
     public static final String NBT_COLOUR = "Colour";
+    private static final String NBT_NAME = "Name";
     private float[] hsv = new float[3];
     public int colour;
     byte red;
@@ -92,7 +93,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         this.green = (byte)((colour >> 8) & 0xFF);
         this.blue = (byte)(colour & 0xFF);
         textColour = TextColour.getClosestColour(colour);
-        ColourUtils.RGBtoHSV(colour, hsv);
+        ColourUtils.HextoHSV(colour, hsv);
     }
 
     public boolean isValid()
@@ -214,6 +215,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
         executed = nbtTagCompound.getBoolean(NBT_EXECUTED);
+        defaultName = nbtTagCompound.getString(NBT_NAME);
         containers.clear();
         NBTTagList tagList = nbtTagCompound.getTagList(NBT_SELECTION, 10);
 
@@ -228,6 +230,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     {
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
         nbtTagCompound.setInteger(NBT_COLOUR, colour);
+        nbtTagCompound.setString(NBT_NAME, defaultName);
         NBTTagList tagList = new NBTTagList();
 
         for (Long container : containers)

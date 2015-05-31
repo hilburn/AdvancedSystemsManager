@@ -51,12 +51,12 @@ public class MenuVariable extends Menu
                 boolean declaration = isDeclaration();
                 if (declaration)
                 {
-                    getParent().getManager().removeVariableDeclaration(variables.selected, getParent());
-                    selected = val;
-                    getParent().getManager().updateDeclaration(getParent(), variables.selected);
+                    getParent().getManager().removeVariableDeclaration(variables.variable, getParent());
+                    variable = val;
+                    getParent().getManager().updateDeclaration(getParent(), variables.variable);
                 } else
                 {
-                    selected = val;
+                    variable = val;
                 }
             }
 
@@ -66,7 +66,7 @@ public class MenuVariable extends Menu
                 return isDeclaration() ? super.getVisibleRows() : 1;
             }
         };
-        variables.selected = -1;
+        variables.variable = -1;
 
     }
 
@@ -153,7 +153,7 @@ public class MenuVariable extends Menu
 
     public int getSelectedVariable()
     {
-        return variables.selected;
+        return variables.variable;
     }
 
     @Override
@@ -167,7 +167,7 @@ public class MenuVariable extends Menu
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        nbtTagCompound.setInteger(NBT_VARIABLE, variables.selected);
+        nbtTagCompound.setInteger(NBT_VARIABLE, variables.variable);
         nbtTagCompound.setByte(NBT_MODE, (byte)radioButtons.getSelectedOption());
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
     }

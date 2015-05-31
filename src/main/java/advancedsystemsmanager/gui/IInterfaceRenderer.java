@@ -17,7 +17,7 @@ public interface IInterfaceRenderer
 
     void onRelease(GuiManager gui, int mX, int mY);
 
-    void onKeyTyped(GuiManager gui, char c, int k);
+    boolean onKeyTyped(GuiManager gui, char c, int k);
 
     void onScroll(int scroll);
 }

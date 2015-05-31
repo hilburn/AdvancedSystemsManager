@@ -66,7 +66,14 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
         this.xSize = GUI_WIDTH;
         this.ySize = GUI_HEIGHT;
         scrollBar = new GuiVerticalScrollBar(this, SCROLL_X_MAX + 4, SCROLL_Y, SCROLL_Y_MAX - SCROLL_Y);
-        searchBar = new GuiTextField(110, 12, 9, 10);
+        searchBar = new GuiTextField(110, 12, 9, 10)
+        {
+            @Override
+            public boolean isSelected()
+            {
+                return true;
+            }
+        };
         searchBar.setText(ItemLabeler.getLabel(stack));
         searchBar.fixCursorPos();
         displayStrings = getSearchedStrings();

@@ -26,7 +26,7 @@ public enum TextColour
 
     TextColour(int hex)
     {
-        ColourUtils.RGBtoHSV(hex, HSV);
+        ColourUtils.HextoHSV(hex, HSV);
     }
 
     @Override
@@ -38,7 +38,7 @@ public enum TextColour
     public double getDistanceSq(int RGB)
     {
         float[] colourVals = new float[3];
-        ColourUtils.RGBtoHSV(RGB, colourVals);
+        ColourUtils.HextoHSV(RGB, colourVals);
         return (colourVals[2] - HSV[2]) * (colourVals[2] - HSV[2]) + colourVals[1] * colourVals[1] + HSV[1] * HSV[1] - 2*colourVals[1] * HSV[1] * Math.cos(colourVals[0] - HSV[0]);
     }
 
@@ -58,6 +58,4 @@ public enum TextColour
         }
         return matchColour;
     }
-
-
 }
