@@ -10,9 +10,13 @@ import java.util.List;
 
 public abstract class Setting<Type>
 {
+    public static final String NBT_AMOUNT = "Amount";
+    public static final String NBT_IS_LIMITED = "Limited";
+
     public int id;
     public Type content;
     public boolean isLimitedByAmount;
+    int amount;
 
     public Setting(int id)
     {
@@ -63,9 +67,29 @@ public abstract class Setting<Type>
 
     public abstract void copyFrom(Setting setting);
 
-    public abstract void load(NBTTagCompound settingTag);
+    public void load(NBTTagCompound settingTag)
+    {
+        if (isAmountSpecific())
+        {
+            setLimitedByAmount(settingTag.getBoolean(NBT_IS_LIMITED));
+            if (isLimitedByAmount())
+            {
+                amount = settingTag.getInteger(NBT_AMOUNT);
+            }
+        }
+    }
 
-    public abstract void save(NBTTagCompound settingTag);
+    public void save(NBTTagCompound settingTag)
+    {
+        if (isAmountSpecific())
+        {
+            settingTag.setBoolean(NBT_IS_LIMITED, isLimitedByAmount());
+            if (isLimitedByAmount())
+            {
+                settingTag.setInteger(NBT_AMOUNT, amount);
+            }
+        }
+    }
 
     public abstract void setContent(Type obj);
 

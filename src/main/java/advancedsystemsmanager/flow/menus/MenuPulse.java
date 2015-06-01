@@ -131,12 +131,6 @@ public class MenuPulse extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-
-    }
-
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         checkBoxes.onClick(mX, mY);
@@ -145,18 +139,6 @@ public class MenuPulse extends Menu
             radioButtons.onClick(mX, mY, button);
             textBoxes.onClick(mX, mY, button);
         }
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-
     }
 
     @SideOnly(Side.CLIENT)

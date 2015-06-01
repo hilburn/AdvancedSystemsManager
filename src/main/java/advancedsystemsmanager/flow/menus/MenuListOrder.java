@@ -161,16 +161,6 @@ public class MenuListOrder extends Menu
         textBoxes.onClick(mX, mY, button);
     }
 
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public boolean onKeyStroke(GuiManager gui, char c, int k)

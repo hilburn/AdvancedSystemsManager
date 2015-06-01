@@ -13,8 +13,6 @@ import java.util.List;
 public class LiquidSetting extends Setting<Fluid>
 {
     public static final String NBT_FLUID_ID = "FluidId";
-    public static final String NBT_FLUID_AMOUNT = "Amount";
-    public int amount;
 
     public LiquidSetting(int id)
     {
@@ -86,16 +84,15 @@ public class LiquidSetting extends Setting<Fluid>
     @Override
     public void load(NBTTagCompound settingTag)
     {
+        super.load(settingTag);
         content = FluidRegistry.getFluid(settingTag.getShort(NBT_FLUID_ID));
-        amount = settingTag.getInteger(NBT_FLUID_AMOUNT);
     }
 
     @Override
     public void save(NBTTagCompound settingTag)
     {
-        //TODO save properly
+        super.save(settingTag);
         settingTag.setShort(NBT_FLUID_ID, (short)content.getID());
-        settingTag.setInteger(NBT_FLUID_AMOUNT, amount);
     }
 
     @Override

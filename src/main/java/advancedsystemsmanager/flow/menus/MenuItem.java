@@ -20,7 +20,6 @@ import java.util.List;
 
 public class MenuItem extends MenuStuff<ItemStack>
 {
-
     public static final int DMG_VAL_TEXT_X = 15;
     public static final int DMG_VAL_TEXT_Y = 55;
 
@@ -57,10 +56,20 @@ public class MenuItem extends MenuStuff<ItemStack>
                 }
 
                 @Override
-                public void setNumber(int number)
+                public boolean readData(ASMPacket packet)
                 {
-                    super.setNumber(number);
+                    Setting<ItemStack> setting = settings.get(packet.readByte());
+                    super.readData(packet);
+                    setting.setAmount(number);
+                    return false;
+                }
+
+                @Override
+                public boolean writeData(ASMPacket packet)
+                {
+                    packet.writeByte(selectedSetting.getId());
                     selectedSetting.setAmount(number);
+                    return super.writeData(packet);
                 }
             });
         }
@@ -74,11 +83,20 @@ public class MenuItem extends MenuStuff<ItemStack>
             }
 
             @Override
-            public void setNumber(int number)
+            public boolean readData(ASMPacket packet)
             {
-                super.setNumber(number);
-                if (selectedSetting.isValid())
-                    selectedSetting.content.setItemDamage(number);
+                Setting<ItemStack> setting = settings.get(packet.readByte());
+                super.readData(packet);
+                setting.content.setItemDamage(number);
+                return false;
+            }
+
+            @Override
+            public boolean writeData(ASMPacket packet)
+            {
+                packet.writeByte(selectedSetting.getId());
+                selectedSetting.content.setItemDamage(number);
+                return super.writeData(packet);
             }
         });
 
@@ -178,30 +196,31 @@ public class MenuItem extends MenuStuff<ItemStack>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawResultObject(GuiManager gui, Object obj, int x, int y)
+    public void drawResultObject(GuiManager gui, ItemStack obj, int x, int y)
     {
-        gui.drawItemStack((ItemStack)obj, x, y);
+        gui.drawItemStack(obj, x, y);
+//        gui.drawItemAmount(obj, x, y);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawSettingObject(GuiManager gui, Setting setting, int x, int y)
+    public void drawSettingObject(GuiManager gui, Setting<ItemStack> setting, int x, int y)
     {
-        drawResultObject(gui, ((ItemSetting)setting).getItem(), x, y);
+        drawResultObject(gui, setting.content, x, y);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public List<String> getResultObjectMouseOver(Object o)
+    public List<String> getResultObjectMouseOver(ItemStack o)
     {
-        return getToolTip((ItemStack)o);
+        return getToolTip(o);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public List<String> getSettingObjectMouseOver(Setting setting)
+    public List<String> getSettingObjectMouseOver(Setting<ItemStack> setting)
     {
-        return getResultObjectMouseOver(((ItemSetting)setting).getItem());
+        return getResultObjectMouseOver(setting.content);
     }
 
     @Override

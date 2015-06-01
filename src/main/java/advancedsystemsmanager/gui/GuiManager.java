@@ -36,9 +36,9 @@ public class GuiManager extends GuiBase
     private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
-    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 60;
+    public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 70;
     public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
-    public static int Z_LEVEL_COMPONENT_START = 450;
+    public static int Z_LEVEL_COMPONENT_START = 500;
     public static int Z_LEVEL_OPEN_MAXIMUM = 5;
     private long lastTicks;
     private AnimationController controller;
@@ -183,8 +183,8 @@ public class GuiManager extends GuiBase
 
 
         //update components completely independent on their visibility
-        long ticks = Minecraft.getSystemTime();
-        float elapsedSeconds = (ticks - this.lastTicks) / 1000F;
+        long ms = Minecraft.getSystemTime();
+        float elapsedSeconds = (ms - this.lastTicks) / 1000F;
 //        if (controller != null)
 //        {
 //            controller.update(elapsedSeconds);
@@ -193,7 +193,7 @@ public class GuiManager extends GuiBase
         {
             component.update(elapsedSeconds);
         }
-        this.lastTicks = ticks;
+        this.lastTicks = ms;
 
         int zLevel = Z_LEVEL_COMPONENT_START;
         int openCount = 0;
@@ -353,13 +353,13 @@ public class GuiManager extends GuiBase
 
         if (hasSpecialRenderer())
         {
-            getSpecialRenderer().onRelease(this, x, y);
+            getSpecialRenderer().onRelease(this, x, y, button);
             return;
         }
 
         if (useButtons)
         {
-            manager.buttons.onClick(x, y, true);
+            manager.buttons.onClick(x, y, button, true);
         }
 
         if (selectedComponent instanceof FlowComponent)
@@ -424,8 +424,7 @@ public class GuiManager extends GuiBase
             flowComponent.onGuiClosed();
         }
 
-        if (selectedComponent != null)
-            container.sendFinalUpdate(selectedComponent);
+        manager.specialRenderer = null;
 
         super.onGuiClosed();
     }

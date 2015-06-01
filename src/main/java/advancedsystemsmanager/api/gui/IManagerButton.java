@@ -13,6 +13,8 @@ public interface IManagerButton extends IPacketWriter, IPacketReader
 
     boolean validClick();
 
+    void setClicked(int button);
+
     @SideOnly(Side.CLIENT)
     int getX();
 

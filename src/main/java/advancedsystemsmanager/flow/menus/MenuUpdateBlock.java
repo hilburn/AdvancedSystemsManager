@@ -293,7 +293,6 @@ public class MenuUpdateBlock extends MenuItem
     @Override
     public void initRadioButtons()
     {
-        //no radio buttons
     }
 
     @Override
@@ -336,18 +335,6 @@ public class MenuUpdateBlock extends MenuItem
         {
             super.drawMouseOver(gui, mX, mY);
         }
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @SideOnly(Side.CLIENT)

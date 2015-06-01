@@ -163,6 +163,7 @@ public abstract class MenuTarget extends Menu
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onClick(int mX, int mY, int button)
     {
@@ -199,18 +200,6 @@ public abstract class MenuTarget extends Menu
                 onAdvancedClick(mX, mY, button);
             }
         }
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-
     }
 
     @Override

@@ -116,28 +116,10 @@ public class MenuRedstoneStrength extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         checkBoxes.onClick(mX, mY);
         textBoxes.onClick(mX, mY, button);
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @SideOnly(Side.CLIENT)

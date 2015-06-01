@@ -78,10 +78,10 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     @Override
     public boolean onClick(int mouseX, int mouseY, int button)
     {
-        return onClick(mouseX, mouseY, false);
+        return onClick(mouseX, mouseY, button, false);
     }
 
-    public boolean onClick(int mouseX, int mouseY, boolean release)
+    public boolean onClick(int mouseX, int mouseY, int button, boolean release)
     {
         for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
@@ -90,6 +90,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
             {
                 if (managerButton.validClick())
                 {
+                    managerButton.setClicked(button);
                     PacketHandler.sendButtonPacket(itr.index, managerButton);
                 }
                 return true;

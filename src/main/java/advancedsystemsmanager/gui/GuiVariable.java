@@ -15,7 +15,7 @@ public class GuiVariable implements IInterfaceRenderer
     private static int BUTTON_Y = Y + 110;
     private static final int BUTTON_WIDTH = 30;
     private static final int BUTTON_HEIGHT = 18;
-
+    
     private GuiColourSelector colourSelector;
     protected TileEntityManager manager;
     private ScrollVariable variables;
@@ -65,6 +65,17 @@ public class GuiVariable implements IInterfaceRenderer
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
+//        double[] points = new double[]{
+//                256,128,
+//                356,128,
+//                306, 41,
+//                206, 41,
+//                156, 128,
+//                206, 215,
+//                306, 215,
+//                356,128};
+//        int[] colours = new int[]{255,255,255,255, 0, 0, 255, 255, 0 ,0, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 255, 255, 0, 0};
+//        gui.drawTriangleFan(colours, points);
         if (manager.variableUpdate)
         {
             variables.updateSearch();
@@ -106,7 +117,7 @@ public class GuiVariable implements IInterfaceRenderer
     }
 
     @Override
-    public void onRelease(GuiManager gui, int mX, int mY)
+    public void onRelease(GuiManager gui, int mX, int mY, int button)
     {
         colourSelector.release(mX, mY);
         variables.onRelease(mX, mY);

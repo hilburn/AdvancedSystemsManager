@@ -43,27 +43,9 @@ public class MenuCraftingPriority extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-
-    }
-
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         radioButtons.onClick(mX, mY, button);
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-
     }
 
     @Override

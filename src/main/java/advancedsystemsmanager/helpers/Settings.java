@@ -2,7 +2,6 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.gui.GuiSettings;
-import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -24,7 +23,7 @@ public final class Settings
     public static final String AUTO_BLACKLIST = "autoBlacklist";
     public static final String CRAFT_MOVE_FIRST = "priorityMoveFirst";
     public static final String ENLARGE_INTERFACES = "enlargeInterfaces";
-    public static final String SHIFT_MODIFIER = "shiftModifier";
+    public static final String MIDDLE_CLICK = "middleClick";
 
     static
     {
@@ -37,7 +36,7 @@ public final class Settings
         registerSetting(AUTO_BLACKLIST, true);
         registerSetting(CRAFT_MOVE_FIRST, false);
         registerSetting(ENLARGE_INTERFACES, false);
-        registerSetting(SHIFT_MODIFIER, true);
+        registerSetting(MIDDLE_CLICK, true);
     }
 
     private Settings()

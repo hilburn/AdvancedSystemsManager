@@ -166,7 +166,7 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
     }
 
     @Override
-    public void onRelease(GuiManager gui, int mX, int mY)
+    public void onRelease(GuiManager gui, int mX, int mY, int button)
     {
 
     }

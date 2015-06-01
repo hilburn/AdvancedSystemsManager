@@ -15,7 +15,7 @@ public interface IInterfaceRenderer
 
     void onDrag(GuiManager gui, int mX, int mY);
 
-    void onRelease(GuiManager gui, int mX, int mY);
+    void onRelease(GuiManager gui, int mX, int mY, int button);
 
     boolean onKeyTyped(GuiManager gui, char c, int k);
 

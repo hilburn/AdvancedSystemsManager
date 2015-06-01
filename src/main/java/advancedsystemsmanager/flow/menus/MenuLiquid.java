@@ -98,9 +98,9 @@ public class MenuLiquid extends MenuStuff<Fluid>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawResultObject(GuiManager gui, Object obj, int x, int y)
+    public void drawResultObject(GuiManager gui, Fluid obj, int x, int y)
     {
-        gui.drawFluid((Fluid)obj, x, y);
+        gui.drawFluid(obj, x, y);
     }
 
     @SideOnly(Side.CLIENT)
@@ -111,10 +111,10 @@ public class MenuLiquid extends MenuStuff<Fluid>
     }
 
     @Override
-    public List<String> getResultObjectMouseOver(Object obj)
+    public List<String> getResultObjectMouseOver(Fluid obj)
     {
         List<String> ret = new ArrayList<String>();
-        ret.add(getDisplayName((Fluid)obj));
+        ret.add(getDisplayName(obj));
         return ret;
     }
 

@@ -28,13 +28,22 @@ public abstract class Menu
     public abstract void draw(GuiManager gui, int mX, int mY);
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawMouseOver(GuiManager gui, int mX, int mY);
+    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    {
+    }
 
+    @SideOnly(Side.CLIENT)
     public abstract void onClick(int mX, int mY, int button);
 
-    public abstract void onDrag(int mX, int mY, boolean isMenuOpen);
+    @SideOnly(Side.CLIENT)
+    public void onDrag(int mX, int mY, boolean isMenuOpen)
+    {
+    }
 
-    public abstract void onRelease(int mX, int mY, boolean isMenuOpen);
+    @SideOnly(Side.CLIENT)
+    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
+    {
+    }
 
     @SideOnly(Side.CLIENT)
     public boolean onKeyStroke(GuiManager gui, char c, int k)
@@ -52,16 +61,22 @@ public abstract class Menu
         return PacketHandler.getWriterForClientComponentPacket(container, getParent(), this);
     }
 
-    public abstract void copyFrom(Menu menu);
+    public void copyFrom(Menu menu)
+    {
+    }
 
     public int getId()
     {
         return id;
     }
 
-    public abstract void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup);
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+    }
 
-    public abstract void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup);
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+    }
 
     public void addErrors(List<String> errors)
     {

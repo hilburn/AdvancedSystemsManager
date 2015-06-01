@@ -36,6 +36,7 @@ import java.util.List;
 public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
     private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
+    protected static final float SCALING = 0.00390625F;
     protected ContainerBase container;
     protected boolean cached;
     protected float scale;
@@ -63,72 +64,35 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
     {
-        float scale = getScale();
 
         drawScaledTexture(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(srcX, scale, 256),
-                fixScaledCoordinate(srcY, scale, 256),
-                fixScaledCoordinate(w, scale, this.mc.displayWidth),
-                fixScaledCoordinate(h, scale, this.mc.displayHeight)
+                x,  y,
+                srcX, srcY,
+                w, h,
+                w, h
         );
     }
 
     public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, int[] colour)
     {
-        float scale = getScale();
-
         drawScaledColouredTexture(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(srcX, scale, 256),
-                fixScaledCoordinate(srcY, scale, 256),
-                fixScaledCoordinate(w, scale, this.mc.displayWidth),
-                fixScaledCoordinate(h, scale, this.mc.displayHeight),
-                colour
+                x, y,
+                w, h, srcX, srcY,
+                w, h, colour
         );
     }
 
     public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, float mult, int[] colour)
     {
-        float scale = getScale();
-
         drawScaledColouredTexture(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(srcX, scale, 256),
-                fixScaledCoordinate(srcY, scale, 256),
-                fixScaledCoordinate(w, scale, this.mc.displayWidth),
-                fixScaledCoordinate(h, scale, this.mc.displayHeight),
-                mult, colour
+                x, y,
+                srcX, srcY,
+                w, h,
+                w, h, mult, colour
         );
     }
 
-    public double fixScaledCoordinate(int val, float scale, int size)
-    {
-        double d = val / scale;
-        d *= size;
-        d = Math.floor(d);
-        d /= size;
-        d *= scale;
-
-        return d;
-    }
-
     public void drawRectangle(int x, int y, int x2, int y2, int[] colour)
-    {
-        float scale = getScale();
-
-        drawScaledRectangle(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(guiLeft + x2, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y2, scale, this.mc.displayHeight),
-                colour);
-    }
-
-    public void drawScaledRectangle(double x, double y, double x2, double y2, int[] colour)
     {
         Tessellator tessellator = Tessellator.instance;
         GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -143,18 +107,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     }
 
     public void drawGradientRectangle(int x, int y, int x2, int y2, int[] colourXY, int[] colourX2Y, int[] colourX2Y2, int[] colourXY2)
-    {
-        float scale = getScale();
-
-        drawScaledGradientRectangle(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(guiLeft + x2, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y2, scale, this.mc.displayHeight),
-                colourXY, colourX2Y, colourX2Y2, colourXY2);
-    }
-
-    public void drawScaledGradientRectangle(double x, double y, double x2, double y2, int[] colourXY, int[] colourX2Y, int[] colourX2Y2, int[] colourXY2)
     {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -178,14 +130,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawRainbowRectangle(int x, int y, int x2, int y2, int[][]colours)
     {
-        float scale = getScale();
-
         drawScaledRainbowRectangle(
-                fixScaledCoordinate(guiLeft + x, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y, scale, this.mc.displayHeight),
-                fixScaledCoordinate(guiLeft + x + x2, scale, this.mc.displayWidth),
-                fixScaledCoordinate(guiTop + y + y2, scale, this.mc.displayHeight),
-                colours);
+                x, y,  x + x2, y + y2, colours);
     }
 
     public void drawScaledRainbowRectangle(double x, double y, double x2, double y2, int[][]colours)
@@ -194,20 +140,12 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
+        tessellator.startDrawing(GL11.GL_QUAD_STRIP);
         double dy = (y2 - y)/(colours.length - 1);
-        double startY = y;
-        for (int i = 0; i < colours.length - 1; i++)
+        for (int i = 0; i < colours.length; i++, y += dy)
         {
-            y = startY + i * dy;
-            y2 = y + dy;
-            tessellator.setColorOpaque(colours[i+1][0], colours[i+1][1], colours[i][2]);
-            tessellator.addVertex(x, y2, 0.0D);
-            tessellator.setColorOpaque(colours[i+1][0], colours[i+1][1], colours[i+1][2]);
-            tessellator.addVertex(x2, y2, 0.0D);
             tessellator.setColorOpaque(colours[i][0], colours[i][1], colours[i][2]);
             tessellator.addVertex(x2, y, 0.0D);
-            tessellator.setColorOpaque(colours[i][0], colours[i][1], colours[i][2]);
             tessellator.addVertex(x, y, 0.0D);
         }
         tessellator.draw();
@@ -216,24 +154,19 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    private void drawScaledTexture(double x, double y, double srcX, double srcY, double w, double h)
+    private void drawScaledTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        drawTexture(tessellator, x, y, w, h, srcX, srcY, w, h);
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
     }
 
-    private void drawScaledColouredTexture(double x, double y, double srcX, double srcY, double w, double h, int[] colour)
+    private void drawScaledColouredTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v, double mult, int[] colour)
     {
-        drawScaledColouredTexture(x, y, w, h, srcX, srcY, w, h, colour);
+        drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, u, v, colour);
     }
 
-    private void drawScaledColouredTexture(double x, double y, double srcX, double srcY, double w, double h, double mult, int[] colour)
-    {
-        drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, w, h, colour);
-    }
-
-    private void drawScaledColouredTexture(double x, double y, double w, double h, double srcX, double srcY, double u, double v, int[] colour)
+    private void drawScaledColouredTexture(double x, double y, double w, double h, int srcX, int srcY, int u, int v, int[] colour)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
@@ -241,15 +174,43 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
     }
 
-    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, double srcX, double srcY, double u, double v)
+    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, int u, int v)
     {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * f, (srcY + v) * f1);
-        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * f, (srcY + v) * f1);
-        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * f, srcY * f1);
-        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * f, srcY * f1);
+        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
+        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
         tessellator.draw();
+    }
+
+    public void drawPolygon(int[] colours, double... points)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_POLYGON);
+        drawAbstractPoints(tessellator, colours, points);
+    }
+
+    public void drawTriangleFan(int[] colours, double... points)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_TRIANGLE_FAN);
+        drawAbstractPoints(tessellator, colours, points);
+    }
+
+    private void drawAbstractPoints(Tessellator tessellator, int[] colours, double[] points)
+    {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        for (int i = 0, j = 0; i < colours.length;)
+        {
+            tessellator.setColorOpaque(colours[i++], colours[i++], colours[i++]);
+            tessellator.addVertex(points[j++], points[j++], 0.0D);
+        }
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
     protected float getScale()
@@ -284,7 +245,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), color);
+        fontRendererObj.drawString(str, (int)((x) / mult), (int)((y) / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glPopMatrix();
@@ -306,7 +267,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         GL11.glPushMatrix();
         GL11.glScalef(mult, mult, 1F);
-        fontRendererObj.drawSplitString(str, (int)((x + guiLeft) / mult), (int)((y + guiTop) / mult), (int)(w / mult), color);
+        fontRendererObj.drawSplitString(str, (int)(x / mult), (int)(y / mult), (int)(w / mult), color);
         bindTexture(getComponentResource());
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -371,7 +332,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         if (lst != null)
         {
-            drawHoveringText(lst, x + guiLeft, y + guiTop, fontRendererObj);
+            drawHoveringText(lst, x, y, fontRendererObj);
         }
     }
 
@@ -400,8 +361,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             int height = extraHeight + (prefixLength + suffixLength) * 10 - 2;
 
 
-            x += guiLeft + 12;
-            y += guiTop - 12;
+            x += 12;
+            y += 12;
             if (x + width > this.width)
             {
                 x -= 28 + width;
@@ -422,13 +383,13 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             this.drawGradientRect(x + width + 3, y - 3, x + width + 4, y + height + 3, j1, j1);
             int k1 = 1347420415;
             int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
-            this.drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, k1, l1);
-            this.drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, k1, l1);
-            this.drawGradientRect(x - 3, y - 3, x + width + 3, y - 3 + 1, k1, k1);
+            this.drawGradientRect(x - 3, y - 2, x - 3 + 1, y + height + 2, k1, l1);
+            this.drawGradientRect(x + width + 2, y - 2, x + width + 3, y + height + 2, k1, l1);
+            this.drawGradientRect(x - 3, y - 3, x + width + 3, y - 2, k1, k1);
             this.drawGradientRect(x - 3, y + height + 2, x + width + 3, y + height + 3, l1, l1);
 
             y = renderLines(prefix, x, y, true);
-            tooltip.drawContent(this, x - guiLeft, y - guiTop, mX, mY);
+            tooltip.drawContent(this, x, y, mX, mY);
             y += extraHeight;
             renderLines(suffix, x, y, false);
 
@@ -624,14 +585,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return null;
     }
 
-    public void drawItemAmount(ItemStack itemstack, int x, int y)
-    {
-        itemRender.renderItemOverlayIntoGUI(fontRendererObj, this.mc.getTextureManager(), itemstack, x + guiLeft, y + guiTop);
-        bindTexture(getComponentResource());
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
-    }
-
     public void drawItemStack(ItemStack itemstack, int x, int y)
     {
         GL11.glPushMatrix();
@@ -643,12 +596,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         this.zLevel++;
         itemRender.zLevel = zLevel;
 
-
         try
         {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
-            itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), itemstack, x + this.guiLeft, y + this.guiTop);
-            itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), itemstack, x + this.guiLeft, y + this.guiTop, "");
+            itemRender.renderItemAndEffectIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), itemstack, x, y);
+            itemRender.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.getTextureManager(), itemstack, x, y, "");
         } catch (Exception var9)
         {
             if (itemstack != null && itemstack.getItem() != null && itemstack.getItemDamage() != 0)
@@ -685,8 +637,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 0, z);
-        x += guiLeft;
-        y += guiTop;
         GL11.glTranslatef(x, y, 0);
         GL11.glScalef(size, size, 0);
         GL11.glTranslatef(-x, -y, 0);
@@ -694,30 +644,17 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glPopMatrix();
     }
 
-    public void drawLine(int x1, int y1, int x2, int y2)
+    public void drawLines(int[] points, int[] colour)
     {
-        GL11.glPushMatrix();
-
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glColor4f(0.4F, 0.4F, 0.4F, 1F);
-
-        //GL11.glEnable(GL11.GL_BLEND);
-        //GL11.glBlendFunc(GL11.GL_DST_COLOR, GL11.GL_DST_COLOR);
-        //GL11.glShadeModel(GL11.GL_SMOOTH);
-        //GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        //GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-        //GL11.glLineWidth(5);
-        GL11.glLineWidth(1 + 5 * this.width / 500F);
-
-        GL11.glBegin(GL11.GL_LINES);
-        GL11.glVertex3f(guiLeft + x1, guiTop + y1, 0);
-        GL11.glVertex3f(guiLeft + x2, guiTop + y2, 0);
-        GL11.glEnd();
-
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_LINE_STRIP);
+        GL11.glLineWidth(5 * getScale());
+        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        for (int i = 0; i< points.length; )
+            tessellator.addVertex(points[i++], points[i++], 0);
+        tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glPopMatrix();
     }
 
     @Override
@@ -733,18 +670,17 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         //start scale
         GL11.glPushMatrix();
 
+        cached = false;
         float scale = getScale();
 
         GL11.glScalef(scale, scale, 1);
-        GL11.glTranslatef(-guiLeft, -guiTop, 0.0F);
+//        GL11.glTranslatef(guiLeft, guiTop, 0.0F);
         GL11.glTranslatef((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale), 0.0F);
     }
 
     @Override
     public void drawScreen(int x, int y, float f)
     {
-        cached = false;
-
         super.drawScreen(scaleX(x), scaleY(y), f);
 
         stopScaling();
@@ -803,7 +739,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawIcon(IIcon icon, int x, int y)
     {
-        drawTexturedModelRectFromIcon(guiLeft + x, guiTop + y, icon, 16, 16);
+        drawTexturedModelRectFromIcon(x, y, icon, 16, 16);
     }
 
     private void setColor(int color)

@@ -383,7 +383,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             Connection current = manager.getCurrentlyConnecting();
             if (current != null && current.getInputId() == id && current.getInputConnection() == i)
             {
-                gui.drawLine(location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY);
+                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, new int[]{0x66,0x66,0x66});
             }
 
             Connection connectedConnection = connections[i];
@@ -410,31 +410,18 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     GL11.glPushMatrix();
                     GL11.glTranslatef(0, 0, -zLevel);
                     List<Point> nodes = connectedConnection.getNodes();
-                    for (int j = 0; j <= nodes.size(); j++)
+                    int[] points = new int[nodes.size() * 2 + 4];
+                    int j = 0;
+                    points[j++] = startX;
+                    points[j++] = startY;
+                    for (Point node : nodes)
                     {
-                        int x1, y1, x2, y2;
-                        if (j == 0)
-                        {
-                            x1 = startX;
-                            y1 = startY;
-                        } else
-                        {
-                            x1 = nodes.get(j - 1).getX();
-                            y1 = nodes.get(j - 1).getY();
-                        }
-
-                        if (j == nodes.size())
-                        {
-                            x2 = endX;
-                            y2 = endY;
-                        } else
-                        {
-                            x2 = nodes.get(j).getX();
-                            y2 = nodes.get(j).getY();
-                        }
-
-                        gui.drawLine(x1, y1, x2, y2);
+                        points[j++] = node.getX();
+                        points[j++] = node.getY();
                     }
+                    points[j++] = endX;
+                    points[j] = endY;
+                    gui.drawLines(points, new int[]{0x66,0x66,0x66});
 
                     for (Point node : nodes)
                     {
@@ -561,6 +548,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     GL11.glTranslatef(getMenuAreaX(), getMenuAreaY(i), 0);
                     menu.drawMouseOver(gui, mX - getMenuAreaX(), mY - getMenuAreaY(i));
                     GL11.glPopMatrix();
+                    break;
                 }
             }
         }
@@ -1079,8 +1067,24 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 MenuGroup.findCluster(connected, this, null);
                 for (FlowComponent component : connected)
                 {
+                    component.shiftNodes(x - startX, y - startY);
                     if (!component.equals(this))
                         component.shiftLocation(x - startX, y - startY);
+                }
+            }
+        }
+    }
+
+    public void shiftNodes(int dx, int dy)
+    {
+        for (Connection connection : connections)
+        {
+            if (connection != null && connection.getInputId() == id)
+            {
+                for (Point point : connection.getNodes())
+                {
+                    point.x += dx;
+                    point.y += dy;
                 }
             }
         }
@@ -1109,7 +1113,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         for (int i = 0; i < menus.size(); i++)
         {
             Menu menu = menus.get(i);
-            menu.onRelease(mX - getMenuAreaX(), mY - getMenuAreaY(i), isLarge && i == openMenuId);
+            menu.onRelease(mX - getMenuAreaX(), mY - getMenuAreaY(i), button, isLarge && i == openMenuId);
         }
 
 
@@ -1547,6 +1551,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                         for (FlowComponent component : connected)
                         {
                             component.shiftLocation(newX, newY);
+                            component.shiftNodes(newX, newY);
                         }
                     } else
                     {

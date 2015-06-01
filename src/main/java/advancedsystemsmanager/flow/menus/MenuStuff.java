@@ -44,7 +44,6 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     public static final String NBT_RADIO_SELECTION = "FirstSelected";
     public static final String NBT_SETTINGS = "Settings";
     public static final String NBT_SETTING_ID = "Id";
-    public static final String NBT_SETTING_USE_SIZE = "SizeLimit";
     public ScrollController<Type> scrollControllerSearch;
     public ScrollController<Setting<Type>> scrollControllerSelected;
     public List<Setting<Type>> settings;
@@ -180,7 +179,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             }
 
             @Override
-            public void draw(GuiManager gui, Setting setting, int x, int y, boolean hover)
+            public void draw(GuiManager gui, Setting<Type> setting, int x, int y, boolean hover)
             {
                 int srcSettingX = setting.isValid() ? 0 : 1;
                 int srcSettingY = hover ? 1 : 0;
@@ -193,7 +192,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             }
 
             @Override
-            public void drawMouseOver(GuiManager gui, Setting setting, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, Setting<Type> setting, int mX, int mY)
             {
                 if (setting.isValid())
                 {
@@ -272,16 +271,16 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawResultObject(GuiManager gui, Object obj, int x, int y);
+    public abstract void drawResultObject(GuiManager gui, Type obj, int x, int y);
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawSettingObject(GuiManager gui, Setting setting, int x, int y);
+    public abstract void drawSettingObject(GuiManager gui, Setting<Type> setting, int x, int y);
 
     @SideOnly(Side.CLIENT)
-    public abstract List<String> getResultObjectMouseOver(Object obj);
+    public abstract List<String> getResultObjectMouseOver(Type obj);
 
     @SideOnly(Side.CLIENT)
-    public abstract List<String> getSettingObjectMouseOver(Setting setting);
+    public abstract List<String> getSettingObjectMouseOver(Setting<Type> setting);
 
     public abstract void updateTextBoxes();
 
@@ -418,14 +417,9 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         }
     }
 
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-
-    }
 
     @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
     {
         getScrollingList().onRelease(mX, mY);
     }
@@ -473,10 +467,6 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             NBTTagCompound settingTag = settingTagList.getCompoundTagAt(i);
             Setting setting = settings.get(settingTag.getByte(NBT_SETTING_ID));
             setting.load(settingTag);
-            if (setting.isAmountSpecific())
-            {
-                setting.setLimitedByAmount(settingTag.getBoolean(NBT_SETTING_USE_SIZE));
-            }
         }
 
         onSettingContentChange();
@@ -495,10 +485,6 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
                 NBTTagCompound settingTag = new NBTTagCompound();
                 settingTag.setByte(NBT_SETTING_ID, (byte)setting.getId());
                 setting.save(settingTag);
-                if (setting.isAmountSpecific())
-                {
-                    settingTag.setBoolean(NBT_SETTING_USE_SIZE, setting.isLimitedByAmount());
-                }
                 settingTagList.appendTag(settingTag);
             }
         }

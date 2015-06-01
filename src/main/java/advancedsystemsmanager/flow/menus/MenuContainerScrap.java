@@ -39,7 +39,6 @@ public class MenuContainerScrap extends MenuContainer
     @Override
     public void initRadioButtons()
     {
-        //no radio buttons
     }
 
     @SideOnly(Side.CLIENT)
@@ -53,9 +52,4 @@ public class MenuContainerScrap extends MenuContainer
             gui.drawSplitString(Names.OVERFLOW_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2 - 20, 0.7F, 0x404040);
         }
     }
-
-    /*@Override
-    public String getDefaultSearch() {
-        return "";
-    }*/
 }

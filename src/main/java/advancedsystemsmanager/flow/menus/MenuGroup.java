@@ -4,7 +4,10 @@ import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.reference.Names;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -74,17 +77,14 @@ public class MenuGroup extends Menu
         return Names.GROUP_MENU;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
         gui.drawSplitString(Names.GROUP_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 1F, 0x404040);
     }
 
-    @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-    }
-
+    @SideOnly(Side.CLIENT)
     @Override
     public void onClick(int mX, int mY, int button)
     {
@@ -96,13 +96,10 @@ public class MenuGroup extends Menu
         return (CollisionHelper.inBounds(0, 0, MENU_WIDTH, FlowComponent.getMenuOpenSize(), mX, mY));
     }
 
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-    }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
     {
         if (isMenuOpen && inBounds(mX, mY))
         {
@@ -112,28 +109,13 @@ public class MenuGroup extends Menu
                 {
                     if (!component.equals(getParent()))
                     {
-                        component.sendNewParentData(getParent(), GuiScreen.isShiftKeyDown());
-                        moveComponents(component, getParent(), GuiScreen.isShiftKeyDown());
+                        boolean group = button == 2 && Settings.getSetting(Settings.MIDDLE_CLICK);
+                        component.sendNewParentData(getParent(), group);
+                        moveComponents(component, getParent(), group);
                     }
                     break;
                 }
             }
         }
     }
-
-    @Override
-    public void copyFrom(Menu menu)
-    {
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-    }
-
 }

@@ -316,6 +316,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 break;
             case PacketHandler.NEW_VARIABLE:
                 addNewVariable(new Variable(packet.readMedium()));
+                variableUpdate = true;
                 break;
             case PacketHandler.BUTTON_CLICK:
                 int buttonId = packet.readByte();

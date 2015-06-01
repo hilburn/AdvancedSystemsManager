@@ -16,7 +16,6 @@ public class MenuCamouflageSides extends MenuRedstoneSides
     @Override
     public void initRadioButtons()
     {
-        //no options
     }
 
     @Override

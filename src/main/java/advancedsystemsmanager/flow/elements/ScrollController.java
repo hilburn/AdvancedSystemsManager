@@ -171,7 +171,7 @@ public abstract class ScrollController<T>
                 {
                     int x = getScrollingStartX() + ITEM_SIZE_WITH_MARGIN * col;
                     int y = row * ITEM_SIZE_WITH_MARGIN - offset;
-                    if (y >= 0 && y + ITEM_SIZE < getVisibleRows() * ITEM_SIZE_WITH_MARGIN + 15)
+                    if (y >= 0 && y + ITEM_SIZE < getVisibleRows() * ITEM_SIZE_WITH_MARGIN + 5)
                     {
                         points.add(new Point(id, this.x + x, this.y + y + getScrollingStartY()));
                     }
@@ -306,6 +306,7 @@ public abstract class ScrollController<T>
             if (CollisionHelper.inBounds(point.x, point.y, ITEM_SIZE, ITEM_SIZE, mX, mY))
             {
                 drawMouseOver(gui, result.get(point.id), mX, mY);
+                break;
             }
         }
     }

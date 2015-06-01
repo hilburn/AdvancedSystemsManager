@@ -57,28 +57,10 @@ public class MenuRFCondition extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         this.checkBoxes.onClick(mX, mY);
         this.textBoxes.onClick(mX, mY, button);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
     }
 
     @SideOnly(Side.CLIENT)

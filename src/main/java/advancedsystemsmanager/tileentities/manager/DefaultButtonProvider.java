@@ -27,6 +27,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         }
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
+            int moved;
             @Override
             public boolean readData(ASMPacket packet)
             {
@@ -46,6 +47,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 {
                     if (item.isBeingMoved())
                     {
+                        moved = item.getId();
                         return true;
                     }
                 }
@@ -56,16 +58,9 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             public boolean writeData(ASMPacket packet)
             {
                 manager.serverPacket = true;
-                for (FlowComponent item : manager.getZLevelRenderingList())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        packet.writeVarIntToBuffer(item.getId());
-                        packet.writeBoolean(GuiScreen.isShiftKeyDown() && Settings.getSetting(Settings.SHIFT_MODIFIER));
-                        return true;
-                    }
-                }
-                return false;
+                packet.writeVarIntToBuffer(moved);
+                packet.writeBoolean(clicked == 2 && Settings.getSetting(Settings.MIDDLE_CLICK));
+                return true;
             }
 
             @Override
@@ -76,6 +71,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         });
         buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
         {
+            int moved;
             @Override
             public String getMouseOver()
             {
@@ -108,6 +104,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 {
                     if (item.isBeingMoved())
                     {
+                        moved = item.getId();
                         return true;
                     }
                 }
@@ -123,16 +120,10 @@ public class DefaultButtonProvider implements IManagerButtonProvider
             @Override
             public boolean writeData(ASMPacket packet)
             {
-                for (FlowComponent item : manager.getZLevelRenderingList())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        packet.writeVarIntToBuffer(item.getId());
-                        packet.writeBoolean(GuiScreen.isShiftKeyDown() && Settings.getSetting(Settings.SHIFT_MODIFIER));
-                        return true;
-                    }
-                }
-                return false;
+
+                packet.writeVarIntToBuffer(moved);
+                packet.writeBoolean(clicked == 2 && Settings.getSetting(Settings.MIDDLE_CLICK));
+                return true;
             }
 
 

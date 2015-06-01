@@ -289,7 +289,7 @@ gui.system.South=South
 gui.system.West=West
 gui.system.East=East
 gui.system.GroupMenu=Content
-gui.system.GroupInfo=Click to open the group, or drop commands here to put them into this group (hold shift to move all linked commands).
+gui.system.GroupInfo=Click to open the group, or drop commands here to put them into this group.
 gui.system.FilterPositionLabel=Use position range
 gui.system.FilterDistanceLabel=Use distance range
 gui.system.FilterSelectionLabel=Use selection filter
@@ -395,7 +395,7 @@ gui.system.Settings.autoSide=Automatically select one side for inputs, outputs a
 gui.system.Settings.autoBlacklist=Automatically select an empty blacklist for input commands as well. (Output commands start with an empty blacklist regardless of this setting.)
 gui.system.Settings.enlargeInterfaces=Enlarge interfaces to fit the full screen, unless they do that already. (Interfaces are always made smaller to fit the screen regardless of this setting.)
 gui.system.Settings.priorityMoveFirst=Set the default option for new crafting commands to prioritize movement.
-gui.system.Settings.shiftModifier=If this is active, holding [SHIFT] will make the Copy and Delete commands work on all the connected commands.
+gui.system.Settings.middleClick=While this is active, using the middle mouse button will cause all actions (Copy, Delete, Move) to affect all connected commands.
 gui.system.Settings.limitless=Remove all limits of this manager. Without this selected there's a limit of 511 commands, 1023 connected inventories and a max reach of 128 blocks. [Creative only]
 
 # ======================================

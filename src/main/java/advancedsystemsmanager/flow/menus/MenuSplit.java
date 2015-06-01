@@ -128,16 +128,6 @@ public class MenuSplit extends Menu
     }
 
     @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuSplit menuSplit = (MenuSplit)menu;

@@ -78,7 +78,6 @@ public class MenuCrafting extends MenuItem
     @Override
     public void initRadioButtons()
     {
-        //no radio buttons
     }
 
     @Override
@@ -101,7 +100,7 @@ public class MenuCrafting extends MenuItem
         if (!isEditing() && !isSearching() && resultItem.getItem() != null)
         {
             drawResultObject(gui, resultItem.getItem(), getResultX(), getResultY());
-            gui.drawItemAmount(resultItem.getItem(), getResultX(), getResultY());
+//            gui.drawItemAmount(resultItem.getItem(), getResultX(), getResultY());
         }
     }
 

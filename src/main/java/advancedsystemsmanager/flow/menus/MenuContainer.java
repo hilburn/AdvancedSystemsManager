@@ -361,7 +361,7 @@ public class MenuContainer extends Menu implements IPacketSync
                     if (item != null && item.getItem() != null)
                     {
                         gui.drawItemStack(item, x, y);
-                        gui.drawItemAmount(item, x, y);
+//                        gui.drawItemAmount(item, x, y);
                     }
                 }
 
@@ -701,6 +701,7 @@ public class MenuContainer extends Menu implements IPacketSync
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onClick(int mX, int mY, int b)
     {
@@ -743,14 +744,9 @@ public class MenuContainer extends Menu implements IPacketSync
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
     {
         filter.currentMenu = this;
         scrollController.onRelease(mX, mY); //no need to check we're on the correct menu, this makes sure the holding always stops

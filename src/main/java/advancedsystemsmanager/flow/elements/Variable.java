@@ -112,12 +112,6 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         gui.drawColouredTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE, rgb);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void applyColor()
-    {
-//        GL11.glColor4ub(red, green, blue, (byte)0xFF);
-    }
-
     @Override
     @SideOnly(Side.CLIENT)
     public String getDescription(GuiManager gui)
@@ -261,9 +255,9 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
             return -1;
         if (hsv[1] > o.hsv[1])
             return 1;
-        if (hsv[2] < o.hsv[2])
-            return -1;
         if (hsv[2] > o.hsv[2])
+            return -1;
+        if (hsv[2] < o.hsv[2])
             return 1;
         return 0;
     }

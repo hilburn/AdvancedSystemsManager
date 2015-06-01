@@ -68,16 +68,13 @@ public class ItemSetting extends Setting<ItemStack>
     @Override
     public int getAmount()
     {
-        return content == null ? 0 : content.stackSize;
+        return amount;
     }
 
     @Override
     public void setAmount(int val)
     {
-        if (content != null)
-        {
-            content.stackSize = val;
-        }
+        amount = val;
     }
 
     @Override
@@ -101,6 +98,7 @@ public class ItemSetting extends Setting<ItemStack>
     @Override
     public void load(NBTTagCompound settingTag)
     {
+        super.load(settingTag);
         content = ItemStack.loadItemStackFromNBT(settingTag);
         fuzzyMode = FuzzyMode.values()[settingTag.getByte(NBT_SETTING_FUZZY)];
     }
@@ -108,6 +106,7 @@ public class ItemSetting extends Setting<ItemStack>
     @Override
     public void save(NBTTagCompound settingTag)
     {
+        super.save(settingTag);
         if (content != null) content.writeToNBT(settingTag);
         settingTag.setByte(NBT_SETTING_FUZZY, (byte)fuzzyMode.ordinal());
     }

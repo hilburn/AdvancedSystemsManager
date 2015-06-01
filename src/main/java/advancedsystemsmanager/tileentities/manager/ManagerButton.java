@@ -10,6 +10,7 @@ public abstract class ManagerButton implements IManagerButton
     protected TileEntityManager manager;
     protected String hoverText;
     protected int x, y;
+    protected int clicked;
 
     public ManagerButton(TileEntityManager manager, String hover, int x, int y)
     {
@@ -29,6 +30,12 @@ public abstract class ManagerButton implements IManagerButton
     public int getY()
     {
         return y;
+    }
+
+    @Override
+    public void setClicked(int button)
+    {
+        this.clicked = button;
     }
 
     @Override

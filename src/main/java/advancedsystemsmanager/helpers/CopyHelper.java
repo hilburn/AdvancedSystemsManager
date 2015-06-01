@@ -2,6 +2,7 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.Point;
 import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import com.google.common.collect.Multimap;
@@ -74,6 +75,7 @@ public class CopyHelper
                     if (connectTo != null)
                     {
                         Connection newConnection = new Connection(connectFrom.getId(), connectTo.getId(), entry);
+                        for (Point point : entry.getNodes()) newConnection.nodes.add(point.copy());
                         connectFrom.setConnection(entry.getInputConnection(), newConnection);
                         connectTo.setConnection(entry.getOutputConnection(), newConnection);
                     }

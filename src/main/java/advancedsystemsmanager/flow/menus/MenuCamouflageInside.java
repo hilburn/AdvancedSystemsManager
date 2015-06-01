@@ -36,22 +36,11 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
         return Names.INSIDE_MENU;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void onClick(int mX, int mY, int button)
     {
         radioButtons.onClick(mX, mY, button);
-    }
-
-    @Override
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
