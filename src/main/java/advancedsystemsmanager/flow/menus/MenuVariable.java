@@ -1,7 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.elements.*;
+import advancedsystemsmanager.flow.elements.RadioButton;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.flow.elements.ScrollVariable;
+import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -31,7 +34,7 @@ public class MenuVariable extends Menu
 
         for (VariableMode mode : VariableMode.values())
         {
-            int y = 52 ;
+            int y = 52;
             int x = RADIO_BUTTON_X + mode.ordinal() * 34;
             radioButtons.add(new RadioButton(x, y, mode.toString())
             {

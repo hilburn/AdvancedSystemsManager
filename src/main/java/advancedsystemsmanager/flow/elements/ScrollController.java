@@ -2,7 +2,6 @@ package advancedsystemsmanager.flow.elements;
 
 
 import advancedsystemsmanager.api.network.IPacketProvider;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
@@ -263,7 +262,7 @@ public abstract class ScrollController<T>
     {
         if (canScroll)
         {
-            int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0 ;
+            int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0;
             int srcArrowY = down ? 1 : 0;
 
             gui.drawTexture(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);

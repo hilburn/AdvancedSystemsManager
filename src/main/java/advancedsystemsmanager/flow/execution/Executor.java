@@ -4,7 +4,6 @@ import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 

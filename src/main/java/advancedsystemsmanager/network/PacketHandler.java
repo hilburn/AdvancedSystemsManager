@@ -28,7 +28,6 @@ public class PacketHandler
     public static final int BUTTON_CLICK = 5;
 
 
-
     public static void sendDataToServer(ASMPacket dw)
     {
         dw.sendServerPacket();

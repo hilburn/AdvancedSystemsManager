@@ -12,7 +12,6 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
-import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -31,8 +30,8 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public static final String NBT_COLOUR = "Colour";
     private static final String NBT_NAME = "Name";
     private float[] hsv = new float[3];
-    public int colour;
     private int[] rgb = new int[3];
+    public int colour;
     public TextColour textColour;
     public FlowComponent declaration;
     public List<Long> containers = new ArrayList<Long>();
@@ -87,7 +86,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     private void setColour(int colour)
     {
         this.colour = colour;
-        this.rgb[0]= (colour >> 16) & 0xFF;
+        this.rgb[0] = (colour >> 16) & 0xFF;
         this.rgb[1] = (colour >> 8) & 0xFF;
         this.rgb[2] = colour & 0xFF;
         textColour = TextColour.getClosestColour(colour);

@@ -9,46 +9,50 @@ public class ColourUtils
         return val;
     }
 
-    public static int[] HSBtoRGB(float hue, float saturation, float brightness) {
+    public static int[] HSBtoRGB(float hue, float saturation, float brightness)
+    {
         int r = 0, g = 0, b = 0;
-        if (saturation == 0) {
-            r = g = b = (int) (brightness * 255.0f + 0.5f);
-        } else {
+        if (saturation == 0)
+        {
+            r = g = b = (int)(brightness * 255.0f + 0.5f);
+        } else
+        {
             float h = hue * 6.0f;
             float f = h - (float)java.lang.Math.floor(h);
             float p = brightness * (1.0f - saturation);
             float q = brightness * (1.0f - saturation * f);
             float t = brightness * (1.0f - (saturation * (1.0f - f)));
-            switch ((int) h % 6) {
+            switch ((int)h % 6)
+            {
                 case 0:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (t * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    r = (int)(brightness * 255.0f + 0.5f);
+                    g = (int)(t * 255.0f + 0.5f);
+                    b = (int)(p * 255.0f + 0.5f);
                     break;
                 case 1:
-                    r = (int) (q * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    r = (int)(q * 255.0f + 0.5f);
+                    g = (int)(brightness * 255.0f + 0.5f);
+                    b = (int)(p * 255.0f + 0.5f);
                     break;
                 case 2:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (t * 255.0f + 0.5f);
+                    r = (int)(p * 255.0f + 0.5f);
+                    g = (int)(brightness * 255.0f + 0.5f);
+                    b = (int)(t * 255.0f + 0.5f);
                     break;
                 case 3:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (q * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    r = (int)(p * 255.0f + 0.5f);
+                    g = (int)(q * 255.0f + 0.5f);
+                    b = (int)(brightness * 255.0f + 0.5f);
                     break;
                 case 4:
-                    r = (int) (t * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    r = (int)(t * 255.0f + 0.5f);
+                    g = (int)(p * 255.0f + 0.5f);
+                    b = (int)(brightness * 255.0f + 0.5f);
                     break;
                 case 5:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (q * 255.0f + 0.5f);
+                    r = (int)(brightness * 255.0f + 0.5f);
+                    g = (int)(p * 255.0f + 0.5f);
+                    b = (int)(q * 255.0f + 0.5f);
                     break;
             }
         }
@@ -62,7 +66,7 @@ public class ColourUtils
         int b = RGB & 0xFF;
         RGBtoHSV(r, g, b, values);
     }
-    
+
     public static void RGBtoHSV(int r, int g, int b, float[] values)
     {
         float hue, saturation, brightness;
@@ -71,17 +75,18 @@ public class ColourUtils
         int cmin = (r < g) ? r : g;
         if (b < cmin) cmin = b;
 
-        brightness = ((float) cmax) / 255.0f;
+        brightness = ((float)cmax) / 255.0f;
         if (cmax != 0)
-            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+            saturation = ((float)(cmax - cmin)) / ((float)cmax);
         else
             saturation = 0;
         if (saturation == 0)
             hue = 0;
-        else {
-            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+        else
+        {
+            float redc = ((float)(cmax - r)) / ((float)(cmax - cmin));
+            float greenc = ((float)(cmax - g)) / ((float)(cmax - cmin));
+            float bluec = ((float)(cmax - b)) / ((float)(cmax - cmin));
             if (r == cmax)
                 hue = bluec - greenc;
             else if (g == cmax)

@@ -3,11 +3,7 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -11,12 +11,12 @@ import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -383,7 +383,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             Connection current = manager.getCurrentlyConnecting();
             if (current != null && current.getInputId() == id && current.getInputConnection() == i)
             {
-                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, new int[]{0x66,0x66,0x66});
+                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, new int[]{0x66, 0x66, 0x66});
             }
 
             Connection connectedConnection = connections[i];
@@ -421,7 +421,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     }
                     points[j++] = endX;
                     points[j] = endY;
-                    gui.drawLines(points, new int[]{0x66,0x66,0x66});
+                    gui.drawLines(points, new int[]{0x66, 0x66, 0x66});
 
                     for (Point node : nodes)
                     {
@@ -1590,7 +1590,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     break;
                 case 3:
                     int parentId = packet.readVarIntFromBuffer();
-                    FlowComponent newParent = parentId == -1? null : manager.getFlowItem(parentId);
+                    FlowComponent newParent = parentId == -1 ? null : manager.getFlowItem(parentId);
                     MenuGroup.moveComponents(this, newParent, packet.readBoolean());
                     break;
             }

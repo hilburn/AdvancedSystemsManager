@@ -1,9 +1,9 @@
 package advancedsystemsmanager.gui;
 
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
-import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
@@ -64,9 +64,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
     {
-
         drawScaledTexture(
-                x,  y,
+                x, y,
                 srcX, srcY,
                 w, h,
                 w, h
@@ -123,25 +122,26 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.setColorOpaque(colourXY[0], colourXY[1], colourXY[2]);
         tessellator.addVertex(x, y, 0.0D);
         tessellator.draw();
+
         GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    public void drawRainbowRectangle(int x, int y, int x2, int y2, int[][]colours)
+    public void drawRainbowRectangle(int x, int y, int x2, int y2, int[][] colours)
     {
         drawScaledRainbowRectangle(
-                x, y,  x + x2, y + y2, colours);
+                x, y, x + x2, y + y2, colours);
     }
 
-    public void drawScaledRainbowRectangle(double x, double y, double x2, double y2, int[][]colours)
+    public void drawScaledRainbowRectangle(double x, double y, double x2, double y2, int[][] colours)
     {
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL11.GL_QUAD_STRIP);
-        double dy = (y2 - y)/(colours.length - 1);
+        double dy = (y2 - y) / (colours.length - 1);
         for (int i = 0; i < colours.length; i++, y += dy)
         {
             tessellator.setColorOpaque(colours[i][0], colours[i][1], colours[i][2]);
@@ -183,6 +183,44 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.draw();
     }
 
+    public void drawSplitColouredTexture(int x, int y, int w, int h, int srcX, int srcY, int u, int v, int[] colour, int[] oldColour)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_TRIANGLE_STRIP);
+
+        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
+        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
+        if (oldColour != null) tessellator.setColorOpaque(oldColour[0], oldColour[1], oldColour[2]);
+        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+
+        tessellator.draw();
+    }
+
+    public void drawTextBox(int x, int y, int w, int h, int srcX, int srcY, int u, int v, int[]... colour)
+    {
+        float split = (float)u / 3;
+
+        for (int i = 0; i < colour.length; i++, srcY += v)
+        {
+            Tessellator tessellator = Tessellator.instance;
+            tessellator.startDrawing(GL11.GL_QUAD_STRIP);
+            tessellator.setColorOpaque(colour[i][0], colour[i][1], colour[i][2]);
+            tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
+            tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
+            tessellator.addVertexWithUV(x + split, y, (double)this.zLevel, (srcX + split) * SCALING, srcY * SCALING);
+            tessellator.addVertexWithUV(x + split, y + h, (double)this.zLevel, (srcX + split) * SCALING, (srcY + v) * SCALING);
+            tessellator.addVertexWithUV(x + w - split, y, (double)this.zLevel, (srcX + 2 * split) * SCALING, srcY * SCALING);
+            tessellator.addVertexWithUV(x + w - split, y + h, (double)this.zLevel, (srcX + 2 * split) * SCALING, (srcY + v) * SCALING);
+            tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
+            tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+            tessellator.draw();
+
+        }
+
+    }
+
     public void drawPolygon(int[] colours, double... points)
     {
         Tessellator tessellator = Tessellator.instance;
@@ -202,7 +240,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glShadeModel(GL11.GL_SMOOTH);
-        for (int i = 0, j = 0; i < colours.length;)
+        for (int i = 0, j = 0; i < colours.length; )
         {
             tessellator.setColorOpaque(colours[i++], colours[i++], colours[i++]);
             tessellator.addVertex(points[j++], points[j++], 0.0D);
@@ -651,7 +689,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.startDrawing(GL11.GL_LINE_STRIP);
         GL11.glLineWidth(5 * getScale());
         tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
-        for (int i = 0; i< points.length; )
+        for (int i = 0; i < points.length; )
             tessellator.addVertex(points[i++], points[i++], 0);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);

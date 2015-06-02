@@ -5,11 +5,10 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CopyHelper;
+import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.helpers.Settings;
-import net.minecraft.client.gui.GuiScreen;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +27,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
         {
             int moved;
+
             @Override
             public boolean readData(ASMPacket packet)
             {
@@ -72,6 +72,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
         {
             int moved;
+
             @Override
             public String getMouseOver()
             {

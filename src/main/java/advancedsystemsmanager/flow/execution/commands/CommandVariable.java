@@ -61,7 +61,7 @@ public class CommandVariable extends CommandBase
                         continue;
                     }
                     SystemCoord coord = command.getManager().getInventory(id);
-                    if (coord != null &&  coord.isOfAnyType(validTypes))
+                    if (coord != null && coord.isOfAnyType(validTypes))
                     {
                         variable.add(id);
                     }

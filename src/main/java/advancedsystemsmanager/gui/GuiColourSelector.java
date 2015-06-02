@@ -25,7 +25,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     protected static final int SV_DRAG_SRC_X = 20;
     protected static final int DRAG_SRC_Y = 251;
     protected static final int DRAG_WIDTH = 20;
-    protected static final int DRAG_X = HUE_X - (DRAG_WIDTH- HUE_WIDTH)/2;
+    protected static final int DRAG_X = HUE_X - (DRAG_WIDTH - HUE_WIDTH) / 2;
     protected static final int DRAG_HEIGHT = 5;
     protected static final int SV_DRAG_WIDTH = 5;
     protected static final int SV_DRAG_HEIGHT = 5;
@@ -35,7 +35,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
 
     private static final int[] WHITE = new int[]{255, 255, 255};
     private static final int[] BLACK = new int[]{0, 0, 0};
-    private static final int[][] HUE_SCALE = new int[][]{{255, 0, 0}, {255, 255, 0} ,{0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {255, 0, 255}, {255, 0, 0}};
+    private static final int[][] HUE_SCALE = new int[][]{{255, 0, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {255, 0, 255}, {255, 0, 0}};
 
     protected int x;
     protected int y;
@@ -43,8 +43,8 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     private int value;
     private int hue;
     private boolean isDragging, moveHue, clicked, scrollHue, hasUpdated;
-    private int[] colour = new int[3];
-    private int[] hueValue, oldColour;
+    protected int[] colour = new int[3];
+    protected int[] hueValue, oldColour;
     private TextBoxNumberList textBoxes;
 
     public GuiColourSelector(int x, int y)
@@ -208,14 +208,19 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
 
     protected void drawColourOutput(GuiBase guiBase)
     {
-        if (isDragging && !clicked)
+        if (displaySplitColour())
         {
             guiBase.drawRectangle(x + OUTPUT_X, y, x + OUTPUT_OLD_X, y + 15, oldColour);
             guiBase.drawRectangle(x + OUTPUT_OLD_X, y, x + OUTPUT_X_END, y + 15, colour);
-        }else
+        } else
         {
             guiBase.drawRectangle(x + OUTPUT_X, y, x + OUTPUT_X_END, y + 15, colour);
         }
+    }
+
+    public boolean displaySplitColour()
+    {
+        return isDragging && !clicked;
     }
 
     public void onScroll(int scroll)

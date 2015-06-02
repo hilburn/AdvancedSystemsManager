@@ -192,6 +192,7 @@ public class SystemTypeRegistry
         {
         }
     };
+
     public static ISystemType register(ISystemType type)
     {
         types.add(type);

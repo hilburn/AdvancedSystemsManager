@@ -68,7 +68,8 @@ public class GuiHandler implements IGuiHandler
 
                 if (te != null && te instanceof ITileInterfaceProvider)
                 {
-//                    if (te instanceof TileEntityManager) ((TileEntityManager)te).specialRenderer = new GuiVariable((TileEntityManager)te);
+                    if (te instanceof TileEntityManager)
+                        ((TileEntityManager)te).specialRenderer = new GuiVariable((TileEntityManager)te);
                     return ((ITileInterfaceProvider)te).getGui(player);
                 }
                 break;

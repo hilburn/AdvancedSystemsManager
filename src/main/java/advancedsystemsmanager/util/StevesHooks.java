@@ -17,8 +17,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.Collection;
+import java.util.Iterator;
 
 public class StevesHooks
 {

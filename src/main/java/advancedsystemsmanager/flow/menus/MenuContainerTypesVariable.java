@@ -29,7 +29,7 @@ public class MenuContainerTypesVariable extends MenuContainerTypes
         super.setChecked(id, value);
         MenuVariableContainers containers = (MenuVariableContainers)getParent().menus.get(2);
         Set<ISystemType> types = containers.getValidTypes();
-        for (Iterator<Long> itr = containers.getSelectedInventories().iterator(); itr.hasNext();)
+        for (Iterator<Long> itr = containers.getSelectedInventories().iterator(); itr.hasNext(); )
         {
             long selected = itr.next();
             if (selected < 0)

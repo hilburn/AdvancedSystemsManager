@@ -3,7 +3,6 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.flow.elements.ScrollVariable;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
@@ -15,7 +14,7 @@ public class GuiVariable implements IInterfaceRenderer
     private static int BUTTON_Y = Y + 110;
     private static final int BUTTON_WIDTH = 30;
     private static final int BUTTON_HEIGHT = 18;
-    
+
     private GuiColourSelector colourSelector;
     protected TileEntityManager manager;
     private ScrollVariable variables;
@@ -34,6 +33,7 @@ public class GuiVariable implements IInterfaceRenderer
             @Override
             public void onClick(Variable variable, int mX, int mY, int button)
             {
+                super.onClick(variable, mX, mY, button);
                 colourSelector.setRGB(variable.colour);
             }
 
@@ -57,7 +57,13 @@ public class GuiVariable implements IInterfaceRenderer
             @Override
             protected void drawColourOutput(GuiBase guiBase)
             {
-                guiBase.drawColouredTexture(x + OUTPUT_X, y, Variable.VARIABLE_SRC_X, Variable.VARIABLE_SRC_Y, Variable.VARIABLE_SIZE, Variable.VARIABLE_SIZE, 30F/Variable.VARIABLE_SIZE, colourSelector.getColour());
+                guiBase.drawSplitColouredTexture(x + OUTPUT_X, y, 30, 30, Variable.VARIABLE_SRC_X, Variable.VARIABLE_SRC_Y, Variable.VARIABLE_SIZE, Variable.VARIABLE_SIZE, colourSelector.getColour(), displaySplitColour() ? new int[]{variables.variable >> 16, variables.variable >> 8 & 0xFF, variables.variable & 0xFF} : null);
+            }
+
+            @Override
+            public boolean displaySplitColour()
+            {
+                return variables.variable != -1;
             }
         };
     }

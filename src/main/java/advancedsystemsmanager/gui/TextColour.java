@@ -39,7 +39,7 @@ public enum TextColour
     {
         float[] colourVals = new float[3];
         ColourUtils.HextoHSV(RGB, colourVals);
-        return (colourVals[2] - HSV[2]) * (colourVals[2] - HSV[2]) + colourVals[1] * colourVals[1] + HSV[1] * HSV[1] - 2*colourVals[1] * HSV[1] * Math.cos(colourVals[0] - HSV[0]);
+        return (colourVals[2] - HSV[2]) * (colourVals[2] - HSV[2]) + colourVals[1] * colourVals[1] + HSV[1] * HSV[1] - 2 * colourVals[1] * HSV[1] * Math.cos(colourVals[0] - HSV[0]);
     }
 
     public static TextColour getClosestColour(int rgb)
@@ -50,7 +50,7 @@ public enum TextColour
         {
             if (colour == BLACK) continue;
             double distance = colour.getDistanceSq(rgb);
-            if (distance<min)
+            if (distance < min)
             {
                 min = distance;
                 matchColour = colour;

@@ -16,6 +16,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -31,8 +32,7 @@ import java.util.ListIterator;
 @SideOnly(Side.CLIENT)
 public class GuiManager extends GuiBase
 {
-    private static final ResourceLocation BACKGROUND_1 = registerTexture("Background1");
-    private static final ResourceLocation BACKGROUND_2 = registerTexture("Background2");
+    private static final ResourceLocation MANAGER = registerTexture("manager");
     private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
@@ -154,15 +154,25 @@ public class GuiManager extends GuiBase
         return visiblityData;
     }
 
+    private void drawBackground()
+    {
+        bindTexture(MANAGER);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_QUAD_STRIP);
+        tessellator.setColorOpaque(0x2a, 0x2a, 0x2a);
+        tessellator.addVertexWithUV(0, 0, zLevel, 0.0f, 0.5f);
+        tessellator.addVertexWithUV(0, 256, zLevel, 0.0f, 1.0f);
+        tessellator.addVertexWithUV(256, 0, zLevel, 0.5f, 0.5f);
+        tessellator.addVertexWithUV(256, 256, zLevel, 0.5f, 1.0f);
+        tessellator.addVertexWithUV(512, 0, zLevel, 0.0f, 0.5f);
+        tessellator.addVertexWithUV(512, 256, zLevel, 0.0f, 1.0f);
+        tessellator.draw();
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        bindTexture(BACKGROUND_1);
-        drawTexture(0, 0, 0, 0, 256, 256);
-
-        bindTexture(BACKGROUND_2);
-        drawTexture(256, 0, 0, 0, 256, 256);
+        drawBackground();
 
         mX -= guiLeft;
         mY -= guiTop;
