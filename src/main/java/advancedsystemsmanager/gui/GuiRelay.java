@@ -599,7 +599,7 @@ public class GuiRelay extends GuiBase
 
     private void removeUser(int id)
     {
-        ASMPacket dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(false); //existing
         dw.writeVarIntToBuffer(id);
@@ -621,7 +621,7 @@ public class GuiRelay extends GuiBase
 
     private void updateGlobalSettings()
     {
-        ASMPacket dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getServerPacket();
         dw.writeBoolean(false); //no user data
         dw.writeBoolean(relay.isCreativeMode());
         dw.writeBoolean(relay.doesListRequireOp());
@@ -630,7 +630,7 @@ public class GuiRelay extends GuiBase
 
     private void addUser()
     {
-        ASMPacket dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(true); //added
         dw.writeStringToBuffer(getUserName());
@@ -640,7 +640,7 @@ public class GuiRelay extends GuiBase
     private void updateUser(int id)
     {
         UserPermission permission = relay.getPermissions().get(id);
-        ASMPacket dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(false); //existing
         dw.writeVarIntToBuffer(id);

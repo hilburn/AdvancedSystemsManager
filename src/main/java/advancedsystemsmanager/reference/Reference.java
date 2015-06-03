@@ -1,5 +1,7 @@
 package advancedsystemsmanager.reference;
 
+import java.io.File;
+
 public class Reference
 {
 
@@ -10,6 +12,8 @@ public class Reference
     public static final String ID = "AdvancedSystemsManager";
 
     public static final String RESOURCE_LOCATION = "advancedsystemsmanager";
+    public static final String ASSETS = "/assets/" + RESOURCE_LOCATION + "/";
+    public static final String THEMES = ASSETS + "themes/";
 
     // Main version information that will be displayed in mod listing and for other purposes.
     public static final String V_MAJOR = "@MAJOR@";

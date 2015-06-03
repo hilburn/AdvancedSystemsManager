@@ -26,6 +26,7 @@ public class PacketHandler
     public static final int SYNC_COMPONENT = 2;
     public static final int NEW_VARIABLE = 4;
     public static final int BUTTON_CLICK = 5;
+    public static final int SPECIAL_DATA = 42;
 
 
     public static void sendDataToServer(ASMPacket dw)
@@ -106,13 +107,13 @@ public class PacketHandler
 
     public static ASMPacket getComponentPacket(FlowComponent component)
     {
-        ASMPacket dw = PacketHandler.getWriterForServerPacket();
+        ASMPacket dw = PacketHandler.getServerPacket();
         createComponentPacket(dw, component);
         return dw;
     }
 
     @SideOnly(Side.CLIENT)
-    public static ASMPacket getWriterForServerPacket()
+    public static ASMPacket getServerPacket()
     {
         return getBaseContainerPacket();
     }
@@ -208,7 +209,7 @@ public class PacketHandler
 
     public static void sendButtonPacket(int index, IManagerButton button)
     {
-        ASMPacket packet = PacketHandler.getWriterForServerPacket();
+        ASMPacket packet = PacketHandler.getServerPacket();
         packet.writeByte(BUTTON_CLICK);
         packet.writeByte(index);
         if (button.writeData(packet))
@@ -217,7 +218,7 @@ public class PacketHandler
 
     public static void sendVariablePacket(int colour)
     {
-        ASMPacket packet = PacketHandler.getWriterForServerPacket();
+        ASMPacket packet = PacketHandler.getServerPacket();
         packet.writeByte(NEW_VARIABLE);
         packet.writeMedium(colour);
         packet.sendServerPacket();

@@ -285,7 +285,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                         selectedGroup = selectedGroup.getParent();
                     }
                 }
-                result = false;
                 variableUpdate = true;
                 break;
             case PacketHandler.SETTING_MESSAGE:
@@ -303,7 +302,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     for (FlowComponent item : items) {
                         item.adjustEverythingToGridFine();
                     } */
-                    result = false;
                 }
                 break;
             case PacketHandler.SYNC_COMPONENT:
@@ -324,6 +322,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 {
                     IManagerButton button = buttons.get(buttonId);
                     result = button.readData(packet);
+                }
+                break;
+            case PacketHandler.SPECIAL_DATA:
+                if (worldObj.isRemote && specialRenderer instanceof IPacketReader)
+                {
+                    ((IPacketReader)specialRenderer).readData(packet);
                 }
                 break;
         }

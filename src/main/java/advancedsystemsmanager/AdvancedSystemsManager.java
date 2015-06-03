@@ -24,8 +24,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import hilburnlib.registry.Registerer;
-import hilburnlib.utils.LogHelper;
+import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.classloading.FMLForgePlugin;
+import thevault.registry.Registerer;
+import thevault.theme.ThemeHandler;
+import thevault.utils.LogHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,14 +59,27 @@ public class AdvancedSystemsManager
 
     public static CreativeTabs creativeTab;
 
-    static Registerer registerer;
+    public static Registerer registerer;
+
+    public static ThemeHandler themeHandler;
+
+    public static boolean DEV_ENVIRONMENT = FMLForgePlugin.RUNTIME_DEOBF;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = Metadata.init(metadata);
-        config = new Config(event.getSuggestedConfigurationFile());
+        File configDir = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
+        if (!configDir.exists()) configDir.mkdir();
+        config = new Config(new File(configDir.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
         config.init();
+        if (event.getSide() == Side.CLIENT)
+        {
+            themeHandler = new ThemeHandler(configDir, Reference.THEMES);
+            if (!themeHandler.setTheme(Config.theme))
+                themeHandler.setTheme("default");
+        }
+
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override

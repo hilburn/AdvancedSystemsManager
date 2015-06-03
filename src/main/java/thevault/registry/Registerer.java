@@ -1,11 +1,11 @@
-package hilburnlib.registry;
+package thevault.registry;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import hilburnlib.utils.LogHelper;
+import thevault.utils.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;

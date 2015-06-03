@@ -1,4 +1,4 @@
-package hilburnlib.registry;
+package thevault.registry;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

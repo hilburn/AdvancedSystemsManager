@@ -1,4 +1,4 @@
-package hilburnlib.registry;
+package thevault.registry;
 
 public interface IConfigLock
 {

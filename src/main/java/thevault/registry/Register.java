@@ -1,4 +1,4 @@
-package hilburnlib.registry;
+package thevault.registry;
 
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;

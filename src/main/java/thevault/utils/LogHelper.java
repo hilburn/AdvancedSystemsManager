@@ -1,4 +1,4 @@
-package hilburnlib.utils;
+package thevault.utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.LogManager;

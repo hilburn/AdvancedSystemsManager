@@ -2,8 +2,9 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.commands.CommandPastebin;
 import advancedsystemsmanager.reference.Mods;
+import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.common.Loader;
-import hilburnlib.registry.IConfigLock;
+import thevault.registry.IConfigLock;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -19,6 +20,7 @@ public class Config implements IConfigLock
 {
     public static final String CATEGORY_SETTINGS = "default_manager_settings";
     public static final String CATEGORY_ENABLE = "enable";
+    public static String theme;
     public static boolean wailaIntegration = true;
     public static boolean aeIntegration = Loader.isModLoaded(Mods.APPLIEDENERGISTICS2);
     public static Map<String, Boolean> managerSettings = new LinkedHashMap<String, Boolean>(Settings.settingsRegistry);
@@ -43,8 +45,10 @@ public class Config implements IConfigLock
 
         for (Map.Entry<String, Boolean> entry : managerSettings.entrySet())
         {
-            entry.setValue(config.getBoolean(entry.getKey(), CATEGORY_SETTINGS, entry.getValue(), LocalizationHelper.translate("gui.asm.Settings." + entry.getKey())));
+            entry.setValue(config.get(CATEGORY_SETTINGS, entry.getKey(), entry.getValue(), LocalizationHelper.translate(Names.GUI_PREFIX + "Settings." + entry.getKey())).getBoolean());
         }
+
+        theme = config.get(CATEGORY_SETTINGS, "theme", "default").getString();
 
         config.addCustomCategoryComment(CATEGORY_ENABLE, "Set true to enable, false to disable");
         config.setCategoryRequiresWorldRestart(CATEGORY_ENABLE, true);

@@ -394,6 +394,11 @@ public class GuiManager extends GuiBase
     {
         if (hasSpecialRenderer())
         {
+            if (c == 1)
+            {
+                manager.specialRenderer = null;
+                return;
+            }
             if (getSpecialRenderer().onKeyTyped(this, c, k))
             {
                 return;
@@ -401,9 +406,9 @@ public class GuiManager extends GuiBase
         } else
         {
 
-            if (selectedComponent instanceof IGuiElement)
+            if (selectedComponent instanceof FlowComponent)
             {
-                if (((IGuiElement<GuiManager>)selectedComponent).onKeyStroke(this, c, k) && k != 1) return;
+                if (((FlowComponent)selectedComponent).onKeyStroke(this, c, k) && k != 1) return;
             }
 
             boolean recognized = false;

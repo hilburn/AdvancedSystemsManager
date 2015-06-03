@@ -5,7 +5,7 @@ import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.items.ItemRemoteAccessor;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.common.registry.GameRegistry;
-import hilburnlib.registry.Register;
+import thevault.registry.Register;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
