@@ -71,26 +71,14 @@ public class GuiVariable implements IInterfaceRenderer
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-//        double[] points = new double[]{
-//                256,128,
-//                356,128,
-//                306, 41,
-//                206, 41,
-//                156, 128,
-//                206, 215,
-//                306, 215,
-//                356,128};
-//        int[] colours = new int[]{255,255,255,255, 0, 0, 255, 255, 0 ,0, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 255, 255, 0, 0};
-//        gui.drawTriangleFan(colours, points);
-        gui.drawDesaturatedIcon(20,20,219,13,200,200,12, 12);
-//        if (manager.variableUpdate)
-//        {
-//            variables.updateSearch();
-//            manager.variableUpdate = false;
-//        }
-//        colourSelector.draw(gui, mX, mY, 1);
-//        variables.draw(gui, mX, mY);
-//        gui.drawRectangle(BUTTON_X, BUTTON_Y, BUTTON_X + BUTTON_WIDTH, BUTTON_Y + BUTTON_HEIGHT, new int[]{0x99, 0x99, 0x99});
+        if (manager.variableUpdate)
+        {
+            variables.updateSearch();
+            manager.variableUpdate = false;
+        }
+        colourSelector.draw(gui, mX, mY, 1);
+        variables.draw(gui, mX, mY);
+        gui.drawRectangle(BUTTON_X, BUTTON_Y, BUTTON_X + BUTTON_WIDTH, BUTTON_Y + BUTTON_HEIGHT, new int[]{0x99, 0x99, 0x99});
     }
 
     @Override

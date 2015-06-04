@@ -4,10 +4,21 @@ import advancedsystemsmanager.api.gui.IGuiElement;
 
 public class GuiColourSelectorHex implements IGuiElement<GuiBase>
 {
-    @Override
-    public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
-    {
+    private static final double[] points = new double[]{
+            256,128,
+            356,128,
+            306, 41,
+            206, 41,
+            156, 128,
+            206, 215,
+            306, 215,
+            356,128};
+    private static final int[] colours = new int[]{128,128,128,255, 0, 0, 255, 255, 0 ,0, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 255, 255, 0, 0};
 
+    @Override
+    public void draw(GuiBase gui, int mouseX, int mouseY, int zLevel)
+    {
+        gui.drawTriangleFan(colours, points);
     }
 
     @Override
