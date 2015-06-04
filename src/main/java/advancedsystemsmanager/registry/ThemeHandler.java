@@ -1,23 +1,26 @@
-package thevault.theme;
+package advancedsystemsmanager.registry;
 
+import advancedsystemsmanager.gui.theme.HexValue;
+import advancedsystemsmanager.gui.theme.Theme;
+import advancedsystemsmanager.gui.theme.ThemeAdapters;
+import advancedsystemsmanager.gui.theme.ThemeCommand;
 import advancedsystemsmanager.helpers.FileHelper;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ThemeHandler
 {
     private static final Pattern JSON = Pattern.compile(".*\\.json", Pattern.CASE_INSENSITIVE);
-    private static final Pattern HEX = Pattern.compile("([\\dA-F]+$)", Pattern.CASE_INSENSITIVE);
+    public static final Gson GSON = getGson();
     private final String backupLocation;
     private final File themeDir;
-    private File theme;
+    private File themeFile;
+    public static Theme theme = new Theme();
 
     public ThemeHandler(File directory, String backupLocation)
     {
@@ -40,7 +43,7 @@ public class ThemeHandler
             }
             if (!theme.isFile()) return false;
         }
-        this.theme = theme;
+        this.themeFile = theme;
         loadTheme();
         return true;
     }
@@ -70,7 +73,7 @@ public class ThemeHandler
     {
         try
         {
-            InputStream stream = new FileInputStream(theme);
+            InputStream stream = new FileInputStream(themeFile);
             JsonReader jReader = new JsonReader(new InputStreamReader(stream));
             JsonParser parser = new JsonParser();
             return parser.parse(jReader).getAsJsonObject();
@@ -80,15 +83,25 @@ public class ThemeHandler
         }
     }
 
-    public static int[] getRGBAValue(String string)
+    public JsonObject toJson(Theme theme)
     {
-        Matcher hex = HEX.matcher(string);
-        hex.find();
-        String hexValue = hex.group();
-        boolean opaque = hexValue.length() < 7;
-        int value = Integer.parseInt(hexValue, 16);
-        return new int[]{value >> 16 & 0xFF, value >> 8 & 0xFF, value & 0xFF, opaque ? 0xFF : value >> 24};
+        String test = getGson().toJson(theme);
+        Theme back = getGson().fromJson(test, Theme.class);
+
+        return null;
     }
+
+    public static Gson getGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(HexValue.class, ThemeAdapters.HEX_ADAPTER);
+        builder.registerTypeAdapter(ThemeCommand.CommandSet.class, ThemeAdapters.COMMAND_ADAPTER);
+        builder.setPrettyPrinting();
+        builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE_WITH_SPACES);
+        return builder.create();
+    }
+
+
 
     public void loadTheme()
     {

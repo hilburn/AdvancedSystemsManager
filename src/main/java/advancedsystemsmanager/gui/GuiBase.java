@@ -91,16 +91,31 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         );
     }
 
+    public void drawDesaturatedIcon(int x, int y, int srcX, int srcY, int w, int h, int u, int v)
+    {
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glColorMask(false, false, false, true);
+        GL11.glAlphaFunc(GL11.GL_LESS, 0.9F);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        this.zLevel += 0.1f;
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
+        this.zLevel -= 0.1f;
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glColorMask(true, true, true, true);
+        drawRectangle(x, y, x + w, y + h, new int[]{0x66, 0x66, 0x66});
+    }
+
     public void drawRectangle(int x, int y, int x2, int y2, int[] colour)
     {
         Tessellator tessellator = Tessellator.instance;
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         tessellator.startDrawingQuads();
         tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
-        tessellator.addVertex(x, y2, 0.0D);
-        tessellator.addVertex(x2, y2, 0.0D);
-        tessellator.addVertex(x2, y, 0.0D);
-        tessellator.addVertex(x, y, 0.0D);
+        tessellator.addVertex(x, y2, zLevel);
+        tessellator.addVertex(x2, y2, zLevel);
+        tessellator.addVertex(x2, y, zLevel);
+        tessellator.addVertex(x, y, zLevel);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }

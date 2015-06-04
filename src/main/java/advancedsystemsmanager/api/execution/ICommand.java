@@ -25,6 +25,10 @@ public interface ICommand
 
     public CommandType getCommandType();
 
+    int[] getColour();
+
+    void setColour(int[] colour);
+
     int getX();
 
     int getY();

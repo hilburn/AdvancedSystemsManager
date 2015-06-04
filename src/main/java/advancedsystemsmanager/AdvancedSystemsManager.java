@@ -27,7 +27,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.classloading.FMLForgePlugin;
 import thevault.registry.Registerer;
-import thevault.theme.ThemeHandler;
+import advancedsystemsmanager.gui.theme.Theme;
+import advancedsystemsmanager.registry.ThemeHandler;
 import thevault.utils.LogHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -79,7 +80,7 @@ public class AdvancedSystemsManager
             if (!themeHandler.setTheme(Config.theme))
                 themeHandler.setTheme("default");
         }
-
+        themeHandler.toJson(new Theme());
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override
