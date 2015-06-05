@@ -35,7 +35,7 @@ public class ContainerManager extends ContainerBase<TileEntityManager>
     @SideOnly(Side.CLIENT)
     public void detectAndSendChanges()
     {
-        //TODO: Whatttt
+        //TODO: Whatttt hi
     }
 
     @Override
