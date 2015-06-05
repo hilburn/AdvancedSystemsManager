@@ -53,9 +53,18 @@ public class HexValue
         return getHexString(colour);
     }
 
+    @Override
+    public String toString()
+    {
+        return getHexString(this.colour);
+    }
+
     public static String getHexString(int[] colour)
     {
         int value = (colour[3] == 0xFF ? 0 : (colour[3] << 24)) | colour[0] << 16 | colour[1] << 8 | colour[2];
-        return "#" + Integer.toHexString(value);
+        int minSize = colour[3] == 0xFF ? 6 : 8;
+        String string = Integer.toHexString(value);
+        while (string.length() < minSize) string = "0" + string;
+        return "#" + string;
     }
 }

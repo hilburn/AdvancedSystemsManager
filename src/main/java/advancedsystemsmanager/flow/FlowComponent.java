@@ -17,6 +17,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,13 +35,17 @@ import java.util.List;
 
 public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, IPacketSync, IPacketProvider
 {
-    public static final int COMPONENT_SRC_X = 0;
+    public static final int COMPONENT_START_X = 100;
+    public static final int COMPONENT_START_Y = 50;
+
+    public static final int COMPONENT_SRC_X = 95;
     public static final int COMPONENT_SRC_Y = 0;
-    public static final int COMPONENT_SIZE_W = 64;
-    public static final int COMPONENT_SIZE_H = 20;
-    public static final int COMPONENT_SIZE_LARGE_W = 124;
-    public static final int COMPONENT_SIZE_LARGE_H = 152;
-    public static final int COMPONENT_SRC_LARGE_X = 64;
+    public static final int COMPONENT_SIZE_W = 80;
+    public static final int COMPONENT_SIZE_H = 15;
+    public static final int COMPONENT_SIZE_LARGE_W = 98;
+    public static final int COMPONENT_SIZE_LARGE_H = 128;
+    public static final int COMPONENT_SRC_LARGE_X = 158;
+    public static final int COMPONENT_SRC_LARGE_Y = 26;
     public static final int DRAGGABLE_SIZE = 6;
 
     public static final int ARROW_X = -10;
@@ -50,12 +55,19 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final int ARROW_SRC_X = 0;
     public static final int ARROW_SRC_Y = 20;
 
-    public static final int MENU_ITEM_SIZE_W = 120;
+
+    public static final int MENU_AREA_OFFSET_X = 1;
+    public static final int MENU_AREA_OFFSET_Y = 25;
+    public static final int MENU_AREA_SRC_X = 160;
+    public static final int MENU_AREA_SRC_Y = 154;
+    public static final int MENU_AREA_SIZE_W = 96;
+    public static final int MENU_AREA_SIZE_H = 102;
+    public static final int MENU_ITEM_SIZE_W = MENU_AREA_SIZE_W;
     public static final int MENU_ITEM_SIZE_H = 13;
-    public static final int MENU_ITEM_SRC_X = 0;
-    public static final int MENU_ITEM_SRC_Y = 152;
-    public static final int MENU_X = 2;
-    public static final int MENU_Y = 20;
+    public static final int MENU_ITEM_SRC_X = 63;
+    public static final int MENU_ITEM_SRC_Y = 198;
+    public static final int MENU_X = MENU_AREA_OFFSET_X;
+    public static final int MENU_Y = MENU_AREA_OFFSET_Y;
     public static final int MENU_SIZE_H = 130;
     public static final int MENU_ITEM_CAPACITY = 5;
 
@@ -151,7 +163,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public FlowComponent(TileEntityManager manager, ICommand type)
     {
-        this(manager, 50, 50, type);
+        this(manager, COMPONENT_START_X, COMPONENT_START_Y, type);
     }
 
     public FlowComponent(TileEntityManager manager, int x, int y, ICommand type)
@@ -302,7 +314,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 0, zLevel);
 
-        gui.drawTexture(x, y, isLarge ? COMPONENT_SRC_LARGE_X : COMPONENT_SRC_X, COMPONENT_SRC_Y, getComponentWidth(), getComponentHeight());
+        gui.drawColouredTexture(x, y, isLarge ? COMPONENT_SRC_LARGE_X : COMPONENT_SRC_X, isLarge ? COMPONENT_SRC_LARGE_Y : COMPONENT_SRC_Y, getComponentWidth(), getComponentHeight(), type.getColour());
 
         int internalX = mX - x;
         int internalY = mY - y;
@@ -314,6 +326,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
         if (isLarge)
         {
+            gui.drawColouredTexture(x + MENU_AREA_OFFSET_X, y + MENU_AREA_OFFSET_Y, MENU_AREA_SRC_X, MENU_AREA_SRC_Y, MENU_AREA_SIZE_W, MENU_AREA_SIZE_H, ThemeHandler.theme.commands.menuArea.getColour());
+
             for (int i = 0; i < menus.size(); i++)
             {
                 Menu menu = menus.get(i);
@@ -330,7 +344,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
                 int itemX = getMenuAreaX();
                 int itemY = y + getMenuItemY(i);
-                gui.drawTexture(itemX, itemY, MENU_ITEM_SRC_X, MENU_ITEM_SRC_Y, MENU_ITEM_SIZE_W, MENU_ITEM_SIZE_H);
+                gui.drawScaledColouredTexture(itemX, itemY, MENU_ITEM_SIZE_W, MENU_ITEM_SIZE_H, MENU_ITEM_SRC_X, MENU_ITEM_SRC_Y, MENU_ITEM_SIZE_W * 0.5f, MENU_ITEM_SIZE_H * 0.5f, (i == openMenuId ? ThemeHandler.theme.menus.selectedTitle : ThemeHandler.theme.menus.title).getColour());
 
                 int srcItemArrowX = inMenuArrowBounds(i, internalX, internalY) ? 1 : 0;
                 int srcItemArrowY = i == openMenuId ? 1 : 0;
@@ -383,7 +397,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             Connection current = manager.getCurrentlyConnecting();
             if (current != null && current.getInputId() == id && current.getInputConnection() == i)
             {
-                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, new int[]{0x66, 0x66, 0x66});
+                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, ThemeHandler.theme.lines.getColour());
             }
 
             Connection connectedConnection = connections[i];
@@ -421,7 +435,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     }
                     points[j++] = endX;
                     points[j] = endY;
-                    gui.drawLines(points, new int[]{0x66, 0x66, 0x66});
+                    gui.drawLines(points, ThemeHandler.theme.lines.getColour());
 
                     for (Point node : nodes)
                     {
@@ -1064,7 +1078,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             if (button == 2)
             {
                 List<FlowComponent> connected = new ArrayList<FlowComponent>();
-                MenuGroup.findCluster(connected, this, null);
+                findCluster(connected, this, null);
                 for (FlowComponent component : connected)
                 {
                     component.shiftNodes(x - startX, y - startY);
@@ -1547,7 +1561,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                         newX -= x;
                         newY -= y;
                         List<FlowComponent> connected = new ArrayList<FlowComponent>();
-                        MenuGroup.findCluster(connected, this, null);
+                        findCluster(connected, this, null);
                         for (FlowComponent component : connected)
                         {
                             component.shiftLocation(newX, newY);
@@ -1591,10 +1605,56 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 case 3:
                     int parentId = packet.readVarIntFromBuffer();
                     FlowComponent newParent = parentId == -1 ? null : manager.getFlowItem(parentId);
-                    MenuGroup.moveComponents(this, newParent, packet.readBoolean());
+                    moveComponents(this, newParent, packet.readBoolean());
                     break;
             }
             return false;
+        }
+    }
+
+    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
+    {
+
+        if (moveCluster)
+        {
+            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
+            findCluster(cluster, component, parent);
+            for (FlowComponent flowComponent : cluster)
+            {
+                flowComponent.setParent(parent);
+                if (parent != null)
+                {
+                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
+                    {
+                        Connection connection = flowComponent.getConnection(i);
+                        if (connection != null && (connection.getInputId() == parent.getId() || connection.getOutputId() == parent.getId()))
+                        {
+                            flowComponent.removeConnection(i);
+                        }
+                    }
+                }
+            }
+        } else if (!component.equals(parent))
+        {
+            component.setParent(parent);
+            component.deleteConnections();
+        }
+    }
+
+    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
+    {
+        if (!components.contains(component) && !component.equals(parent))
+        {
+            components.add(component);
+
+            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
+            {
+                Connection connection = component.getConnection(i);
+                if (connection != null)
+                {
+                    findCluster(components, component.getManager().getFlowItem(connection.getOutputId() == component.getId() ? connection.getInputId() : connection.getOutputId()), parent);
+                }
+            }
         }
     }
 

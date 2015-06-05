@@ -1,5 +1,6 @@
 package advancedsystemsmanager.gui;
 
+import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.flow.elements.ScrollVariable;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -18,10 +19,12 @@ public class GuiVariable implements IInterfaceRenderer
     private GuiColourSelector colourSelector;
     protected TileEntityManager manager;
     private ScrollVariable variables;
+    private IGuiElement<GuiBase> test;
 
     public GuiVariable(TileEntityManager te)
     {
         this.manager = te;
+//        test = new GuiColourSelectorHex();
         variables = new ScrollVariable(null, X + 200, Y, 5, 5)
         {
             @Override
@@ -71,6 +74,7 @@ public class GuiVariable implements IInterfaceRenderer
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
+//        test.draw(gui, mX, mY, 1);
         if (manager.variableUpdate)
         {
             variables.updateSearch();
@@ -91,6 +95,7 @@ public class GuiVariable implements IInterfaceRenderer
     @Override
     public void onClick(GuiManager gui, int mX, int mY, int button)
     {
+//        test.onClick(mX, mY, button);
         colourSelector.onClick(mX, mY, button);
         variables.onClick(mX, mY, button);
         if (CollisionHelper.inBounds(BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY))

@@ -20,15 +20,16 @@ public class ThemeAdapters
         @Override
         public void write(JsonWriter out, HexValue value) throws IOException
         {
-            out.value(value.getHexValue());
+            out.value(value == null? "#00000000" : value.getHexValue());
         }
 
         @Override
         public HexValue read(JsonReader in) throws IOException
         {
+            if (in.peek() == JsonToken.NULL) return new HexValue();
             return new HexValue(in.nextString());
         }
-    }.nullSafe();
+    };
     public static final TypeAdapter<ThemeCommand.CommandSet> COMMAND_ADAPTER = new TypeAdapter<ThemeCommand.CommandSet>()
     {
         @Override
@@ -62,7 +63,7 @@ public class ThemeAdapters
                     command.setColour(input.get(name).getColour());
                 } else
                 {
-                    command.setColour(ThemeHandler.theme.commands.baseColor.getColour());
+                    command.setColour(ThemeHandler.theme.commands.baseColour.getColour());
                 }
             }
             return new ThemeCommand.CommandSet();

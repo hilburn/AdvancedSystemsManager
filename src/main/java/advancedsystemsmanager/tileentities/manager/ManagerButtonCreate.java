@@ -31,7 +31,7 @@ public class ManagerButtonCreate extends ManagerButton
             {
                 packet.setInt(packet.readerIndex(), manager.getNextFreeID());
             }
-            FlowComponent component = new FlowComponent(manager, 50, 50, packet.readInt(), type);
+            FlowComponent component = new FlowComponent(manager, FlowComponent.COMPONENT_START_X, FlowComponent.COMPONENT_START_Y, packet.readInt(), type);
 
             boolean hasParent = packet.readBoolean();
             if (hasParent)

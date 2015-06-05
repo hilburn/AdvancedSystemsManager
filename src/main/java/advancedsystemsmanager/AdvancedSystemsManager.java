@@ -4,6 +4,7 @@ import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.flow.setting.ModItemHelper;
 import advancedsystemsmanager.gui.GuiHandler;
+import advancedsystemsmanager.gui.theme.HexValue;
 import advancedsystemsmanager.helpers.Config;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
@@ -80,7 +81,7 @@ public class AdvancedSystemsManager
             if (!themeHandler.setTheme(Config.theme))
                 themeHandler.setTheme("default");
         }
-        themeHandler.toJson(new Theme());
+
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override

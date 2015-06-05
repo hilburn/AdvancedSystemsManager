@@ -22,7 +22,7 @@ public class CopyHelper
         } else
         {
             List<FlowComponent> cluster = new ArrayList<FlowComponent>();
-            MenuGroup.findCluster(cluster, toCopy, null);
+            FlowComponent.findCluster(cluster, toCopy, null);
             for (FlowComponent component : cluster)
             {
                 copyCommandsWithChildren(manager, added, component, component.getParent(), existingParents, false);
@@ -51,8 +51,8 @@ public class CopyHelper
         if (reset)
         {
             newComponent.resetPosition();
-            newComponent.setX(50);
-            newComponent.setY(50);
+            newComponent.setX(FlowComponent.COMPONENT_START_X);
+            newComponent.setY(FlowComponent.COMPONENT_START_Y);
         }
         newComponent.setId(manager.getNextFreeID());
         added.put(toCopy, newComponent);

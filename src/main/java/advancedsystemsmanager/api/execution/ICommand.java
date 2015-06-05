@@ -50,6 +50,7 @@ public interface ICommand
         COMMAND_CONTROL,
         CRAFTING,
         MISC,
-        GROUP;
+        GROUP,
+        VARIABLE
     }
 }

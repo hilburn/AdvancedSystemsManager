@@ -70,6 +70,7 @@ gui.system.NodeLong=Group Node
 gui.system.Camouflage=Camouflage
 gui.system.CamouflageLong=Camouflage Updater
 gui.system.Sign=Sign
+gui.system.SignLong=Sign Updater
 gui.system.RfInputLong=RF Input
 gui.system.RfInput=RF Input
 gui.system.RfOutputLong=RF Output

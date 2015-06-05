@@ -7,6 +7,7 @@ import advancedsystemsmanager.gui.theme.ThemeCommand;
 import advancedsystemsmanager.helpers.FileHelper;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,6 +40,12 @@ public class ThemeHandler
                 FileHelper.copyFromJar(getClass(), backupLocation + name, themeDir.getAbsolutePath() + File.separator + name);
             } else
             {
+                if (name.equals("default.json"))
+                {
+                    ThemeHandler.theme = new Theme();
+                    saveTheme(name);
+                    return true;
+                }
                 return false;
             }
             if (!theme.isFile()) return false;
@@ -69,20 +76,6 @@ public class ThemeHandler
         return result;
     }
 
-    public JsonObject getThemeObject()
-    {
-        try
-        {
-            InputStream stream = new FileInputStream(themeFile);
-            JsonReader jReader = new JsonReader(new InputStreamReader(stream));
-            JsonParser parser = new JsonParser();
-            return parser.parse(jReader).getAsJsonObject();
-        } catch (FileNotFoundException ignored)
-        {
-            return null;
-        }
-    }
-
     public JsonObject toJson(Theme theme)
     {
         String test = getGson().toJson(theme);
@@ -101,10 +94,45 @@ public class ThemeHandler
         return builder.create();
     }
 
+    public void saveTheme(String name)
+    {
+        if (!name.endsWith(".json")) name += ".json";
+        File theme = new File(themeDir.getAbsoluteFile() + File.separator + name);
+        if (theme.isFile())
+        {
+            //warn user?
+        }
+        if (!theme.exists()) try
+        {
+            theme.createNewFile();
+        } catch (IOException ignored)
+        {
+        }
+        try
+        {
+            FileWriter fileWriter = new FileWriter(theme);
+            GSON.toJson(ThemeHandler.theme, Theme.class, fileWriter);
+            fileWriter.close();
 
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+
+    }
 
     public void loadTheme()
     {
-
+        try
+        {
+            JsonReader reader = new JsonReader(new FileReader(this.themeFile));
+            theme = GSON.fromJson(reader, Theme.class);
+            reader.close();
+        } catch (IOException e)
+        {
+            //TODO: log?
+            theme = new Theme();
+        }
     }
 }

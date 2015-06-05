@@ -1,5 +1,6 @@
 package advancedsystemsmanager.reference;
 
+import advancedsystemsmanager.gui.GuiBase;
 import net.minecraft.util.ResourceLocation;
 
 public class Textures
@@ -7,5 +8,5 @@ public class Textures
     public static final String TEXTURES = "textures/";
     public static final String GUI = TEXTURES + "gui/";
 
-    public static final ResourceLocation BUTTONS = new ResourceLocation(Reference.RESOURCE_LOCATION, GUI + "FlowComponents.png");
+    public static final ResourceLocation BUTTONS = GuiBase.registerTexture("components");
 }

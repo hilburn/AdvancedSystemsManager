@@ -23,52 +23,6 @@ public class MenuGroup extends Menu
         super(parent);
     }
 
-    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
-    {
-
-        if (moveCluster)
-        {
-            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
-            findCluster(cluster, component, parent);
-            for (FlowComponent flowComponent : cluster)
-            {
-                flowComponent.setParent(parent);
-                if (parent != null)
-                {
-                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-                    {
-                        Connection connection = flowComponent.getConnection(i);
-                        if (connection != null && (connection.getInputId() == parent.getId() || connection.getOutputId() == parent.getId()))
-                        {
-                            flowComponent.removeConnection(i);
-                        }
-                    }
-                }
-            }
-        } else if (!component.equals(parent))
-        {
-            component.setParent(parent);
-            component.deleteConnections();
-        }
-    }
-
-    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
-    {
-        if (!components.contains(component) && !component.equals(parent))
-        {
-            components.add(component);
-
-            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
-            {
-                Connection connection = component.getConnection(i);
-                if (connection != null)
-                {
-                    findCluster(components, component.getManager().getFlowItem(connection.getOutputId() == component.getId() ? connection.getInputId() : connection.getOutputId()), parent);
-                }
-            }
-        }
-    }
-
     @Override
     public String getName()
     {
@@ -109,7 +63,7 @@ public class MenuGroup extends Menu
                     {
                         boolean group = button == 2 && Settings.getSetting(Settings.MIDDLE_CLICK);
                         component.sendNewParentData(getParent(), group);
-                        moveComponents(component, getParent(), group);
+                        FlowComponent.moveComponents(component, getParent(), group);
                     }
                     break;
                 }

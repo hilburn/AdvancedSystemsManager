@@ -33,8 +33,8 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     protected static final int OUTPUT_OLD_X = HUE_X + 35;
     protected static final int OUTPUT_X_END = HUE_X + 50;
 
-    private static final int[] WHITE = new int[]{255, 255, 255};
-    private static final int[] BLACK = new int[]{0, 0, 0};
+    public static final int[] WHITE = new int[]{255, 255, 255};
+    public static final int[] BLACK = new int[]{0, 0, 0};
     private static final int[][] HUE_SCALE = new int[][]{{255, 0, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {255, 0, 255}, {255, 0, 0}};
 
     protected int x;

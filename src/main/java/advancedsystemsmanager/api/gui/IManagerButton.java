@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 
 public interface IManagerButton extends IPacketWriter, IPacketReader
 {
-    public static final int BUTTON_SIZE = 14;
-    public static final int BUTTON_ICON_SIZE = 12;
+    public static final int BUTTON_SIZE = 18;
+    public static final int BUTTON_ICON_SIZE = 18;
 
     boolean validClick();
 

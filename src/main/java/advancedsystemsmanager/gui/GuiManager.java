@@ -9,6 +9,7 @@ import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SecretMessage;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import codechicken.nei.VisiblityData;
 import cpw.mods.fml.common.Optional;
@@ -32,8 +33,8 @@ import java.util.ListIterator;
 @SideOnly(Side.CLIENT)
 public class GuiManager extends GuiBase
 {
-    private static final ResourceLocation MANAGER = registerTexture("manager");
-    private static final ResourceLocation COMPONENTS = registerTexture("FlowComponents");
+    private static final ResourceLocation background = registerTexture("background");
+    private static final ResourceLocation COMPONENTS = registerTexture("components");
     public static int GUI_HEIGHT = 256;
     public static int GUI_WIDTH = 512;
     public static int Z_LEVEL_COMPONENT_OPEN_DIFFERENCE = 70;
@@ -156,15 +157,16 @@ public class GuiManager extends GuiBase
 
     private void drawBackground()
     {
-        bindTexture(MANAGER);
+        bindTexture(background);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL11.GL_QUAD_STRIP);
-        tessellator.setColorOpaque(0x2a, 0x2a, 0x2a);
-        tessellator.addVertexWithUV(0, 0, zLevel, 0.0f, 0.5f);
+        int[] colour = ThemeHandler.theme.managerBackground.getColour();
+        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
+        tessellator.addVertexWithUV(0, 0, zLevel, 0.0f, 0.0f);
         tessellator.addVertexWithUV(0, 256, zLevel, 0.0f, 1.0f);
-        tessellator.addVertexWithUV(256, 0, zLevel, 0.5f, 0.5f);
-        tessellator.addVertexWithUV(256, 256, zLevel, 0.5f, 1.0f);
-        tessellator.addVertexWithUV(512, 0, zLevel, 0.0f, 0.5f);
+        tessellator.addVertexWithUV(256, 0, zLevel, 1.0f, 0.0f);
+        tessellator.addVertexWithUV(256, 256, zLevel, 1.0f, 1.0f);
+        tessellator.addVertexWithUV(512, 0, zLevel, 0.0f, 0f);
         tessellator.addVertexWithUV(512, 256, zLevel, 0.0f, 1.0f);
         tessellator.draw();
     }
@@ -316,7 +318,7 @@ public class GuiManager extends GuiBase
                 itr.remove();
                 manager.getZLevelRenderingList().add(0, itemBase);
                 setSelected(itemBase);
-                break;
+                return;
             }
         }
 

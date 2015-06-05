@@ -2,9 +2,8 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
-import advancedsystemsmanager.api.gui.ManagerButtonList;
+import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -35,7 +34,7 @@ public class ManagerButtonRegistry
     public static void getButtons(TileEntityManager manager, List<IManagerButton> buttons)
     {
         for (IManagerButtonProvider provider : buttonProviders) buttons.addAll(provider.getButtons(manager));
-        buttons.add(new ManagerButton(manager, Names.PREFERENCES, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 2)
+        buttons.add(new ManagerButton(manager, Names.PREFERENCES, 36, 36)
         {
             @Override
             public boolean readData(ASMPacket packet)
@@ -57,7 +56,7 @@ public class ManagerButtonRegistry
             }
         });
 
-        buttons.add(new ManagerButton(manager, Names.EXIT_GROUP, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE * 3)
+        buttons.add(new ManagerButton(manager, Names.EXIT_GROUP, 36, 90)
         {
             @Override
             public boolean activateOnRelease()
@@ -80,7 +79,7 @@ public class ManagerButtonRegistry
                 boolean moveCluster = packet.readBoolean();
                 if (component.getParent() != null)
                 {
-                    MenuGroup.moveComponents(component, component.getParent().getParent(), moveCluster);
+                    FlowComponent.moveComponents(component, component.getParent().getParent(), moveCluster);
                 }
                 return true;
             }

@@ -16,6 +16,10 @@ import java.util.List;
 
 public class DefaultButtonProvider implements IManagerButtonProvider
 {
+    private static final int DELETE_POSITION_X = 18;
+    private static final int DELETE_POSITION_Y = 126;
+    private static final int COPY_POSITION_Y = 144;
+
     @Override
     public List<IManagerButton> getButtons(TileEntityManager manager)
     {
@@ -24,7 +28,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
         {
             buttons.add(new ManagerButtonCreate(manager, type));
         }
-        buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, 0)
+        buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, DELETE_POSITION_X, DELETE_POSITION_Y)
         {
             int moved;
 
@@ -69,7 +73,7 @@ public class DefaultButtonProvider implements IManagerButtonProvider
                 return true;
             }
         });
-        buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, 230 - IManagerButton.BUTTON_ICON_SIZE, IManagerButton.BUTTON_ICON_SIZE)
+        buttons.add(new ManagerButton(manager, Names.COPY_COMMAND, DELETE_POSITION_X, COPY_POSITION_Y)
         {
             int moved;
 

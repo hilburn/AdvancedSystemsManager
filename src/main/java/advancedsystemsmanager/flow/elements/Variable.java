@@ -30,7 +30,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public static final String NBT_COLOUR = "Colour";
     private static final String NBT_NAME = "Name";
     private float[] hsv = new float[3];
-    private int[] rgb = new int[3];
+    private int[] rgba = new int[4];
     public int colour;
     public TextColour textColour;
     public FlowComponent declaration;
@@ -86,9 +86,10 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     private void setColour(int colour)
     {
         this.colour = colour;
-        this.rgb[0] = (colour >> 16) & 0xFF;
-        this.rgb[1] = (colour >> 8) & 0xFF;
-        this.rgb[2] = colour & 0xFF;
+        this.rgba[0] = (colour >> 16) & 0xFF;
+        this.rgba[1] = (colour >> 8) & 0xFF;
+        this.rgba[2] = colour & 0xFF;
+        this.rgba[3] = 0xFF;
         textColour = TextColour.getClosestColour(colour);
         ColourUtils.HextoHSV(colour, hsv);
     }
@@ -108,7 +109,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     @SideOnly(Side.CLIENT)
     public void draw(GuiManager gui, int x, int y)
     {
-        gui.drawColouredTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE, rgb);
+        gui.drawColouredTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE, rgba);
     }
 
     @Override

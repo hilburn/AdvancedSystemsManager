@@ -1,10 +1,13 @@
-package advancedsystemsmanager.api.gui;
+package advancedsystemsmanager.gui;
 
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.api.gui.IGuiElement;
+import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;
+import uristqwerty.gui_craftguide.theme.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,10 +19,8 @@ import static advancedsystemsmanager.reference.Textures.BUTTONS;
 
 public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement<GuiManager>
 {
-    private static final int BUTTON_BACKGROUND_X = 242;
-    private static final int BUTTON_BACKGROUND_Y = 0;
-    private static final int BUTTON_SPACING = 3;
-    private int x = 10, y = 10, maxHeight = GuiManager.GUI_HEIGHT - 25;
+    private static final int BUTTON_SPACING = 0;
+    private int x = 20, y = 20, maxHeight = GuiManager.GUI_HEIGHT - 38;
 
     public ManagerButtonList()
     {
@@ -40,14 +41,15 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
         {
             IManagerButton button = itr.next();
             boolean selected = CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY);
-            guiManager.drawTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X, selected ? BUTTON_BACKGROUND_Y : BUTTON_SIZE, BUTTON_SIZE, BUTTON_SIZE);
+            guiManager.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.backgroundMouseover : ThemeHandler.theme.buttons.background).getColour());
+            guiManager.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X + BUTTON_SIZE, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.foregroundMouseover : ThemeHandler.theme.buttons.foreground).getColour());
             ResourceLocation location = button.getTexture();
             if (location == BUTTONS)
-                guiManager.drawTexture(itr.x + 1, itr.y + 1, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
+                guiManager.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
             else
             {
                 GuiManager.bindTexture(location);
-                guiManager.drawTexture(itr.x + 1, itr.y + 1, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
+                guiManager.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
                 GuiManager.bindTexture(BUTTONS);
             }
             itr.nextPosition();

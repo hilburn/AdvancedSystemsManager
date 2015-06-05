@@ -143,7 +143,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    public void drawRainbowRectangle(int x, int y, int x2, int y2, int[][] colours)
+    public void drawRainbowRectangle(int x, int y, int x2, int y2, int[]... colours)
     {
         drawScaledRainbowRectangle(
                 x, y, x + x2, y + y2, colours);
@@ -181,15 +181,15 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, u, v, colour);
     }
 
-    private void drawScaledColouredTexture(double x, double y, double w, double h, int srcX, int srcY, int u, int v, int[] colour)
+    public void drawScaledColouredTexture(double x, double y, double w, double h, int srcX, int srcY, double u, double v, int[] colour)
     {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
         drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
     }
 
-    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, int u, int v)
+    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, double u, double v)
     {
         tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
         tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
@@ -703,7 +703,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL11.GL_LINE_STRIP);
         GL11.glLineWidth(5 * getScale());
-        tessellator.setColorOpaque(colour[0], colour[1], colour[2]);
+        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
         for (int i = 0; i < points.length; )
             tessellator.addVertex(points[i++], points[i++], 0);
         tessellator.draw();

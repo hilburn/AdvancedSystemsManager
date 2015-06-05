@@ -22,7 +22,7 @@ import java.util.List;
 
 public abstract class CommandBase<Type> implements ICommand
 {
-    protected static final int BUTTON_SHEET_SIZE = 20;
+    protected static final int BUTTON_SHEET_SIZE = 13;
     protected static final int TRIGGER = 0;
     protected static final int ITEM_INPUT = 1;
     protected static final int ITEM_OUTPUT = 2;
@@ -151,7 +151,7 @@ public abstract class CommandBase<Type> implements ICommand
     @Override
     public int getX()
     {
-        return 230 - (getId() / BUTTON_SHEET_SIZE) * IManagerButton.BUTTON_ICON_SIZE;
+        return (getId() / BUTTON_SHEET_SIZE) * IManagerButton.BUTTON_ICON_SIZE;
     }
 
     @Override

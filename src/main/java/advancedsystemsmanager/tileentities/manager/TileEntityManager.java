@@ -2,7 +2,7 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IManagerButton;
-import advancedsystemsmanager.api.gui.ManagerButtonList;
+import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
@@ -53,12 +53,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public static final TriggerHelperRedstone redstoneCondition = new TriggerHelperRedstone(1, 2);
     public static final TriggerHelperBUD budTrigger = new TriggerHelperBUD();
 
-    public static final int BUTTON_SIZE_W = 14;
-    public static final int BUTTON_SIZE_H = 14;
-    public static final int BUTTON_SRC_X = 242;
-    public static final int BUTTON_SRC_Y = 0;
-    public static final int BUTTON_INNER_SRC_X = 230;
-    public static final int BUTTON_INNER_SRC_Y = 0;
+    public static final int BUTTON_SRC_X = 0;
+    public static final int BUTTON_SRC_Y = 234;
     public static final int MAX_CABLE_LENGTH = 128;
     public static final int MAX_COMPONENT_AMOUNT = 511;
     public static final int MAX_CONNECTED_INVENTORIES = 1023;
@@ -134,7 +130,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             removed = new ArrayList<FlowComponent>();
             List<FlowComponent> toRemove = new ArrayList<FlowComponent>();
-            MenuGroup.findCluster(toRemove, getFlowItem(idToRemove), null);
+            FlowComponent.findCluster(toRemove, getFlowItem(idToRemove), null);
             for (FlowComponent flowComponent : toRemove)
             {
                 removed.addAll(removeFlowComponents(flowComponent.getId(), true));
@@ -260,7 +256,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
                     FlowComponent component = FlowComponent.readFromNBT(this, tagCompound, false);
                     addNewComponent(component);
-                    if (worldObj.isRemote) zLevelRenderingList.add(component);
                 }
                 variables.clear();
                 int variableCount = packet.readVarIntFromBuffer();
