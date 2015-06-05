@@ -4,6 +4,7 @@ import advancedsystemsmanager.animation.AnimationController;
 import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.fonts.FontRenderer;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SecretMessage;
@@ -25,6 +26,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -174,8 +176,6 @@ public class GuiManager extends GuiBase
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
-        drawBackground();
-
         mX -= guiLeft;
         mY -= guiTop;
 
