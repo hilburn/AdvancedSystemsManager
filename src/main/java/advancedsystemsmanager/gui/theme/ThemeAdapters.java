@@ -3,7 +3,6 @@ package advancedsystemsmanager.gui.theme;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.registry.ThemeHandler;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -61,9 +60,6 @@ public class ThemeAdapters
                 if (input.containsKey(name))
                 {
                     command.setColour(input.get(name).getColour());
-                } else
-                {
-                    command.setColour(ThemeHandler.theme.commands.baseColour.getColour());
                 }
             }
             return new ThemeCommand.CommandSet();

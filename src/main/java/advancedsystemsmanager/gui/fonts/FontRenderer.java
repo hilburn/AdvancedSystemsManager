@@ -178,6 +178,11 @@ public class FontRenderer
         return width;
     }
 
+    public int getWidth(String string, int height)
+    {
+        return (int)Math.ceil(getWidth(string) * (float)height / fontHeight);
+    }
+
     public int getHeight()
     {
         return fontHeight;
@@ -256,13 +261,13 @@ public class FontRenderer
         float v = (h / textureHeight);
 
         glTexCoord2f(tSrcX, tSrcY);
-        glVertex2f(drawX, drawY);
+        glVertex3f(drawX, drawY, 0.0f);
         glTexCoord2f(tSrcX, tSrcY + v);
-        glVertex2f(drawX, drawY2);
+        glVertex3f(drawX, drawY2, 0.0f);
         glTexCoord2f(tSrcX + u, tSrcY + v);
-        glVertex2f(drawX2, drawY2);
+        glVertex3f(drawX2, drawY2, 0.0f);
         glTexCoord2f(tSrcX + u, tSrcY);
-        glVertex2f(drawX2, drawY);
+        glVertex3f(drawX2, drawY, 0.0f);
     }
 
     public int loadTexture(BufferedImage image, int textureID){

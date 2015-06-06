@@ -7,7 +7,6 @@ import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -81,8 +80,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final int MENU_ITEM_TEXT_X = 5;
     public static final int MENU_ITEM_TEXT_Y = 3;
 
-    public static final int CONNECTION_SIZE_W = 7;
-    public static final int CONNECTION_SIZE_H = 6;
+    public static final int CONNECTION_SIZE_W = 4;
+    public static final int CONNECTION_SIZE_H = 4;
     public static final int CONNECTION_SRC_X = 0;
     public static final int CONNECTION_SRC_Y = 58;
     public static final int CONNECTION_SRC_Y_SIDE = 245;
@@ -94,8 +93,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final int ERROR_SRC_X = 42;
     public static final int ERROR_SRC_Y = 212;
 
-    public static final int NODE_SRC_X = 120;
-    public static final int NODE_SRC_Y = 152;
+    public static final int NODE_SRC_X = COMPONENT_SRC_X;
+    public static final int NODE_SRC_Y = 23;
     public static final int NODE_SIZE = 4;
     public static final int MAX_NODES = 15;
 
@@ -365,34 +364,20 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
 
         boolean hasConnection = false;
-        int outputCount = 0;
-        int inputCount = 0;
-        int sideCount = 0;
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
             ConnectionOption connection = connectionSet.getConnections()[i];
 
-            int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
+            int[] location = connectionSet.getConnectionLocation(i, this);
             if (location == null)
             {
                 continue;
             }
 
-            if (connection.isInput())
-            {
-                inputCount++;
-            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
-            }
+            int connectionWidth = 4;
+            int connectionHeight = 4;
 
-            int connectionWidth = location[3];
-            int connectionHeight = location[4];
-
-            int srcConnectionX = (CollisionHelper.inBounds(location[0], location[1], connectionWidth, connectionHeight, mX, mY)) ? 1 : 0;
+            boolean connectionMouseover = CollisionHelper.inBounds(location[0], location[1], connectionWidth, connectionHeight, mX, mY);
 
             Connection current = manager.getCurrentlyConnecting();
             if (current != null && current.getInputId() == id && current.getInputConnection() == i)
@@ -441,15 +426,15 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     {
                         int x = node.getX() - NODE_SIZE / 2;
                         int y = node.getY() - NODE_SIZE / 2;
-                        int srcXNode = connectedConnection.getSelectedNode() == null && CollisionHelper.inBounds(x, y, NODE_SIZE, NODE_SIZE, mX, mY) ? 1 : 0;
-                        gui.drawTexture(x, y, NODE_SRC_X + srcXNode * NODE_SIZE, NODE_SRC_Y, NODE_SIZE, NODE_SIZE);
+                        boolean selected = connectedConnection.getSelectedNode() == null && CollisionHelper.inBounds(x, y, NODE_SIZE, NODE_SIZE, mX, mY);
+                        gui.drawColouredTexture(x, y, NODE_SRC_X, NODE_SRC_Y, NODE_SIZE, NODE_SIZE, (selected? ThemeHandler.theme.commands.connectionNodes.mouseover : ThemeHandler.theme.commands.connectionNodes.colour).getColour() );
                     }
 
                     GL11.glPopMatrix();
                 }
             }
 
-            gui.drawTexture(location[0], location[1], CONNECTION_SRC_X + srcConnectionX * connectionWidth, location[2], connectionWidth, connectionHeight);
+            gui.drawColouredTexture(location[0], location[1], connection.getType().getX(), connection.getType().getY(), connectionWidth, connectionHeight, connection.getColour(connectionMouseover));
 
         }
 
@@ -522,31 +507,18 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        int outputCount = 0;
-        int inputCount = 0;
-        int sideCount = 0;
-        for (ConnectionOption connection : connectionSet.getConnections())
+        for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
-            int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
+            ConnectionOption connection = connectionSet.getConnections()[i];
+            int[] location = connectionSet.getConnectionLocation(i, this);
             if (location == null)
             {
                 continue;
             }
 
-            if (connection.isInput())
-            {
-                inputCount++;
-            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
-            }
-
             if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
             {
-                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? inputCount : outputCount) - 1), mX, mY);
+                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - 5) - 1), mX, mY);
             }
         }
 
@@ -582,55 +554,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 }
                 gui.drawMouseOver(str, mX, mY);
             }
-        }
-    }
-
-    public int[] getConnectionLocation(ConnectionOption connection, int inputCount, int outputCount, int sideCount)
-    {
-        int id = inputCount + outputCount + sideCount;
-        if (!connection.isInput())
-        {
-            id -= childrenInputNodes.size();
-        }
-
-        if (!connection.isValid(this, id))
-        {
-            return null;
-        }
-
-        int targetX;
-        int targetY;
-
-        if (connection.getType() == ConnectionOption.ConnectionType.SIDE)
-        {
-            targetY = y + (int)(getComponentHeight() * ((sideCount + 0.5) / connectionSet.getSideCount()));
-            targetY -= CONNECTION_SIZE_H / 2;
-            targetX = x + getComponentWidth();
-            return new int[]{targetX, targetY, CONNECTION_SRC_Y_SIDE, CONNECTION_SIZE_H, CONNECTION_SIZE_W};
-        } else
-        {
-            int srcConnectionY;
-            int currentCount;
-            int totalCount;
-
-            if (connection.isInput())
-            {
-                currentCount = inputCount;
-                totalCount = connectionSet.getInputCount(this);
-                srcConnectionY = 1;
-                targetY = y - CONNECTION_SIZE_H;
-            } else
-            {
-                currentCount = outputCount;
-                totalCount = connectionSet.getOutputCount(this);
-                srcConnectionY = 0;
-                targetY = y + getComponentHeight();
-            }
-
-            targetX = x + (int)(getComponentWidth() * ((currentCount + 0.5) / totalCount));
-            targetX -= CONNECTION_SIZE_W / 2;
-
-            return new int[]{targetX, targetY, CONNECTION_SRC_Y + srcConnectionY * CONNECTION_SIZE_H, CONNECTION_SIZE_W, CONNECTION_SIZE_H};
         }
     }
 
@@ -829,28 +752,17 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             return true;
         } else
         {
-            int outputCount = 0;
-            int inputCount = 0;
-            int sideCount = 0;
+
             for (int i = 0; i < connectionSet.getConnections().length; i++)
             {
                 ConnectionOption connection = connectionSet.getConnections()[i];
 
-                int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
+                int[] location = getConnectionLocationFromId(i);
                 if (location == null)
                 {
                     continue;
                 }
-                if (connection.isInput())
-                {
-                    inputCount++;
-                } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
-                {
-                    outputCount++;
-                } else
-                {
-                    sideCount++;
-                }
+
                 Connection selected = connections[i];
                 if ((selected == null || selected.getSelected() == -1) && CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
                 {
@@ -1167,34 +1079,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
     public int[] getConnectionLocationFromId(int id)
     {
-        int outputCount = 0;
-        int inputCount = 0;
-        int sideCount = 0;
-        for (int i = 0; i < connectionSet.getConnections().length; i++)
-        {
-            ConnectionOption connection = connectionSet.getConnections()[i];
-
-            int[] location = getConnectionLocation(connection, inputCount, outputCount, sideCount);
-            if (location == null)
-            {
-                continue;
-            }
-            if (id == i)
-            {
-                return location;
-            }
-            if (connection.isInput())
-            {
-                inputCount++;
-            } else if (connection.getType() == ConnectionOption.ConnectionType.OUTPUT)
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
-            }
-        }
-        return null;
+        return connectionSet.getConnectionLocation(id, this);
     }
 
     public boolean inArrowBounds(int internalX, int internalY)

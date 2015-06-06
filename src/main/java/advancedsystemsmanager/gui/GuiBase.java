@@ -46,7 +46,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public static FontRenderer fontRenderer;
 
     {
-        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 24), true);
+        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 40), false);
     }
 
     public GuiBase(ContainerBase container)

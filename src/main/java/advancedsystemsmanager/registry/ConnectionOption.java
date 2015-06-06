@@ -1,7 +1,7 @@
 package advancedsystemsmanager.registry;
 
-
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.theme.ThemeMouseover;
 import advancedsystemsmanager.reference.Names;
 
 public enum ConnectionOption
@@ -85,10 +85,61 @@ public enum ConnectionOption
         return name != null;
     }
 
+    public int[] getColour(boolean selected)
+    {
+        return type.getColour(selected);
+    }
+
     public enum ConnectionType
     {
-        INPUT,
-        OUTPUT,
-        SIDE
+        INPUT(165, 15)
+                {
+                    @Override
+                    public ThemeMouseover getTheme()
+                    {
+                        return ThemeHandler.theme.commands.connections.input;
+                    }
+                },
+        OUTPUT(169, 15)
+                {
+                    @Override
+                    public ThemeMouseover getTheme()
+                    {
+                        return ThemeHandler.theme.commands.connections.output;
+                    }
+                },
+        SIDE(165, 20)
+                {
+                    @Override
+                    public ThemeMouseover getTheme()
+                    {
+                        return ThemeHandler.theme.commands.connections.side;
+                    }
+                };
+
+        final int x, y;
+
+        ConnectionType(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int[] getColour(boolean selected)
+        {
+            return (selected ? getTheme().mouseover : getTheme().colour).getColour();
+        }
+
+        public int getX()
+        {
+            return x;
+        }
+
+        public int getY()
+        {
+            return y;
+        }
+
+        public abstract ThemeMouseover getTheme();
     }
 }

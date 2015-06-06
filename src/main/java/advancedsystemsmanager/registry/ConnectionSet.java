@@ -20,26 +20,27 @@ public enum ConnectionSet
     INPUT_NODE(Names.CONNECTION_SET_INPUT_NODE, ConnectionOption.STANDARD_OUTPUT),
     DYNAMIC(Names.CONNECTION_SET_DYNAMIC, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_INPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT, ConnectionOption.DYNAMIC_OUTPUT)
             {
-                @Override
-                public int getInputCount(FlowComponent component)
-                {
-                    return component.childrenInputNodes.size();
-                }
 
                 @Override
-                public int getOutputCount(FlowComponent component)
+                public int[] getConnectionLocation(int connection, FlowComponent component)
                 {
-                    return component.childrenOutputNodes.size();
+                    if (!connections[connection].isValid(component, connection))
+                        return null;
+                    boolean input = connection < 5;
+                    int size = (input ? component.childrenInputNodes : component.childrenOutputNodes).size() + 1;
+                    if (!input) connection -=5;
+                    connection ++;
+                    size++;
+                    int offsetX = -FlowComponent.CONNECTION_SIZE_W/2;
+                    return new int[]{component.getX() + Math.round((float)connection/size * component.getComponentWidth() + offsetX), component.getY() +  (input ? -FlowComponent.CONNECTION_SIZE_H : component.getComponentHeight())};
                 }
             },
     CHAT(Names.CONNECTION_SET_CHAT, ConnectionOption.STANDARD_OUTPUT),
     DELAYED(Names.CONNECTION_DELAY_OUTPUT, ConnectionOption.STANDARD_INPUT, ConnectionOption.DELAY_OUTPUT);
 
-
     public ConnectionOption[] connections;
-    public int outputCount;
-    public int inputCount;
-    public int sideCount;
+    private ConnectionLocation[] connectionLocations;
+
     public String name;
 
 
@@ -47,42 +48,69 @@ public enum ConnectionSet
     {
         this.connections = connections;
 
+        int totalInput = 1;
+        int totalOutput = 1;
+        int totalSide = 1;
         for (ConnectionOption connection : connections)
         {
-            if (connection.isInput())
+            switch (connection.getType())
             {
-                inputCount++;
-            } else if (connection.isOutput())
-            {
-                outputCount++;
-            } else
-            {
-                sideCount++;
+                case INPUT:
+                    totalInput++;
+                    break;
+                case OUTPUT:
+                    totalOutput++;
+                    break;
+                default:
+                    totalSide++;
             }
+        }
+        int outputCount = 0;
+        int inputCount = 0;
+        int sideCount = 0;
+        connectionLocations = new ConnectionLocation[connections.length];
+        for (int i = 0; i < connections.length; i++)
+        {
+            ConnectionOption connection = connections[i];
+            int offsetX, offsetY;
+            float x, y;
+            switch (connection.getType())
+            {
+                case INPUT:
+                    inputCount++;
+                    x = (float)inputCount/totalInput;
+                    y = 0.0f;
+                    offsetX = -FlowComponent.CONNECTION_SIZE_W/2;
+                    offsetY = -FlowComponent.CONNECTION_SIZE_H;
+                    break;
+                case OUTPUT:
+                    outputCount++;
+                    x = (float)outputCount/totalOutput;
+                    y = 1.0f;
+                    offsetX = -FlowComponent.CONNECTION_SIZE_W/2;
+                    offsetY = 0;
+                    break;
+                default:
+                    sideCount++;
+                    x = 1.0f;
+                    y = (float)sideCount/totalSide;
+                    offsetX = 0;
+                    offsetY = -FlowComponent.CONNECTION_SIZE_W/2;
+            }
+            connectionLocations[i] = new ConnectionLocation(x, y, offsetX, offsetY);
         }
 
         this.name = name;
     }
 
+    public int[] getConnectionLocation(int connection, FlowComponent component)
+    {
+        return connectionLocations[connection].getLocation(component.getX(), component.getY(), component.getComponentWidth(), component.getComponentHeight());
+    }
 
     public ConnectionOption[] getConnections()
     {
         return connections;
-    }
-
-    public int getOutputCount(FlowComponent component)
-    {
-        return outputCount;
-    }
-
-    public int getInputCount(FlowComponent component)
-    {
-        return inputCount;
-    }
-
-    public int getSideCount()
-    {
-        return sideCount;
     }
 
     @Override
@@ -99,5 +127,24 @@ public enum ConnectionSet
     public boolean isInput(int i)
     {
         return connections[i].isInput();
+    }
+
+    private static class ConnectionLocation
+    {
+        float x, y;
+        int offsetX, offsetY;
+
+        public ConnectionLocation(float x, float y, int offsetX, int offsetY)
+        {
+            this.x = x;
+            this.y = y;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+        }
+
+        public int[] getLocation(int x, int y, int w, int h)
+        {
+            return new int[]{x + Math.round(this.x * w) + offsetX, y + Math.round(this.y * h) + offsetY};
+        }
     }
 }

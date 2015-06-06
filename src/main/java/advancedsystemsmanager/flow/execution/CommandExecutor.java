@@ -812,7 +812,7 @@ public class CommandExecutor
             return false;
         } else
         {
-            int amount = menu.getParent().getConnectionSet().getOutputCount(menu.getParent());
+            int amount = 0;//menu.getParent().getConnectionSet().getOutputCount(menu.getParent());
             if (!split.useEmpty())
             {
                 ConnectionOption[] usedId = menu.getParent().getConnectionSet().getConnections();
