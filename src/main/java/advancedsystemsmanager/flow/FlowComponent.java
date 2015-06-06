@@ -47,12 +47,12 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public static final int COMPONENT_SRC_LARGE_Y = 26;
     public static final int DRAGGABLE_SIZE = 6;
 
-    public static final int ARROW_X = -10;
+    public static final int ARROW_X = -15;
     public static final int ARROW_Y = 5;
-    public static final int ARROW_SIZE_W = 9;
-    public static final int ARROW_SIZE_H = 10;
-    public static final int ARROW_SRC_X = 0;
-    public static final int ARROW_SRC_Y = 20;
+    public static final int ARROW_SIZE_W = 15;
+    public static final int ARROW_SIZE_H = 8;
+    public static final int ARROW_SRC_X = 70;
+    public static final int ARROW_SRC_Y = 2;
 
 
     public static final int MENU_AREA_OFFSET_X = 1;
@@ -318,9 +318,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         int internalX = mX - x;
         int internalY = mY - y;
 
-        int srcArrowX = isLarge ? 1 : 0;
-        int srcArrowY = inArrowBounds(internalX, internalY) ? 1 : 0;
-        gui.drawTexture(x + getComponentWidth() + ARROW_X, y + ARROW_Y, ARROW_SRC_X + ARROW_SIZE_W * srcArrowX, ARROW_SRC_Y + ARROW_SIZE_H * srcArrowY, ARROW_SIZE_W, ARROW_SIZE_H);
+        int srcArrowY = isLarge ? 0 : 1;
+        gui.drawTexture(x + getComponentWidth() + ARROW_X, y + ARROW_Y, ARROW_SRC_X, ARROW_SRC_Y + ARROW_SIZE_H * srcArrowY, ARROW_SIZE_W, ARROW_SIZE_H);
 
 
         if (isLarge)
@@ -345,9 +344,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 int itemY = y + getMenuItemY(i);
                 gui.drawScaledColouredTexture(itemX, itemY, MENU_ITEM_SIZE_W, MENU_ITEM_SIZE_H, MENU_ITEM_SRC_X, MENU_ITEM_SRC_Y, MENU_ITEM_SIZE_W * 0.5f, MENU_ITEM_SIZE_H * 0.5f, (i == openMenuId ? ThemeHandler.theme.menus.selectedTitle : ThemeHandler.theme.menus.title).getColour());
 
-                int srcItemArrowX = inMenuArrowBounds(i, internalX, internalY) ? 1 : 0;
-                int srcItemArrowY = i == openMenuId ? 1 : 0;
-                gui.drawTexture(itemX + MENU_ARROW_X, itemY + MENU_ARROW_Y, MENU_ARROW_SRC_X + MENU_ARROW_SIZE_W * srcItemArrowX, MENU_ARROW_SRC_Y + MENU_ARROW_SIZE_H * srcItemArrowY, MENU_ARROW_SIZE_W, MENU_ARROW_SIZE_H);
+                int srcItemArrowY = i == openMenuId ? 0 : 1;
+                gui.drawTexture(itemX + getComponentWidth() + ARROW_X, itemY + ARROW_Y, ARROW_SRC_X, ARROW_SRC_Y + ARROW_SIZE_H * srcItemArrowY, ARROW_SIZE_W, ARROW_SIZE_H);
 
 
                 gui.drawString(menu.getName(), x + MENU_X + MENU_ITEM_TEXT_X, y + getMenuItemY(i) + MENU_ITEM_TEXT_Y, 0x404040);
@@ -463,7 +461,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             {
                 name = getShortName(gui, name);
             }
-            gui.drawString(name, x + TEXT_X, y + TEXT_Y, 0.7F, isEditing ? 0x707020 : 0x404040);
+            gui.drawString(name, x + TEXT_X, y + TEXT_Y - (!isLarge ? TEXT_Y/2 : 0), 0.7F, isEditing ? 0x707020 : 0x404040);
         }
 
         if (isEditing)
@@ -1401,6 +1399,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 //        return openMenuId;
 //    }
 //
+//    public void setOpenMenuId(int openMenuId)
 //    public void setOpenMenuId(int openMenuId)
 //    {
 //        this.openMenuId = openMenuId;
