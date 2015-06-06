@@ -16,7 +16,7 @@ public class CommandRegistry
     public static ICommand TRIGGER;
     public static CommandBase<ItemStack> INPUT;
     public static ICommand OUTPUT;
-    public static ICommand CONDITION;
+    public static CommandItemCondition CONDITION;
     public static ICommand FLOW_CONTROL;
     public static CommandBase<Fluid> LIQUID_INPUT;
     public static ICommand LIQUID_OUTPUT;
@@ -78,7 +78,7 @@ public class CommandRegistry
         registerCommand(new CommandTrigger());
         registerCommand(INPUT = new CommandItemInput());
         registerCommand(new CommandItemOutput());
-
+        registerCommand(CONDITION = new CommandItemCondition());
         registerCommand(new CommandSplit());
         registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());

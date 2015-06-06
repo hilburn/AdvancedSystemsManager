@@ -89,7 +89,7 @@ public class MenuCrafting extends MenuItem
     @Override
     public void onSettingContentChange()
     {
-        resultItem.setContent(dummy.getResult());
+        resultItem.setFluid(dummy.getResult());
     }
 
     @SideOnly(Side.CLIENT)

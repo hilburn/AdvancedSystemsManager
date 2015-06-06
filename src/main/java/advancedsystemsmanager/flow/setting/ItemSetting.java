@@ -15,6 +15,7 @@ public class ItemSetting extends Setting<ItemStack>
 {
     public static final String NBT_SETTING_FUZZY = "FuzzyMode";
     public FuzzyMode fuzzyMode;
+    public ItemStack content;
 
     public ItemSetting(int id)
     {
@@ -66,15 +67,9 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public int getAmount()
+    public ItemStack getContent()
     {
-        return amount;
-    }
-
-    @Override
-    public void setAmount(int val)
-    {
-        amount = val;
+        return content;
     }
 
     @Override
@@ -112,7 +107,7 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public void setContent(ItemStack obj)
+    public void setFluid(ItemStack obj)
     {
         content = obj.copy();
     }
@@ -181,12 +176,14 @@ public class ItemSetting extends Setting<ItemStack>
     @Override
     public void writeContentData(ASMPacket packet)
     {
+        super.writeContentData(packet);
         packet.writeItemStackToBuffer(content);
     }
 
     @Override
     public void readContentData(ASMPacket packet)
     {
+        super.readContentData(packet);
         content = packet.readItemStackFromBuffer();
     }
 }

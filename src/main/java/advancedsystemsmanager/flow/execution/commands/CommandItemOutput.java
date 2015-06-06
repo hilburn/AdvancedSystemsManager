@@ -13,6 +13,7 @@ import advancedsystemsmanager.flow.menus.MenuTargetInventory;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.inventory.IInventory;
@@ -52,7 +53,9 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
         Map<IInventory, Set<Integer>> cachedSlots = new HashMap<IInventory, Set<Integer>>();
         for (int i = 0; i < target.activatedDirections.length; i++)
             if (target.activatedDirections[i]) validSides.add(i);
-        for (Iterator<SystemCoord> blockItr = getContainers(component.manager, (MenuContainer)component.menus.get(0)).listIterator(); blockItr.hasNext(); )
+        List<SystemCoord> blocks = getContainers(component.manager, (MenuContainer)component.menus.get(0));
+        CommandRegistry.CONDITION.searchForStuff(blocks, validSettings, target, null);
+        for (Iterator<SystemCoord> blockItr = blocks.iterator(); blockItr.hasNext(); )
         {
             SystemCoord block = blockItr.next();
             IInventory inventory = block.tileEntity instanceof IInternalInventory ? Null.NULL_INVENTORY : (IInventory)block.tileEntity;
@@ -62,6 +65,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                 IBufferElement<ItemStack> itemBufferElement = iterator.next().getValue();
                 Setting<ItemStack> setting = isValid(validSettings, itemBufferElement.getContent());
                 boolean whitelist = menuItem.useWhiteList();
+                boolean outputCounter = setting != null && setting.isLimitedByAmount();
                 if (!isValidSetting(whitelist, setting)) continue;
                 ItemStack itemStack = itemBufferElement.getContent();
                 if (block.tileEntity instanceof IInternalInventory)
@@ -71,12 +75,14 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                     if (moveCount > 0)
                     {
                         moveCount = Math.min(itemBufferElement.getSizeLeft(), moveCount);
-                        //moveCount = outputItemCounter.retrieveItemCount(moveCount);
                         moveCount = itemBufferElement.getMaxWithSetting(moveCount);
                         if (moveCount > 0)
                         {
                             itemBufferElement.reduceBufferAmount(moveCount);
-                            //outputItemCounter.modifyStackSize(moveCount);
+                            if (setting != null && setting.isLimitedByAmount())
+                            {
+                                setting.reduceAmount(moveCount);
+                            }
                             ItemStack toInsert = itemStack.copy();
                             toInsert.stackSize = moveCount;
                             internal.insertItemStack(toInsert);
@@ -127,8 +133,11 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                         {
                             int itemCountInSlot = newItem ? 0 : itemInSlot.stackSize;
                             int moveCount = Math.min(itemBufferElement.getSizeLeft(), Math.min(inventory.getInventoryStackLimit(), itemStack.getMaxStackSize()) - itemCountInSlot);
-                            //moveCount = outputItemCounter.retrieveItemCount(moveCount);
                             moveCount = itemBufferElement.getMaxWithSetting(moveCount);
+                            if (outputCounter)
+                            {
+                                moveCount = Math.min(moveCount, setting.getAmountLeft());
+                            }
                             if (moveCount > 0)
                             {
                                 if (newItem)
@@ -138,7 +147,10 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                                 }
 
                                 itemBufferElement.reduceBufferAmount(moveCount);
-                                //outputItemCounter.modifyStackSize(moveCount);
+                                if (outputCounter)
+                                {
+                                    setting.reduceAmount(moveCount);
+                                }
                                 itemInSlot.stackSize += moveCount;
                                 if (newItem)
                                 {

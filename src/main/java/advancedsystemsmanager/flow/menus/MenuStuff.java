@@ -126,7 +126,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             @Override
             public void onClick(Type o, int mX, int mY, int button)
             {
-                selectedSetting.setContent(o);
+                selectedSetting.setFluid(o);
                 ASMPacket packet = getSyncPacket();
                 packet.writeByte(1);
                 selectedSetting.writeContentData(packet);

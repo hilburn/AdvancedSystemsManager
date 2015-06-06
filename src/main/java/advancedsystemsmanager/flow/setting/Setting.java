@@ -14,9 +14,9 @@ public abstract class Setting<Type>
     public static final String NBT_IS_LIMITED = "Limited";
 
     public int id;
-    public Type content;
     public boolean isLimitedByAmount;
-    int amount;
+    protected int amount;
+    private int count;
 
     public Setting(int id)
     {
@@ -54,9 +54,32 @@ public abstract class Setting<Type>
 
     public abstract int getDefaultAmount();
 
-    public abstract int getAmount();
+    public abstract Type getContent();
 
-    public abstract void setAmount(int val);
+    public void resetCount()
+    {
+        this.count = this.amount;
+    }
+
+    public int getAmountLeft()
+    {
+        return count;
+    }
+
+    public void reduceAmount(int amount)
+    {
+        this.count -= amount;
+    }
+
+    public int getAmount()
+    {
+        return amount;
+    }
+
+    public void setAmount(int val)
+    {
+        this.amount = val;
+    }
 
     public abstract boolean isValid();
 
@@ -91,7 +114,7 @@ public abstract class Setting<Type>
         }
     }
 
-    public abstract void setContent(Type obj);
+    public abstract void setFluid(Type obj);
 
     public abstract boolean isContentEqual(Type check);
 
@@ -105,7 +128,24 @@ public abstract class Setting<Type>
         clear();
     }
 
-    public abstract void writeContentData(ASMPacket packet);
+    public void writeContentData(ASMPacket packet)
+    {
+        if (isAmountSpecific())
+        {
+            packet.writeBoolean(isLimitedByAmount());
+            if (isLimitedByAmount()) packet.writeVarIntToBuffer(amount);
+        }
+    }
 
-    public abstract void readContentData(ASMPacket packet);
+    public void readContentData(ASMPacket packet)
+    {
+        if (isAmountSpecific())
+        {
+            setLimitedByAmount(packet.readBoolean());
+            if (isLimitedByAmount())
+            {
+                this.amount = packet.readVarIntFromBuffer();
+            }
+        }
+    }
 }

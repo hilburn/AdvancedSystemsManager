@@ -39,7 +39,7 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
     public int getMaxWithSetting(int amount)
     {
         if (setting != null && setting.isLimitedByAmount())
-            return whitelist ? Math.min(amount, setting.getAmount()) : amount - setting.getAmount();
+            return whitelist ? Math.min(amount, setting.getAmountLeft()) : amount - setting.getAmountLeft();
         return amount;
     }
 }

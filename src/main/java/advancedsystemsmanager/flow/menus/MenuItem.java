@@ -87,7 +87,7 @@ public class MenuItem extends MenuStuff<ItemStack>
             {
                 Setting<ItemStack> setting = settings.get(packet.readByte());
                 super.readData(packet);
-                setting.content.setItemDamage(number);
+                setting.getContent().setItemDamage(number);
                 return false;
             }
 
@@ -95,7 +95,7 @@ public class MenuItem extends MenuStuff<ItemStack>
             public boolean writeData(ASMPacket packet)
             {
                 packet.writeByte(selectedSetting.getId());
-                selectedSetting.content.setItemDamage(number);
+                selectedSetting.getContent().setItemDamage(number);
                 return super.writeData(packet);
             }
         });
@@ -206,7 +206,7 @@ public class MenuItem extends MenuStuff<ItemStack>
     @Override
     public void drawSettingObject(GuiManager gui, Setting<ItemStack> setting, int x, int y)
     {
-        drawResultObject(gui, setting.content, x, y);
+        drawResultObject(gui, setting.getContent(), x, y);
     }
 
     @SideOnly(Side.CLIENT)
@@ -220,7 +220,7 @@ public class MenuItem extends MenuStuff<ItemStack>
     @Override
     public List<String> getSettingObjectMouseOver(Setting<ItemStack> setting)
     {
-        return getResultObjectMouseOver(setting.content);
+        return getResultObjectMouseOver(setting.getContent());
     }
 
     @Override

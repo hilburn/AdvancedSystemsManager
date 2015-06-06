@@ -108,7 +108,14 @@ public abstract class CommandBase<Type> implements ICommand
     public List<Setting<Type>> getValidSettings(List<Setting<Type>> oldSettings)
     {
         List<Setting<Type>> result = new ArrayList<Setting<Type>>();
-        for (Setting<Type> setting : oldSettings) if (setting.isValid()) result.add(setting);
+        for (Setting<Type> setting : oldSettings)
+        {
+            if (setting.isValid())
+            {
+                setting.resetCount();
+                result.add(setting);
+            }
+        }
         return result;
     }
 
@@ -120,8 +127,19 @@ public abstract class CommandBase<Type> implements ICommand
 
     public Setting<Type> isValid(List<Setting<Type>> settings, Type check)
     {
-        for (Setting<Type> setting : settings)
-            if (setting.isContentEqual(check)) return setting;
+        for (Iterator<Setting<Type>> itr = settings.iterator(); itr.hasNext();)
+        {
+            Setting<Type> setting = itr.next();
+            if (setting.isContentEqual(check))
+            {
+                if (!(setting.isLimitedByAmount() && setting.getAmountLeft() < 1))
+                    return setting;
+                else
+                {
+                    itr.remove();
+                }
+            }
+        }
         return null;
     }
 
