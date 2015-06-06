@@ -24,15 +24,16 @@ public enum ConnectionSet
                 @Override
                 public int[] getConnectionLocation(int connection, FlowComponent component)
                 {
-                    if (!connections[connection].isValid(component, connection))
-                        return null;
                     boolean input = connection < 5;
+                    int id = connection;
+                    if (!input) id -=5;
+                    if (!connections[connection].isValid(component, id))
+                        return null;
+
                     int size = (input ? component.childrenInputNodes : component.childrenOutputNodes).size() + 1;
-                    if (!input) connection -=5;
-                    connection ++;
-                    size++;
+                    id ++;
                     int offsetX = -FlowComponent.CONNECTION_SIZE_W/2;
-                    return new int[]{component.getX() + Math.round((float)connection/size * component.getComponentWidth() + offsetX), component.getY() +  (input ? -FlowComponent.CONNECTION_SIZE_H : component.getComponentHeight())};
+                    return new int[]{component.getX() + Math.round((float)id/size * component.getComponentWidth() + offsetX), component.getY() +  (input ? -FlowComponent.CONNECTION_SIZE_H : component.getComponentHeight())};
                 }
             },
     CHAT(Names.CONNECTION_SET_CHAT, ConnectionOption.STANDARD_OUTPUT),

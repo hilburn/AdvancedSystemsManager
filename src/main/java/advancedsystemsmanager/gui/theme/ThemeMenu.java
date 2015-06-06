@@ -2,8 +2,9 @@ package advancedsystemsmanager.gui.theme;
 
 public class ThemeMenu
 {
-    public HexValue title;
-    public HexValue selectedTitle;
+    public HexValue titleBackground;
+    public HexValue selectedTitleBackground;
+    public HexValue titleText = new HexValue(0xff404040);
     public HexValue openMenuBackground;
     public ThemeMultiColour checkboxes = new ThemeMultiColour(0xffbfbfbf, 0xFF2c568e, 0xff647ea1, 0xFF3970ba);
     public ThemeMultiColour radioButtons = new ThemeMultiColour(0xffbfbfbf, 0xFF2c568e, 0xff647ea1, 0xFF3970ba);
@@ -11,8 +12,8 @@ public class ThemeMenu
 
     public ThemeMenu(int t, int st, int background)
     {
-        title = new HexValue(t);
-        selectedTitle = new HexValue(st);
+        titleBackground = new HexValue(t);
+        selectedTitleBackground = new HexValue(st);
         openMenuBackground = new HexValue(background);
     }
 }

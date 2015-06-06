@@ -6,7 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,23 +16,16 @@ import static org.lwjgl.opengl.GL11.*;
 @SideOnly(Side.CLIENT)
 public class FontRenderer
 {
-
     private CharData[] charArray = new CharData[256];
-
     private Map<Character, CharData> customChars = new HashMap<Character, CharData>();
-
     private boolean antiAlias;
-
     private int fontSize = 0;
-
     private int fontHeight = 0;
-
     private int textureID = Integer.MIN_VALUE;
-
     private int textureWidth = 512;
     private int textureHeight = 512;
-
     private Font font;
+    private float zLevel;
 
     public FontRenderer(Font font, boolean antiAlias)
     {
@@ -156,6 +149,46 @@ public class FontRenderer
         return fontImage;
     }
 
+    public int loadTexture(BufferedImage image, int textureID)
+    {
+
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+
+        for (int y = 0; y < image.getHeight(); y++)
+        {
+            for (int x = 0; x < image.getWidth(); x++)
+            {
+                int pixel = pixels[y * image.getWidth() + x];
+                buffer.put((byte)((pixel >> 16) & 0xFF));
+                buffer.put((byte)((pixel >> 8) & 0xFF));
+                buffer.put((byte)(pixel & 0xFF));
+                buffer.put((byte)((pixel >> 24) & 0xFF));
+            }
+        }
+
+        buffer.flip();
+        if (textureID == Integer.MIN_VALUE) textureID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+        return textureID;
+    }
+
+    public int getWidth(String string, int height)
+    {
+        return (int)Math.ceil(getWidth(string) * (float)height / fontHeight);
+    }
+
     public int getWidth(String string)
     {
         int width = 0;
@@ -178,9 +211,65 @@ public class FontRenderer
         return width;
     }
 
-    public int getWidth(String string, int height)
+    /**
+     * Trims a string to a specified width, and will reverse it if par3 is set.
+     */
+    public String trimStringToWidth(String string, int newLength, boolean reverse)
     {
-        return (int)Math.ceil(getWidth(string) * (float)height / fontHeight);
+        StringBuilder stringbuilder = new StringBuilder();
+        int width = 0;
+        int k = reverse ? string.length() - 1 : 0;
+        int l = reverse ? -1 : 1;
+        boolean flag1 = false;
+        boolean flag2 = false;
+
+        for (int i1 = k; i1 >= 0 && i1 < string.length() && width < newLength; i1 += l)
+        {
+            char thisChar = string.charAt(i1);
+            int thisWidth = getCharWidth(thisChar);
+
+            if (flag1)
+            {
+                flag1 = false;
+
+                if (thisChar != 108 && thisChar != 76)
+                {
+                    if (thisChar == 114 || thisChar == 82)
+                    {
+                        flag2 = false;
+                    }
+                } else
+                {
+                    flag2 = true;
+                }
+            } else if (thisWidth < 0)
+            {
+                flag1 = true;
+            } else
+            {
+                width += thisWidth;
+
+                if (flag2)
+                {
+                    ++width;
+                }
+            }
+
+            if (width > newLength)
+            {
+                break;
+            }
+
+            if (reverse)
+            {
+                stringbuilder.insert(0, thisChar);
+            } else
+            {
+                stringbuilder.append(thisChar);
+            }
+        }
+
+        return stringbuilder.toString();
     }
 
     public int getHeight()
@@ -206,6 +295,104 @@ public class FontRenderer
     public void drawString(float x, float y, String string, int colour)
     {
         drawString(x, y, string, colour, 0, string.length() - 1);
+    }
+
+    /**
+     * Inserts newline and formatting into a string to wrap it within the specified width.
+     */
+    private String wrapFormattedStringToWidth(String string, int maxWidth)
+    {
+        int j = this.sizeStringToWidth(string, maxWidth);
+
+        if (string.length() <= j)
+        {
+            return string;
+        } else
+        {
+            String s1 = string.substring(0, j);
+            char c0 = string.charAt(j);
+            boolean flag = c0 == 32 || c0 == 10;
+            String s2 = string.substring(j + (flag ? 1 : 0));
+            return s1 + "\n" + this.wrapFormattedStringToWidth(s2, maxWidth);
+        }
+    }
+
+    /**
+     * Determines how many characters from the string will fit into the specified width.
+     */
+    private int sizeStringToWidth(String string, int width)
+    {
+        int stringLength = string.length();
+        int k = 0;
+        int l = 0;
+        int i1 = -1;
+
+        for (boolean flag = false; l < stringLength; ++l)
+        {
+            char c0 = string.charAt(l);
+
+            switch (c0)
+            {
+                case 10:
+                    --l;
+                    break;
+                case 167:
+                    if (l < stringLength - 1)
+                    {
+                        ++l;
+                        char c1 = string.charAt(l);
+
+                        if (c1 != 108 && c1 != 76)
+                        {
+                            if (c1 == 114 || c1 == 82)
+                            {
+                                flag = false;
+                            }
+                        } else
+                        {
+                            flag = true;
+                        }
+                    }
+
+                    break;
+                case 32:
+                    i1 = l;
+                default:
+                    k += this.getCharWidth(c0);
+
+                    if (flag)
+                    {
+                        ++k;
+                    }
+            }
+
+            if (c0 == 10)
+            {
+                ++l;
+                i1 = l;
+                break;
+            }
+
+            if (k > width)
+            {
+                break;
+            }
+        }
+
+        return l != stringLength && i1 != -1 && i1 < l ? i1 : l;
+    }
+
+    private int getCharWidth(char character)
+    {
+        CharData charData;
+        if (character < 256)
+        {
+            charData = charArray[character];
+        } else
+        {
+            charData = customChars.get(character);
+        }
+        return charData == null? 0 : charData.width;
     }
 
     public void drawString(float x, float y, String string, int colour, int startIndex, int endIndex)
@@ -261,45 +448,13 @@ public class FontRenderer
         float v = (h / textureHeight);
 
         glTexCoord2f(tSrcX, tSrcY);
-        glVertex3f(drawX, drawY, 0.0f);
+        glVertex3f(drawX, drawY, zLevel);
         glTexCoord2f(tSrcX, tSrcY + v);
-        glVertex3f(drawX, drawY2, 0.0f);
+        glVertex3f(drawX, drawY2, zLevel);
         glTexCoord2f(tSrcX + u, tSrcY + v);
-        glVertex3f(drawX2, drawY2, 0.0f);
+        glVertex3f(drawX2, drawY2, zLevel);
         glTexCoord2f(tSrcX + u, tSrcY);
-        glVertex3f(drawX2, drawY, 0.0f);
-    }
-
-    public int loadTexture(BufferedImage image, int textureID){
-
-        int[] pixels = new int[image.getWidth() * image.getHeight()];
-        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-
-        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
-
-        for(int y = 0; y < image.getHeight(); y++){
-            for(int x = 0; x < image.getWidth(); x++){
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF));
-                buffer.put((byte) ((pixel >> 8) & 0xFF));
-                buffer.put((byte) (pixel & 0xFF));
-                buffer.put((byte) ((pixel >> 24) & 0xFF));
-            }
-        }
-
-        buffer.flip();
-        if (textureID == Integer.MIN_VALUE) textureID = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-
-        return textureID;
+        glVertex3f(drawX2, drawY, zLevel);
     }
 
     private static class CharData
