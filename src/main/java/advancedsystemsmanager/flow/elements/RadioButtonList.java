@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.elements;
 
-
 import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,8 +15,9 @@ public class RadioButtonList extends UpdateElement
 {
 
     public static final int RADIO_SIZE = 8;
-    public static final int RADIO_SRC_X = 30;
-    public static final int RADIO_SRC_Y = 52;
+    public static final int RADIO_SRC_X = 90;
+    public static final int RADIO_SELECTED_SRC_X = 98;
+    public static final int RADIO_SRC_Y = 20;
     public static final int RADIO_TEXT_X = 12;
     public static final int RADIO_TEXT_Y = 2;
 
@@ -38,10 +39,11 @@ public class RadioButtonList extends UpdateElement
 
             if (radioButton.isVisible())
             {
-                int srcRadioX = getSelectedOption() == i ? 1 : 0;
-                int srcRadioY = CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY) ? 1 : 0;
+                boolean selected =  getSelectedOption() == i;
+                boolean mouseover = CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY);
 
-                gui.drawTexture(radioButton.getX(), radioButton.getY(), RADIO_SRC_X + srcRadioX * RADIO_SIZE, RADIO_SRC_Y + srcRadioY * RADIO_SIZE, RADIO_SIZE, RADIO_SIZE);
+                gui.drawColouredTexture(radioButton.getX(), radioButton.getY(), RADIO_SRC_X, RADIO_SRC_Y, RADIO_SIZE, RADIO_SIZE, ThemeHandler.theme.menus.radioButtons.getColour(selected, mouseover));
+                gui.drawColouredTexture(radioButton.getX(), radioButton.getY(), RADIO_SELECTED_SRC_X, RADIO_SRC_Y, RADIO_SIZE, RADIO_SIZE, ThemeHandler.theme.menus.radioButtons.getColour(selected, mouseover));
                 gui.drawString(radioButton.getText(), radioButton.getX() + RADIO_TEXT_X, radioButton.getY() + RADIO_TEXT_Y, 0.7F, 0x404040);
             }
         }
