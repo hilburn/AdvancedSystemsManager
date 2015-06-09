@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.elements;
 
-
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.registry.ThemeHandler;

@@ -34,36 +34,40 @@ public class PacketEventHandler
     {
         ASMPacket packet = new ASMPacket(buffer);
         if (player instanceof EntityPlayerMP) packet.setPlayer((EntityPlayerMP)player);
-        boolean useContainer = packet.readBoolean();
+        int action = packet.readUnsignedByte();
 
-        if (useContainer)
+        switch (action)
         {
-            int containerId = packet.readByte();
-            Container container = player.openContainer;
+            case PacketHandler.CONTAINER:
+                int containerId = packet.readByte();
+                Container container = player.openContainer;
 
-            if (container != null && container.windowId == containerId && container instanceof ContainerBase)
-            {
-                if (player instanceof EntityPlayerMP)
+                if (container != null && container.windowId == containerId && container instanceof ContainerBase)
                 {
-                    ((ContainerBase)container).updateServer(packet, (EntityPlayerMP)player);
-                } else
-                {
-                    ((ContainerBase)container).updateClient(packet, player);
+                    if (player instanceof EntityPlayerMP)
+                    {
+                        ((ContainerBase)container).updateServer(packet, (EntityPlayerMP)player);
+                    } else
+                    {
+                        ((ContainerBase)container).updateClient(packet, player);
+                    }
+
                 }
+                break;
+            case PacketHandler.BLOCK:
+                int x = packet.readInt();
+                int y = packet.readUnsignedByte();
+                int z = packet.readInt();
 
-            }
-        } else
-        {
-            int x = packet.readInt();
-            int y = packet.readUnsignedByte();
-            int z = packet.readInt();
-
-            TileEntity te = player.worldObj.getTileEntity(x, y, z);
-            if (te != null && te instanceof IPacketBlock)
-            {
-                int id = packet.readByte();
-                ((IPacketBlock)te).readData(packet, id);
-            }
+                TileEntity te = player.worldObj.getTileEntity(x, y, z);
+                if (te != null && te instanceof IPacketBlock)
+                {
+                    int id = packet.readByte();
+                    ((IPacketBlock)te).readData(packet, id);
+                }
+                break;
+            case PacketHandler.THEME:
+                break;
         }
     }
 }

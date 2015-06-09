@@ -28,6 +28,10 @@ public class PacketHandler
     public static final int BUTTON_CLICK = 5;
     public static final int SPECIAL_DATA = 42;
 
+    public static final int CONTAINER = 0;
+    public static final int BLOCK = 1;
+    public static final int THEME = 2;
+
 
     public static void sendDataToServer(ASMPacket dw)
     {
@@ -38,7 +42,7 @@ public class PacketHandler
     {
         ASMPacket dw = new ASMPacket();
 
-        dw.writeBoolean(true); //use container
+        dw.writeByte(CONTAINER);
         dw.writeByte(container.windowId);
         te.writeData(dw);
 
@@ -59,7 +63,7 @@ public class PacketHandler
     {
         ASMPacket dw = new ASMPacket();
 
-        dw.writeBoolean(true); //use container
+        dw.writeByte(CONTAINER);
         dw.writeByte(container.windowId);
         dw.writeBoolean(true); //updated data
 
@@ -95,7 +99,7 @@ public class PacketHandler
     public static ASMPacket getContainerPacket(Container container)
     {
         ASMPacket dw = new ASMPacket();
-        dw.writeBoolean(true); //use container
+        dw.writeByte(CONTAINER);
         dw.writeByte(container.windowId);
         return dw;
     }
@@ -176,7 +180,7 @@ public class PacketHandler
     public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
     {
         ASMPacket dw = new ASMPacket(20);
-        dw.writeBoolean(false); //no container
+        dw.writeByte(BLOCK);
         dw.writeInt(te.xCoord);
         dw.writeByte(te.yCoord);
         dw.writeInt(te.zCoord);

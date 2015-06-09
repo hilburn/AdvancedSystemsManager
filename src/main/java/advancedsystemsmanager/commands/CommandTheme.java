@@ -1,12 +1,13 @@
 package advancedsystemsmanager.commands;
 
-import advancedsystemsmanager.gui.TextColour;
+import advancedsystemsmanager.network.PacketHandler;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.entity.player.EntityPlayerMP;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class CommandColour implements ISubCommand
+public class CommandTheme implements ISubCommand
 {
     @Override
     public int getPermissionLevel()
@@ -17,20 +18,22 @@ public class CommandColour implements ISubCommand
     @Override
     public String getCommandName()
     {
-        return "colour";
+        return "theme";
     }
 
     @Override
     public void handleCommand(ICommandSender sender, String[] arguments)
     {
-        String colour = arguments[1];
-        sender.addChatMessage(new ChatComponentText(TextColour.getClosestColour(Integer.decode(colour)).toString() + colour));
+        if (sender instanceof EntityPlayerMP)
+        {
+            //TODO: Send a packet to the client.
+        }
     }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        return null;
+        return Arrays.asList("list", "load", "save");
     }
 
     @Override
