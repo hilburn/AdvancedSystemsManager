@@ -30,7 +30,7 @@ public class PacketHandler
 
     public static final int CONTAINER = 0;
     public static final int BLOCK = 1;
-    public static final int THEME = 2;
+    public static final int COMMAND = 2;
 
 
     public static void sendDataToServer(ASMPacket dw)
@@ -68,6 +68,13 @@ public class PacketHandler
         dw.writeBoolean(true); //updated data
 
         return dw;
+    }
+
+    public static ASMPacket getCommandPacket()
+    {
+        ASMPacket packet = new ASMPacket();
+        packet.writeByte(COMMAND);
+        return packet;
     }
 
 

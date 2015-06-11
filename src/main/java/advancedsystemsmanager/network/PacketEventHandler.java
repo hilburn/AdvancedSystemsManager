@@ -66,7 +66,7 @@ public class PacketEventHandler
                     ((IPacketBlock)te).readData(packet, id);
                 }
                 break;
-            case PacketHandler.THEME:
+            case PacketHandler.COMMAND:
                 break;
         }
     }
