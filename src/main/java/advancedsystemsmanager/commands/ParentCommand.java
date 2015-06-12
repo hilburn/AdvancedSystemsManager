@@ -1,6 +1,7 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.network.ASMPacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandNotFoundException;
@@ -36,6 +37,12 @@ public class ParentCommand extends CommandBase
             ((IPacketSync)command).setId(packetCommands.size());
             packetCommands.add((IPacketSync)command);
         }
+    }
+
+    public static void handlePacket(ASMPacket packet)
+    {
+        int id = packet.readByte();
+        packetCommands.get(id % packetCommands.size()).readData(packet);
     }
 
     public static boolean commandExists(String name)

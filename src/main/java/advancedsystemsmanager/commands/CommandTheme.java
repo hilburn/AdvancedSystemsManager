@@ -3,6 +3,7 @@ package advancedsystemsmanager.commands;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 
@@ -34,11 +35,15 @@ public class CommandTheme implements ISubCommand, IPacketSync
             ASMPacket packet = PacketHandler.getCommandPacket();
             packet.writeByte(id);
             packet.writeByte(commands.indexOf(arguments[1]));
-            if (arguments.length > 2)
+            packet.writeByte(Math.max(arguments.length - 2, 0));
+            for (int i = 2; i < arguments.length; i++)
             {
-                packet.writeStringToBuffer(arguments[2]);
+                packet.writeStringToBuffer(arguments[i]);
             }
             packet.sendPlayerPacket((EntityPlayerMP)sender);
+        } else
+        {
+            throw new CommandException("Command can only be used by a player");
         }
     }
 
@@ -63,6 +68,12 @@ public class CommandTheme implements ISubCommand, IPacketSync
     @Override
     public boolean readData(ASMPacket packet)
     {
+        int command = packet.readByte();
+        String[] args = new String[packet.readByte()];
+        for (int i = 0; i < args.length; i++)
+        {
+            args[i] = packet.readStringFromBuffer();
+        }
         return false;
     }
 }
