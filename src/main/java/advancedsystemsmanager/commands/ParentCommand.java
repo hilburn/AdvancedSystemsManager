@@ -1,12 +1,16 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.gui.TextColour;
 import advancedsystemsmanager.network.ASMPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,8 +45,16 @@ public class ParentCommand extends CommandBase
 
     public static void handlePacket(ASMPacket packet)
     {
-        int id = packet.readByte();
-        packetCommands.get(id % packetCommands.size()).readData(packet);
+        try
+        {
+            int id = packet.readByte();
+            packetCommands.get(id % packetCommands.size()).readData(packet);
+        } catch (CommandException e)
+        {
+            String message = e.getMessage();
+            Object[] objects = e.getErrorOjbects();
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextColour.DARK_RED + (objects.length == 0? StatCollector.translateToLocal(message) : StatCollector.translateToLocalFormatted(message, objects))));
+        }
     }
 
     public static boolean commandExists(String name)

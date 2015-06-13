@@ -1,10 +1,15 @@
 package advancedsystemsmanager.commands;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Names;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.Arrays;
@@ -43,7 +48,7 @@ public class CommandTheme implements ISubCommand, IPacketSync
             packet.sendPlayerPacket((EntityPlayerMP)sender);
         } else
         {
-            throw new CommandException("Command can only be used by a player");
+            throw new CommandException(Names.COMMAND_PLAYER_ONLY);
         }
     }
 
@@ -56,7 +61,7 @@ public class CommandTheme implements ISubCommand, IPacketSync
     @Override
     public boolean isVisible(ICommandSender sender)
     {
-        return true;
+        return sender instanceof EntityPlayerMP;
     }
 
     @Override
@@ -68,11 +73,38 @@ public class CommandTheme implements ISubCommand, IPacketSync
     @Override
     public boolean readData(ASMPacket packet)
     {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         int command = packet.readByte();
         String[] args = new String[packet.readByte()];
         for (int i = 0; i < args.length; i++)
         {
             args[i] = packet.readStringFromBuffer();
+        }
+        switch (command)
+        {
+            case 0:
+                List<String> themes = AdvancedSystemsManager.themeHandler.getThemes();
+                String list = "";
+                for (int i = 0; i < themes.size(); i++)
+                {
+                    list += themes.get(i);
+                    if (i < themes.size() - 1) list += ", ";
+                }
+                LocalizationHelper.addChatMessageFormatted(player, Names.COMMAND_THEME_LIST + Names.COMMAND_OUTPUT, list);
+                break;
+            case 1:
+                if (args.length > 1) throw new CommandException(Names.COMMAND_THEME_LOAD + Names.COMMAND_SYNTAX);
+                if (!AdvancedSystemsManager.themeHandler.setTheme(args.length == 1 ? args[0] : "default"))
+                {
+                    throw new CommandException(Names.COMMAND_THEME_LOAD + Names.COMMAND_FAILED, args[0]);
+                }
+                LocalizationHelper.addChatMessage(player, Names.COMMAND_THEME_LOAD + Names.COMMAND_OUTPUT);
+                break;
+            case 2:
+                if (args.length != 1) throw new CommandException(Names.COMMAND_THEME_SAVE + Names.COMMAND_SYNTAX);
+                AdvancedSystemsManager.themeHandler.saveTheme(args[0]);
+                LocalizationHelper.addChatMessage(player, Names.COMMAND_THEME_SAVE + Names.COMMAND_OUTPUT);
+                break;
         }
         return false;
     }

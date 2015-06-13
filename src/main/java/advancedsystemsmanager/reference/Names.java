@@ -27,7 +27,7 @@ public class Names
     public static final String LABELER = PREFIX + "labeler";
     public static final String REMOTE_ACCESS = PREFIX + "remote_access";
 
-    public static final String GUI_PREFIX = "gui.system.";
+    public static final String GUI_PREFIX = "asm.gui";
 
     public static final String TRIGGER = GUI_PREFIX + "Trigger";
     public static final String ITEM_INPUT = GUI_PREFIX + "Input";
@@ -364,4 +364,15 @@ public class Names
     public static final String BARREL_CONTAINS = GUI_PREFIX + "idsucompat.contains";
     public static final String LABEL_SAVED = GUI_PREFIX + "chat.saved";
     public static final String LABEL_CLEARED = GUI_PREFIX + "chat.cleared";
+
+    public static final String COMMAND_PREFIX = "asm.command.";
+    public static final String COMMAND_PLAYER_ONLY = COMMAND_PREFIX + "playerOnly";
+    public static final String COMMAND_SYNTAX = ".syntax";
+    public static final String COMMAND_INFO = ".info";
+    public static final String COMMAND_OUTPUT = ".output";
+    public static final String COMMAND_FAILED = ".failed";
+    public static final String COMMAND_THEME = COMMAND_PREFIX + "theme.";
+    public static final String COMMAND_THEME_LIST = COMMAND_THEME + "list";
+    public static final String COMMAND_THEME_SAVE = COMMAND_THEME + "save";
+    public static final String COMMAND_THEME_LOAD = COMMAND_THEME + "load";
 }

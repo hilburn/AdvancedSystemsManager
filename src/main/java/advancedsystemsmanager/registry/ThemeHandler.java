@@ -17,6 +17,14 @@ import java.util.regex.Pattern;
 public class ThemeHandler
 {
     private static final Pattern JSON = Pattern.compile(".*\\.json", Pattern.CASE_INSENSITIVE);
+    private static final FileFilter JSON_FILTER = new FileFilter()
+    {
+        @Override
+        public boolean accept(File pathname)
+        {
+            return JSON.matcher(pathname.getName()).find();
+        }
+    };
     public static final Gson GSON = getGson();
     private final String backupLocation;
     private final File themeDir;
@@ -57,20 +65,13 @@ public class ThemeHandler
 
     public List<String> getThemes()
     {
-        File[] files = themeDir.listFiles(new FileFilter()
-        {
-            @Override
-            public boolean accept(File pathname)
-            {
-                return JSON.matcher(pathname.getName()).find();
-            }
-        });
+        File[] files = themeDir.listFiles(JSON_FILTER);
         List<String> result = new ArrayList<String>();
         if (files != null)
         {
             for (File file : files)
             {
-                result.add(file.getName());
+                result.add(file.getName().replace(".json", ""));
             }
         }
         return result;

@@ -1,5 +1,6 @@
 package advancedsystemsmanager.commands;
 
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -8,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import org.omg.CORBA.COMM_FAILURE;
 
 public abstract class CommandDuplicator implements ISubCommand
 {
@@ -52,6 +54,10 @@ public abstract class CommandDuplicator implements ISubCommand
     @Override
     public void handleCommand(ICommandSender sender, String[] arguments)
     {
+        if (!(sender instanceof EntityPlayerMP))
+        {
+            throw new CommandException(Names.COMMAND_PLAYER_ONLY);
+        }
         if (!isVisible(sender))
         {
             throw new CommandException("asm.command.noPermission");
@@ -78,6 +84,6 @@ public abstract class CommandDuplicator implements ISubCommand
     @Override
     public boolean isVisible(ICommandSender sender)
     {
-        return sender.canCommandSenderUseCommand(getPermissionLevel(), getCommandName());
+        return sender instanceof EntityPlayerMP && sender.canCommandSenderUseCommand(getPermissionLevel(), getCommandName());
     }
 }
