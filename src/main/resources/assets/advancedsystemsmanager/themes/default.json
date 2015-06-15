@@ -1,0 +1,71 @@
+{
+  "Manager Background": "#2a2a2a",
+  "Lines": "#666666",
+  "Buttons": {
+    "Background": "#242424",
+    "Background Mouseover": "#595959",
+    "Foreground": "#00000000",
+    "Foreground Mouseover": "#00000000"
+  },
+  "Commands": {
+    "Text": "#ffffff",
+    "Type": "#c6c6c6",
+    "Menu Area": "#dcdcdc",
+    "Commands": {
+	  "Trigger": "#c6c6c6",
+	  "Input": "#80b093",
+	  "Output": "#80b093",
+	  "Flow": "#c6c6c6",
+	  "Input (L)": "#809bb0",
+	  "Output (L)": "#809bb0",
+	  "Emitter": "#b08080",
+	  "Variable": "#b0a380",
+	  "For Each": "#b0a380",
+	  "Group": "#80b0ac",
+	  "Node": "#80b0ac",
+	  "Camouflage": "#4a5150",
+	  "Sign": "#9b9570"
+    },
+	"Connections": {
+	  "Input": {
+		"Colour": "#2b798c",
+		"Mouseover": "#5996a5"
+	  },
+	  "Output": {
+		"Colour": "#8d2c2c",
+		"Mouseover": "#975151"
+	  },
+	  "Side": {
+		"Colour": "#8e862c",
+		"Mouseover": "#c0b85e"
+	  }
+	},
+	"Connection Nodes": {
+	  "Colour": "#949494",
+	  "Mouseover": "#d4d4d4"
+	}
+  },
+  "Menus": {
+    "Title": "#dcdcdc",
+    "Selected Title": "#a2a2a2",
+    "Open Menu Background": "#00000000",
+    "Checkboxes": {
+      "Base Colour": "#bfbfbf",
+      "Selected": "#2c568e",
+      "Hover": "#647ea1",
+      "Hover Selected": "#3970ba"
+    },
+    "Radio Buttons": {
+      "Base Colour": "#bfbfbf",
+      "Selected": "#2c568e",
+      "Hover": "#647ea1",
+      "Hover Selected": "#3970ba"
+    },
+    "Text Boxes": {
+      "Text": "#ffffff",
+      "Background": "#333333",
+      "Border": "#00000000",
+      "Selected": "#313e4e"
+    }
+  }
+}

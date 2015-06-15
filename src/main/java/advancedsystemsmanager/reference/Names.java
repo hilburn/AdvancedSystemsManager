@@ -27,7 +27,7 @@ public class Names
     public static final String LABELER = PREFIX + "labeler";
     public static final String REMOTE_ACCESS = PREFIX + "remote_access";
 
-    public static final String GUI_PREFIX = "asm.gui";
+    public static final String GUI_PREFIX = "asm.gui.";
 
     public static final String TRIGGER = GUI_PREFIX + "Trigger";
     public static final String ITEM_INPUT = GUI_PREFIX + "Input";

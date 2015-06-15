@@ -20,7 +20,7 @@ import static advancedsystemsmanager.reference.Textures.BUTTONS;
 public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement<GuiManager>
 {
     private static final int BUTTON_SPACING = 0;
-    private int x = 20, y = 20, maxHeight = GuiManager.GUI_HEIGHT - 38;
+    private int x = 20, y = 20, maxHeight = 218;
 
     public ManagerButtonList()
     {
