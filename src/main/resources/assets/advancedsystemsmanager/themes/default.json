@@ -11,6 +11,24 @@
     "Text": "#ffffff",
     "Type": "#c6c6c6",
     "Menu Area": "#dcdcdc",
+    "Connections": {
+      "Input": {
+        "Colour": "#2b798c",
+        "Mouseover": "#5996a5"
+      },
+      "Output": {
+        "Colour": "#8d2c2c",
+        "Mouseover": "#975151"
+      },
+      "Side": {
+        "Colour": "#8e862c",
+        "Mouseover": "#c0b85e"
+      }
+    },
+    "Connection Nodes": {
+      "Colour": "#949494",
+      "Mouseover": "#d4d4d4"
+    },
     "Commands": {
 	  "Trigger": "#c6c6c6",
 	  "Input": "#80b093",
@@ -25,29 +43,12 @@
 	  "Node": "#80b0ac",
 	  "Camouflage": "#4a5150",
 	  "Sign": "#9b9570"
-    },
-	"Connections": {
-	  "Input": {
-		"Colour": "#2b798c",
-		"Mouseover": "#5996a5"
-	  },
-	  "Output": {
-		"Colour": "#8d2c2c",
-		"Mouseover": "#975151"
-	  },
-	  "Side": {
-		"Colour": "#8e862c",
-		"Mouseover": "#c0b85e"
-	  }
-	},
-	"Connection Nodes": {
-	  "Colour": "#949494",
-	  "Mouseover": "#d4d4d4"
-	}
+    }
   },
   "Menus": {
-    "Title": "#dcdcdc",
-    "Selected Title": "#a2a2a2",
+    "Title Background": "#dcdcdc",
+    "Selected Title Background": "#a2a2a2",
+	"Title Text": "#404040",
     "Open Menu Background": "#00000000",
     "Checkboxes": {
       "Base Colour": "#bfbfbf",
