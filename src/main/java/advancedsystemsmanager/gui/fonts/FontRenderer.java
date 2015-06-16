@@ -75,7 +75,7 @@ public class FontRenderer
             if (positionX + newCharData.width >= textureWidth)
             {
                 positionX = 0;
-                positionY += rowHeight;
+                positionY += rowHeight + 1;
                 rowHeight = 0;
             }
 
@@ -93,7 +93,7 @@ public class FontRenderer
             }
             g.drawImage(fontImage, positionX, positionY, null);
 
-            positionX += newCharData.width;
+            positionX += newCharData.width + 1;
 
             if (i < 256)
             {
@@ -105,7 +105,14 @@ public class FontRenderer
 
             fontImage = null;
         }
-
+//        try
+//        {
+//
+//            ImageIO.write(imgTemp, "PNG", new File("test.png"));
+//        } catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
         textureID = loadTexture(imgTemp, textureID);
     }
 
@@ -145,7 +152,6 @@ public class FontRenderer
         int charX = 0;
         int charY = 0;
         gt.drawString(String.valueOf(ch), (charX), (charY) + fontMetrics.getAscent());
-
         return fontImage;
     }
 
@@ -176,10 +182,10 @@ public class FontRenderer
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
         return textureID;
     }
@@ -292,6 +298,16 @@ public class FontRenderer
         drawString(x, y, string, 0xFFFFFFFF);
     }
 
+    public void drawScaledString(float x, float y, String string, int colour, int height)
+    {
+        float scale = (float)height / getHeight();
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+        glScalef(scale, scale, 1);
+        drawString(0, 0, string, colour);
+        glPopMatrix();
+    }
+
     public void drawString(float x, float y, String string, int colour)
     {
         drawString(x, y, string, colour, 0, string.length() - 1);
@@ -400,8 +416,7 @@ public class FontRenderer
         float red = (float)(colour >> 16 & 255) / 255.0F;
         float blue = (float)(colour >> 8 & 255) / 255.0F;
         float green = (float)(colour & 255) / 255.0F;
-        float alpha = (float)(colour >> 24 & 255) / 255.0F;
-        glColor4f(red, blue, green, alpha);
+        glColor3f(red, blue, green);
         glBindTexture(GL_TEXTURE_2D, this.textureID);
 
         CharData charData;
@@ -425,11 +440,9 @@ public class FontRenderer
             {
                 if ((i >= startIndex) || (i <= endIndex))
                 {
-                    drawQuad((x + width), y,
-                            (x + width + charData.width),
-                            (y + charData.height), charData.storedX,
-                            charData.storedY, charData.storedX + charData.width,
-                            charData.storedY + charData.height);
+                    drawQuad((x + width), y, charData.storedX,
+                            charData.storedY, charData.width,
+                            charData.height);
                 }
                 width += charData.width;
             }
@@ -438,12 +451,12 @@ public class FontRenderer
         glEnd();
     }
 
-    private void drawQuad(float drawX, float drawY, float drawX2, float drawY2, float srcX, float srcY, float srcX2, float srcY2)
+    private void drawQuad(float drawX, float drawY, float srcX, float srcY, float w, float h)
     {
         float tSrcX = srcX / textureWidth;
         float tSrcY = srcY / textureHeight;
-        float w = srcX2 - srcX;
-        float h = srcY2 - srcY;
+        float drawX2 = drawX + w;
+        float drawY2 = drawY + h;
         float u = (w / textureWidth);
         float v = (h / textureHeight);
 

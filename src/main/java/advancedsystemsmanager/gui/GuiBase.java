@@ -46,7 +46,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public static FontRenderer fontRenderer;
 
     {
-        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 40), false);
+        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false);
     }
 
     public GuiBase(ContainerBase container)
@@ -304,12 +304,13 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawLocalizedString(String str, int x, int y, float mult, int color)
     {
-        glPushMatrix();
-        glScalef(mult, mult, 1F);
-        fontRendererObj.drawString(str, (int)((x) / mult), (int)((y) / mult), color);
+//        glPushMatrix();
+//        glScalef(mult, mult, 1F);
+        fontRenderer.drawScaledString(x, y, str, color,(int)(10*mult));
+//        fontRendererObj.drawString(str, (int)(x / mult), (int)(y / mult), color);
         bindTexture(getComponentResource());
         glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        glPopMatrix();
+//        glPopMatrix();
     }
 
     public abstract ResourceLocation getComponentResource();
