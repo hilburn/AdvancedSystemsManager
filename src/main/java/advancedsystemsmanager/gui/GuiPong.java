@@ -3,23 +3,21 @@ package advancedsystemsmanager.gui;
 import advancedsystemsmanager.pong.Ball;
 import advancedsystemsmanager.pong.Beam;
 import advancedsystemsmanager.pong.BeamAI;
-import org.lwjgl.input.Keyboard;
 
 public class GuiPong implements IInterfaceRenderer
 {
-    public GuiPong(GuiManager gui)
-    {
-        height = gui.height;
-        width = gui.width;
-        resetGame();
-        Keyboard.enableRepeatEvents(true);
-    }
-
     private Ball ball;
     private Beam player;
     private BeamAI ai;
     private int move = 5;
     private int height, width;
+
+    public GuiPong(GuiManager gui)
+    {
+        height = gui.height;
+        width = gui.width;
+        resetGame();
+    }
 
     private void resetGame()
     {
