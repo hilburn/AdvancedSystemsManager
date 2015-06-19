@@ -74,6 +74,11 @@ public class GLFont
         return scale;
     }
 
+    public float getTextureSize()
+    {
+        return RASTER_DIM;
+    }
+
     /**
      * Get the font metric map associated with this font.
      *
