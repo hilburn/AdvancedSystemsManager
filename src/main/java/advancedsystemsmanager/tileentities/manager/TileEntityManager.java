@@ -2,6 +2,7 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IManagerButton;
+import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
@@ -47,7 +48,7 @@ import java.util.*;
 
 import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
-public class TileEntityManager extends TileEntity implements ITileInterfaceProvider
+public class TileEntityManager extends TileEntity implements ITileInterfaceProvider, ITriggerNode
 {
     public static final TriggerHelperRedstone redstoneTrigger = new TriggerHelperRedstone(3, 4);
     public static final TriggerHelperRedstone redstoneCondition = new TriggerHelperRedstone(1, 2);
@@ -62,6 +63,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private static final String NBT_TIMER = "Timer";
     public static final String NBT_COMPONENTS = "Components";
     private static final String NBT_VARIABLES = "Variables";
+    private static final String NBT_SIDES = "Sides";
     public List<FlowComponent> triggers;
     public ManagerButtonList buttons;
     public boolean serverPacket;
@@ -80,6 +82,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private boolean firstCommandExecution = true;
     private int timer = 0;
     private TileEntityManager self = this;
+    private int[] oldPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
+    private int[] isPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private boolean usingUnlimitedInventories;
 
     public TileEntityManager()
@@ -211,7 +215,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         new Executor(this).executeTriggerCommand(component, validTriggerOutputs);
     }
 
-    public void triggerRedstone(TileEntityReceiver inputTrigger)
+    public void triggerRedstone(ITriggerNode inputTrigger)
     {
         for (FlowComponent item : triggers)
         {
@@ -522,16 +526,28 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
         super.readFromNBT(nbtTagCompound);
-
         readContentFromNBT(nbtTagCompound, false);
+        byte[] sides = nbtTagCompound.getByteArray(NBT_SIDES);
+        int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];
+        for (int i = 0; i < sides.length; i++)
+        {
+            powered[i] = sides[i];
+
+        }
+        oldPowered = isPowered = powered;
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound)
     {
         super.writeToNBT(nbtTagCompound);
-
         writeContentToNBT(nbtTagCompound, false);
+        byte[] sides = new byte[isPowered.length];
+        for (int i = 0; i < sides.length; i++)
+        {
+            sides[i] = (byte)isPowered[i];
+        }
+        nbtTagCompound.setByteArray(NBT_SIDES, sides);
     }
 
     @Override
@@ -583,8 +599,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             components.appendTag(component);
         }
         nbtTagCompound.setTag(NBT_COMPONENTS, components);
-
-
         NBTTagList variablesTag = new NBTTagList();
         for (Variable variable : variables.valueCollection())
         {
@@ -704,5 +718,30 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public void addNewVariable(Variable variable)
     {
         variables.put(variable.colour, variable);
+    }
+
+    public void triggerRedstone()
+    {
+        isPowered = new int[isPowered.length];
+        for (int i = 0; i < isPowered.length; i++)
+        {
+            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[i];
+            isPowered[i] = worldObj.getIndirectPowerLevelTo(direction.offsetX + this.xCoord, direction.offsetY + this.yCoord, direction.offsetZ + this.zCoord, i);
+        }
+        triggerRedstone(this);
+
+        oldPowered = isPowered;
+    }
+
+    @Override
+    public int[] getData()
+    {
+        return isPowered;
+    }
+
+    @Override
+    public int[] getOldData()
+    {
+        return oldPowered;
     }
 }

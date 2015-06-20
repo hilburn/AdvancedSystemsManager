@@ -41,6 +41,7 @@ public enum ConnectionSet
 
     public ConnectionOption[] connections;
     private ConnectionLocation[] connectionLocations;
+    private int inputs;
 
     public String name;
 
@@ -100,7 +101,7 @@ public enum ConnectionSet
             }
             connectionLocations[i] = new ConnectionLocation(x, y, offsetX, offsetY);
         }
-
+        this.inputs = inputCount;
         this.name = name;
     }
 
@@ -128,6 +129,11 @@ public enum ConnectionSet
     public boolean isInput(int i)
     {
         return connections[i].isInput();
+    }
+
+    public int getInputs()
+    {
+        return inputs;
     }
 
     private static class ConnectionLocation

@@ -3,6 +3,7 @@ package advancedsystemsmanager.blocks;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
+import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class BlockManager extends BlockTileBase
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         super.onNeighborBlockChange(world, x, y, z, block);
-
+        updateRedstone(world, x, y, z);
         updateInventories(world, x, y, z);
     }
 
@@ -78,7 +80,7 @@ public class BlockManager extends BlockTileBase
     public void onBlockAdded(World world, int x, int y, int z)
     {
         super.onBlockAdded(world, x, y, z);
-
+        updateRedstone(world, x, y, z);
         updateInventories(world, x, y, z);
     }
 
@@ -145,5 +147,20 @@ public class BlockManager extends BlockTileBase
         super.breakBlock(world, x, y, z, block, meta);
 
         updateInventories(world, x, y, z);
+    }
+
+    @Override
+    public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
+    {
+        return true;
+    }
+
+    private void updateRedstone(World world, int x, int y, int z)
+    {
+        TileEntity input = world.getTileEntity(x, y, z);
+        if (input instanceof TileEntityManager)
+        {
+            ((TileEntityManager)input).triggerRedstone();
+        }
     }
 }

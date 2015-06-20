@@ -1,12 +1,15 @@
 package advancedsystemsmanager.flow.execution;
 
 
+import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.commands.CommandBase;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneStrength;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
@@ -45,20 +48,21 @@ public class TriggerHelperRedstone extends TriggerHelper
         return inRange != menuStrength.isInverted();
     }
 
-    public void onRedstoneTrigger(FlowComponent item, TileEntityReceiver inputTrigger)
+    public void onRedstoneTrigger(FlowComponent item, ITriggerNode inputTrigger)
     {
-        List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
+        MenuContainer componentMenuContainer = (MenuContainer)item.getMenus().get(containerId);
+        List<SystemCoord> receivers = CommandBase.getContainers(item.getManager(), componentMenuContainer);
 
         if (receivers != null)
         {
-            MenuContainer componentMenuContainer = (MenuContainer)item.getMenus().get(containerId);
+
             int[] newPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
             int[] oldPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
             if (canUseMergedDetection && componentMenuContainer.getOption() == 0)
             {
-                for (SlotInventoryHolder receiver : receivers)
+                for (SystemCoord receiver : receivers)
                 {
-                    TileEntityReceiver input = receiver.getReceiver();
+                    ITriggerNode input = (ITriggerNode)receiver.tileEntity;
 
                     for (int i = 0; i < newPower.length; i++)
                     {
@@ -76,7 +80,7 @@ public class TriggerHelperRedstone extends TriggerHelper
                 }
             } else
             {
-                TileEntityReceiver trigger = (componentMenuContainer.getOption() == 0 || (componentMenuContainer.getOption() == 1 && canUseMergedDetection)) ? inputTrigger : null;
+                ITriggerNode trigger = (componentMenuContainer.getOption() == 0 || (componentMenuContainer.getOption() == 1 && canUseMergedDetection)) ? inputTrigger : null;
                 if (isPulseReceived(item, receivers, trigger, true))
                 {
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_HIGH));
@@ -87,7 +91,6 @@ public class TriggerHelperRedstone extends TriggerHelper
                     activateTrigger(item, EnumSet.of(ConnectionOption.REDSTONE_PULSE_LOW));
                 }
             }
-
         }
     }
 }

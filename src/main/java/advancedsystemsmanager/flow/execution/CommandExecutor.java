@@ -274,21 +274,6 @@ public class CommandExecutor
                         }
 
                         return;
-                    case 9:
-                        List<SlotInventoryHolder> nodes = this.getNodes(command.getMenus().get(0));
-                        if (nodes != null)
-                        {
-                            if (this.evaluateRedstoneCondition(nodes, command))
-                            {
-                                this.executeChildCommands(command, EnumSet.of(ConnectionOption.CONDITION_TRUE));
-                            } else
-                            {
-                                this.executeChildCommands(command, EnumSet.of(ConnectionOption.CONDITION_FALSE));
-                            }
-                            return;
-                        }
-
-                        return;
                     case 12:
                         CraftingBufferFluidElement element = new CraftingBufferFluidElement(this, (MenuCrafting)command.getMenus().get(0), (MenuContainerScrap)command.getMenus().get(2));
                         if (((MenuCraftingPriority)command.getMenus().get(1)).shouldPrioritizeCrafting())
@@ -868,11 +853,6 @@ public class CommandExecutor
             }
             return true;
         }
-    }
-
-    public boolean evaluateRedstoneCondition(List<SlotInventoryHolder> nodes, FlowComponent component)
-    {
-        return TileEntityManager.redstoneCondition.isTriggerPowered(nodes, component, true);
     }
 
     public void updateVariable(List<SlotInventoryHolder> tiles, MenuVariable menuVariable, MenuListOrder menuOrder)

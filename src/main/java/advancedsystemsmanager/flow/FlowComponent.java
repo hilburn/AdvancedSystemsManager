@@ -357,7 +357,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 gui.drawTexture(itemX + getComponentWidth() + ARROW_X, itemY + ARROW_Y, ARROW_SRC_X, ARROW_SRC_Y + ARROW_SIZE_H * srcItemArrowY, ARROW_SIZE_W, ARROW_SIZE_H);
 
 
-                gui.drawString(menu.getName(), x + MENU_X + MENU_ITEM_TEXT_X, y + getMenuItemY(i) + MENU_ITEM_TEXT_Y, 0x404040);
+                gui.drawString(menu.getName(), x + MENU_X + MENU_ITEM_TEXT_X, y + getMenuItemY(i) + MENU_ITEM_TEXT_Y, 0xFF404040);
 
                 if (i == openMenuId)
                 {
@@ -470,24 +470,24 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             {
                 name = getShortName(gui, name);
             }
-            gui.drawString(name, x + TEXT_X, y + TEXT_Y - (!isLarge ? TEXT_Y/2 : 0), 0.7F, isEditing ? 0x707020 : 0x404040);
+            gui.drawString(name, x + TEXT_X, y + TEXT_Y - (!isLarge ? TEXT_Y/2 : 0), 1F, isEditing ? 0x707020 : 0x404040);
         }
 
         if (isEditing)
         {
-            gui.drawString(getShortName(gui, getName()), x + TEXT_X, y + TEXT_Y, 0.7F, 0x207020);
+            gui.drawString(getShortName(gui, getName()), x + TEXT_X, y + TEXT_Y, 1F, 0x207020);
         }
 
         if (name != null && Settings.isCommandTypes() && !GuiScreen.isCtrlKeyDown())
         {
-            gui.drawCenteredString(getType().getName(), x + DRAGGABLE_SIZE, y + 3, 0.7F, getComponentWidth() - DRAGGABLE_SIZE - ARROW_SIZE_W, 0x707070);
+            gui.drawCenteredString(getType().getName(), x + DRAGGABLE_SIZE, y + 3, 1F, getComponentWidth() - DRAGGABLE_SIZE - ARROW_SIZE_W, 0x707070);
         }
 
         if (isLarge)
         {
             if (isEditing)
             {
-                gui.drawCursor(x + TEXT_X + (int)((textBox.getCursorPosition(gui) + CURSOR_X) * 0.7F), y + TEXT_Y + (int)(CURSOR_Y * 0.7F), CURSOR_Z, 0.7F, 0xFFFFFFFF);
+                gui.drawCursor(x + TEXT_X + (int)((textBox.getCursorPosition(gui) + CURSOR_X)), y + TEXT_Y + (int)(CURSOR_Y), CURSOR_Z, 1F, 0xFFFFFFFF);
                 for (int i = 0; i < 2; i++)
                 {
                     int buttonX = x + EDIT_X_SMALL;
@@ -525,7 +525,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
             {
-                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - 5) - 1), mX, mY);
+                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - 5) - connectionSet.getInputs()), mX, mY);
             }
         }
 

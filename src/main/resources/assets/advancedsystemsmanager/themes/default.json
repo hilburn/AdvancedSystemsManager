@@ -37,6 +37,7 @@
 	  "Input (L)": "#809bb0",
 	  "Output (L)": "#809bb0",
 	  "Emitter": "#b08080",
+	  "Condition (R)": "#b08080",
 	  "Variable": "#b0a380",
 	  "For Each": "#b0a380",
 	  "Group": "#80b0ac",

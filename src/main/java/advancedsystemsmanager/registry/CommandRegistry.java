@@ -84,7 +84,7 @@ public class CommandRegistry
         registerCommand(new CommandFluidOutput());
 
         registerCommand(new CommandRedstoneOutput());
-
+        registerCommand(new CommandRedstoneCondition());
         registerCommand(VARIABLE = new CommandVariable());
         registerCommand(new CommandLoop());
 

@@ -74,7 +74,7 @@ public class SystemTypeRegistry
         @Override
         public int getDefaultRadioButton()
         {
-            return 2;
+            return 0;
         }
 
         @Override

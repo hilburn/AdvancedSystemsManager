@@ -1,14 +1,15 @@
 package advancedsystemsmanager.flow.execution;
 
-
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.tileentities.IRedstoneNode;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.commands.CommandBase;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSides;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesTrigger;
 import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
@@ -17,7 +18,6 @@ import java.util.List;
 public abstract class TriggerHelper
 {
     public static final int TRIGGER_INTERVAL_ID = 2;
-
 
     public boolean canUseMergedDetection;
     public int containerId;
@@ -42,7 +42,9 @@ public abstract class TriggerHelper
         {
             if (menuRedstone.isSideRequired(i))
             {
-                if ((high && !isBlockPowered(component, oldPower[i]) && isBlockPowered(component, newPower[i])) || (!high && isBlockPowered(component, oldPower[i]) && !isBlockPowered(component, newPower[i])))
+                boolean power = isBlockPowered(component, newPower[i]);
+                boolean old = isBlockPowered(component, oldPower[i]);
+                if (high == power && power != old)
                 {
                     return true;
                 }
@@ -57,13 +59,12 @@ public abstract class TriggerHelper
         return hasRedStoneFlipped(component, newPower, oldPower, high) && isTriggerPowered(component, newPower, high);
     }
 
-    public boolean isPulseReceived(FlowComponent component, List<SlotInventoryHolder> containers, ITriggerNode trigger, boolean high)
+    public boolean isPulseReceived(FlowComponent component, List<SystemCoord> containers, ITriggerNode trigger, boolean high)
     {
         boolean requiresAll = trigger != null;
-        for (SlotInventoryHolder container : containers)
+        for (SystemCoord container : containers)
         {
-            ITriggerNode input = container.getTrigger();
-
+            ITriggerNode input = (ITriggerNode)container.tileEntity;
 
             boolean flag;
             if (input.equals(trigger) || !requiresAll)
@@ -138,23 +139,30 @@ public abstract class TriggerHelper
 
     public boolean isTriggerPowered(FlowComponent item, boolean high)
     {
-        List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
+        List<SystemCoord> receivers = CommandBase.getContainers(item.getManager(), (MenuContainer)item.getMenus().get(containerId));
 
         return receivers != null && isTriggerPowered(receivers, item, high);
     }
 
-    public boolean isTriggerPowered(List<SlotInventoryHolder> receivers, FlowComponent component, boolean high)
+    public boolean isTriggerPowered(List<SystemCoord> receivers, FlowComponent component, boolean high)
     {
         MenuContainer menuContainer = (MenuContainer)component.getMenus().get(containerId);
         if (canUseMergedDetection && menuContainer.getOption() == 0)
         {
             int[] currentPower = new int[ForgeDirection.VALID_DIRECTIONS.length];
-            for (SlotInventoryHolder receiver : receivers)
+            for (SystemCoord receiver : receivers)
             {
-                IRedstoneNode node = receiver.getNode();
+                int[] data;
+                if (receiver.tileEntity instanceof ITriggerNode)
+                {
+                    data = ((ITriggerNode)receiver.tileEntity).getData();
+                } else
+                {
+                    data = ((IRedstoneNode)receiver.tileEntity).getPower();
+                }
                 for (int i = 0; i < currentPower.length; i++)
                 {
-                    currentPower[i] = Math.min(15, currentPower[i] + node.getPower()[i]);
+                    currentPower[i] = Math.min(15, currentPower[i] + data[i]);
                 }
             }
 
@@ -162,15 +170,15 @@ public abstract class TriggerHelper
         } else
         {
             boolean requiresAll = menuContainer.getOption() == 0 || (menuContainer.getOption() == 1 && canUseMergedDetection);
-            for (SlotInventoryHolder receiver : receivers)
+            for (SystemCoord receiver : receivers)
             {
                 int[] data;
-                if (receiver.getTile() instanceof ITriggerNode)
+                if (receiver.tileEntity instanceof ITriggerNode)
                 {
-                    data = receiver.getTrigger().getData();
+                    data = ((ITriggerNode)receiver.tileEntity).getData();
                 } else
                 {
-                    data = receiver.getNode().getPower();
+                    data = ((IRedstoneNode)receiver.tileEntity).getPower();
                 }
 
                 if (isTriggerPowered(component, data, high))

@@ -8,7 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-
 public class BlockCableInput extends BlockClusterElementBase<TileEntityReceiver>
 {
     public BlockCableInput()

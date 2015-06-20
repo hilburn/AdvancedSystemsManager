@@ -1,15 +1,16 @@
 package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.commands.CommandBase;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuUpdateBlock;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
+import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.EnumSet;
 import java.util.List;
-
 
 public class TriggerHelperBUD extends TriggerHelper
 {
@@ -105,12 +106,11 @@ public class TriggerHelperBUD extends TriggerHelper
 
     public void triggerBUD(FlowComponent item, TileEntityBUD tileEntityBUD)
     {
-        List<SlotInventoryHolder> receivers = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
+        MenuContainer componentMenuContainer = (MenuContainer)item.getMenus().get(containerId);
+        List<SystemCoord> receivers = CommandBase.getContainers(item.getManager(), componentMenuContainer);
 
         if (receivers != null)
         {
-            MenuContainer componentMenuContainer = (MenuContainer)item.getMenus().get(containerId);
-
             TileEntityBUD trigger = componentMenuContainer.getOption() == 0 ? tileEntityBUD : null;
             EnumSet<ConnectionOption> valid = EnumSet.noneOf(ConnectionOption.class);
             if (isTriggerPowered(item, true))

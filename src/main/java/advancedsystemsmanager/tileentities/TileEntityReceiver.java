@@ -17,7 +17,6 @@ import java.util.List;
 public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode
 {
     private static final String NBT_SIDES = "Sides";
-    private static final String NBT_POWER = "Power";
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();
     private int[] oldPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private int[] isPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
@@ -64,32 +63,26 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)
     {
-        NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < sidesTag.tagCount(); i++)
+        byte[] sides = nbtTagCompound.getByteArray(NBT_SIDES);
+        int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];
+        for (int i = 0; i < sides.length; i++)
         {
+            powered[i] = sides[i];
 
-            NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
-
-            oldPowered[i] = isPowered[i] = sideTag.getByte(NBT_POWER);
         }
+        oldPowered = isPowered = powered;
     }
 
 
     @Override
     public void writeContentToNBT(NBTTagCompound nbtTagCompound)
     {
-        NBTTagList sidesTag = new NBTTagList();
-        for (int powered : isPowered)
+        byte[] sides = new byte[isPowered.length];
+        for (int i = 0; i < sides.length; i++)
         {
-            NBTTagCompound sideTag = new NBTTagCompound();
-
-            sideTag.setByte(NBT_POWER, (byte)powered);
-
-            sidesTag.appendTag(sideTag);
+            sides[i] = (byte)isPowered[i];
         }
-
-
-        nbtTagCompound.setTag(NBT_SIDES, sidesTag);
+        nbtTagCompound.setByteArray(NBT_SIDES, sides);
     }
 
     @Override
