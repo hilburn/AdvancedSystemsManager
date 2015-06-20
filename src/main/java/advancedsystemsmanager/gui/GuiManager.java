@@ -127,6 +127,14 @@ public class GuiManager extends GuiBase
                 MessageHandler.INSTANCE.sendToServer(new SecretMessage());
             }
         });
+        codes.add(new SecretCode("pong")
+        {
+            @Override
+            protected void trigger()
+            {
+                manager.specialRenderer = new GuiPong(GuiManager.this);
+            }
+        });
     }
 
     public GuiManager(TileEntityManager manager, InventoryPlayer player)
