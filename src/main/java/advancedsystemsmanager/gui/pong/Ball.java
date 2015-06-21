@@ -1,5 +1,6 @@
-package advancedsystemsmanager.pong;
+package advancedsystemsmanager.gui.pong;
 
+import advancedsystemsmanager.gui.GuiColourSelector;
 import advancedsystemsmanager.gui.GuiManager;
 
 public class Ball
@@ -15,12 +16,12 @@ public class Ball
         this.sY = y;
         this.v = v;
         this.top = top;
-        this.bottom = bottom;
+        this.bottom = bottom-h;
     }
 
     public void draw(GuiManager gui)
     {
-        gui.drawRectangle(x, y, x+w, y+h, new int[]{255,255,255});
+        gui.drawRectangle(x, y, x+w, y+h, GuiColourSelector.WHITE);
     }
 
     public void spawn()
@@ -33,7 +34,7 @@ public class Ball
         this.vY = (int)Math.round(this.v * Math.cos(this.angle));
     }
 
-    public void update(Beam left, Beam right)
+    public void update(Paddle left, Paddle right)
     {
         this.x += this.vX;
         this.y += this.vY;
@@ -47,15 +48,15 @@ public class Ball
             this.y = bottom;
             this.vY = -this.vY;
         }
-        if (left.impactR(this.x, this.y))
+        if (left.checkLeft(this.x, this.y, this.w, this.h))
         {
             this.x = left.x + left.w;
             this.vX = -this.vX;
             this.vY += Math.cos(left.angleChange(this, 75));
         }
-        if (right.impactL(this.x, this.y))
+        if (right.checkRight(this.x, this.y, this.w, this.h))
         {
-            this.x = right.x - right.w;
+            this.x = right.x - w;
             this.vX = -this.vX;
             this.vY += Math.cos(right.angleChange(this, 75));
         }

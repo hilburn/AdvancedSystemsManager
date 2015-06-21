@@ -4,6 +4,7 @@ import advancedsystemsmanager.animation.AnimationController;
 import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.pong.GuiPong;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SecretMessage;
