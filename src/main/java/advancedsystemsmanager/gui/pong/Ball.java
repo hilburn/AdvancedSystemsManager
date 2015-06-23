@@ -24,7 +24,7 @@ public class Ball
         gui.drawRectangle(x, y, x+w, y+h, GuiColourSelector.WHITE);
     }
 
-    public void spawn()
+    public void reset()
     {
         this.angle = Math.random() * 45;
         this.angle = Math.toRadians(angle + 250);
@@ -62,8 +62,15 @@ public class Ball
         }
     }
 
-    public boolean outOfBounds(int left, int right)
+    public boolean checkScore(int left, Paddle leftPaddle, int right, Paddle rightPaddle)
     {
-        return this.x > right || this.x < left;
+        if (this.x > right)
+        {
+            leftPaddle.score();
+        } else if (this.x < left)
+        {
+            rightPaddle.score();
+        }
+        return false;
     }
 }

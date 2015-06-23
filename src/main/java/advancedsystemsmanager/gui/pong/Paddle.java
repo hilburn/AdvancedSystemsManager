@@ -9,6 +9,7 @@ public class Paddle
     int sY, x, y, w, h;
     int top, bottom;
     int direction;
+    int score;
 
     public Paddle(int x, int y, int w, int h, int top, int bottom)
     {
@@ -20,7 +21,7 @@ public class Paddle
         this.bottom = bottom;
     }
 
-    public void spawn()
+    public void reset()
     {
         this.y = sY;
     }
@@ -55,6 +56,11 @@ public class Paddle
     public double angleChange(Ball ball, int maxAngle)
     {
         return (((this.y + this.h/2) - ball.y)/(this.h/2))*Math.toRadians(maxAngle);
+    }
+
+    public void score()
+    {
+        score++;
     }
 
     public void update(int move)

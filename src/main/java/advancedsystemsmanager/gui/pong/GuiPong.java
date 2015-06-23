@@ -12,30 +12,30 @@ public class GuiPong implements IInterfaceRenderer
     private int move = 5;
     private int height, width, x, y;
 
-    public GuiPong(GuiManager gui)
+    public GuiPong()
     {
         x = 16;
         y = 16;
         height = GuiManager.GUI_HEIGHT - 2 * y;
         width = GuiManager.GUI_WIDTH - 2 * x;
-        resetGame();
-    }
-
-    private void resetGame()
-    {
         int yBorder = 5;
         int rectHeight = 50;
         ball = new Ball(width/2 - 2, height/2 - 2, 5, y + yBorder, y + height - yBorder);
         player = new Paddle(x * 2, (height - rectHeight) /2, 5, rectHeight, y + yBorder, y + height - yBorder);
         ai = new PaddleAI(width, height/2, 5, rectHeight, y + yBorder, y + height - yBorder);
-        ball.spawn();
-        player.spawn();
-        ai.spawn();
+        resetGame();
+    }
+
+    private void resetGame()
+    {
+        ball.reset();
+        player.reset();
+        ai.reset();
     }
 
     private void update()
     {
-        if (ball.outOfBounds(x + 5, width + x - 5)) resetGame();
+        if (ball.checkScore(x + 5, player, width + x - 5, ai)) resetGame();
         ai.update(ball, move);
         player.update(move);
         ball.update(player, ai);

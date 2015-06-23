@@ -133,7 +133,7 @@ public class GuiManager extends GuiBase
             @Override
             protected void trigger()
             {
-                manager.specialRenderer = new GuiPong(GuiManager.this);
+                manager.specialRenderer = new GuiPong();
             }
         });
     }
