@@ -14,6 +14,7 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static advancedsystemsmanager.AdvancedSystemsManager.packetHandler;
 
@@ -192,5 +193,16 @@ public class ASMPacket extends PacketBuffer
     public String readStringFromBuffer()
     {
         return readStringFromBuffer(32);
+    }
+
+    public void writeUUID(UUID id)
+    {
+        this.writeLong(id.getMostSignificantBits());
+        this.writeLong(id.getLeastSignificantBits());
+    }
+
+    public UUID readUUID()
+    {
+        return new UUID(this.readLong(), this.readLong());
     }
 }
