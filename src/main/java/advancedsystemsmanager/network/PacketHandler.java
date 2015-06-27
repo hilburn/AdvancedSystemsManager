@@ -16,13 +16,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.tileentity.TileEntity;
 
-
 public class PacketHandler
 {
     public static final double BLOCK_UPDATE_RANGE = 128;
-    public static final double BLOCK_UPDATE_SQ = BLOCK_UPDATE_RANGE * BLOCK_UPDATE_RANGE;
     public static final int SYNC_ALL = 0;
-    public static final byte SETTING_MESSAGE = 1;
+    public static final int SETTING_MESSAGE = 1;
     public static final int SYNC_COMPONENT = 2;
     public static final int NEW_VARIABLE = 4;
     public static final int BUTTON_CLICK = 5;
@@ -77,32 +75,6 @@ public class PacketHandler
         return packet;
     }
 
-
-
-   /* public static void readBlockPacket(DataReader data) {
-        int x = data.readData(DataBitHelper.WORLD_COORDINATE);
-        int y = data.readData(DataBitHelper.WORLD_COORDINATE);
-        int z = data.readData(DataBitHelper.WORLD_COORDINATE);
-
-        World world = Minecraft.getMinecraft().theWorld;
-        if (world.getBlockId(x, y, z) == Blocks.blockCable.blockID) {
-            Blocks.blockCable.update(world, x, y, z);
-        }
-    }*/
-
-    @SideOnly(Side.CLIENT)
-    public static ASMPacket getBaseContainerPacket()
-    {
-        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-        if (container != null)
-        {
-            return getContainerPacket(container);
-        } else
-        {
-            return null;
-        }
-    }
-
     public static ASMPacket getContainerPacket(Container container)
     {
         ASMPacket dw = new ASMPacket();
@@ -126,12 +98,13 @@ public class PacketHandler
     @SideOnly(Side.CLIENT)
     public static ASMPacket getServerPacket()
     {
-        return getBaseContainerPacket();
+        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+        return getContainerPacket(container);
     }
 
     private static void createComponentPacket(ASMPacket dw, FlowComponent component)
     {
-        dw.writeByte(SYNC_COMPONENT); //this is a packet for a specific FlowComponent
+        dw.writeByte(SYNC_COMPONENT);
         dw.writeVarIntToBuffer(component.getId());
     }
 
@@ -140,48 +113,6 @@ public class PacketHandler
         ASMPacket dw = PacketHandler.getContainerPacket(container);
         createComponentPacket(dw, component);
         return dw;
-    }
-
-
-    public static void writeAllComponentData(ASMPacket dw, FlowComponent flowComponent)
-    {
-//        dw.writeData(flowComponent.getX(), DataBitHelper.FLOW_CONTROL_X);
-//        dw.writeData(flowComponent.getY(), DataBitHelper.FLOW_CONTROL_Y);
-//        dw.writeData(flowComponent.getType().getId(), DataBitHelper.FLOW_CONTROL_TYPE_ID);
-//        dw.writeComponentId(flowComponent.manager, flowComponent.getId());
-//        dw.writeString(flowComponent.getComponentName(), DataBitHelper.NAME_LENGTH);
-//        if (flowComponent.getParent() != null)
-//        {
-//            dw.writeBoolean(true);
-//            dw.writeComponentId(flowComponent.getManager(), flowComponent.getParent().getId());
-//        } else
-//        {
-//            dw.writeBoolean(false);
-//        }
-//        for (Menu menu : flowComponent.getMenus())
-//        {
-//            //menu.writeData(dw);
-//        }
-//
-//        for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-//        {
-//            Connection connection = flowComponent.getConnection(i);
-//            dw.writeBoolean(connection != null);
-//            if (connection != null)
-//            {
-//                dw.writeComponentId(flowComponent.getManager(), connection.getComponentId());
-//                dw.writeData(connection.getConnectionId(), DataBitHelper.CONNECTION_ID);
-//
-//                dw.writeData(connection.getNodes().size(), DataBitHelper.NODE_ID);
-//                for (Point point : connection.getNodes())
-//                {
-//                    dw.writeData(point.getX(), DataBitHelper.FLOW_CONTROL_X);
-//                    dw.writeData(point.getY(), DataBitHelper.FLOW_CONTROL_Y);
-//                }
-//            }
-//        }
-//
-//        flowComponent.getManager().updateVariables();
     }
 
     public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
