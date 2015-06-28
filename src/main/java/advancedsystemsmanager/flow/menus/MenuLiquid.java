@@ -159,7 +159,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
         String name = fluid.getLocalizedName(null);
         if (name.contains("."))
         {
-            name = FluidRegistry.getFluidName(fluid.getID());
+            name = FluidRegistry.getFluidName(fluid);
         }
 
         return name;

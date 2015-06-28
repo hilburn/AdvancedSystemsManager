@@ -620,7 +620,7 @@ public class CommandExecutor
         MenuStuff menuItem = (MenuStuff)menu;
         if (fluidStack != null)
         {
-            int fluidId = fluidStack.fluidID;
+            int fluidId = fluidStack.getFluidID();
 
 //            for (Setting setting : menuItem.getSettings())
 //            {
