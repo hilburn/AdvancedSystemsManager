@@ -67,9 +67,11 @@ public class Ball
         if (this.x > right)
         {
             leftPaddle.score();
+            return true;
         } else if (this.x < left)
         {
             rightPaddle.score();
+            return true;
         }
         return false;
     }

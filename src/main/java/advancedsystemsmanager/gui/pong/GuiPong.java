@@ -3,6 +3,9 @@ package advancedsystemsmanager.gui.pong;
 import advancedsystemsmanager.gui.GuiColourSelector;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
+import advancedsystemsmanager.gui.fonts.FontRenderer;
+
+import java.awt.*;
 
 public class GuiPong implements IInterfaceRenderer
 {
@@ -10,10 +13,15 @@ public class GuiPong implements IInterfaceRenderer
     private Paddle player;
     private PaddleAI ai;
     private int move = 5;
+    private int winCondition = 9;
     private int height, width, x, y;
+    private FontRenderer fontRenderer;
+    private boolean ended;
 
     public GuiPong()
     {
+        ended = false;
+        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false); // TODO proper pong font
         x = 16;
         y = 16;
         height = GuiManager.GUI_HEIGHT - 2 * y;
@@ -28,6 +36,11 @@ public class GuiPong implements IInterfaceRenderer
 
     private void resetGame()
     {
+        if (player.score > winCondition || ai.score > winCondition)
+        {
+            finish();
+            return;
+        }
         ball.reset();
         player.reset();
         ai.reset();
@@ -41,23 +54,38 @@ public class GuiPong implements IInterfaceRenderer
         ball.update(player, ai);
     }
 
+    private void finish()
+    {
+        ended = true;
+    }
+
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        update();
-        int border = 5;
-        gui.drawRectangle(x, y, x + width, y + height, GuiColourSelector.WHITE);
-        gui.drawRectangle(x + border, y + border, x + width - border, y + height - border, GuiColourSelector.BLACK);
-        int y = this.y + border;
-        int x = this.x + width/2 - 2;
-        while (y < this.y + height)
+        if (!ended)
         {
-            gui.drawRectangle(x, y, x + 4, y + 8, GuiColourSelector.WHITE);
-            y+=16;
+            update();
+            int border = 5;
+            gui.drawRectangle(x, y, x + width, y + height, GuiColourSelector.WHITE);
+            gui.drawRectangle(x + border, y + border, x + width - border, y + height - border, GuiColourSelector.BLACK);
+            int y = this.y + border;
+            int x = this.x + width / 2 - 2;
+            while (y < this.y + height)
+            {
+                gui.drawRectangle(x, y, x + 4, y + 8, GuiColourSelector.WHITE);
+                y += 16;
+            }
+            ball.draw(gui);
+            player.draw(gui);
+            fontRenderer.drawString(this.x - 40 + width / 2, this.y, player.getScore(), 0xFFFFFF);
+            ai.draw(gui);
+            fontRenderer.drawString(this.x + 20 + width / 2, this.y, ai.getScore(), 0xFFFFFF);
         }
-        player.draw(gui);
-        ball.draw(gui);
-        ai.draw(gui);
+        else
+        {
+            fontRenderer.drawString(this.x + width / 4, this.y, "Thx for playing", 0xFFFFFF);
+            fontRenderer.drawScaledString(this.x + width / 2 - 40, this.y + 40, (player.score > winCondition ? "Player" : "AI") + " wins", 0xFFFFFF, 26);
+        }
     }
 
     @Override
