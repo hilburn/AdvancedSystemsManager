@@ -63,6 +63,11 @@ public class Paddle
         score++;
     }
 
+    public String getScore()
+    {
+        return ""+score;
+    }
+
     public void update(int move)
     {
         if (Keyboard.getEventKey() == Keyboard.KEY_UP)

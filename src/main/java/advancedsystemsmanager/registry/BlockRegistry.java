@@ -60,6 +60,9 @@ public class BlockRegistry
     public static BlockCableAE cableAENode;
     @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
     public static BlockCableRF cableRFNode;
+    @ConfigKey(Names.CABLE_TC)
+    @Register(tileEntity = TileEntityTCNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_TC, dependency = Mods.THAUMCRAFT)
+    public static BlockCableAE cableTCNode; // TODO add recipe
 
 
     public static void registerRecipes()
