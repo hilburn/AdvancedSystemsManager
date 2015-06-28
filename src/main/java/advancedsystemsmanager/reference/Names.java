@@ -22,6 +22,7 @@ public class Names
 
     public static final String CABLE_RF = CABLE + "_rf";
     public static final String CABLE_AE = CABLE + "_ae";
+    public static final String CABLE_TC = CABLE + "_tc";
 
     public static final String DUPLICATOR = PREFIX + "duplicator";
     public static final String LABELER = PREFIX + "labeler";
