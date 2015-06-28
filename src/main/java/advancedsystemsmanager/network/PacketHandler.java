@@ -75,6 +75,14 @@ public class PacketHandler
         return packet;
     }
 
+    @SideOnly(Side.CLIENT)
+    public static ASMPacket getBaseContainerPacket()
+    {
+        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
+        if (container != null) return getContainerPacket(container);
+        return null;
+    }
+
     public static ASMPacket getContainerPacket(Container container)
     {
         ASMPacket dw = new ASMPacket();
