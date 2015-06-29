@@ -8,7 +8,6 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.UserPermission;
-import advancedsystemsmanager.util.Utils;
 import advancedsystemsmanager.wrappers.InventoryWrapper;
 import advancedsystemsmanager.wrappers.InventoryWrapperHorse;
 import advancedsystemsmanager.wrappers.InventoryWrapperPlayer;
