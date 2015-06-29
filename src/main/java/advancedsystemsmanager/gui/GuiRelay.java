@@ -7,6 +7,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRelay;
 import advancedsystemsmanager.util.UserPermission;
 import advancedsystemsmanager.util.Utils;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -100,7 +101,7 @@ public class GuiRelay extends GuiBase
             {
                 if (relay.getPermissions().size() < TileEntityRelay.PERMISSION_MAX_LENGTH)
                 {
-                    relay.getPermissions().add(new UserPermission(getUserName()));
+                    relay.getPermissions().add(new UserPermission(getUser()));
                     addUser();
                 }
             }
@@ -380,7 +381,7 @@ public class GuiRelay extends GuiBase
                     renderInfoBox(j, permission, x + LIST_MENU_WIDTH - (1 + j) * (INFO_SIZE + INFO_MARGIN_X), y + INFO_MARGIN_Y);
                 }
 
-                drawString(permission.getName(), x + LIST_TEXT_POS_X, y + LIST_TEXT_POS_Y, 0.7F, 0xEEEEEE);
+                drawString(permission.getUser().getName(), x + LIST_TEXT_POS_X, y + LIST_TEXT_POS_Y, 0.7F, 0xEEEEEE);
             }
 
             if (getPageCount() > 1)
@@ -405,7 +406,7 @@ public class GuiRelay extends GuiBase
         UserPermission info = relay.doesListRequireOp() && !isOp(player, true) ? player : selected;
         if (info != null)
         {
-            drawString(info.getName(), INFO_BOX_POS_X + INFO_BOX_NAME_X, INFO_BOX_POS_Y + INFO_BOX_NAME_Y, 0.7F, 0x404040);
+            drawString(info.getUser().getName(), INFO_BOX_POS_X + INFO_BOX_NAME_X, INFO_BOX_POS_Y + INFO_BOX_NAME_Y, 0.7F, 0x404040);
             for (int i = 0; i < 2; i++)
             {
                 int x = INFO_BOX_POS_X + INFO_BOX_INFO_X;
@@ -562,7 +563,7 @@ public class GuiRelay extends GuiBase
 
     private boolean isOwner(UserPermission permission, boolean viewer)
     {
-        return (permission != null && permission.getName().equals(relay.getOwner())) || (viewer && getUserName().equals(relay.getOwner()));
+        return (permission != null && permission.getUser().equals(relay.getOwner())) || (viewer && getUser().equals(relay.getOwner()));
     }
 
     private boolean isOp(UserPermission permission, boolean viewer)
@@ -570,9 +571,9 @@ public class GuiRelay extends GuiBase
         return isOwner(permission, viewer) || (permission != null && permission.isOp());
     }
 
-    private String getUserName()
+    private GameProfile getUser()
     {
-        return Utils.stripControlCodes(Minecraft.getMinecraft().thePlayer.getDisplayName());
+        return Minecraft.getMinecraft().thePlayer.getGameProfile();
     }
 
     private UserPermission getUserPermission()
@@ -588,7 +589,7 @@ public class GuiRelay extends GuiBase
 
         for (UserPermission permission : relay.getPermissions())
         {
-            if (permission.getName().equals(getUserName()))
+            if (permission.getUser().equals(getUser()))
             {
                 cachedPermission = permission;
                 break;
@@ -611,7 +612,7 @@ public class GuiRelay extends GuiBase
     {
         for (int i = 0; i < relay.getPermissions().size(); i++)
         {
-            if (relay.getPermissions().get(i).getName().equals(getUserName()))
+            if (relay.getPermissions().get(i).getUser().equals(getUser()))
             {
                 removeUser(i);
                 break;
@@ -633,7 +634,9 @@ public class GuiRelay extends GuiBase
         ASMPacket dw = PacketHandler.getServerPacket();
         dw.writeBoolean(true); //user data
         dw.writeBoolean(true); //added
-        dw.writeStringToBuffer(getUserName());
+        GameProfile user = getUser();
+        dw.writeStringToBuffer(user.getName());
+        dw.writeUUID(user.getId());
         PacketHandler.sendDataToServer(dw);
     }
 

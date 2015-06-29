@@ -12,6 +12,7 @@ import advancedsystemsmanager.util.Utils;
 import advancedsystemsmanager.wrappers.InventoryWrapper;
 import advancedsystemsmanager.wrappers.InventoryWrapperHorse;
 import advancedsystemsmanager.wrappers.InventoryWrapperPlayer;
+import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,6 +39,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 
 
 public class TileEntityRelay extends TileEntityClusterElement implements IInventory, ISidedInventory, IFluidHandler, ITileInterfaceProvider
@@ -45,6 +47,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
     private static final int MAX_CHAIN_LENGTH = 512;
     private static final String NBT_OWNER = "Owner";
+    private static final String NBT_UUID = "UUID";
     private static final String NBT_CREATIVE = "Creative";
     private static final String NBT_LIST = "ShowList";
     private static final String NBT_PERMISSIONS = "Permissions";
@@ -60,10 +63,15 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     //used by the advanced version
     private List<UserPermission> permissions = new ArrayList<UserPermission>();
     private boolean doesListRequireOp = false;
-    private String owner = "Unknown";
+    private GameProfile owner;
     private boolean creativeMode;
 
-    public String getOwner()
+    public String getOwnerName()
+    {
+        return owner == null? "Unknown" : owner.getName();
+    }
+
+    public GameProfile getOwner()
     {
         return owner;
     }
@@ -72,7 +80,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     {
         if (entity != null && entity instanceof EntityPlayer)
         {
-            owner = Utils.stripControlCodes(((EntityPlayer)entity).getDisplayName());
+            owner = ((EntityPlayer)entity).getGameProfile();
         }
     }
 
@@ -298,7 +306,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             for (UserPermission permission : permissions)
             {
-                if (permission.getName().equals(Utils.stripControlCodes(player.getDisplayName())))
+                if (permission.getUser().equals(player.getGameProfile()))
                 {
                     return permission.isActive();
                 }
@@ -692,16 +700,16 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             }
         }
 
-        String username = Utils.stripControlCodes(player.getDisplayName());
+        GameProfile user = player.getGameProfile();
         boolean isOp = false;
-        if (worldObj.isRemote || username.equals(owner))
+        if (worldObj.isRemote || user.equals(owner))
         {
             isOp = true;
         } else
         {
             for (UserPermission permission : permissions)
             {
-                if (username.equals(permission.getName()))
+                if (user.equals(permission.getUser()))
                 {
                     isOp = permission.isOp();
                     break;
@@ -715,11 +723,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             boolean added = dr.readBoolean();
             if (added)
             {
-                UserPermission permission = new UserPermission(dr.readStringFromBuffer());
+                UserPermission permission = new UserPermission(dr.readStringFromBuffer(), dr.readUUID());
 
                 for (UserPermission userPermission : permissions)
                 {
-                    if (userPermission.getName().equals(permission.getName()))
+                    if (userPermission.getUser().equals(permission.getUser()))
                     {
                         return;
                     }
@@ -731,7 +739,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
                     permission.setOp(dr.readBoolean());
                 }
 
-                if (permissions.size() < TileEntityRelay.PERMISSION_MAX_LENGTH && (worldObj.isRemote || permission.getName().equals(username)))
+                if (permissions.size() < TileEntityRelay.PERMISSION_MAX_LENGTH && (worldObj.isRemote || permission.getUser().equals(user)))
                 {
                     permissions.add(permission);
                 }
@@ -745,7 +753,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
                     if (deleted)
                     {
                         UserPermission permission = permissions.get(id);
-                        if (isOp || permission.getName().equals(username))
+                        if (isOp || permission.getUser().equals(user))
                         {
                             permissions.remove(id);
                         }
@@ -791,7 +799,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             ASMPacket dw = PacketHandler.getWriterForUpdate(container);
             dw.writeBoolean(true); //user data
             dw.writeBoolean(true); //added
-            dw.writeStringToBuffer(permission.getName());
+            dw.writeStringToBuffer(permission.getUser().getName());
+            dw.writeUUID(permission.getUser().getId());
             dw.writeBoolean(permission.isActive());
             dw.writeBoolean(permission.isOp());
             PacketHandler.sendDataToListeningClients(container, dw);
@@ -802,7 +811,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             for (int i = 0; i < container.oldPermissions.size(); i++)
             {
-                if (i >= permissions.size() || !permissions.get(i).getName().equals(container.oldPermissions.get(i).getName()))
+                if (i >= permissions.size() || !permissions.get(i).getUser().equals(container.oldPermissions.get(i).getUser()))
                 {
                     ASMPacket dw = PacketHandler.getWriterForUpdate(container);
                     dw.writeBoolean(true); //user data
@@ -858,10 +867,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)
     {
-
         if (nbtTagCompound.hasKey(NBT_OWNER))
         {
-            owner = nbtTagCompound.getString(NBT_OWNER);
+            String name = nbtTagCompound.getString(NBT_OWNER);
+            UUID id = UUID.fromString(nbtTagCompound.getString(NBT_UUID));
+            owner = new GameProfile(id, name);
             creativeMode = nbtTagCompound.getBoolean(NBT_CREATIVE);
             doesListRequireOp = nbtTagCompound.getBoolean(NBT_LIST);
             permissions.clear();
@@ -870,7 +880,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             for (int i = 0; i < permissionTags.tagCount(); i++)
             {
                 NBTTagCompound permissionTag = permissionTags.getCompoundTagAt(i);
-                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME));
+                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME), UUID.fromString(nbtTagCompound.getString(NBT_UUID)));
                 permission.setActive(permissionTag.getBoolean(NBT_ACTIVE));
                 permission.setOp(permissionTag.getBoolean(NBT_EDITOR));
                 permissions.add(permission);
@@ -883,7 +893,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     {
         if (isAdvanced())
         {
-            nbtTagCompound.setString(NBT_OWNER, owner);
+            if (owner != null)
+            {
+                nbtTagCompound.setString(NBT_OWNER, owner.getName());
+                nbtTagCompound.setString(NBT_UUID, owner.getId().toString());
+            }
             nbtTagCompound.setBoolean(NBT_CREATIVE, creativeMode);
             nbtTagCompound.setBoolean(NBT_LIST, doesListRequireOp);
 
@@ -891,7 +905,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             for (UserPermission permission : permissions)
             {
                 NBTTagCompound permissionTag = new NBTTagCompound();
-                permissionTag.setString(NBT_NAME, permission.getName());
+                nbtTagCompound.setString(NBT_NAME, permission.getUser().getName());
+                nbtTagCompound.setString(NBT_UUID, permission.getUser().getId().toString());
                 permissionTag.setBoolean(NBT_ACTIVE, permission.isActive());
                 permissionTag.setBoolean(NBT_EDITOR, permission.isOp());
                 permissionTags.appendTag(permissionTag);

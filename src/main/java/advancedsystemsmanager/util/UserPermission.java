@@ -1,34 +1,37 @@
 package advancedsystemsmanager.util;
 
 
+import com.mojang.authlib.GameProfile;
+
+import java.util.UUID;
+
 public class UserPermission
 {
-    private String name;
+    private GameProfile user;
     private boolean op;
     private boolean active;
 
-    public UserPermission(String name)
+    public UserPermission(String name, UUID uuid)
     {
-        if (name == null)
-        {
-            this.name = "Unknown";
-        } else
-        {
-            this.name = name;
-        }
+        user = new GameProfile(uuid, name);
+    }
+
+    public UserPermission(GameProfile user)
+    {
+        this.user = user;
     }
 
     public UserPermission copy()
     {
-        UserPermission temp = new UserPermission(getName());
+        UserPermission temp = new UserPermission(getUser());
         temp.setOp(isOp());
         temp.setActive(isActive());
         return temp;
     }
 
-    public String getName()
+    public GameProfile getUser()
     {
-        return name;
+        return user;
     }
 
     public boolean isOp()
