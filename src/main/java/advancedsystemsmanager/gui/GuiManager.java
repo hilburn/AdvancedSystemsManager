@@ -47,6 +47,7 @@ public class GuiManager extends GuiBase
     private boolean useButtons = true;
     private boolean useInfo = true;
     private boolean useMouseOver = true;
+    private boolean closeSpecialRenderer;
 
     private TileEntityManager manager;
 
@@ -190,7 +191,12 @@ public class GuiManager extends GuiBase
 
         bindTexture(COMPONENTS);
 
-        if (hasSpecialRenderer())
+        if (closeSpecialRenderer)
+        {
+            manager.specialRenderer = null;
+            closeSpecialRenderer = false;
+        }
+        else if (hasSpecialRenderer())
         {
             getSpecialRenderer().draw(this, mX, mY);
             getSpecialRenderer().drawMouseOver(this, mX, mY);
@@ -407,7 +413,7 @@ public class GuiManager extends GuiBase
         {
             if (c == 1)
             {
-                manager.specialRenderer = null;
+                closeSpecialRenderer = true;
                 return;
             }
             if (getSpecialRenderer().onKeyTyped(this, c, k))
