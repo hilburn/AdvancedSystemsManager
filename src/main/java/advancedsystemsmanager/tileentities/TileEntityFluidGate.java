@@ -1,7 +1,9 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -137,12 +139,13 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
         if (block.canPlaceBlockAt(world, x, y, z))
         {
             Block worldBlock = world.getBlock(x, y, z);
-            boolean sourceBlock = (worldBlock instanceof IFluidBlock || worldBlock instanceof BlockStaticLiquid) && world.getBlockMetadata(x, y, z) == 0;
+            boolean sourceBlock = (worldBlock instanceof IFluidBlock || worldBlock instanceof BlockDynamicLiquid) && world.getBlockMetadata(x, y, z) == 0  || worldBlock instanceof BlockStaticLiquid;
             if (!sourceBlock)
             {
                 if (doFill)
                 {
                     world.setBlock(x, y, z, block);
+                    world.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.cableFluidGate);
                     tank = null;
                 }
                 return FluidContainerRegistry.BUCKET_VOLUME;

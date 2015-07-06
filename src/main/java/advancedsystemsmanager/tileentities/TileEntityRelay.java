@@ -587,12 +587,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             IFluidHandler tank = getTank();
 
-            if (tank != null)
-            {
-                return tank.canFill(from, fluid);
-            }
+            return tank != null && tank.canFill(from, fluid);
 
-            return false;
         } finally
         {
             unBlockUsage();
@@ -606,12 +602,8 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             IFluidHandler tank = getTank();
 
-            if (tank != null)
-            {
-                return tank.canDrain(from, fluid);
-            }
+            return tank != null && tank.canDrain(from, fluid);
 
-            return false;
         } finally
         {
             unBlockUsage();
