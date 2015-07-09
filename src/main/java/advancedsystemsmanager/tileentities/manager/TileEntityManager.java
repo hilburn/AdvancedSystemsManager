@@ -2,12 +2,10 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IManagerButton;
-import advancedsystemsmanager.api.tileentities.ITriggerNode;
+import advancedsystemsmanager.api.tileentities.*;
+import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.api.network.IPacketReader;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
-import advancedsystemsmanager.api.tileentities.ISystemListener;
-import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -24,14 +22,17 @@ import advancedsystemsmanager.gui.IInterfaceRenderer;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
+import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -48,7 +49,8 @@ import java.util.*;
 
 import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
-public class TileEntityManager extends TileEntity implements ITileInterfaceProvider, ITriggerNode
+@Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY)
+public class TileEntityManager extends TileEntity implements ITileInterfaceProvider, ITriggerNode, ISystemTypeFilter, IEnergyReceiver
 {
     public static final TriggerHelperRedstone redstoneTrigger = new TriggerHelperRedstone(3, 4);
     public static final TriggerHelperRedstone redstoneCondition = new TriggerHelperRedstone(1, 2);
@@ -425,6 +427,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             if (connectionBlockType.isInstance(this, target.tileEntity))
             {
+                if (target.tileEntity instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.tileEntity).isOfType(connectionBlockType)) continue;
                 isValidConnection = true;
                 target.addType(connectionBlockType);
             }
@@ -743,5 +746,39 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public int[] getOldData()
     {
         return oldPowered;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int receiveEnergy(ForgeDirection forgeDirection, int i, boolean b)
+    {
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int getEnergyStored(ForgeDirection forgeDirection)
+    {
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int getMaxEnergyStored(ForgeDirection forgeDirection)
+    {
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public boolean canConnectEnergy(ForgeDirection forgeDirection)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOfType(ISystemType type)
+    {
+        return type != RFCompat.RF_RECEIVER || (getBlockMetadata() & 2) == 2;
     }
 }

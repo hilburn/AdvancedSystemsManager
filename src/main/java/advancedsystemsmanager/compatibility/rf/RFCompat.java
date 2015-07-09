@@ -1,9 +1,14 @@
 package advancedsystemsmanager.compatibility.rf;
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.compatibility.CompatBase;
 
 public class RFCompat extends CompatBase
 {
+    public static ISystemType RF_PROVIDER;
+    public static ISystemType RF_RECEIVER;
+    public static ISystemType RF_STORAGE;
+
     @Override
     protected void init()
     {

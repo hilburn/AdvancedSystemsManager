@@ -33,6 +33,7 @@ public class Mods
     public static final String ENDERSTORAGE = "EnderStorage";
     public static final String EXTRABEES = "ExtraBees";
     public static final String EXTRABIOMESXL = "ExtrabiomesXL";
+    public static final String EXTRACELLS = "extracells";
     public static final String EXTRATREES = "ExtraTrees";
     public static final String EXTRAUTILITIES = "ExtraUtilities";
     public static final String ELECTRICRAFT = "ElectriCraft";

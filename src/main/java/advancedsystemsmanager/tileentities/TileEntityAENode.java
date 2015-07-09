@@ -12,6 +12,7 @@ import advancedsystemsmanager.flow.menus.MenuLiquid;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
@@ -34,7 +35,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.*;
 
-@Optional.Interface(iface = "advancedsystemsmanager.api.tileentities.IHiddenTank", modid = "extracells")
+@Optional.Interface(iface = "advancedsystemsmanager.api.tileentities.IHiddenTank", modid = Mods.EXTRACELLS)
 public class TileEntityAENode extends TileEntityClusterElement implements IGridHost, IActionHost, IInternalInventory, IInternalTank
 {
     public AEHelper helper;
