@@ -31,31 +31,31 @@ public class CommandRegistry
     public static ICommand CAMOUFLAGE;
     public static ICommand SIGN;
 
-    private static List<ICommand> components = new ArrayList<ICommand>();
-    private static TIntIntHashMap componentsMapping = new TIntIntHashMap(20);
+    private static List<ICommand> commands = new ArrayList<ICommand>();
+    private static TIntIntHashMap commandMappings = new TIntIntHashMap(20);
 
     public static ICommand registerCommand(ICommand componentType)
     {
-        if (!componentsMapping.containsKey(componentType.getId()))
+        if (!commandMappings.containsKey(componentType.getId()))
         {
-            componentsMapping.put(componentType.getId(), components.size());
-            components.add(componentType);
+            commandMappings.put(componentType.getId(), commands.size());
+            commands.add(componentType);
             return componentType;
         } else
         {
-            AdvancedSystemsManager.log.warn("Component ID " + componentType.getId() + " is already registered by " + components.get(componentType.getId()).getName());
+            AdvancedSystemsManager.log.warn("Component ID " + componentType.getId() + " is already registered by " + commands.get(componentType.getId()).getName());
         }
         return null;
     }
 
     public static ICommand getCommand(int id)
     {
-        return components.get(componentsMapping.get(id));
+        return commands.get(commandMappings.get(id));
     }
 
-    public static List<ICommand> getComponents()
+    public static List<ICommand> getCommands()
     {
-        return components;
+        return commands;
     }
 
     static

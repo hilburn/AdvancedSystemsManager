@@ -4,8 +4,7 @@ import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.flow.setting.ModItemHelper;
 import advancedsystemsmanager.gui.GuiHandler;
-import advancedsystemsmanager.gui.theme.HexValue;
-import advancedsystemsmanager.helpers.Config;
+import advancedsystemsmanager.helpers.ConfigHandler;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.MessageHandler;
@@ -19,16 +18,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.classloading.FMLForgePlugin;
 import thevault.registry.Registerer;
-import advancedsystemsmanager.gui.theme.Theme;
 import advancedsystemsmanager.registry.ThemeHandler;
 import thevault.utils.LogHelper;
 import net.minecraft.creativetab.CreativeTabs;
@@ -57,7 +52,7 @@ public class AdvancedSystemsManager
 
     public static LogHelper log = new LogHelper(Reference.ID);
 
-    public static Config config;
+    public static ConfigHandler configHandler;
 
     public static CreativeTabs creativeTab;
 
@@ -73,12 +68,12 @@ public class AdvancedSystemsManager
         metadata = Metadata.init(metadata);
         File configDir = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
         if (!configDir.exists()) configDir.mkdir();
-        config = new Config(new File(configDir.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
-        config.init();
+        configHandler = new ConfigHandler(new File(configDir.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
+        configHandler.init();
         if (event.getSide() == Side.CLIENT)
         {
             themeHandler = new ThemeHandler(configDir, Reference.THEMES);
-            if (!themeHandler.setTheme(Config.theme))
+            if (!themeHandler.setTheme(ConfigHandler.theme))
                 themeHandler.setTheme("default");
         }
 
@@ -97,7 +92,7 @@ public class AdvancedSystemsManager
             }
         };
 
-        registerer = new Registerer(log, PROXY, config);
+        registerer = new Registerer(log, PROXY, configHandler);
         registerer.scan(BlockRegistry.class, event.getSide());
         registerer.scan(ItemRegistry.class, event.getSide());
 
@@ -113,7 +108,6 @@ public class AdvancedSystemsManager
 
         packetHandler.register(new PacketEventHandler());
 
-        //new ChatListener();
         NetworkRegistry.INSTANCE.registerGuiHandler(AdvancedSystemsManager.INSTANCE, guiHandler);
 
         ItemRegistry.registerRecipes();
@@ -130,6 +124,12 @@ public class AdvancedSystemsManager
     @SuppressWarnings(value = "unchecked")
     public void postInit(FMLPostInitializationEvent event)
     {
+    }
+
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event)
+    {
+        configHandler.loadPowerValues();
     }
 
     @Mod.EventHandler

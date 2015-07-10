@@ -51,12 +51,12 @@ public final class Settings
     public static void setSetting(String name, boolean value)
     {
         settingsRegistry.put(name, value);
-        AdvancedSystemsManager.config.setConfigValue(name, String.valueOf(value));
+        AdvancedSystemsManager.configHandler.setConfigValue(name, String.valueOf(value));
     }
 
     private static void save()
     {
-        AdvancedSystemsManager.config.saveSettings(settingsRegistry);
+        AdvancedSystemsManager.configHandler.saveSettings(settingsRegistry);
     }
 
     public static boolean getSetting(String name)
@@ -72,7 +72,7 @@ public final class Settings
 
     public static void loadDefault()
     {
-        settingsRegistry = new LinkedHashMap<String, Boolean>(Config.managerSettings);
+        settingsRegistry = new LinkedHashMap<String, Boolean>(ConfigHandler.managerSettings);
     }
 
     public static boolean isAutoCloseGroup()

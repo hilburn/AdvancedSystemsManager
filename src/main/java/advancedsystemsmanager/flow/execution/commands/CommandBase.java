@@ -47,6 +47,7 @@ public abstract class CommandBase<Type> implements ICommand
     protected ConnectionSet[] connectionSets;
     protected CommandType type;
     protected EnumSet<ConnectionOption> outputs = EnumSet.allOf(ConnectionOption.class);
+    protected int energyCost;
     protected int[] colour = new int[]{0xc6, 0xc6, 0xc6, 0xff};
 
     public CommandBase(int id, String name, CommandType type, ConnectionSet... connectionSets)
@@ -203,6 +204,18 @@ public abstract class CommandBase<Type> implements ICommand
     @Override
     public void moveComponent(FlowComponent component, FlowComponent oldParent, FlowComponent newParent)
     {
+    }
+
+    @Override
+    public int getEnergyCost()
+    {
+        return energyCost;
+    }
+
+    @Override
+    public void setEnergyCost(int energyCost)
+    {
+        this.energyCost = energyCost;
     }
 
     @Override

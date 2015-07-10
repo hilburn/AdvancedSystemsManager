@@ -13,7 +13,6 @@ import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
-import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.flow.menus.MenuInterval;
 import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
@@ -26,7 +25,6 @@ import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyReceiver;
@@ -66,6 +64,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public static final String NBT_COMPONENTS = "Components";
     private static final String NBT_VARIABLES = "Variables";
     private static final String NBT_SIDES = "Sides";
+    public static boolean energyCostActive;
     public List<FlowComponent> triggers;
     public ManagerButtonList buttons;
     public boolean serverPacket;
@@ -83,7 +82,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private boolean firstInventoryUpdate = true;
     private boolean firstCommandExecution = true;
     private int timer = 0;
-    private TileEntityManager self = this;
     private int[] oldPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private int[] isPowered = new int[ForgeDirection.VALID_DIRECTIONS.length];
     private boolean usingUnlimitedInventories;
@@ -748,9 +746,14 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         return oldPowered;
     }
 
+    public boolean requiresPower()
+    {
+        return energyCostActive && !Settings.isLimitless(this);
+    }
+
     @Override
     @Optional.Method(modid = Mods.COFH_ENERGY)
-    public int receiveEnergy(ForgeDirection forgeDirection, int i, boolean b)
+    public int receiveEnergy(ForgeDirection forgeDirection, int amount, boolean simulate)
     {
         return 0;
     }
@@ -773,12 +776,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     @Optional.Method(modid = Mods.COFH_ENERGY)
     public boolean canConnectEnergy(ForgeDirection forgeDirection)
     {
-        return false;
+        return requiresPower();
     }
 
     @Override
     public boolean isOfType(ISystemType type)
     {
-        return type != RFCompat.RF_RECEIVER || (getBlockMetadata() & 2) == 2;
+        return type != RFCompat.RF_RECEIVER || requiresPower();
     }
 }

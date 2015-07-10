@@ -1,25 +1,26 @@
 package advancedsystemsmanager.helpers;
 
+import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.commands.CommandPastebin;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.Loader;
 import thevault.registry.IConfigLock;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Config implements IConfigLock
+public class ConfigHandler implements IConfigLock
 {
     public static final String CATEGORY_SETTINGS = "default_manager_settings";
     public static final String CATEGORY_ENABLE = "enable";
+    public static final String CATEGORY_POWER = "power_settings";
     public static String theme;
     public static boolean wailaIntegration = true;
     public static boolean aeIntegration = Loader.isModLoaded(Mods.APPLIEDENERGISTICS2);
@@ -27,7 +28,7 @@ public class Config implements IConfigLock
     private Configuration config;
     private File file;
 
-    public Config(File file)
+    public ConfigHandler(File file)
     {
         config = new Configuration(this.file = file);
     }
@@ -53,7 +54,25 @@ public class Config implements IConfigLock
         config.addCustomCategoryComment(CATEGORY_ENABLE, "Set true to enable, false to disable");
         config.setCategoryRequiresWorldRestart(CATEGORY_ENABLE, true);
 
-        config.save();
+        save();
+    }
+
+    public void loadPowerValues()
+    {
+        config.load();
+        config.setCategoryComment(CATEGORY_POWER, "Control the power settings of the manager, if enabled");
+        TileEntityManager.energyCostActive = config.get(CATEGORY_POWER, "enable_energy_costs", false).getBoolean();
+        for (ICommand command : CommandRegistry.getCommands())
+        {
+            command.setEnergyCost(config.get(CATEGORY_POWER, LocalizationHelper.translate(command.getName()), command.getEnergyCost()).getInt());
+        }
+        save();
+    }
+
+    private void save()
+    {
+        if (config.hasChanged())
+            config.save();
     }
 
     @Override
@@ -61,7 +80,7 @@ public class Config implements IConfigLock
     {
         config.load();
         boolean result = config.get(CATEGORY_ENABLE, string, defaultValue).getBoolean();
-        config.save();
+        save();
         return result;
     }
 

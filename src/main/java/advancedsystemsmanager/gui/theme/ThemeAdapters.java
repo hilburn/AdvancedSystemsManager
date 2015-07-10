@@ -35,7 +35,7 @@ public class ThemeAdapters
         public void write(JsonWriter out, ThemeCommand.CommandSet value) throws IOException
         {
             out.beginObject();
-            for (ICommand command : CommandRegistry.getComponents())
+            for (ICommand command : CommandRegistry.getCommands())
             {
                 out.name(LocalizationHelper.translate(command.getName())).value(HexValue.getHexString(command.getColour()));
             }
@@ -54,7 +54,7 @@ public class ThemeAdapters
                 input.put(name, new HexValue(hex));
             }
             in.endObject();
-            for (ICommand command : CommandRegistry.getComponents())
+            for (ICommand command : CommandRegistry.getCommands())
             {
                 String name = LocalizationHelper.translate(command.getName());
                 if (input.containsKey(name))

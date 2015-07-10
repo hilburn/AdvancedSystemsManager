@@ -29,6 +29,10 @@ public interface ICommand
 
     void setColour(int[] colour);
 
+    int getEnergyCost();
+
+    void setEnergyCost(int amount);
+
     int getX();
 
     int getY();
