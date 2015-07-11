@@ -35,7 +35,7 @@ public class CommandSign extends CommandBase
         {
             for (SystemCoord coord : signBlocks)
             {
-                ((TileEntitySignUpdater)coord.tileEntity).updateSign((MenuSignText)command.getMenus().get(1));
+                ((TileEntitySignUpdater)coord.getTileEntity()).updateSign((MenuSignText)command.getMenus().get(1));
             }
         }
     }

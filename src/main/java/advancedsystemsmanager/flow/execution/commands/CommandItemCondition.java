@@ -63,7 +63,7 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
     @Override
     public void searchForStuff(SystemCoord block, List<Setting<ItemStack>> settings, MenuTargetInventory target, Set<Setting<ItemStack>> found)
     {
-        TileEntity entity = block.tileEntity;
+        TileEntity entity = block.getTileEntity();
         if (entity instanceof IInternalInventory)
         {
 

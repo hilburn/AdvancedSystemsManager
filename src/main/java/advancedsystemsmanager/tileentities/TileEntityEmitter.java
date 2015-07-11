@@ -170,7 +170,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         int y = yCoord + direction.offsetY;
         int z = zCoord + direction.offsetZ;
 
-        SystemCoord coordinate = new SystemCoord(x, y, z);
+        SystemCoord coordinate = new SystemCoord(x, y, z, this.worldObj);
         if (!scheduledToUpdate.contains(coordinate))
         {
             scheduledToUpdate.add(coordinate);
@@ -350,7 +350,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
                 }
                 for (SystemCoord coordinate : coordinates)
                 {
-                    notifyUpdate(coordinate.x, coordinate.y, coordinate.z, true);
+                    notifyUpdate(coordinate.getX(), coordinate.getY(), coordinate.getZ(), true);
                 }
             }
         }

@@ -64,7 +64,7 @@ public abstract class TriggerHelper
         boolean requiresAll = trigger != null;
         for (SystemCoord container : containers)
         {
-            ITriggerNode input = (ITriggerNode)container.tileEntity;
+            ITriggerNode input = (ITriggerNode)container.getTileEntity();
 
             boolean flag;
             if (input.equals(trigger) || !requiresAll)
@@ -153,12 +153,12 @@ public abstract class TriggerHelper
             for (SystemCoord receiver : receivers)
             {
                 int[] data;
-                if (receiver.tileEntity instanceof ITriggerNode)
+                if (receiver.getTileEntity() instanceof ITriggerNode)
                 {
-                    data = ((ITriggerNode)receiver.tileEntity).getData();
+                    data = ((ITriggerNode)receiver.getTileEntity()).getData();
                 } else
                 {
-                    data = ((IRedstoneNode)receiver.tileEntity).getPower();
+                    data = ((IRedstoneNode)receiver.getTileEntity()).getPower();
                 }
                 for (int i = 0; i < currentPower.length; i++)
                 {
@@ -173,12 +173,12 @@ public abstract class TriggerHelper
             for (SystemCoord receiver : receivers)
             {
                 int[] data;
-                if (receiver.tileEntity instanceof ITriggerNode)
+                if (receiver.getTileEntity() instanceof ITriggerNode)
                 {
-                    data = ((ITriggerNode)receiver.tileEntity).getData();
+                    data = ((ITriggerNode)receiver.getTileEntity()).getData();
                 } else
                 {
-                    data = ((IRedstoneNode)receiver.tileEntity).getPower();
+                    data = ((IRedstoneNode)receiver.getTileEntity()).getPower();
                 }
 
                 if (isTriggerPowered(component, data, high))

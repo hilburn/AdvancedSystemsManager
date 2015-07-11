@@ -270,10 +270,10 @@ public class MenuContainer extends Menu implements IPacketSync
                     items = new ItemStack[ForgeDirection.VALID_DIRECTIONS.length];
                     itemTexts = new List[ForgeDirection.VALID_DIRECTIONS.length];
 
-                    World world = block.tileEntity.getWorldObj();
-                    int x = block.tileEntity.xCoord;
-                    int y = block.tileEntity.yCoord;
-                    int z = block.tileEntity.zCoord;
+                    World world = block.getTileEntity().getWorldObj();
+                    int x = block.getTileEntity().xCoord;
+                    int y = block.getTileEntity().yCoord;
+                    int z = block.getTileEntity().zCoord;
 
                     for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
                     {

@@ -35,7 +35,7 @@ public class CommandRedstoneOutput extends CommandBase
         {
             for (SystemCoord coord : coords)
             {
-                ((TileEntityEmitter)coord.tileEntity).updateState((MenuRedstoneSidesEmitter)command.getMenus().get(1), (MenuRedstoneOutput)command.getMenus().get(2), (MenuPulse)command.getMenus().get(3));
+                ((TileEntityEmitter)coord.getTileEntity()).updateState((MenuRedstoneSidesEmitter)command.getMenus().get(1), (MenuRedstoneOutput)command.getMenus().get(2), (MenuPulse)command.getMenus().get(3));
             }
         }
     }

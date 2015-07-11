@@ -62,7 +62,7 @@ public class TriggerHelperRedstone extends TriggerHelper
             {
                 for (SystemCoord receiver : receivers)
                 {
-                    ITriggerNode input = (ITriggerNode)receiver.tileEntity;
+                    ITriggerNode input = (ITriggerNode)receiver.getTileEntity();
 
                     for (int i = 0; i < newPower.length; i++)
                     {

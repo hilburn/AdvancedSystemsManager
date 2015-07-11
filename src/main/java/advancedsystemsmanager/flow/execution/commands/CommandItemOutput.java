@@ -58,7 +58,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
         for (Iterator<SystemCoord> blockItr = blocks.iterator(); blockItr.hasNext(); )
         {
             SystemCoord block = blockItr.next();
-            IInventory inventory = block.tileEntity instanceof IInternalInventory ? Null.NULL_INVENTORY : (IInventory)block.tileEntity;
+            IInventory inventory = block.getTileEntity() instanceof IInternalInventory ? Null.NULL_INVENTORY : (IInventory)block.getTileEntity();
             Iterator<Map.Entry<Key<ItemStack>, IBufferElement<ItemStack>>> iterator = buffer.getOrderedIterator();
             while (iterator.hasNext())
             {
@@ -68,9 +68,9 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                 boolean outputCounter = setting != null && setting.isLimitedByAmount();
                 if (!isValidSetting(whitelist, setting)) continue;
                 ItemStack itemStack = itemBufferElement.getContent();
-                if (block.tileEntity instanceof IInternalInventory)
+                if (block.getTileEntity() instanceof IInternalInventory)
                 {
-                    IInternalInventory internal = (IInternalInventory)block.tileEntity;
+                    IInternalInventory internal = (IInternalInventory)block.getTileEntity();
                     int moveCount = Math.min(internal.getAmountToInsert(itemStack), itemStack.stackSize);
                     if (moveCount > 0)
                     {

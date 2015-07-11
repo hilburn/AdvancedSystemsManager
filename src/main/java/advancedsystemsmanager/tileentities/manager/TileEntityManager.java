@@ -206,7 +206,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         updateFirst();
         for (SystemCoord inventory : network.valueCollection())
         {
-            if (inventory.tileEntity.isInvalid())
+            if (inventory.getTileEntity().isInvalid())
             {
                 updateInventories();
                 break;
@@ -357,7 +357,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         List<SystemCoord> visited = new ArrayList<SystemCoord>();
         network.clear();
         Queue<SystemCoord> queue = new PriorityQueue<SystemCoord>();
-        SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj.provider.dimensionId, 0, this);
+        SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj, 0, this);
         queue.add(start);
         visited.add(start);
         addInventory(start);
@@ -374,12 +374,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 {
                     visited.add(target);
 
-                    if ((Settings.isLimitless(this) || element.depth < MAX_CABLE_LENGTH) && BlockRegistry.cable.isCable(worldObj.getBlock(target.x, target.y, target.z), worldObj.getBlockMetadata(target.x, target.y, target.z)))
+                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.cable.isCable(target.getBlock(), target.getMetadata()))
                     {
                         queue.add(target);
                     }
 
-                    TileEntity te = worldObj.getTileEntity(target.x, target.y, target.z);
+                    TileEntity te = target.getWorldTE();
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
@@ -404,11 +404,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             for (SystemCoord oldCoordinate : oldCoordinates)
             {
-                if (oldCoordinate.tileEntity instanceof ISystemListener)
+                if (oldCoordinate.getTileEntity() instanceof ISystemListener)
                 {
-                    if (!network.containsKey(oldCoordinate.key))
+                    if (!network.containsKey(oldCoordinate.getKey()))
                     {
-                        ((ISystemListener)oldCoordinate.tileEntity).removed(this);
+                        ((ISystemListener)oldCoordinate.getTileEntity()).removed(this);
                     }
                 }
             }
@@ -420,12 +420,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     {
         boolean isValidConnection = false;
 
-        target.types = new HashSet<ISystemType>();
+        target.resetTypes();
         for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
-            if (connectionBlockType.isInstance(this, target.tileEntity))
+            if (connectionBlockType.isInstance(this, target.getTileEntity()))
             {
-                if (target.tileEntity instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.tileEntity).isOfType(connectionBlockType)) continue;
+                if (target.getTileEntity() instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.getTileEntity()).isOfType(connectionBlockType)) continue;
                 isValidConnection = true;
                 target.addType(connectionBlockType);
             }
@@ -433,14 +433,14 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
 
         if (isValidConnection)
         {
-            if (target.depth >= MAX_CABLE_LENGTH || network.size() >= MAX_CONNECTED_INVENTORIES)
+            if (target.getDepth() >= MAX_CABLE_LENGTH || network.size() >= MAX_CONNECTED_INVENTORIES)
             {
                 usingUnlimitedInventories = true;
             }
-            network.put(target.key, target);
-            if (target.tileEntity instanceof ISystemListener)
+            network.put(target.getKey(), target);
+            if (target.getTileEntity() instanceof ISystemListener)
             {
-                ((ISystemListener)target.tileEntity).added(this);
+                ((ISystemListener)target.getTileEntity()).added(this);
             }
         }
     }

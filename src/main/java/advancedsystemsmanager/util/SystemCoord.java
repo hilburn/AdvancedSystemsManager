@@ -11,50 +11,50 @@ import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection<GuiManager>
 {
-    public int x, y, z, depth, dim;
-    public long key;
-    public Set<ISystemType> types;
-    public TileEntity tileEntity;
-
-    public SystemCoord(int x, int y, int z)
-    {
-        this(x, y, z, 0, 0);
-    }
+    private int x, y, z, depth, dim;
+    private long key;
+    private Set<ISystemType> types;
+    private TileEntity tileEntity;
+    private World world;
 
     public SystemCoord(SystemCoord coord, ForgeDirection dir)
     {
-        this(coord.x + dir.offsetX, coord.y + dir.offsetY, coord.z + dir.offsetZ, coord.dim, coord.depth + 1);
+        this(coord.x + dir.offsetX, coord.y + dir.offsetY, coord.z + dir.offsetZ, coord.world, coord.depth + 1);
     }
 
-    public SystemCoord(int x, int y, int z, int dim)
+    public SystemCoord(int x, int y, int z, World world)
     {
-        this(x, y, z, dim, 0);
+        this(x, y, z, world, 0);
     }
 
-    public SystemCoord(int x, int y, int z, int dim, int depth)
+    public SystemCoord(int x, int y, int z, World world, int depth)
     {
-        this(x, y, z, dim, depth, null);
+        this(x, y, z, world, depth, null);
     }
 
-    public SystemCoord(int x, int y, int z, int dim, int depth, TileEntity tileEntity)
+    public SystemCoord(int x, int y, int z, World world, int depth, TileEntity tileEntity)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.dim = dim;
+        this.dim = world.provider.dimensionId;
         this.depth = depth;
         this.tileEntity = tileEntity;
+        this.world = world;
         setKey();
     }
 
@@ -91,6 +91,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     public static boolean isOfType(Set<ISystemType> types, ISystemType type)
     {
         return type == null || types.contains(type) || (type.isGroup() && type.containsGroup(types));
+    }
+
+    public boolean isValid()
+    {
+        return world.blockExists(x, y, z);
     }
 
     @Override
@@ -193,7 +198,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public SystemCoord copy()
     {
-        return new SystemCoord(x, y, z, dim, depth, tileEntity);
+        return new SystemCoord(x, y, z, world, depth, tileEntity);
     }
 
     public void setTileEntity(TileEntity tileEntity)
@@ -207,5 +212,60 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         String toSearch = StevesHooks.getLabel(tileEntity);
         Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
         return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(StevesHooks.getContentString(tileEntity)).find();
+    }
+
+    public void resetTypes()
+    {
+        this.types = new HashSet<ISystemType>();
+    }
+
+    public Block getBlock()
+    {
+        return world.getBlock(x, y, z);
+    }
+
+    public int getMetadata()
+    {
+        return world.getBlockMetadata(x, y, z);
+    }
+
+    public TileEntity getWorldTE()
+    {
+        return world.getTileEntity(x, y, z);
+    }
+
+    public int getX()
+    {
+        return x;
+    }
+
+    public int getY()
+    {
+        return y;
+    }
+
+    public int getZ()
+    {
+        return z;
+    }
+
+    public int getDepth()
+    {
+        return depth;
+    }
+
+    public TileEntity getTileEntity()
+    {
+        return tileEntity;
+    }
+
+    public long getKey()
+    {
+        return key;
+    }
+
+    public Set<ISystemType> getTypes()
+    {
+        return types;
     }
 }

@@ -206,16 +206,16 @@ public class ContainerFilter
                                 switch (j)
                                 {
                                     case 0:
-                                        value = block.tileEntity.xCoord - manager.xCoord;
+                                        value = block.getTileEntity().xCoord - manager.xCoord;
                                         break;
                                     case 1:
-                                        value = block.tileEntity.yCoord - manager.yCoord;
+                                        value = block.getTileEntity().yCoord - manager.yCoord;
                                         break;
                                     case 2:
-                                        value = block.tileEntity.zCoord - manager.zCoord;
+                                        value = block.getTileEntity().zCoord - manager.zCoord;
                                         break;
                                     case 3:
-                                        value = block.depth;
+                                        value = block.getDepth();
                                         break;
                                     case 4:
                                         value = block.getDistance(manager);

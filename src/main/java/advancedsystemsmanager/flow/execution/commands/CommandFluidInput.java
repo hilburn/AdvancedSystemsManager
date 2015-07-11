@@ -55,7 +55,7 @@ public class CommandFluidInput extends CommandInput<Fluid>
         List<IBufferElement<Fluid>> subElements = new ArrayList<IBufferElement<Fluid>>();
         for (SystemCoord block : blocks)
         {
-            TileEntity entity = block.tileEntity;
+            TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalTank)
             {
                 subElements.addAll(((IInternalTank)entity).getSubElements(id, settings));

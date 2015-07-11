@@ -53,7 +53,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
         //TODO: Have a think about this.
         for (SystemCoord block : blocks)
         {
-            TileEntity entity = block.tileEntity;
+            TileEntity entity = block.getTileEntity();
             if (entity instanceof IInternalInventory)
             {
                 subElements.addAll(((IInternalInventory)entity).getSubElements(id, settings));

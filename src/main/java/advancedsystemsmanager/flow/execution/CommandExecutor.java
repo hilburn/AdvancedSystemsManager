@@ -120,9 +120,9 @@ public class CommandExecutor
         if (selected >= 0 && selected < inventories.size())
         {
             SystemCoord connection = inventories.get(selected);
-            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.tileEntity.isInvalid() && !containsTe(ret, connection.tileEntity))
+            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
             {
-                ret.add(new SlotInventoryHolder(selected, connection.tileEntity, menuContainer.getOption()));
+                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
             }
         }
     }

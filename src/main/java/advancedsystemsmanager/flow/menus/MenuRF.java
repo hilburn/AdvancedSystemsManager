@@ -21,7 +21,7 @@ public abstract class MenuRF extends MenuContainer
     {
         for (SystemCoord block : getParent().getManager().getConnectedInventories())
         {
-            if (block.tileEntity == node) return getSelectedInventories().contains(block.getId());
+            if (block.getTileEntity() == node) return getSelectedInventories().contains(block.getId());
         }
         return false;
     }
@@ -42,8 +42,8 @@ public abstract class MenuRF extends MenuContainer
         {
             for (SystemCoord connection : getParent().getManager().getConnectedInventories())
             {
-                if (connection.tileEntity instanceof TileEntityRFNode)
-                    ((TileEntityRFNode)connection.tileEntity).update(getParent());
+                if (connection.getTileEntity() instanceof TileEntityRFNode)
+                    ((TileEntityRFNode)connection.getTileEntity()).update(getParent());
             }
         }
     }

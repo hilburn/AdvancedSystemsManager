@@ -40,7 +40,7 @@ public class CommandFluidOutput extends CommandOutput<Fluid>
             if (((MenuTargetTank)component.getMenus().get(1)).activatedDirections[i]) validSides.add(i);
         for (SystemCoord block : getContainers(component.manager, (MenuContainer)component.menus.get(0)))
         {
-            IFluidHandler tank = block.tileEntity instanceof IInternalTank ? ((IInternalTank)block.tileEntity).getTank() : (IFluidHandler)block.tileEntity;
+            IFluidHandler tank = block.getTileEntity() instanceof IInternalTank ? ((IInternalTank)block.getTileEntity()).getTank() : (IFluidHandler)block.getTileEntity();
             Iterator<Map.Entry<Key<Fluid>, IBufferElement<Fluid>>> iterator = buffer.getOrderedIterator();
             while (iterator.hasNext())
             {

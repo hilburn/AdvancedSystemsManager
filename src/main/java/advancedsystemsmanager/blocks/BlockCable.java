@@ -51,7 +51,7 @@ public class BlockCable extends BlockBase implements ICable
         List<SystemCoord> visited = new ArrayList<SystemCoord>();
         List<TileEntityManager> managers = new ArrayList<TileEntityManager>();
         Queue<SystemCoord> queue = new PriorityQueue<SystemCoord>();
-        SystemCoord start = new SystemCoord(blockX, blockY, blockZ, 0);
+        SystemCoord start = new SystemCoord(blockX, blockY, blockZ, world);
         queue.add(start);
         visited.add(start);
 
@@ -67,11 +67,11 @@ public class BlockCable extends BlockBase implements ICable
                 {
                     visited.add(target);
                     //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
-                    Block block = world.getBlock(target.x, target.y, target.z);
-                    int meta = world.getBlockMetadata(target.x, target.y, target.z);
+                    Block block = target.getBlock();
+                    int meta = target.getMetadata();
                     if (block == BlockRegistry.blockManager)
                     {
-                        TileEntity tileEntity = world.getTileEntity(target.x, target.y, target.z);
+                        TileEntity tileEntity = target.getWorldTE();
                         if (tileEntity != null && tileEntity instanceof TileEntityManager)
                         {
                             managers.add((TileEntityManager)tileEntity);
@@ -112,8 +112,8 @@ public class BlockCable extends BlockBase implements ICable
             if (!visited.contains(target))
             {
                 visited.add(target);
-                Block block = world.getBlock(target.x, target.y, target.z);
-                int meta = world.getBlockMetadata(target.x, target.y, target.z);
+                Block block = target.getBlock();
+                int meta = target.getMetadata();
                 if (isCable(block, meta))
                 {
                     cables.add(target);

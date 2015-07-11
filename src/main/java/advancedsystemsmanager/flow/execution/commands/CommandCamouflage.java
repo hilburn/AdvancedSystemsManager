@@ -47,7 +47,7 @@ public class CommandCamouflage extends CommandBase
 
                 for (SystemCoord systemCoord : camouflageBlocks)
                 {
-                    TileEntityCamouflage camouflage = (TileEntityCamouflage)systemCoord.tileEntity;
+                    TileEntityCamouflage camouflage = (TileEntityCamouflage)systemCoord.getTileEntity();
                     camouflage.setBounds(shape);
                     for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; ++i)
                     {
