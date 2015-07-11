@@ -35,6 +35,13 @@ public class ItemRemoteAccessor extends ItemBase
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconIndex(ItemStack stack)
+    {
+        return getIcon(stack, Minecraft.getMinecraft().theWorld);
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!world.isRemote && !player.isSneaking() && stack.hasTagCompound())
@@ -56,42 +63,6 @@ public class ItemRemoteAccessor extends ItemBase
     public String getUnlocalizedName(ItemStack stack)
     {
         return super.getUnlocalizedName(stack) + (stack.getItemDamage() != 0 ? Names.ADVANCED_SUFFIX : "");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister register)
-    {
-        icons = new IIcon[5];
-        icons[0] = register.registerIcon(getIconString());
-        icons[1] = register.registerIcon(getIconString() + "_advanced");
-        icons[2] = register.registerIcon(getIconString() + "_off");
-        icons[3] = register.registerIcon(getIconString() + "_off_advanced");
-        icons[4] = register.registerIcon(getIconString() + "_disabled");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconIndex(ItemStack stack)
-    {
-        return getIcon(stack, Minecraft.getMinecraft().theWorld);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
-    {
-        return getIcon(stack, player.getEntityWorld());
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon getIcon(ItemStack stack, World world)
-    {
-        if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte(WORLD))
-        {
-            return icons[5];
-        }
-        return icons[stack.getItemDamage() + (stack.hasTagCompound() ? 0 : 2)];
     }
 
     @Override
@@ -125,6 +96,18 @@ public class ItemRemoteAccessor extends ItemBase
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register)
+    {
+        icons = new IIcon[5];
+        icons[0] = register.registerIcon(getIconString());
+        icons[1] = register.registerIcon(getIconString() + "_advanced");
+        icons[2] = register.registerIcon(getIconString() + "_off");
+        icons[3] = register.registerIcon(getIconString() + "_off_advanced");
+        icons[4] = register.registerIcon(getIconString() + "_disabled");
+    }
+
+    @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         if (player.isSneaking())
@@ -145,5 +128,22 @@ public class ItemRemoteAccessor extends ItemBase
             return !world.isRemote;
         }
         return false;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining)
+    {
+        return getIcon(stack, player.getEntityWorld());
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IIcon getIcon(ItemStack stack, World world)
+    {
+        if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte(WORLD))
+        {
+            return icons[5];
+        }
+        return icons[stack.getItemDamage() + (stack.hasTagCompound() ? 0 : 2)];
     }
 }

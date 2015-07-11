@@ -203,11 +203,21 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         };
     }
 
-    @Override
-    public void setId(int id)
+    public int getSettingCount()
     {
-        this.id = id;
+        return 30;
     }
+
+    public abstract Setting<Type> getSetting(int id);
+
+    public void initRadioButtons()
+    {
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.WHITE_LIST));
+        radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.BLACK_LIST));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public abstract List<Type> updateSearch(String search, boolean showAll);
 
     protected ASMPacket getSyncPacket()
     {
@@ -215,6 +225,31 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         packet.writeByte(this.id);
         packet.writeByte(selectedSetting.getId());
         return packet;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public abstract void drawResultObject(GuiManager gui, Type obj, int x, int y);
+
+    @SideOnly(Side.CLIENT)
+    public abstract List<String> getResultObjectMouseOver(Type obj);
+
+    public boolean doAllowEdit()
+    {
+        return true;
+    }
+
+    public abstract void updateTextBoxes();
+
+    @SideOnly(Side.CLIENT)
+    public abstract void drawSettingObject(GuiManager gui, Setting<Type> setting, int x, int y);
+
+    @SideOnly(Side.CLIENT)
+    public abstract List<String> getSettingObjectMouseOver(Setting<Type> setting);
+
+    @Override
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -243,59 +278,17 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         return false;
     }
 
-    protected void sendClear()
+    public boolean isEditing()
     {
-        ASMPacket packet = getSyncPacket();
-        packet.writeByte(0);
-        packet.sendServerPacket();
+        return selectedSetting != null && editSetting;
     }
 
     protected abstract boolean readSpecificData(ASMPacket packet, int action, Setting<Type> setting);
-
-    public abstract Setting<Type> getSetting(int id);
-
-    public void initRadioButtons()
-    {
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.WHITE_LIST));
-        radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.BLACK_LIST));
-    }
-
-    public int getSettingCount()
-    {
-        return 30;
-    }
-
-    public boolean doAllowEdit()
-    {
-        return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public abstract void drawResultObject(GuiManager gui, Type obj, int x, int y);
-
-    @SideOnly(Side.CLIENT)
-    public abstract void drawSettingObject(GuiManager gui, Setting<Type> setting, int x, int y);
-
-    @SideOnly(Side.CLIENT)
-    public abstract List<String> getResultObjectMouseOver(Type obj);
-
-    @SideOnly(Side.CLIENT)
-    public abstract List<String> getSettingObjectMouseOver(Setting<Type> setting);
-
-    public abstract void updateTextBoxes();
 
     public void writeRadioButtonRefreshState(ASMPacket dw, boolean value)
     {
         dw.writeBoolean(value);
     }
-
-    public void onSettingContentChange()
-    {
-
-    }
-
-    @SideOnly(Side.CLIENT)
-    public abstract List<Type> updateSearch(String search, boolean showAll);
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -334,27 +327,32 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         }
     }
 
-    public boolean isListVisible()
-    {
-        return true;
-    }
-
     @SideOnly(Side.CLIENT)
     public abstract void drawInfoMenuContent(GuiManager gui, int mX, int mY);
-
-    public boolean inBackBounds(int mX, int mY)
-    {
-        return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
-    }
 
     public boolean inDeleteBounds(int mX, int mY)
     {
         return CollisionHelper.inBounds(DELETE_X, DELETE_Y, DELETE_SIZE_W, DELETE_SIZE_H, mX, mY);
     }
 
+    public boolean isSearching()
+    {
+        return selectedSetting != null && !editSetting;
+    }
+
+    public boolean isListVisible()
+    {
+        return true;
+    }
+
     public ScrollController getScrollingList()
     {
         return isSearching() ? scrollControllerSearch : scrollControllerSelected;
+    }
+
+    public boolean inBackBounds(int mX, int mY)
+    {
+        return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
@@ -417,6 +415,12 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         }
     }
 
+    protected void sendClear()
+    {
+        ASMPacket packet = getSyncPacket();
+        packet.writeByte(0);
+        packet.sendServerPacket();
+    }
 
     @Override
     public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
@@ -470,6 +474,11 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         }
 
         onSettingContentChange();
+    }
+
+    public void onSettingContentChange()
+    {
+
     }
 
     @Override
@@ -529,16 +538,6 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         {
             scrollControllerSelected.doScroll(scroll);
         }
-    }
-
-    public boolean isEditing()
-    {
-        return selectedSetting != null && editSetting;
-    }
-
-    public boolean isSearching()
-    {
-        return selectedSetting != null && !editSetting;
     }
 
     public boolean useWhiteList()

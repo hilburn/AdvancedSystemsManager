@@ -36,17 +36,17 @@ public class MenuLiquid extends MenuStuff<Fluid>
         numberTextBoxes.addTextBox(amountTextBoxBuckets = new TextBoxNumber(Null.NULL_PACKET, 10, 50, 3, true)
         {
             @Override
+            public void setNumber(int number)
+            {
+                super.setNumber(number);
+                selectedSetting.setAmount(selectedSetting.getAmount() % 1000 + number * 1000);
+            }            @Override
             public boolean isVisible()
             {
                 return selectedSetting.isLimitedByAmount();
             }
 
-            @Override
-            public void setNumber(int number)
-            {
-                super.setNumber(number);
-                selectedSetting.setAmount(selectedSetting.getAmount() % 1000 + number * 1000);
-            }
+
         });
 
         numberTextBoxes.addTextBox(amountTextBoxMilli = new TextBoxNumber(Null.NULL_PACKET, 60, 50, 3, true)
@@ -68,70 +68,10 @@ public class MenuLiquid extends MenuStuff<Fluid>
     }
 
     @Override
-    protected boolean readSpecificData(ASMPacket packet, int action, Setting<Fluid> setting)
-    {
-        return false;
-    }
-
-    @Override
     public Setting<Fluid> getSetting(int id)
     {
         return new LiquidSetting(id);
     }
-
-    @Override
-    public String getName()
-    {
-        return Names.LIQUIDS_MENU;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
-    {
-        if (selectedSetting.isLimitedByAmount())
-        {
-            gui.drawCenteredString(Names.BUCKETS, amountTextBoxBuckets.getX(), amountTextBoxBuckets.getY() - 7, 0.7F, amountTextBoxBuckets.getWidth(), 0x404040);
-            gui.drawCenteredString(Names.MILLI_BUCKETS, amountTextBoxMilli.getX(), amountTextBoxMilli.getY() - 7, 0.55F, amountTextBoxMilli.getWidth(), 0x404040);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawResultObject(GuiManager gui, Fluid obj, int x, int y)
-    {
-        gui.drawFluid(obj, x, y);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawSettingObject(GuiManager gui, Setting setting, int x, int y)
-    {
-        drawResultObject(gui, ((LiquidSetting)setting).getFluid(), x, y);
-    }
-
-    @Override
-    public List<String> getResultObjectMouseOver(Fluid obj)
-    {
-        List<String> ret = new ArrayList<String>();
-        ret.add(getDisplayName(obj));
-        return ret;
-    }
-
-    @Override
-    public List<String> getSettingObjectMouseOver(Setting setting)
-    {
-        return getResultObjectMouseOver(((LiquidSetting)setting).getFluid());
-    }
-
-    @Override
-    public void updateTextBoxes()
-    {
-        int amount = selectedSetting.getAmount();
-        amountTextBoxBuckets.setNumber(amount / 1000);
-        amountTextBoxMilli.setNumber(amount % 1000);
-    }
-
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -154,6 +94,59 @@ public class MenuLiquid extends MenuStuff<Fluid>
         return ret;
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawResultObject(GuiManager gui, Fluid obj, int x, int y)
+    {
+        gui.drawFluid(obj, x, y);
+    }
+
+    @Override
+    public List<String> getResultObjectMouseOver(Fluid obj)
+    {
+        List<String> ret = new ArrayList<String>();
+        ret.add(getDisplayName(obj));
+        return ret;
+    }
+
+    @Override
+    public void updateTextBoxes()
+    {
+        int amount = selectedSetting.getAmount();
+        amountTextBoxBuckets.setNumber(amount / 1000);
+        amountTextBoxMilli.setNumber(amount % 1000);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawSettingObject(GuiManager gui, Setting setting, int x, int y)
+    {
+        drawResultObject(gui, ((LiquidSetting)setting).getFluid(), x, y);
+    }
+
+    @Override
+    public List<String> getSettingObjectMouseOver(Setting setting)
+    {
+        return getResultObjectMouseOver(((LiquidSetting)setting).getFluid());
+    }
+
+    @Override
+    protected boolean readSpecificData(ASMPacket packet, int action, Setting<Fluid> setting)
+    {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    {
+        if (selectedSetting.isLimitedByAmount())
+        {
+            gui.drawCenteredString(Names.BUCKETS, amountTextBoxBuckets.getX(), amountTextBoxBuckets.getY() - 7, 0.7F, amountTextBoxBuckets.getWidth(), 0x404040);
+            gui.drawCenteredString(Names.MILLI_BUCKETS, amountTextBoxMilli.getX(), amountTextBoxMilli.getY() - 7, 0.55F, amountTextBoxMilli.getWidth(), 0x404040);
+        }
+    }
+
     public static String getDisplayName(Fluid fluid)
     {
         String name = fluid.getLocalizedName(null);
@@ -163,5 +156,11 @@ public class MenuLiquid extends MenuStuff<Fluid>
         }
 
         return name;
+    }
+
+    @Override
+    public String getName()
+    {
+        return Names.LIQUIDS_MENU;
     }
 }

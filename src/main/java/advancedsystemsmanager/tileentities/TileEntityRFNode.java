@@ -58,11 +58,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         }
     }
 
-    private TileEntity getTileEntity(ForgeDirection dir)
-    {
-        return worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
-    }
-
     @Override
     public Packet getDescriptionPacket()
     {
@@ -76,6 +71,11 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         updated = false;
     }
 
+    private TileEntity getTileEntity(ForgeDirection dir)
+    {
+        return worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+    }
+
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
@@ -86,6 +86,60 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             return toReceive;
         }
         return 0;
+    }
+
+    @Override
+    public void writeContentToNBT(NBTTagCompound tagCompound)
+    {
+        tagCompound.setInteger(STORED, stored);
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        stored = tagCompound.getInteger(STORED);
+    }
+
+    @Override
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.CONNECT_ENERGY, ClusterMethodRegistration.EXTRACT_ENERGY, ClusterMethodRegistration.RECEIVE_ENERGY, ClusterMethodRegistration.STORED_ENERGY);
+    }
+
+    @Override
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
+        if (outputSides[from.ordinal()])
+        {
+            int toExtract = Math.min(maxExtract, stored);
+            if (!simulate) stored -= toExtract;
+            return toExtract;
+        }
+        return 0;
+    }
+
+    @Override
+    public int getEnergyStored(ForgeDirection from)
+    {
+        return stored;
+    }
+
+    @Override
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
+        return MAX_BUFFER;
+    }
+
+    @Override
+    public boolean canConnectEnergy(ForgeDirection from)
+    {
+        return outputSides[from.ordinal()] || inputSides[from.ordinal()];
+    }
+
+    @Override
+    public void added(TileEntityManager manager)
+    {
+        for (FlowComponent component : manager.getFlowItems()) update(component);
     }
 
     public void update(FlowComponent component)
@@ -137,60 +191,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     private boolean[] getSides(boolean input)
     {
         return input ? inputSides : outputSides;
-    }
-
-    @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        stored = tagCompound.getInteger(STORED);
-    }
-
-    @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
-    {
-        tagCompound.setInteger(STORED, stored);
-    }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CONNECT_ENERGY, ClusterMethodRegistration.EXTRACT_ENERGY, ClusterMethodRegistration.RECEIVE_ENERGY, ClusterMethodRegistration.STORED_ENERGY);
-    }
-
-    @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
-    {
-        if (outputSides[from.ordinal()])
-        {
-            int toExtract = Math.min(maxExtract, stored);
-            if (!simulate) stored -= toExtract;
-            return toExtract;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getEnergyStored(ForgeDirection from)
-    {
-        return stored;
-    }
-
-    @Override
-    public int getMaxEnergyStored(ForgeDirection from)
-    {
-        return MAX_BUFFER;
-    }
-
-    @Override
-    public boolean canConnectEnergy(ForgeDirection from)
-    {
-        return outputSides[from.ordinal()] || inputSides[from.ordinal()];
-    }
-
-    @Override
-    public void added(TileEntityManager manager)
-    {
-        for (FlowComponent component : manager.getFlowItems()) update(component);
     }
 
     @Override

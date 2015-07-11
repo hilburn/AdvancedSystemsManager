@@ -21,7 +21,6 @@ import java.util.Set;
 
 public class SystemTypeRegistry
 {
-    private static final List<ISystemType> types = new ArrayList<ISystemType>();
     public static final ISystemType INVENTORY = register(new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
     {
         @Override
@@ -192,6 +191,7 @@ public class SystemTypeRegistry
         {
         }
     };
+    private static final List<ISystemType> types = new ArrayList<ISystemType>();
 
     public static ISystemType register(ISystemType type)
     {

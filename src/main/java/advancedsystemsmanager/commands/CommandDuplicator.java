@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import org.omg.CORBA.COMM_FAILURE;
 
 public abstract class CommandDuplicator implements ISubCommand
 {
@@ -31,7 +30,14 @@ public abstract class CommandDuplicator implements ISubCommand
         return tagCompound;
     }
 
-    public static ItemStack getDuplicator(ICommandSender sender)
+    public static NBTTagCompound unstripBaseNBT(NBTTagCompound tagCompound)
+    {
+        for (String key : keys)
+        {
+            if (!tagCompound.hasKey(key)) tagCompound.setTag(key, defaultTagCompound.getTag(key));
+        }
+        return tagCompound;
+    }    public static ItemStack getDuplicator(ICommandSender sender)
     {
         if (sender instanceof EntityPlayerMP)
         {
@@ -42,14 +48,7 @@ public abstract class CommandDuplicator implements ISubCommand
         return null;
     }
 
-    public static NBTTagCompound unstripBaseNBT(NBTTagCompound tagCompound)
-    {
-        for (String key : keys)
-        {
-            if (!tagCompound.hasKey(key)) tagCompound.setTag(key, defaultTagCompound.getTag(key));
-        }
-        return tagCompound;
-    }
+
 
     @Override
     public void handleCommand(ICommandSender sender, String[] arguments)

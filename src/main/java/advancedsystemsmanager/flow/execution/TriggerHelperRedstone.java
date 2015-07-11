@@ -8,7 +8,6 @@ import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneStrength;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
-import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 

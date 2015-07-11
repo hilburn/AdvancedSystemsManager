@@ -13,14 +13,14 @@ public class MenuRedstoneSidesNodes extends MenuRedstoneSidesTrigger
     }
 
     @Override
-    public boolean isVisible()
-    {
-        return true;
-    }
-
-    @Override
     public String getName()
     {
         return Names.REDSTONE_SIDES_MENU;
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return true;
     }
 }

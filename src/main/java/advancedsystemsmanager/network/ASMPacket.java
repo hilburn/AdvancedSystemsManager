@@ -37,25 +37,20 @@ public class ASMPacket extends PacketBuffer
         super(buffer);
     }
 
-    public ASMPacket copy()
-    {
-        return new ASMPacket(super.copy());
-    }
-
     public void setPlayer(EntityPlayerMP player)
     {
         if (players == null) players = new ArrayList<EntityPlayerMP>();
         players.add(player);
     }
 
-    public void setPlayers(List<EntityPlayerMP> players)
-    {
-        this.players = players;
-    }
-
     public List<EntityPlayerMP> getPlayers()
     {
         return this.players;
+    }
+
+    public void setPlayers(List<EntityPlayerMP> players)
+    {
+        this.players = players;
     }
 
     public void sendResponse()
@@ -65,6 +60,11 @@ public class ASMPacket extends PacketBuffer
         {
             packetHandler.sendTo(packet, player);
         }
+    }
+
+    public FMLProxyPacket getPacket()
+    {
+        return new FMLProxyPacket(this, Reference.ID);
     }
 
     public void sendPlayerPackets(double x, double y, double z, double r, int dimension)
@@ -94,34 +94,6 @@ public class ASMPacket extends PacketBuffer
         }
     }
 
-    public FMLProxyPacket getPacket()
-    {
-        return new FMLProxyPacket(this, Reference.ID);
-    }
-
-    @Override
-    public ItemStack readItemStackFromBuffer()
-    {
-        try
-        {
-            return super.readItemStackFromBuffer();
-        } catch (IOException e)
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public void writeItemStackToBuffer(ItemStack stack)
-    {
-        try
-        {
-            super.writeItemStackToBuffer(stack);
-        } catch (IOException ignored)
-        {
-        }
-    }
-
     public void writeNBTTagCompoundToBuffer(NBTTagCompound tag)
     {
         try
@@ -144,16 +116,27 @@ public class ASMPacket extends PacketBuffer
     }
 
     @Override
-    public void writeStringToBuffer(String string)
+    public void writeItemStackToBuffer(ItemStack stack)
     {
         try
         {
-            super.writeStringToBuffer(string);
+            super.writeItemStackToBuffer(stack);
         } catch (IOException ignored)
         {
         }
     }
 
+    @Override
+    public ItemStack readItemStackFromBuffer()
+    {
+        try
+        {
+            return super.readItemStackFromBuffer();
+        } catch (IOException e)
+        {
+            return null;
+        }
+    }
 
     @Override
     public String readStringFromBuffer(int maxLength)
@@ -165,6 +148,22 @@ public class ASMPacket extends PacketBuffer
         {
             return null;
         }
+    }
+
+    @Override
+    public void writeStringToBuffer(String string)
+    {
+        try
+        {
+            super.writeStringToBuffer(string);
+        } catch (IOException ignored)
+        {
+        }
+    }
+
+    public ASMPacket copy()
+    {
+        return new ASMPacket(super.copy());
     }
 
     public void writeBooleanArray(boolean... val)

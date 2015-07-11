@@ -149,16 +149,16 @@ public class MenuUpdateBlock extends MenuItem
             textBoxes.addTextBox(settings[setting].lowerTextBox = new TextBoxNumber(getParent(), META_START_X + META_TEXT_BOX_OFFSET_1, META_START_Y + setting * META_SPACING, 2, false)
             {
                 @Override
+                public int getMaxNumber()
+                {
+                    return settings[setting].getMaxNumber();
+                }                @Override
                 public boolean isVisible()
                 {
                     return settings[setting].inUse();
                 }
 
-                @Override
-                public int getMaxNumber()
-                {
-                    return settings[setting].getMaxNumber();
-                }
+
 
             });
 
@@ -262,12 +262,6 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
-    public String getName()
-    {
-        return Names.UPDATE_BLOCK_MENU;
-    }
-
-    @Override
     public void onClick(int mX, int mY, int button)
     {
         if (!isEditing() && !isSearching())
@@ -285,20 +279,26 @@ public class MenuUpdateBlock extends MenuItem
     }
 
     @Override
+    public String getName()
+    {
+        return Names.UPDATE_BLOCK_MENU;
+    }
+
+    @Override
     public boolean isVisible()
     {
         return getParent().getConnectionSet() == ConnectionSet.BUD;
     }
 
     @Override
-    public void initRadioButtons()
-    {
-    }
-
-    @Override
     public int getSettingCount()
     {
         return 1;
+    }
+
+    @Override
+    public void initRadioButtons()
+    {
     }
 
     @Override

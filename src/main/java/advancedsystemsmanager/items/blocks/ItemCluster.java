@@ -35,6 +35,38 @@ public class ItemCluster extends ItemAdvanced
         super(block);
     }
 
+    public static List<IClusterElement> getTypes(NBTTagCompound tag)
+    {
+        List<IClusterElement> result = new ArrayList<IClusterElement>();
+        byte[] types = tag.getByteArray(NBT_TYPES);
+        for (byte type : types)
+        {
+            IClusterElement element = ClusterRegistry.get(type);
+            if (element != null) result.add(element);
+        }
+        return result;
+    }
+
+    public static void setClusterTag(ItemStack output, List<ItemStack> stacks)
+    {
+        Collections.sort(stacks, ALPHABETICAL_STACKS);
+        NBTTagCompound tag = new NBTTagCompound();
+        output.setTagCompound(tag);
+        NBTTagCompound cable = new NBTTagCompound();
+        byte[] types = new byte[stacks.size()];
+        byte[] damages = new byte[stacks.size()];
+        for (int i = 0; i < stacks.size(); i++)
+        {
+            ItemStack stack = stacks.get(i);
+            IClusterElement element = ((IClusterItem)stack.getItem()).getClusterElement(stack);
+            types[i] = element.getId();
+            damages[i] = (byte)stack.getItemDamage();
+        }
+        cable.setByteArray(NBT_TYPES, types);
+        cable.setByteArray(NBT_DAMAGE, damages);
+        tag.setTag(NBT_CABLE, cable);
+    }
+
     @Override
     public IClusterElement getClusterElement(ItemStack stack)
     {
@@ -85,37 +117,5 @@ public class ItemCluster extends ItemAdvanced
             if (stack != null) stacks.add(stack);
         }
         return stacks;
-    }
-
-    public static List<IClusterElement> getTypes(NBTTagCompound tag)
-    {
-        List<IClusterElement> result = new ArrayList<IClusterElement>();
-        byte[] types = tag.getByteArray(NBT_TYPES);
-        for (byte type : types)
-        {
-            IClusterElement element = ClusterRegistry.get(type);
-            if (element != null) result.add(element);
-        }
-        return result;
-    }
-
-    public static void setClusterTag(ItemStack output, List<ItemStack> stacks)
-    {
-        Collections.sort(stacks, ALPHABETICAL_STACKS);
-        NBTTagCompound tag = new NBTTagCompound();
-        output.setTagCompound(tag);
-        NBTTagCompound cable = new NBTTagCompound();
-        byte[] types = new byte[stacks.size()];
-        byte[] damages = new byte[stacks.size()];
-        for (int i = 0; i < stacks.size(); i++)
-        {
-            ItemStack stack = stacks.get(i);
-            IClusterElement element = ((IClusterItem)stack.getItem()).getClusterElement(stack);
-            types[i] = element.getId();
-            damages[i] = (byte)stack.getItemDamage();
-        }
-        cable.setByteArray(NBT_TYPES, types);
-        cable.setByteArray(NBT_DAMAGE, damages);
-        tag.setTag(NBT_CABLE, cable);
     }
 }

@@ -3,7 +3,6 @@ package advancedsystemsmanager.blocks;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.tileentities.TileEntityReceiver;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -84,15 +83,6 @@ public class BlockManager extends BlockTileBase
         updateInventories(world, x, y, z);
     }
 
-    private void updateInventories(World world, int x, int y, int z)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity != null && tileEntity instanceof TileEntityManager)
-        {
-            ((TileEntityManager)tileEntity).updateInventories();
-        }
-    }
-
     @Override
     public int damageDropped(int meta)
     {
@@ -121,14 +111,6 @@ public class BlockManager extends BlockTileBase
         return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
     }
 
-    @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
-    {
-        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x, y, z)));
-        result.setTagCompound(getTagCompound(world, x, y, z));
-        return result;
-    }
-
     public static NBTTagCompound getTagCompound(World world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
@@ -142,17 +124,17 @@ public class BlockManager extends BlockTileBase
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-    {
-        super.breakBlock(world, x, y, z, block, meta);
-
-        updateInventories(world, x, y, z);
-    }
-
-    @Override
     public boolean canConnectRedstone(IBlockAccess world, int x, int y, int z, int side)
     {
         return true;
+    }
+
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
+    {
+        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x, y, z)));
+        result.setTagCompound(getTagCompound(world, x, y, z));
+        return result;
     }
 
     private void updateRedstone(World world, int x, int y, int z)
@@ -162,5 +144,22 @@ public class BlockManager extends BlockTileBase
         {
             ((TileEntityManager)input).triggerRedstone();
         }
+    }
+
+    private void updateInventories(World world, int x, int y, int z)
+    {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity != null && tileEntity instanceof TileEntityManager)
+        {
+            ((TileEntityManager)tileEntity).updateInventories();
+        }
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        super.breakBlock(world, x, y, z, block, meta);
+
+        updateInventories(world, x, y, z);
     }
 }

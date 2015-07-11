@@ -19,6 +19,12 @@ public class MenuTargetRF extends MenuTarget
     }
 
     @Override
+    public void drawAdvancedComponent(GuiManager guiManager, int i, int i1)
+    {
+
+    }
+
+    @Override
     public void copyAdvancedSetting(Menu menu, int i)
     {
 
@@ -44,12 +50,6 @@ public class MenuTargetRF extends MenuTarget
 
     @Override
     public void onAdvancedClick(int i, int i1, int i2)
-    {
-
-    }
-
-    @Override
-    public void drawAdvancedComponent(GuiManager guiManager, int i, int i1)
     {
 
     }

@@ -100,6 +100,34 @@ public class GuiVerticalScrollBar extends Gui
         }
     }
 
+    private void onMouseMoved(int dx, int dy)
+    {
+        if (container.isScrollBarActive() && isDragging)
+        {
+            setYPos(mouseY);
+        }
+    }
+
+    private void onMouseRelease()
+    {
+        isDragging = false;
+    }
+
+    private void onMouseScroll(int value, boolean up)
+    {
+        if (!container.isScrollBarActive())
+        {
+            return;
+        }
+        if (up)
+        {
+            setYPos(ypos - container.getScrollAmount());
+        } else
+        {
+            setYPos(ypos + container.getScrollAmount());
+        }
+    }
+
     public boolean pointIntersects(int x, int y)
     {
         return x >= xpos && x <= xpos + width && y >= ypos && y <= ypos + height;
@@ -129,34 +157,6 @@ public class GuiVerticalScrollBar extends Gui
             ypos = startingYPos + maxDisplacement;
         }
         scrollValue = (ypos - startingYPos) * scaleFactor;
-    }
-
-    private void onMouseRelease()
-    {
-        isDragging = false;
-    }
-
-    private void onMouseMoved(int dx, int dy)
-    {
-        if (container.isScrollBarActive() && isDragging)
-        {
-            setYPos(mouseY);
-        }
-    }
-
-    private void onMouseScroll(int value, boolean up)
-    {
-        if (!container.isScrollBarActive())
-        {
-            return;
-        }
-        if (up)
-        {
-            setYPos(ypos - container.getScrollAmount());
-        } else
-        {
-            setYPos(ypos + container.getScrollAmount());
-        }
     }
 
     public float getScrollValue()

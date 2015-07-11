@@ -123,6 +123,11 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
         GL11.glPopMatrix();
     }
 
+    public static void bindTexture(ResourceLocation resource)
+    {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
+    }
+
     private void drawDisplayStrings()
     {
         int i = 0;
@@ -139,11 +144,6 @@ public class GuiLabeler extends GuiScreen implements IVerticalScrollContainer, I
     private int getListViewSize()
     {
         return (SCROLL_Y_MAX - SCROLL_Y) / ENTRY_HEIGHT;
-    }
-
-    public static void bindTexture(ResourceLocation resource)
-    {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
     }
 
     @Override

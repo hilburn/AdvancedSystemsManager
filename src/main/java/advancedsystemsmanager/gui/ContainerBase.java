@@ -19,8 +19,8 @@ import java.util.List;
 public abstract class ContainerBase<T extends TileEntity & ITileInterfaceProvider> extends Container
 {
     protected T te;
-    private InventoryPlayer player;
     int playerInventoryEnd;
+    private InventoryPlayer player;
 
     protected ContainerBase(T te, InventoryPlayer player)
     {
@@ -76,12 +76,6 @@ public abstract class ContainerBase<T extends TileEntity & ITileInterfaceProvide
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
-        return entityplayer.getDistanceSq(te.xCoord, te.yCoord, te.zCoord) <= 64;
-    }
-
-    @Override
     public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slot)
     {
         Slot slotObject = (Slot)inventorySlots.get(slot);
@@ -118,5 +112,11 @@ public abstract class ContainerBase<T extends TileEntity & ITileInterfaceProvide
             slotObject.onPickupFromSlot(entityPlayer, stackInSlot);
         }
         return stack;
+    }
+
+    @Override
+    public boolean canInteractWith(EntityPlayer entityplayer)
+    {
+        return entityplayer.getDistanceSq(te.xCoord, te.yCoord, te.zCoord) <= 64;
     }
 }

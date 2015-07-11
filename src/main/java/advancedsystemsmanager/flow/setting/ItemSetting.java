@@ -79,6 +79,12 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
+    public void setFuzzyType(int id)
+    {
+        fuzzyMode = FuzzyMode.values()[id];
+    }
+
+    @Override
     public void copyFrom(Setting setting)
     {
         content = ((ItemSetting)setting).getItem().copy();
@@ -157,22 +163,6 @@ public class ItemSetting extends Setting<ItemStack>
         }
     }
 
-    public FuzzyMode getFuzzyMode()
-    {
-        return fuzzyMode;
-    }
-
-    @Override
-    public void setFuzzyType(int id)
-    {
-        fuzzyMode = FuzzyMode.values()[id];
-    }
-
-    public boolean canChangeMetaData()
-    {
-        return true;
-    }
-
     @Override
     public void writeContentData(ASMPacket packet)
     {
@@ -185,5 +175,15 @@ public class ItemSetting extends Setting<ItemStack>
     {
         super.readContentData(packet);
         content = packet.readItemStackFromBuffer();
+    }
+
+    public FuzzyMode getFuzzyMode()
+    {
+        return fuzzyMode;
+    }
+
+    public boolean canChangeMetaData()
+    {
+        return true;
     }
 }

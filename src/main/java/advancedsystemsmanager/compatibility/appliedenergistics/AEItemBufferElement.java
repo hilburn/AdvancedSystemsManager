@@ -29,12 +29,6 @@ public class AEItemBufferElement extends BufferElementBase<ItemStack>
     }
 
     @Override
-    public ItemStack getContent()
-    {
-        return stack.getItemStack();
-    }
-
-    @Override
     public void remove()
     {
     }
@@ -79,5 +73,11 @@ public class AEItemBufferElement extends BufferElementBase<ItemStack>
     public Key<ItemStack> getKey()
     {
         return new Key.ItemKey(stack.getItemStack());
+    }
+
+    @Override
+    public ItemStack getContent()
+    {
+        return stack.getItemStack();
     }
 }

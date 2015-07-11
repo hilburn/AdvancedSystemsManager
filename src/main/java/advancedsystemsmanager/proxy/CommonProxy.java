@@ -1,12 +1,12 @@
 package advancedsystemsmanager.proxy;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import thevault.registry.IRenderRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.IItemRenderer;
+import thevault.registry.IRenderRegistry;
 
 public class CommonProxy implements IRenderRegistry
 {

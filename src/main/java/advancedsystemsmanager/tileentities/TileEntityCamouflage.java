@@ -191,14 +191,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    private void setItemForInside(ItemStack item, int side)
-    {
-        if (getCamouflageType().useDoubleRendering())
-        {
-            setItem(item, side);
-        }
-    }
-
     private void setItem(ItemStack item, int side)
     {
         int oldId = ids[side];
@@ -226,6 +218,14 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         if (ids[side] != oldId || metas[side] != oldMeta)
         {
             isServerDirty = true;
+        }
+    }
+
+    private void setItemForInside(ItemStack item, int side)
+    {
+        if (getCamouflageType().useDoubleRendering())
+        {
+            setItem(item, side);
         }
     }
 
@@ -331,28 +331,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < list.tagCount(); i++)
-        {
-            NBTTagCompound element = list.getCompoundTagAt(i);
-
-            ids[i] = element.getShort(NBT_ID);
-            metas[i] = element.getByte(NBT_META);
-            validateSide(i);
-        }
-
-        if (tagCompound.hasKey(NBT_COLLISION))
-        {
-            useCollision = tagCompound.getBoolean(NBT_COLLISION);
-            fullCollision = tagCompound.getBoolean(NBT_FULL);
-
-            bounds = tagCompound.getByteArray(NBT_BOUNDS);
-        }
-    }
-
-    @Override
     public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         NBTTagList list = new NBTTagList();
@@ -376,6 +354,28 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
 
 
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
+        for (int i = 0; i < list.tagCount(); i++)
+        {
+            NBTTagCompound element = list.getCompoundTagAt(i);
+
+            ids[i] = element.getShort(NBT_ID);
+            metas[i] = element.getByte(NBT_META);
+            validateSide(i);
+        }
+
+        if (tagCompound.hasKey(NBT_COLLISION))
+        {
+            useCollision = tagCompound.getBoolean(NBT_COLLISION);
+            fullCollision = tagCompound.getBoolean(NBT_FULL);
+
+            bounds = tagCompound.getByteArray(NBT_BOUNDS);
+        }
     }
 
     @Override

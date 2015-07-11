@@ -150,37 +150,6 @@ public class MenuSignText extends Menu
     }
 
     @Override
-    public void update(float partial)
-    {
-        for (int i = 0; i < hasChanged.length; i++)
-        {
-            if (hasChanged[i] > 0)
-            {
-                hasChanged[i] -= partial;
-                if (hasChanged[i] <= 0)
-                {
-                    textBoxes[i].sendSyncPacket();
-                }
-            }
-        }
-    }
-
-    public void onSelectedChange()
-    {
-        update(IDLE_TIME);
-    }
-
-    public void setTextPostSync(int id, String str)
-    {
-        if (str == null)
-        {
-            str = "";
-        }
-
-        textBoxes[id].setText(str);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         MenuSignText textMenu = (MenuSignText)menu;
@@ -203,6 +172,16 @@ public class MenuSignText extends Menu
         }
     }
 
+    public void setTextPostSync(int id, String str)
+    {
+        if (str == null)
+        {
+            str = "";
+        }
+
+        textBoxes[id].setText(str);
+    }
+
     @Override
     public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
@@ -220,7 +199,28 @@ public class MenuSignText extends Menu
     }
 
     @Override
+    public void update(float partial)
+    {
+        for (int i = 0; i < hasChanged.length; i++)
+        {
+            if (hasChanged[i] > 0)
+            {
+                hasChanged[i] -= partial;
+                if (hasChanged[i] <= 0)
+                {
+                    textBoxes[i].sendSyncPacket();
+                }
+            }
+        }
+    }
+
+    @Override
     public void onGuiClosed()
+    {
+        update(IDLE_TIME);
+    }
+
+    public void onSelectedChange()
     {
         update(IDLE_TIME);
     }

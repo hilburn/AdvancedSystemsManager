@@ -103,24 +103,6 @@ public class MenuItem extends MenuStuff<ItemStack>
         setFirstRadioButtonSelected(whitelist);
     }
 
-    @Override
-    protected boolean readSpecificData(ASMPacket packet, int action, Setting<ItemStack> setting)
-    {
-        switch (action)
-        {
-            case 3:
-                setting.setFuzzyType(packet.readByte());
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public Setting<ItemStack> getSetting(int id)
-    {
-        return new ItemSetting(id);
-    }
-
     public ItemSetting getSelectedSetting()
     {
         return (ItemSetting)selectedSetting;
@@ -167,31 +149,21 @@ public class MenuItem extends MenuStuff<ItemStack>
     }
 
     @Override
-    public String getName()
+    protected boolean readSpecificData(ASMPacket packet, int action, Setting<ItemStack> setting)
     {
-        return Names.ITEM_MENU;
+        switch (action)
+        {
+            case 3:
+                setting.setFuzzyType(packet.readByte());
+                break;
+        }
+        return false;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    public Setting<ItemStack> getSetting(int id)
     {
-        if (damageValueTextBox.isVisible())
-        {
-            gui.drawString(Names.DAMAGE_VALUE, DMG_VAL_TEXT_X, DMG_VAL_TEXT_Y, 0.7F, 0x404040);
-        }
-
-        for (int i = 0; i < 2; i++)
-        {
-            int x = i == 0 ? ARROW_X_LEFT : ARROW_X_RIGHT;
-            int y = ARROW_Y;
-
-            int srcXArrow = i;
-            int srcYArrow = CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY) ? 1 : 0;
-
-            gui.drawTexture(x, y, ARROW_SRC_X + srcXArrow * ARROW_WIDTH, ARROW_SRC_Y + srcYArrow * ARROW_HEIGHT, ARROW_WIDTH, ARROW_HEIGHT);
-        }
-        gui.drawCenteredString(getSelectedSetting().getFuzzyMode().toString(), ARROW_X_LEFT, ARROW_TEXT_Y, 0.7F, ARROW_X_RIGHT - ARROW_X_LEFT + ARROW_WIDTH, 0x404040);
+        return new ItemSetting(id);
     }
 
     @SideOnly(Side.CLIENT)
@@ -221,6 +193,47 @@ public class MenuItem extends MenuStuff<ItemStack>
     public List<String> getSettingObjectMouseOver(Setting<ItemStack> setting)
     {
         return getResultObjectMouseOver(setting.getContent());
+    }
+
+    @Override
+    public void updateTextBoxes()
+    {
+        if (amountTextBox != null)
+        {
+            amountTextBox.setNumber(selectedSetting.getAmount());
+        }
+        damageValueTextBox.setNumber(getSelectedSetting().getItem().getItemDamage());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public List<ItemStack> updateSearch(String search, boolean showAll)
+    {
+        Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll));
+        thread.start();
+        return scrollControllerSearch.getResult();
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    {
+        if (damageValueTextBox.isVisible())
+        {
+            gui.drawString(Names.DAMAGE_VALUE, DMG_VAL_TEXT_X, DMG_VAL_TEXT_Y, 0.7F, 0x404040);
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            int x = i == 0 ? ARROW_X_LEFT : ARROW_X_RIGHT;
+            int y = ARROW_Y;
+
+            int srcXArrow = i;
+            int srcYArrow = CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY) ? 1 : 0;
+
+            gui.drawTexture(x, y, ARROW_SRC_X + srcXArrow * ARROW_WIDTH, ARROW_SRC_Y + srcYArrow * ARROW_HEIGHT, ARROW_WIDTH, ARROW_HEIGHT);
+        }
+        gui.drawCenteredString(getSelectedSetting().getFuzzyMode().toString(), ARROW_X_LEFT, ARROW_TEXT_Y, 0.7F, ARROW_X_RIGHT - ARROW_X_LEFT + ARROW_WIDTH, 0x404040);
     }
 
     @Override
@@ -263,21 +276,8 @@ public class MenuItem extends MenuStuff<ItemStack>
     }
 
     @Override
-    public void updateTextBoxes()
+    public String getName()
     {
-        if (amountTextBox != null)
-        {
-            amountTextBox.setNumber(selectedSetting.getAmount());
-        }
-        damageValueTextBox.setNumber(getSelectedSetting().getItem().getItemDamage());
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public List<ItemStack> updateSearch(String search, boolean showAll)
-    {
-        Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll));
-        thread.start();
-        return scrollControllerSearch.getResult();
+        return Names.ITEM_MENU;
     }
 }

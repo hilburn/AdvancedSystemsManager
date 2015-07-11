@@ -28,29 +28,16 @@ import java.util.UUID;
 public class TileEntityBlockGate extends TileEntityClusterElement implements IInventory, IPacketBlock
 {
 
+    protected static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
+    protected static final String NBT_DIRECTION = "Direction";
     private static final String FAKE_PLAYER_NAME = "[ASM_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
     protected boolean missingPlaceDirection;
-    protected static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
-    protected static final String NBT_DIRECTION = "Direction";
+    protected boolean blocked;
+    protected int placeDirection;
     private List<ItemStack> inventory;
     private List<ItemStack> inventoryCache;
     private boolean broken;
-    protected boolean blocked;
-    protected int placeDirection;
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        PacketHandler.sendBlockPacket(this, null, 0);
-        return null;
-    }
 
     public int getPlaceDirection()
     {
@@ -66,24 +53,6 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
             if (!isPartOfCluster() && worldObj != null && !worldObj.isRemote)
             {
                 PacketHandler.sendBlockPacket(this, null, 0);
-            }
-        }
-    }
-
-    @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        if (tagCompound.hasKey(NBT_DIRECTION))
-        {
-            setPlaceDirection(tagCompound.getByte(NBT_DIRECTION));
-        } else
-        {
-            if (worldObj != null)
-            {
-                setPlaceDirection(getMetadata());
-            } else
-            {
-                missingPlaceDirection = true;
             }
         }
     }
@@ -105,6 +74,30 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound tagCompound)
+    {
+        if (tagCompound.hasKey(NBT_DIRECTION))
+        {
+            setPlaceDirection(tagCompound.getByte(NBT_DIRECTION));
+        } else
+        {
+            if (worldObj != null)
+            {
+                setPlaceDirection(getMetadata());
+            } else
+            {
+                missingPlaceDirection = true;
+            }
+        }
+    }
+
+    @Override
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
+    {
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }
 
     @Override
@@ -153,6 +146,52 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
         inventory = null;
         inventoryCache = null;
         broken = false;
+    }
+
+    private List<ItemStack> getInventoryForDrop()
+    {
+        List<ItemStack> ret = new ArrayList<ItemStack>();
+        for (ItemStack itemStack : inventory)
+        {
+            if (itemStack != null)
+            {
+                ItemStack newStack = itemStack.copy();
+
+
+                if (!broken)
+                {
+                    for (int i = 0; i < inventoryCache.size(); i++)
+                    {
+                        ItemStack copyStack = inventoryCache.get(i);
+
+                        if (copyStack != null && newStack.isItemEqual(copyStack) && ItemStack.areItemStackTagsEqual(newStack, copyStack))
+                        {
+                            int max = Math.min(copyStack.stackSize, newStack.stackSize);
+
+                            copyStack.stackSize -= max;
+                            if (copyStack.stackSize == 0)
+                            {
+                                inventoryCache.set(0, null);
+                            }
+
+                            newStack.stackSize -= max;
+                            if (newStack.stackSize == 0)
+                            {
+                                newStack = null;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+                if (newStack != null)
+                {
+                    ret.add(newStack);
+                }
+            }
+        }
+        return ret;
     }
 
     private List<ItemStack> placeItem(ItemStack itemstack)
@@ -220,52 +259,6 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
         return items;
     }
 
-    private List<ItemStack> getInventoryForDrop()
-    {
-        List<ItemStack> ret = new ArrayList<ItemStack>();
-        for (ItemStack itemStack : inventory)
-        {
-            if (itemStack != null)
-            {
-                ItemStack newStack = itemStack.copy();
-
-
-                if (!broken)
-                {
-                    for (int i = 0; i < inventoryCache.size(); i++)
-                    {
-                        ItemStack copyStack = inventoryCache.get(i);
-
-                        if (copyStack != null && newStack.isItemEqual(copyStack) && ItemStack.areItemStackTagsEqual(newStack, copyStack))
-                        {
-                            int max = Math.min(copyStack.stackSize, newStack.stackSize);
-
-                            copyStack.stackSize -= max;
-                            if (copyStack.stackSize == 0)
-                            {
-                                inventoryCache.set(0, null);
-                            }
-
-                            newStack.stackSize -= max;
-                            if (newStack.stackSize == 0)
-                            {
-                                newStack = null;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-
-                if (newStack != null)
-                {
-                    ret.add(newStack);
-                }
-            }
-        }
-        return ret;
-    }
-
     @Override
     public void markDirty()
     {
@@ -310,6 +303,17 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
         }
     }
 
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        PacketHandler.sendBlockPacket(this, null, 0);
+        return null;
+    }
+
+    private boolean canBreakBlock(Block block, int x, int y, int z)
+    {
+        return block != null && block != Blocks.bedrock && block.getBlockHardness(worldObj, x, y, z) >= 0;
+    }
 
     @Override
     public int getSizeInventory()
@@ -343,11 +347,6 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
         }
 
         return inventory;
-    }
-
-    private boolean canBreakBlock(Block block, int x, int y, int z)
-    {
-        return block != null && block != Blocks.bedrock && block.getBlockHardness(worldObj, x, y, z) >= 0;
     }
 
     @Override

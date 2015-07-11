@@ -19,16 +19,6 @@ public abstract class CheckBox extends UpdateElement
         textWidth = Integer.MAX_VALUE;
     }
 
-    public void setValue(boolean val)
-    {
-        checked = val;
-    }
-
-    public boolean getValue()
-    {
-        return checked;
-    }
-
     public int getX()
     {
         return x;
@@ -64,6 +54,16 @@ public abstract class CheckBox extends UpdateElement
     {
         packet.writeBoolean(getValue());
         return true;
+    }
+
+    public boolean getValue()
+    {
+        return checked;
+    }
+
+    public void setValue(boolean val)
+    {
+        checked = val;
     }
 
     @Override

@@ -69,9 +69,9 @@ public class MenuSplit extends Menu
         });
     }
 
-    public boolean useSplit()
+    public void setFair(boolean val)
     {
-        return radioButtons.getSelectedOption() == 1;
+        useFair = val;
     }
 
     public boolean useFair()
@@ -79,19 +79,14 @@ public class MenuSplit extends Menu
         return useFair;
     }
 
-    public boolean useEmpty()
-    {
-        return useEmpty;
-    }
-
-    public void setFair(boolean val)
-    {
-        useFair = val;
-    }
-
     public void setEmpty(boolean val)
     {
         useEmpty = val;
+    }
+
+    public boolean useEmpty()
+    {
+        return useEmpty;
     }
 
     @Override
@@ -109,6 +104,11 @@ public class MenuSplit extends Menu
             checkBoxes.draw(gui, mX, mY);
         }
         radioButtons.draw(gui, mX, mY);
+    }
+
+    public boolean useSplit()
+    {
+        return radioButtons.getSelectedOption() == 1;
     }
 
     @SideOnly(Side.CLIENT)

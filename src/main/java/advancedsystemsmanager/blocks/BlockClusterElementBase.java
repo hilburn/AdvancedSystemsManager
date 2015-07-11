@@ -21,6 +21,11 @@ public abstract class BlockClusterElementBase<T extends TileEntity & IClusterTil
         register();
     }
 
+    public void register()
+    {
+        ClusterRegistry.register(id = registerID++, this);
+    }
+
     public BlockClusterElementBase(String name, float hardness)
     {
         super(name, hardness);
@@ -31,11 +36,6 @@ public abstract class BlockClusterElementBase<T extends TileEntity & IClusterTil
     {
         super(name, extraIcons);
         register();
-    }
-
-    public void register()
-    {
-        ClusterRegistry.register(id = registerID++, this);
     }
 
     @Override
@@ -51,16 +51,16 @@ public abstract class BlockClusterElementBase<T extends TileEntity & IClusterTil
     }
 
     @Override
-    public byte getId()
-    {
-        return id;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public T getClusterTile(World world, int metadata)
     {
         return (T)createNewTileEntity(world, metadata);
+    }
+
+    @Override
+    public byte getId()
+    {
+        return id;
     }
 
     @SuppressWarnings("unchecked")

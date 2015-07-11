@@ -13,7 +13,6 @@ import java.util.Map;
 
 public final class Settings
 {
-    public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
     public static final String AUTO_CLOSE_GROUP = "autoCloseGroup";
     public static final String LARGE_OPEN = "largeOpenHitBox";
     public static final String LARGE_OPEN_MENU = "largeOpenHitBoxMenu";
@@ -24,7 +23,6 @@ public final class Settings
     public static final String CRAFT_MOVE_FIRST = "priorityMoveFirst";
     public static final String ENLARGE_INTERFACES = "enlargeInterfaces";
     public static final String MIDDLE_CLICK = "middleClick";
-
     static
     {
         registerSetting(AUTO_CLOSE_GROUP, false);
@@ -38,6 +36,7 @@ public final class Settings
         registerSetting(ENLARGE_INTERFACES, false);
         registerSetting(MIDDLE_CLICK, true);
     }
+    public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
 
     private Settings()
     {

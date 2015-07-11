@@ -85,20 +85,6 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < sidesTag.tagCount(); i++)
-        {
-
-            NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
-
-            oldData[i] = data[i] = sideTag.getShort(NBT_DATA);
-        }
-    }
-
-
-    @Override
     public void writeContentToNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = new NBTTagList();
@@ -111,6 +97,19 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
 
 
         nbtTagCompound.setTag(NBT_SIDES, sidesTag);
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    {
+        NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
+        for (int i = 0; i < sidesTag.tagCount(); i++)
+        {
+
+            NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
+
+            oldData[i] = data[i] = sideTag.getShort(NBT_DATA);
+        }
     }
 
     @Override

@@ -28,9 +28,9 @@ public class GuiPong implements IInterfaceRenderer
         width = GuiManager.GUI_WIDTH - 2 * x;
         int yBorder = 5;
         int rectHeight = 50;
-        ball = new Ball(width/2 - 2, height/2 - 2, 5, y + yBorder, y + height - yBorder);
-        player = new Paddle(x * 2, (height - rectHeight) /2, 5, rectHeight, y + yBorder, y + height - yBorder);
-        ai = new PaddleAI(width, height/2, 5, rectHeight, y + yBorder, y + height - yBorder);
+        ball = new Ball(width / 2 - 2, height / 2 - 2, 5, y + yBorder, y + height - yBorder);
+        player = new Paddle(x * 2, (height - rectHeight) / 2, 5, rectHeight, y + yBorder, y + height - yBorder);
+        ai = new PaddleAI(width, height / 2, 5, rectHeight, y + yBorder, y + height - yBorder);
         resetGame();
     }
 
@@ -44,14 +44,6 @@ public class GuiPong implements IInterfaceRenderer
         ball.reset();
         player.reset();
         ai.reset();
-    }
-
-    private void update()
-    {
-        if (ball.checkScore(x + 5, player, width + x - 5, ai)) resetGame();
-        ai.update(ball, move);
-        player.update(move);
-        ball.update(player, ai);
     }
 
     private void finish()
@@ -80,12 +72,19 @@ public class GuiPong implements IInterfaceRenderer
             fontRenderer.drawString(this.x - 40 + width / 2, this.y, player.getScore(), 0xFFFFFF);
             ai.draw(gui);
             fontRenderer.drawString(this.x + 20 + width / 2, this.y, ai.getScore(), 0xFFFFFF);
-        }
-        else
+        } else
         {
             fontRenderer.drawString(this.x + width / 4, this.y, "Thx for playing", 0xFFFFFF);
             fontRenderer.drawScaledString(this.x + width / 2 - 40, this.y + 40, (player.score > winCondition ? "Player" : "AI") + " wins", 0xFFFFFF, 26);
         }
+    }
+
+    private void update()
+    {
+        if (ball.checkScore(x + 5, player, width + x - 5, ai)) resetGame();
+        ai.update(ball, move);
+        player.update(move);
+        ball.update(player, ai);
     }
 
     @Override

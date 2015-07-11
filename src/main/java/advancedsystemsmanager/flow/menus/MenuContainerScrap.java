@@ -22,23 +22,14 @@ public class MenuContainerScrap extends MenuContainer
     }
 
     @Override
+    public void initRadioButtons()
+    {
+    }
+
+    @Override
     public String getName()
     {
         return Names.OVERFLOW_MENU;
-    }
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        if (selectedInventories.isEmpty())
-        {
-            errors.add(Names.NO_OVERFLOW_ERROR);
-        }
-    }
-
-    @Override
-    public void initRadioButtons()
-    {
     }
 
     @SideOnly(Side.CLIENT)
@@ -50,6 +41,15 @@ public class MenuContainerScrap extends MenuContainer
         if (scrollController.getResult().isEmpty())
         {
             gui.drawSplitString(Names.OVERFLOW_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2 - 20, 0.7F, 0x404040);
+        }
+    }
+
+    @Override
+    public void addErrors(List<String> errors)
+    {
+        if (selectedInventories.isEmpty())
+        {
+            errors.add(Names.NO_OVERFLOW_ERROR);
         }
     }
 }

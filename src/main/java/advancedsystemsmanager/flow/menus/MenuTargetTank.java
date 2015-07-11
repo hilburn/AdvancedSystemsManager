@@ -59,6 +59,13 @@ public class MenuTargetTank extends MenuTarget
         };
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    {
+        radioButtons.draw(gui, mX, mY);
+    }
+
     @Override
     public void copyAdvancedSetting(Menu menu, int i)
     {
@@ -91,13 +98,6 @@ public class MenuTargetTank extends MenuTarget
     public void onAdvancedClick(int mX, int mY, int button)
     {
         radioButtons.onClick(mX, mY, button);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
-    {
-        radioButtons.draw(gui, mX, mY);
     }
 
     public boolean requireEmpty(int side)

@@ -49,11 +49,6 @@ public class GLFontMetrics
         this.fontImageHeight = fontImageHeight;
     }
 
-    public GLGlyphMetric getGlyphMetric(char c)
-    {
-        return glyphs.containsKey((int)c)? glyphs.get((int)c) : null;
-    }
-
     /**
      * Derive a font metric from a font file, a font render context and the
      * layout properties specified.
@@ -161,6 +156,11 @@ public class GLFontMetrics
         {
         }
         return null;
+    }
+
+    public GLGlyphMetric getGlyphMetric(char c)
+    {
+        return glyphs.containsKey((int)c) ? glyphs.get((int)c) : null;
     }
 
     @Override

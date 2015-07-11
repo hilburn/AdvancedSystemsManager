@@ -193,13 +193,6 @@ public class MenuContainer extends Menu implements IPacketSync
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int mX, int mY)
-            {
-                drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
-            }
-
-            @SideOnly(Side.CLIENT)
-            @Override
             public void drawMouseOver(GuiManager gui, int mX, int mY)
             {
                 if (locked && GuiBase.isShiftKeyDown())
@@ -217,6 +210,13 @@ public class MenuContainer extends Menu implements IPacketSync
                         cachedContainer = null;
                     }
                 }
+            }
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int mX, int mY)
+            {
+                drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
             }
 
             @SideOnly(Side.CLIENT)
@@ -491,41 +491,19 @@ public class MenuContainer extends Menu implements IPacketSync
         currentPage = Page.MAIN;
     }
 
+    public void initRadioButtons()
+    {
+        type.initRadioButtons(radioButtonsMulti);
+    }
+
+    public int getDefaultRadioButton()
+    {
+        return type.getDefaultRadioButton();
+    }
+
     public String getDefaultSearch()
     {
         return ".all";
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void drawContainer(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, List<Long> selected, int x, int y, boolean hover)
-    {
-        int srcInventoryX = selected.contains(iContainerSelection.getId()) ? 1 : 0;
-        int srcInventoryY = hover ? 1 : 0;
-
-        gui.drawTexture(x, y, INVENTORY_SRC_X + srcInventoryX * INVENTORY_SIZE, INVENTORY_SRC_Y + srcInventoryY * INVENTORY_SIZE, INVENTORY_SIZE, INVENTORY_SIZE);
-        iContainerSelection.draw(gui, x, y);
-    }
-
-    public List<String> getMouseOverForContainer(IContainerSelection<GuiManager> iContainerSelection, List<Long> selected)
-    {
-        List<String> ret = new ArrayList<String>();
-        if (cachedInterface != null)
-        {
-            String[] desc = iContainerSelection.getDescription(cachedInterface).split("\n");
-            Collections.addAll(ret, desc);
-            if (selected.contains(iContainerSelection.getId()))
-            {
-                ret.add(TextColour.GREEN + StatCollector.translateToLocal(Names.SELECTED));
-            }
-        }
-        return ret;
-    }
-
-    public void writeData(ASMPacket dw, long id, boolean select)
-    {
-        dw.writeBoolean(false);
-        dw.writeLong(id);
-        dw.writeBoolean(select);
     }
 
     public List<IContainerSelection<GuiManager>> getInventories(TileEntityManager manager)
@@ -563,6 +541,45 @@ public class MenuContainer extends Menu implements IPacketSync
         return ret;
     }
 
+    private void removeInventory(int index)
+    {
+        ASMPacket packet = getBasePacket(true);
+        packet.writeShort(index);
+        packet.sendServerPacket();
+    }
+
+    private void addInventory(long inventory)
+    {
+        ASMPacket packet = getBasePacket(false);
+        packet.writeLong(inventory);
+        packet.sendServerPacket();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void drawContainer(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, List<Long> selected, int x, int y, boolean hover)
+    {
+        int srcInventoryX = selected.contains(iContainerSelection.getId()) ? 1 : 0;
+        int srcInventoryY = hover ? 1 : 0;
+
+        gui.drawTexture(x, y, INVENTORY_SRC_X + srcInventoryX * INVENTORY_SIZE, INVENTORY_SRC_Y + srcInventoryY * INVENTORY_SIZE, INVENTORY_SIZE, INVENTORY_SIZE);
+        iContainerSelection.draw(gui, x, y);
+    }
+
+    public List<String> getMouseOverForContainer(IContainerSelection<GuiManager> iContainerSelection, List<Long> selected)
+    {
+        List<String> ret = new ArrayList<String>();
+        if (cachedInterface != null)
+        {
+            String[] desc = iContainerSelection.getDescription(cachedInterface).split("\n");
+            Collections.addAll(ret, desc);
+            if (selected.contains(iContainerSelection.getId()))
+            {
+                ret.add(TextColour.GREEN + StatCollector.translateToLocal(Names.SELECTED));
+            }
+        }
+        return ret;
+    }
+
     public Set<ISystemType> getValidTypes()
     {
         return new HashSet<ISystemType>(Arrays.asList(type));
@@ -584,6 +601,21 @@ public class MenuContainer extends Menu implements IPacketSync
         return false;
     }
 
+    private ASMPacket getBasePacket(boolean remove)
+    {
+        ASMPacket packet = parent.getSyncPacket();
+        packet.writeByte(packetId);
+        packet.writeBooleanArray(remove);
+        return packet;
+    }
+
+    public void writeData(ASMPacket dw, long id, boolean select)
+    {
+        dw.writeBoolean(false);
+        dw.writeLong(id);
+        dw.writeBoolean(select);
+    }
+
     public Page getCurrentPage()
     {
         return currentPage;
@@ -592,6 +624,12 @@ public class MenuContainer extends Menu implements IPacketSync
     public List<Variable> getFilterVariables()
     {
         return filterVariables;
+    }
+
+    @Override
+    public String getName()
+    {
+        return type.getName() + "Menu";
     }
 
     @SideOnly(Side.CLIENT)
@@ -658,11 +696,6 @@ public class MenuContainer extends Menu implements IPacketSync
         }
 
         hasUpdated = false;
-    }
-
-    public boolean inBackBounds(int mX, int mY)
-    {
-        return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
@@ -813,6 +846,18 @@ public class MenuContainer extends Menu implements IPacketSync
     }
 
     @Override
+    public void addErrors(List<String> errors)
+    {
+        type.addErrors(errors, this);
+    }
+
+    @Override
+    public boolean isVisible()
+    {
+        return type.isVisible(getParent());
+    }
+
+    @Override
     public void update(float partial)
     {
         scrollController.update(partial);
@@ -850,32 +895,9 @@ public class MenuContainer extends Menu implements IPacketSync
         return selectedInventories.size() > 1 || (selectedInventories.size() == 0 && (selectedInventories.get(0) & Variable.NEGATIVE) != 0);
     }
 
-    @Override
-    public String getName()
+    public boolean inBackBounds(int mX, int mY)
     {
-        return type.getName() + "Menu";
-    }
-
-    @Override
-    public void addErrors(List<String> errors)
-    {
-        type.addErrors(errors, this);
-    }
-
-    @Override
-    public boolean isVisible()
-    {
-        return type.isVisible(getParent());
-    }
-
-    public void initRadioButtons()
-    {
-        type.initRadioButtons(radioButtonsMulti);
-    }
-
-    public int getDefaultRadioButton()
-    {
-        return type.getDefaultRadioButton();
+        return CollisionHelper.inBounds(BACK_X, BACK_Y, BACK_SIZE_W, BACK_SIZE_H, mX, mY);
     }
 
     public List<Long> getSelectedInventories()
@@ -905,28 +927,6 @@ public class MenuContainer extends Menu implements IPacketSync
             selectedInventories.add(packet.readLong());
         }
         return false;
-    }
-
-    private void addInventory(long inventory)
-    {
-        ASMPacket packet = getBasePacket(false);
-        packet.writeLong(inventory);
-        packet.sendServerPacket();
-    }
-
-    private void removeInventory(int index)
-    {
-        ASMPacket packet = getBasePacket(true);
-        packet.writeShort(index);
-        packet.sendServerPacket();
-    }
-
-    private ASMPacket getBasePacket(boolean remove)
-    {
-        ASMPacket packet = parent.getSyncPacket();
-        packet.writeByte(packetId);
-        packet.writeBooleanArray(remove);
-        return packet;
     }
 
     public enum Page
@@ -992,14 +992,14 @@ public class MenuContainer extends Menu implements IPacketSync
             }
         }
 
-        boolean inBounds(int mX, int mY)
-        {
-            return isVisible() && CollisionHelper.inBounds(x, y, width, height, mX, mY);
-        }
-
         boolean isVisible()
         {
             return currentPage == page;
+        }
+
+        boolean inBounds(int mX, int mY)
+        {
+            return isVisible() && CollisionHelper.inBounds(x, y, width, height, mX, mY);
         }
 
         @SideOnly(Side.CLIENT)

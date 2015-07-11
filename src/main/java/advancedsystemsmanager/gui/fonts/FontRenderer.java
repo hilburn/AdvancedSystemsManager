@@ -278,9 +278,17 @@ public class FontRenderer
         return stringbuilder.toString();
     }
 
-    public int getHeight()
+    private int getCharWidth(char character)
     {
-        return fontHeight;
+        CharData charData;
+        if (character < 256)
+        {
+            charData = charArray[character];
+        } else
+        {
+            charData = customChars.get(character);
+        }
+        return charData == null ? 0 : charData.width;
     }
 
     public int getHeight(String string)
@@ -298,6 +306,70 @@ public class FontRenderer
         drawString(x, y, string, 0xFFFFFFFF);
     }
 
+    public void drawString(float x, float y, String string, int colour)
+    {
+        drawString(x, y, string, colour, 0, string.length() - 1);
+    }
+
+    public void drawString(float x, float y, String string, int colour, int startIndex, int endIndex)
+    {
+        float red = (float)(colour >> 16 & 255) / 255.0F;
+        float blue = (float)(colour >> 8 & 255) / 255.0F;
+        float green = (float)(colour & 255) / 255.0F;
+        glColor3f(red, blue, green);
+        glBindTexture(GL_TEXTURE_2D, this.textureID);
+
+        CharData charData;
+        char charCurrent;
+
+        glBegin(GL_QUADS);
+
+        int width = 0;
+        for (int i = 0; i < string.length(); i++)
+        {
+            charCurrent = string.charAt(i);
+            if (charCurrent < 256)
+            {
+                charData = charArray[charCurrent];
+            } else
+            {
+                charData = customChars.get(charCurrent);
+            }
+
+            if (charData != null)
+            {
+                if ((i >= startIndex) || (i <= endIndex))
+                {
+                    drawQuad((x + width), y, charData.storedX,
+                            charData.storedY, charData.width,
+                            charData.height);
+                }
+                width += charData.width;
+            }
+        }
+
+        glEnd();
+    }
+
+    private void drawQuad(float drawX, float drawY, float srcX, float srcY, float w, float h)
+    {
+        float tSrcX = srcX / textureWidth;
+        float tSrcY = srcY / textureHeight;
+        float drawX2 = drawX + w;
+        float drawY2 = drawY + h;
+        float u = (w / textureWidth);
+        float v = (h / textureHeight);
+
+        glTexCoord2f(tSrcX, tSrcY);
+        glVertex3f(drawX, drawY, zLevel);
+        glTexCoord2f(tSrcX, tSrcY + v);
+        glVertex3f(drawX, drawY2, zLevel);
+        glTexCoord2f(tSrcX + u, tSrcY + v);
+        glVertex3f(drawX2, drawY2, zLevel);
+        glTexCoord2f(tSrcX + u, tSrcY);
+        glVertex3f(drawX2, drawY, zLevel);
+    }
+
     public void drawScaledString(float x, float y, String string, int colour, int height)
     {
         float scale = (float)height / getHeight();
@@ -308,9 +380,9 @@ public class FontRenderer
         glPopMatrix();
     }
 
-    public void drawString(float x, float y, String string, int colour)
+    public int getHeight()
     {
-        drawString(x, y, string, colour, 0, string.length() - 1);
+        return fontHeight;
     }
 
     /**
@@ -396,78 +468,6 @@ public class FontRenderer
         }
 
         return l != stringLength && i1 != -1 && i1 < l ? i1 : l;
-    }
-
-    private int getCharWidth(char character)
-    {
-        CharData charData;
-        if (character < 256)
-        {
-            charData = charArray[character];
-        } else
-        {
-            charData = customChars.get(character);
-        }
-        return charData == null? 0 : charData.width;
-    }
-
-    public void drawString(float x, float y, String string, int colour, int startIndex, int endIndex)
-    {
-        float red = (float)(colour >> 16 & 255) / 255.0F;
-        float blue = (float)(colour >> 8 & 255) / 255.0F;
-        float green = (float)(colour & 255) / 255.0F;
-        glColor3f(red, blue, green);
-        glBindTexture(GL_TEXTURE_2D, this.textureID);
-
-        CharData charData;
-        char charCurrent;
-
-        glBegin(GL_QUADS);
-
-        int width = 0;
-        for (int i = 0; i < string.length(); i++)
-        {
-            charCurrent = string.charAt(i);
-            if (charCurrent < 256)
-            {
-                charData = charArray[charCurrent];
-            } else
-            {
-                charData = customChars.get(charCurrent);
-            }
-
-            if (charData != null)
-            {
-                if ((i >= startIndex) || (i <= endIndex))
-                {
-                    drawQuad((x + width), y, charData.storedX,
-                            charData.storedY, charData.width,
-                            charData.height);
-                }
-                width += charData.width;
-            }
-        }
-
-        glEnd();
-    }
-
-    private void drawQuad(float drawX, float drawY, float srcX, float srcY, float w, float h)
-    {
-        float tSrcX = srcX / textureWidth;
-        float tSrcY = srcY / textureHeight;
-        float drawX2 = drawX + w;
-        float drawY2 = drawY + h;
-        float u = (w / textureWidth);
-        float v = (h / textureHeight);
-
-        glTexCoord2f(tSrcX, tSrcY);
-        glVertex3f(drawX, drawY, zLevel);
-        glTexCoord2f(tSrcX, tSrcY + v);
-        glVertex3f(drawX, drawY2, zLevel);
-        glTexCoord2f(tSrcX + u, tSrcY + v);
-        glVertex3f(drawX2, drawY2, zLevel);
-        glTexCoord2f(tSrcX + u, tSrcY);
-        glVertex3f(drawX2, drawY, zLevel);
     }
 
     private static class CharData

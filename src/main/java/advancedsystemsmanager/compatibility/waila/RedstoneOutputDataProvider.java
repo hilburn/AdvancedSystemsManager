@@ -51,6 +51,12 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
         return list;
     }
 
+    @SideOnly(Side.CLIENT)
+    private boolean isShiftDown()
+    {
+        return GuiScreen.isShiftKeyDown();
+    }
+
     private String getEmitterSide(TileEntityEmitter emitter, int side, boolean full)
     {
         String str = StatCollector.translateToLocal(emitter.hasStrongSignalAtSide(side) ? Names.STRONG_POWER : Names.WEAK_POWER) + ": " + emitter.getStrengthFromSide(side) + " ";
@@ -61,12 +67,6 @@ public class RedstoneOutputDataProvider implements IWailaDataProvider
         }
 
         return str;
-    }
-
-    @SideOnly(Side.CLIENT)
-    private boolean isShiftDown()
-    {
-        return GuiScreen.isShiftKeyDown();
     }
 
     @Override

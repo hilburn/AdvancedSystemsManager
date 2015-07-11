@@ -71,14 +71,14 @@ public class MenuContainerTypes extends Menu
 
     }
 
-    protected boolean isChecked(int id)
-    {
-        return checked[id];
-    }
-
     protected void setChecked(int id, boolean value)
     {
         checked[id] = value;
+    }
+
+    protected boolean isChecked(int id)
+    {
+        return checked[id];
     }
 
     @Override
@@ -146,13 +146,13 @@ public class MenuContainerTypes extends Menu
         return types;
     }
 
-    public boolean[] getChecked()
-    {
-        return checked;
-    }
-
     public List<ISystemType> getTypes()
     {
         return types;
+    }
+
+    public boolean[] getChecked()
+    {
+        return checked;
     }
 }

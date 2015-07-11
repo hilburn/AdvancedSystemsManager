@@ -15,9 +15,17 @@ import java.util.regex.Pattern;
 
 public class ScrollVariable extends ScrollController<Variable> implements IPacketSync
 {
+    public int variable = -1;
     private FlowComponent command;
     private int id;
-    public int variable = -1;
+
+    public ScrollVariable(FlowComponent command, int x, int y, int rows, int width)
+    {
+        this(command);
+        this.x = x;
+        this.y = y;
+        this.visibleRows = rows;
+    }
 
     public ScrollVariable(FlowComponent command)
     {
@@ -34,14 +42,6 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
         };
         textBox.setTextAndCursor("");
         updateSearch();
-    }
-
-    public ScrollVariable(FlowComponent command, int x, int y, int rows, int width)
-    {
-        this(command);
-        this.x = x;
-        this.y = y;
-        this.visibleRows = rows;
     }
 
     @Override
@@ -63,24 +63,6 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
     }
 
     @Override
-    public void onClick(Variable variable, int mX, int mY, int button)
-    {
-        int newSelected = variable.colour;
-        setSelected(newSelected == this.variable ? -1 : newSelected);
-        sendUpdate();
-    }
-
-    @Override
-    public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
-    {
-        int srcInventoryX = this.variable == variable.colour ? 1 : 0;
-        int srcInventoryY = hover ? 1 : 0;
-
-        gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
-        variable.draw(gui, x, y);
-    }
-
-    @Override
     public List<Variable> updateSearch(String search, boolean all)
     {
         List<Variable> variables = new ArrayList<Variable>();
@@ -97,6 +79,24 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
         }
         Collections.sort(variables);
         return variables;
+    }
+
+    @Override
+    public void onClick(Variable variable, int mX, int mY, int button)
+    {
+        int newSelected = variable.colour;
+        setSelected(newSelected == this.variable ? -1 : newSelected);
+        sendUpdate();
+    }
+
+    @Override
+    public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
+    {
+        int srcInventoryX = this.variable == variable.colour ? 1 : 0;
+        int srcInventoryY = hover ? 1 : 0;
+
+        gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
+        variable.draw(gui, x, y);
     }
 
     @Override

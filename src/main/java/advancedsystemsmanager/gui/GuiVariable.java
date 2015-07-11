@@ -9,15 +9,14 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 public class GuiVariable implements IInterfaceRenderer
 {
+    private static final int BUTTON_WIDTH = 30;
+    private static final int BUTTON_HEIGHT = 18;
     private static int X = 110;
     private static int Y = 64;
     private static int BUTTON_X = X + GuiColourSelector.OUTPUT_X;
     private static int BUTTON_Y = Y + 110;
-    private static final int BUTTON_WIDTH = 30;
-    private static final int BUTTON_HEIGHT = 18;
-
-    private GuiColourSelector colourSelector;
     protected TileEntityManager manager;
+    private GuiColourSelector colourSelector;
     private ScrollVariable variables;
     private IGuiElement<GuiBase> test;
 

@@ -29,13 +29,13 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public static final String NBT_SELECTION_ID = "Id";
     public static final String NBT_COLOUR = "Colour";
     private static final String NBT_NAME = "Name";
-    private float[] hsv = new float[3];
-    private int[] rgba = new int[4];
     public int colour;
     public TextColour textColour;
     public FlowComponent declaration;
     public List<Long> containers = new ArrayList<Long>();
     public boolean executed;
+    private float[] hsv = new float[3];
+    private int[] rgba = new int[4];
     private String defaultName;
 
     static
@@ -64,6 +64,24 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         this.defaultName = getDefaultName();
     }
 
+    private void setColour(int colour)
+    {
+        this.colour = colour;
+        this.rgba[0] = (colour >> 16) & 0xFF;
+        this.rgba[1] = (colour >> 8) & 0xFF;
+        this.rgba[2] = colour & 0xFF;
+        this.rgba[3] = 0xFF;
+        textColour = TextColour.getClosestColour(colour);
+        ColourUtils.HextoHSV(colour, hsv);
+    }
+
+    public String getDefaultName()
+    {
+        String result = Integer.toHexString(colour);
+        while (result.length() < 6) result = "0" + result;
+        return "#" + result;
+    }
+
     public Variable(int colour, String name)
     {
         setColour(colour);
@@ -83,15 +101,29 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         }
     }
 
-    private void setColour(int colour)
+    public void readFromNBT(NBTTagCompound nbtTagCompound)
     {
-        this.colour = colour;
-        this.rgba[0] = (colour >> 16) & 0xFF;
-        this.rgba[1] = (colour >> 8) & 0xFF;
-        this.rgba[2] = colour & 0xFF;
-        this.rgba[3] = 0xFF;
-        textColour = TextColour.getClosestColour(colour);
-        ColourUtils.HextoHSV(colour, hsv);
+        executed = nbtTagCompound.getBoolean(NBT_EXECUTED);
+        defaultName = nbtTagCompound.getString(NBT_NAME);
+        containers.clear();
+        NBTTagList tagList = nbtTagCompound.getTagList(NBT_SELECTION, 10);
+
+        for (int i = 0; i < tagList.tagCount(); i++)
+        {
+            NBTTagCompound selectionTag = tagList.getCompoundTagAt(i);
+            containers.add(selectionTag.getLong(NBT_SELECTION_ID));
+        }
+    }
+
+    public static TIntObjectHashMap<Variable> getDefaultVariables()
+    {
+        TIntObjectHashMap<Variable> defaults = new TIntObjectHashMap<Variable>(20, 0.8F, -1);
+        for (int colour : defaultVariables.keys())
+        {
+            if (colour != defaultVariables.getNoEntryKey())
+                defaults.put(colour, new Variable(colour, defaultVariables.get(colour)));
+        }
+        return defaults;
     }
 
     public boolean isValid()
@@ -130,13 +162,6 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
     public boolean isVariable()
     {
         return true;
-    }
-
-    public String getDefaultName()
-    {
-        String result = Integer.toHexString(colour);
-        while (result.length() < 6) result = "0" + result;
-        return "#" + result;
     }
 
     public String getNameFromColor()
@@ -202,20 +227,6 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         containers.remove(id);
     }
 
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
-    {
-        executed = nbtTagCompound.getBoolean(NBT_EXECUTED);
-        defaultName = nbtTagCompound.getString(NBT_NAME);
-        containers.clear();
-        NBTTagList tagList = nbtTagCompound.getTagList(NBT_SELECTION, 10);
-
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound selectionTag = tagList.getCompoundTagAt(i);
-            containers.add(selectionTag.getLong(NBT_SELECTION_ID));
-        }
-    }
-
     public void writeToNBT(NBTTagCompound nbtTagCompound)
     {
         nbtTagCompound.setBoolean(NBT_EXECUTED, executed);
@@ -231,17 +242,6 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
         }
 
         nbtTagCompound.setTag(NBT_SELECTION, tagList);
-    }
-
-    public static TIntObjectHashMap<Variable> getDefaultVariables()
-    {
-        TIntObjectHashMap<Variable> defaults = new TIntObjectHashMap<Variable>(20, 0.8F, -1);
-        for (int colour : defaultVariables.keys())
-        {
-            if (colour != defaultVariables.getNoEntryKey())
-                defaults.put(colour, new Variable(colour, defaultVariables.get(colour)));
-        }
-        return defaults;
     }
 
     @Override

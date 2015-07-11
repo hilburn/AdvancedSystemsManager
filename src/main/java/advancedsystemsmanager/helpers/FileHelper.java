@@ -12,32 +12,6 @@ import java.net.URL;
 public class FileHelper
 {
     /**
-     *
-     * @param classFromJar    A class from the jar in question
-     * @param fileSource      File to copy
-     * @param fileDestination File to copy to
-     */
-    public static void copyFromJar(Class<?> classFromJar, String fileSource, String fileDestination)
-    {
-        URL source = classFromJar.getResource(fileSource);
-        File destination = new File(fileDestination);
-
-        try
-        {
-            FileUtils.copyURLToFile(source, destination);
-        } catch (IOException e)
-        {
-            AdvancedSystemsManager.log.warn("Couldn't load file from jar!");
-            AdvancedSystemsManager.log.info("This is a bug, please report it to the mod author!");
-
-            if (AdvancedSystemsManager.DEV_ENVIRONMENT)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    /**
      * Read a file from jar
      *
      * @param classFromJar A class from the jar in question
@@ -91,6 +65,31 @@ public class FileHelper
             return stream;
         }
         throw new RuntimeException(); // this should never be reached
+    }
+
+    /**
+     * @param classFromJar    A class from the jar in question
+     * @param fileSource      File to copy
+     * @param fileDestination File to copy to
+     */
+    public static void copyFromJar(Class<?> classFromJar, String fileSource, String fileDestination)
+    {
+        URL source = classFromJar.getResource(fileSource);
+        File destination = new File(fileDestination);
+
+        try
+        {
+            FileUtils.copyURLToFile(source, destination);
+        } catch (IOException e)
+        {
+            AdvancedSystemsManager.log.warn("Couldn't load file from jar!");
+            AdvancedSystemsManager.log.info("This is a bug, please report it to the mod author!");
+
+            if (AdvancedSystemsManager.DEV_ENVIRONMENT)
+            {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**

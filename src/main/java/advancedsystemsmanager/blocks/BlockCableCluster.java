@@ -76,14 +76,19 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
 //        }
 //    }
 
-    public boolean isAdvanced(int meta)
+    private int addAdvancedMeta(int meta, int advancedMeta)
     {
-        return (meta & 8) != 0;
+        return meta | (advancedMeta & 8);
     }
 
     public int getSideMeta(int meta)
     {
         return meta & 7;
+    }
+
+    public boolean isAdvanced(int meta)
+    {
+        return (meta & 8) != 0;
     }
 
     @Override
@@ -164,16 +169,6 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         }
     }
 
-    private TileEntityCluster getCluster(IBlockAccess world, int x, int y, int z)
-    {
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof TileEntityCluster)
-        {
-            return (TileEntityCluster)te;
-        }
-        return null;
-    }
-
     @Override
     @SuppressWarnings(value = "unchecked")
     public void getSubBlocks(Item item, CreativeTabs tabs, List list)
@@ -223,6 +218,15 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         return super.getPickBlock(target, world, x, y, z, player);
     }
 
+    @Override
+    public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TileEntityCluster cluster = getCluster(world, x, y, z);
+
+        return cluster != null && cluster.shouldCheckWeakPower(side);
+
+    }
+
     private ItemStack getItemStack(World world, int x, int y, int z, int meta)
     {
         TileEntity te = world.getTileEntity(x, y, z);
@@ -239,23 +243,19 @@ public class BlockCableCluster extends BlockCamouflageBase implements ICable
         return null;
     }
 
-    @Override
-    public boolean shouldCheckWeakPower(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TileEntityCluster cluster = getCluster(world, x, y, z);
-
-        return cluster != null && cluster.shouldCheckWeakPower(side);
-
-    }
-
     private int getAdvancedMeta(int meta)
     {
         return addAdvancedMeta(0, meta);
     }
 
-    private int addAdvancedMeta(int meta, int advancedMeta)
+    private TileEntityCluster getCluster(IBlockAccess world, int x, int y, int z)
     {
-        return meta | (advancedMeta & 8);
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && te instanceof TileEntityCluster)
+        {
+            return (TileEntityCluster)te;
+        }
+        return null;
     }
 
     @SideOnly(Side.CLIENT)

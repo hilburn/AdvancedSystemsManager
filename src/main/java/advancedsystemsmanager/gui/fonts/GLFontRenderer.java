@@ -1,12 +1,11 @@
 package advancedsystemsmanager.gui.fonts;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glEnd;
 
 public class GLFontRenderer
 {
-    private GLFont font;
     public float zLevel;
+    private GLFont font;
 
     public int getWidth(String string)
     {
@@ -16,6 +15,11 @@ public class GLFontRenderer
             width += getCharWidth(currentChar);
         }
         return width;
+    }
+
+    public int getCharWidth(char c)
+    {
+        return font.getMetric().getGlyphMetric(c).width;
     }
 
     /**
@@ -77,11 +81,6 @@ public class GLFontRenderer
         }
 
         return stringbuilder.toString();
-    }
-
-    public int getCharWidth(char c)
-    {
-        return font.getMetric().getGlyphMetric(c).width;
     }
 
     public void drawString(float x, float y, String string, int colour)

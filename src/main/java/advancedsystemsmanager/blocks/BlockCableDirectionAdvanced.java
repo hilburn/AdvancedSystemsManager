@@ -38,9 +38,9 @@ public abstract class BlockCableDirectionAdvanced<T extends TileEntity & ICluste
         icons[3] = register.registerIcon(Reference.RESOURCE_LOCATION + ":" + getFrontTextureName(true).replace(Names.PREFIX, ""));
     }
 
-    protected abstract String getFrontTextureName(boolean isAdvanced);
-
     protected abstract String getSideTextureName(boolean isAdvanced);
+
+    protected abstract String getFrontTextureName(boolean isAdvanced);
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -57,23 +57,6 @@ public abstract class BlockCableDirectionAdvanced<T extends TileEntity & ICluste
     {
         //pretend the meta is 3
         return getIconFromSideAndMeta(side, addAdvancedMeta(3, meta));
-    }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon getIconFromSideAndMeta(int side, int meta)
-    {
-        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
-        //return side == (getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length) ? isAdvanced(meta) ? advancedActiveIcon : activeIcon : isAdvanced(meta) ? advancedInactiveIcon : inactiveIcon;
-    }
-
-    public boolean isAdvanced(int meta)
-    {
-        return (meta & 8) != 0;
-    }
-
-    public int getSideMeta(int meta)
-    {
-        return meta & 7;
     }
 
     private int addAdvancedMeta(int meta, int advancedMeta)
@@ -110,6 +93,23 @@ public abstract class BlockCableDirectionAdvanced<T extends TileEntity & ICluste
     private int getAdvancedMeta(int meta)
     {
         return addAdvancedMeta(0, meta);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IIcon getIconFromSideAndMeta(int side, int meta)
+    {
+        return icons[(side == getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length ? 1 : 0) + (isAdvanced(meta) ? 2 : 0)];
+        //return side == (getSideMeta(meta) % ForgeDirection.VALID_DIRECTIONS.length) ? isAdvanced(meta) ? advancedActiveIcon : activeIcon : isAdvanced(meta) ? advancedInactiveIcon : inactiveIcon;
+    }
+
+    public int getSideMeta(int meta)
+    {
+        return meta & 7;
+    }
+
+    public boolean isAdvanced(int meta)
+    {
+        return (meta & 8) != 0;
     }
 
 }

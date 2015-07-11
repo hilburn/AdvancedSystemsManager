@@ -3,7 +3,6 @@ package advancedsystemsmanager.helpers;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.Point;
-import advancedsystemsmanager.flow.menus.MenuGroup;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import com.google.common.collect.Multimap;
 import gnu.trove.map.hash.TIntObjectHashMap;

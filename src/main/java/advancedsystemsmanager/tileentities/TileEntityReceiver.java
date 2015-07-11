@@ -6,7 +6,6 @@ import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -61,6 +60,17 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
+    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    {
+        byte[] sides = new byte[isPowered.length];
+        for (int i = 0; i < sides.length; i++)
+        {
+            sides[i] = (byte)isPowered[i];
+        }
+        nbtTagCompound.setByteArray(NBT_SIDES, sides);
+    }
+
+    @Override
     public void readContentFromNBT(NBTTagCompound nbtTagCompound)
     {
         byte[] sides = nbtTagCompound.getByteArray(NBT_SIDES);
@@ -71,18 +81,6 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
 
         }
         oldPowered = isPowered = powered;
-    }
-
-
-    @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
-    {
-        byte[] sides = new byte[isPowered.length];
-        for (int i = 0; i < sides.length; i++)
-        {
-            sides[i] = (byte)isPowered[i];
-        }
-        nbtTagCompound.setByteArray(NBT_SIDES, sides);
     }
 
     @Override

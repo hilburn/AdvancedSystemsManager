@@ -90,6 +90,16 @@ public class LiquidSetting extends Setting<Fluid>
         settingTag.setShort(NBT_FLUID_ID, (short)fluid.getID());
     }
 
+    public int getLiquidId()
+    {
+        return fluid.getID();
+    }
+
+    public Fluid getFluid()
+    {
+        return fluid;
+    }
+
     @Override
     public void setFluid(Fluid obj)
     {
@@ -103,19 +113,11 @@ public class LiquidSetting extends Setting<Fluid>
         return fluid == check;
     }
 
-    public int getLiquidId()
+    @Override
+    public void writeContentData(ASMPacket packet)
     {
-        return fluid.getID();
-    }
-
-    public void setLiquidFromId(int id)
-    {
-        fluid = FluidRegistry.getFluid(id);
-    }
-
-    public Fluid getFluid()
-    {
-        return fluid;
+        super.writeContentData(packet);
+        packet.writeShort(fluid.getID());
     }
 
     @Override
@@ -125,10 +127,8 @@ public class LiquidSetting extends Setting<Fluid>
         setLiquidFromId(packet.readShort());
     }
 
-    @Override
-    public void writeContentData(ASMPacket packet)
+    public void setLiquidFromId(int id)
     {
-        super.writeContentData(packet);
-        packet.writeShort(fluid.getID());
+        fluid = FluidRegistry.getFluid(id);
     }
 }

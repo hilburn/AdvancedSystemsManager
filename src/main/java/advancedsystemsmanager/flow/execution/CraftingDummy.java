@@ -16,8 +16,8 @@ public class CraftingDummy extends InventoryCrafting
     public int inventoryWidth;
 
     public MenuCrafting crafting;
-    protected IRecipe cachedRecipe;
     public Map<Integer, ItemStack> overrideMap;
+    protected IRecipe cachedRecipe;
 
     public CraftingDummy(MenuCrafting crafting)
     {
@@ -25,12 +25,6 @@ public class CraftingDummy extends InventoryCrafting
         inventoryWidth = 3;
 
         this.crafting = crafting;
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return 9;
     }
 
     public ItemStack getResult(Map<Integer, ItemStack> overrideMap)
@@ -43,37 +37,16 @@ public class CraftingDummy extends InventoryCrafting
         {
             this.overrideMap = null;
         }
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int id)
+    }    @Override
+    public int getSizeInventory()
     {
-        if (overrideMap != null && overrideMap.get(id) != null && overrideMap.get(id).stackSize > 0)
-        {
-            return overrideMap.get(id);
-        } else
-        {
-            return id < 0 || id >= this.getSizeInventory() ? null : ((CraftingSetting)crafting.getSettings().get(id)).getItem();
-        }
+        return 9;
     }
 
     public ItemStack getResult()
     {
         IRecipe recipe = getRecipe();
         return recipe == null ? null : recipe.getCraftingResult(this);
-    }
-
-    @Override
-    public ItemStack getStackInRowAndColumn(int par1, int par2)
-    {
-        if (par1 >= 0 && par1 < this.inventoryWidth)
-        {
-            int k = par1 + par2 * this.inventoryWidth;
-            return this.getStackInSlot(k);
-        } else
-        {
-            return null;
-        }
     }
 
     public IRecipe getRecipe()
@@ -90,17 +63,21 @@ public class CraftingDummy extends InventoryCrafting
         }
 
         return null;
+    }    @Override
+    public ItemStack getStackInSlot(int id)
+    {
+        if (overrideMap != null && overrideMap.get(id) != null && overrideMap.get(id).stackSize > 0)
+        {
+            return overrideMap.get(id);
+        } else
+        {
+            return id < 0 || id >= this.getSizeInventory() ? null : ((CraftingSetting)crafting.getSettings().get(id)).getItem();
+        }
     }
 
     public boolean checkRecipe(IRecipe recipe)
     {
         return recipe.matches(this, crafting.getParent().getManager().getWorldObj());
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int par1)
-    {
-        return null;
     }
 
     public boolean isItemValidForRecipe(IRecipe recipe, ItemSetting result, Map<Integer, ItemStack> overrideMap, boolean advanced)
@@ -113,7 +90,30 @@ public class CraftingDummy extends InventoryCrafting
         ItemStack itemStack = recipe.getCraftingResult(this);
         this.overrideMap = null;
         return result.isEqualForCommandExecutor(itemStack);
+    }    @Override
+    public ItemStack getStackInRowAndColumn(int par1, int par2)
+    {
+        if (par1 >= 0 && par1 < this.inventoryWidth)
+        {
+            int k = par1 + par2 * this.inventoryWidth;
+            return this.getStackInSlot(k);
+        } else
+        {
+            return null;
+        }
     }
+
+
+
+
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int par1)
+    {
+        return null;
+    }
+
+
 
     @Override
     public ItemStack decrStackSize(int par1, int par2)

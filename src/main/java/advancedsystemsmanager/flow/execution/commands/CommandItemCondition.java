@@ -3,7 +3,10 @@ package advancedsystemsmanager.flow.execution.commands;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.*;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuInventoryCondition;
+import advancedsystemsmanager.flow.menus.MenuItemCondition;
+import advancedsystemsmanager.flow.menus.MenuTargetInventory;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionOption;
@@ -31,7 +34,7 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
         MenuItemCondition menuItem = (MenuItemCondition)command.getMenus().get(2);
         List<Setting<ItemStack>> settings = getValidSettings(menuItem.getSettings());
         Set<Setting<ItemStack>> found = new HashSet<Setting<ItemStack>>();
-        searchForStuff(getContainers(command.getManager(), (MenuInventoryCondition)command.getMenus().get(0)),settings, (MenuTargetInventory)command.getMenus().get(1), found);
+        searchForStuff(getContainers(command.getManager(), (MenuInventoryCondition)command.getMenus().get(0)), settings, (MenuTargetInventory)command.getMenus().get(1), found);
         boolean findAll = menuItem.requiresAll();
         boolean success = findAll;
         for (Setting<ItemStack> setting : found)
@@ -94,7 +97,7 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
         }
     }
 
-    private void scanSlots(IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings,int start, int end, Set<Setting<ItemStack>> found)
+    private void scanSlots(IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings, int start, int end, Set<Setting<ItemStack>> found)
     {
         for (int slot : toScan)
         {

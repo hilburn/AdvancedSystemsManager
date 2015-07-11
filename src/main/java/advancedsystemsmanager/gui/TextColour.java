@@ -29,19 +29,6 @@ public enum TextColour
         ColourUtils.HextoHSV(hex, HSV);
     }
 
-    @Override
-    public String toString()
-    {
-        return "\u00a7" + Integer.toHexString(ordinal());
-    }
-
-    public double getDistanceSq(int RGB)
-    {
-        float[] colourVals = new float[3];
-        ColourUtils.HextoHSV(RGB, colourVals);
-        return (colourVals[2] - HSV[2]) * (colourVals[2] - HSV[2]) + colourVals[1] * colourVals[1] + HSV[1] * HSV[1] - 2 * colourVals[1] * HSV[1] * Math.cos(colourVals[0] - HSV[0]);
-    }
-
     public static TextColour getClosestColour(int rgb)
     {
         double min = 100D;
@@ -57,5 +44,18 @@ public enum TextColour
             }
         }
         return matchColour;
+    }
+
+    public double getDistanceSq(int RGB)
+    {
+        float[] colourVals = new float[3];
+        ColourUtils.HextoHSV(RGB, colourVals);
+        return (colourVals[2] - HSV[2]) * (colourVals[2] - HSV[2]) + colourVals[1] * colourVals[1] + HSV[1] * HSV[1] - 2 * colourVals[1] * HSV[1] * Math.cos(colourVals[0] - HSV[0]);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "\u00a7" + Integer.toHexString(ordinal());
     }
 }

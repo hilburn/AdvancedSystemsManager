@@ -31,21 +31,6 @@ public class BlockBase extends Block implements IDismantleable
         this(Material.iron, soundTypeMetal, name, 1.2F, 0);
     }
 
-    public BlockBase(String name, float hardness)
-    {
-        this(Material.iron, soundTypeMetal, name, hardness, 0);
-    }
-
-    public BlockBase(String name, int extraIcons)
-    {
-        this(Material.iron, soundTypeMetal, name, 1.2F, extraIcons);
-    }
-
-    public BlockBase(String name, float hardness, int extraIcons)
-    {
-        this(Material.iron, soundTypeMetal, name, hardness, extraIcons);
-    }
-
     public BlockBase(Material material, SoundType sound, String name, float hardness, int extraIcons)
     {
         super(material);
@@ -74,6 +59,21 @@ public class BlockBase extends Block implements IDismantleable
             for (int i = 0; i < icons.length; i++)
                 icons[i] = register.registerIcon(getTextureName() + (i > 0 ? "_" + i : ""));
         }
+    }
+
+    public BlockBase(String name, float hardness)
+    {
+        this(Material.iron, soundTypeMetal, name, hardness, 0);
+    }
+
+    public BlockBase(String name, int extraIcons)
+    {
+        this(Material.iron, soundTypeMetal, name, 1.2F, extraIcons);
+    }
+
+    public BlockBase(String name, float hardness, int extraIcons)
+    {
+        this(Material.iron, soundTypeMetal, name, hardness, extraIcons);
     }
 
     @Override

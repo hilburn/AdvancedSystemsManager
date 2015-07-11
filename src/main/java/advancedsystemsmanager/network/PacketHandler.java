@@ -30,12 +30,6 @@ public class PacketHandler
     public static final int BLOCK = 1;
     public static final int COMMAND = 2;
 
-
-    public static void sendDataToServer(ASMPacket dw)
-    {
-        dw.sendServerPacket();
-    }
-
     public static void sendAllData(Container container, ICrafting crafting, ITileInterfaceProvider te)
     {
         ASMPacket dw = new ASMPacket();
@@ -123,19 +117,6 @@ public class PacketHandler
         return dw;
     }
 
-    public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
-    {
-        ASMPacket dw = new ASMPacket(20);
-        dw.writeByte(BLOCK);
-        dw.writeInt(te.xCoord);
-        dw.writeByte(te.yCoord);
-        dw.writeInt(te.zCoord);
-        dw.writeByte(id);
-
-        block.writeData(dw, id);
-        return dw;
-    }
-
     public static void sendBlockPacket(IPacketBlock block, EntityPlayer player, int id)
     {
         if (block instanceof TileEntity)
@@ -157,6 +138,19 @@ public class PacketHandler
         }
     }
 
+    public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
+    {
+        ASMPacket dw = new ASMPacket(20);
+        dw.writeByte(BLOCK);
+        dw.writeInt(te.xCoord);
+        dw.writeByte(te.yCoord);
+        dw.writeInt(te.zCoord);
+        dw.writeByte(id);
+
+        block.writeData(dw, id);
+        return dw;
+    }
+
     public static void sendButtonPacket(int index, IManagerButton button)
     {
         ASMPacket packet = PacketHandler.getServerPacket();
@@ -164,6 +158,11 @@ public class PacketHandler
         packet.writeByte(index);
         if (button.writeData(packet))
             PacketHandler.sendDataToServer(packet);
+    }
+
+    public static void sendDataToServer(ASMPacket dw)
+    {
+        dw.sendServerPacket();
     }
 
     public static void sendVariablePacket(int colour)

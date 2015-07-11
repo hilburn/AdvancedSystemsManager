@@ -53,7 +53,7 @@ public class ParentCommand extends CommandBase
         {
             String message = e.getMessage();
             Object[] objects = e.getErrorOjbects();
-            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextColour.DARK_RED + (objects.length == 0? StatCollector.translateToLocal(message) : StatCollector.translateToLocalFormatted(message, objects))));
+            Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(TextColour.DARK_RED + (objects.length == 0 ? StatCollector.translateToLocal(message) : StatCollector.translateToLocalFormatted(message, objects))));
         }
     }
 
@@ -63,21 +63,13 @@ public class ParentCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
-    {
-        return "asm";
-    }
-
-    @Override
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
         return true;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
+    }    @Override
+    public String getCommandName()
     {
-        return "/" + getCommandName() + " help";
+        return "asm";
     }
 
     @Override
@@ -101,6 +93,14 @@ public class ParentCommand extends CommandBase
         }
         return null;
     }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/" + getCommandName() + " help";
+    }
+
+
 
     @Override
     public void processCommand(ICommandSender sender, String[] args)

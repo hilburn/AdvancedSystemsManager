@@ -7,12 +7,15 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.Loader;
-import thevault.registry.IConfigLock;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import thevault.registry.IConfigLock;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +60,12 @@ public class ConfigHandler implements IConfigLock
         save();
     }
 
+    private void save()
+    {
+        if (config.hasChanged())
+            config.save();
+    }
+
     public void loadPowerValues()
     {
         config.load();
@@ -67,12 +76,6 @@ public class ConfigHandler implements IConfigLock
             command.setEnergyCost(config.get(CATEGORY_POWER, LocalizationHelper.translate(command.getName()), command.getEnergyCost()).getInt());
         }
         save();
-    }
-
-    private void save()
-    {
-        if (config.hasChanged())
-            config.save();
     }
 
     @Override

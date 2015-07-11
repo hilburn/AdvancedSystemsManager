@@ -42,18 +42,15 @@ public class GuiManager extends GuiBase
     public static int Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE = 1;
     public static int Z_LEVEL_COMPONENT_START = 500;
     public static int Z_LEVEL_OPEN_MAXIMUM = 5;
+    public IPacketSync selectedComponent;
+    public IGuiElement<GuiManager> hoverComponent;
     private long lastTicks;
     private AnimationController controller;
     private boolean useButtons = true;
     private boolean useInfo = true;
     private boolean useMouseOver = true;
     private boolean closeSpecialRenderer;
-
     private TileEntityManager manager;
-
-    public IPacketSync selectedComponent;
-    public IGuiElement<GuiManager> hoverComponent;
-
     private List<SecretCode> codes = new ArrayList<SecretCode>();
 
     {
@@ -165,22 +162,6 @@ public class GuiManager extends GuiBase
         return visiblityData;
     }
 
-    private void drawBackground()
-    {
-        bindTexture(background);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawing(GL11.GL_QUAD_STRIP);
-        int[] colour = ThemeHandler.theme.managerBackground.getColour();
-        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
-        tessellator.addVertexWithUV(0, 0, zLevel, 0.0f, 0.0f);
-        tessellator.addVertexWithUV(0, 256, zLevel, 0.0f, 1.0f);
-        tessellator.addVertexWithUV(256, 0, zLevel, 1.0f, 0.0f);
-        tessellator.addVertexWithUV(256, 256, zLevel, 1.0f, 1.0f);
-        tessellator.addVertexWithUV(512, 0, zLevel, 0.0f, 0f);
-        tessellator.addVertexWithUV(512, 256, zLevel, 0.0f, 1.0f);
-        tessellator.draw();
-    }
-
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
@@ -195,8 +176,7 @@ public class GuiManager extends GuiBase
         {
             manager.specialRenderer = null;
             closeSpecialRenderer = false;
-        }
-        else if (hasSpecialRenderer())
+        } else if (hasSpecialRenderer())
         {
             getSpecialRenderer().draw(this, mX, mY);
             getSpecialRenderer().drawMouseOver(this, mX, mY);
@@ -278,6 +258,32 @@ public class GuiManager extends GuiBase
         }
         CollisionHelper.enable();
 
+    }
+
+    private void drawBackground()
+    {
+        bindTexture(background);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL11.GL_QUAD_STRIP);
+        int[] colour = ThemeHandler.theme.managerBackground.getColour();
+        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
+        tessellator.addVertexWithUV(0, 0, zLevel, 0.0f, 0.0f);
+        tessellator.addVertexWithUV(0, 256, zLevel, 0.0f, 1.0f);
+        tessellator.addVertexWithUV(256, 0, zLevel, 1.0f, 0.0f);
+        tessellator.addVertexWithUV(256, 256, zLevel, 1.0f, 1.0f);
+        tessellator.addVertexWithUV(512, 0, zLevel, 0.0f, 0f);
+        tessellator.addVertexWithUV(512, 256, zLevel, 0.0f, 1.0f);
+        tessellator.draw();
+    }
+
+    private boolean hasSpecialRenderer()
+    {
+        return getSpecialRenderer() != null;
+    }
+
+    private IInterfaceRenderer getSpecialRenderer()
+    {
+        return manager.specialRenderer;
     }
 
     private String getInfo()
@@ -461,14 +467,9 @@ public class GuiManager extends GuiBase
         super.onGuiClosed();
     }
 
-    private boolean hasSpecialRenderer()
+    public void setSelected(IPacketSync selected)
     {
-        return getSpecialRenderer() != null;
-    }
-
-    private IInterfaceRenderer getSpecialRenderer()
-    {
-        return manager.specialRenderer;
+        this.selectedComponent = selected;
     }
 
     public void handleMouseInput()
@@ -505,11 +506,6 @@ public class GuiManager extends GuiBase
     public TileEntityManager getManager()
     {
         return manager;
-    }
-
-    public void setSelected(IPacketSync selected)
-    {
-        this.selectedComponent = selected;
     }
 
     private abstract class SecretCode

@@ -55,12 +55,6 @@ public class MenuCrafting extends MenuItem
         return new CraftingSetting(id);
     }
 
-    @Override
-    public String getName()
-    {
-        return Names.CRAFTING_MENU;
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public void onClick(int mX, int mY, int button)
@@ -76,8 +70,19 @@ public class MenuCrafting extends MenuItem
     }
 
     @Override
-    public void initRadioButtons()
+    public String getName()
     {
+        return Names.CRAFTING_MENU;
+    }
+
+    public int getResultX()
+    {
+        return ITEM_X + ITEM_SIZE_WITH_MARGIN * 3;
+    }
+
+    public int getResultY()
+    {
+        return scrollControllerSelected.getScrollingStartY() + ITEM_SIZE_WITH_MARGIN;
     }
 
     @Override
@@ -87,9 +92,8 @@ public class MenuCrafting extends MenuItem
     }
 
     @Override
-    public void onSettingContentChange()
+    public void initRadioButtons()
     {
-        resultItem.setFluid(dummy.getResult());
     }
 
     @SideOnly(Side.CLIENT)
@@ -118,14 +122,10 @@ public class MenuCrafting extends MenuItem
         }
     }
 
-    public int getResultX()
+    @Override
+    public void onSettingContentChange()
     {
-        return ITEM_X + ITEM_SIZE_WITH_MARGIN * 3;
-    }
-
-    public int getResultY()
-    {
-        return scrollControllerSelected.getScrollingStartY() + ITEM_SIZE_WITH_MARGIN;
+        resultItem.setFluid(dummy.getResult());
     }
 
     public CraftingDummy getDummy()

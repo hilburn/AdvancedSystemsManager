@@ -69,6 +69,12 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
         tagCompound.setTag("saved", tagList);
     }
 
+    public static boolean isValidTile(World world, int x, int y, int z)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof IClusterTile;
+    }
+
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
@@ -100,12 +106,6 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player)
     {
         return false;
-    }
-
-    public static boolean isValidTile(World world, int x, int y, int z)
-    {
-        TileEntity te = world.getTileEntity(x, y, z);
-        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof IClusterTile;
     }
 
     public static String getLabel(ItemStack stack)

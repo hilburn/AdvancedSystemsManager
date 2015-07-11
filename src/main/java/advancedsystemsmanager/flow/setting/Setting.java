@@ -37,16 +37,6 @@ public abstract class Setting<Type>
         return id;
     }
 
-    public boolean isLimitedByAmount()
-    {
-        return isLimitedByAmount;
-    }
-
-    public void setLimitedByAmount(boolean limitedByAmount)
-    {
-        isLimitedByAmount = limitedByAmount;
-    }
-
     public void setDefaultAmount()
     {
         setAmount(getDefaultAmount());
@@ -102,6 +92,21 @@ public abstract class Setting<Type>
         }
     }
 
+    public boolean isAmountSpecific()
+    {
+        return true;
+    }
+
+    public boolean isLimitedByAmount()
+    {
+        return isLimitedByAmount;
+    }
+
+    public void setLimitedByAmount(boolean limitedByAmount)
+    {
+        isLimitedByAmount = limitedByAmount;
+    }
+
     public void save(NBTTagCompound settingTag)
     {
         if (isAmountSpecific())
@@ -117,11 +122,6 @@ public abstract class Setting<Type>
     public abstract void setFluid(Type obj);
 
     public abstract boolean isContentEqual(Type check);
-
-    public boolean isAmountSpecific()
-    {
-        return true;
-    }
 
     public void delete()
     {

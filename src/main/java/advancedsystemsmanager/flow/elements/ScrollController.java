@@ -48,11 +48,11 @@ public abstract class ScrollController<T>
     public int itemsPerRow = 5;
     public int visibleRows = 2;
     public int startX = 5;
-    protected int x, y;
     public int scrollingUpperLimit = TEXT_BOX_Y + TEXT_BOX_SIZE_H;
     public boolean disabledScroll;
     public long lastUpdate;
     public float left;
+    protected int x, y;
 
     protected ScrollController()
     {
@@ -89,29 +89,6 @@ public abstract class ScrollController<T>
         }
 
         updateSearch();
-    }
-
-    public void updateSearch()
-    {
-        if (hasSearchBox)
-        {
-            result = updateSearch(textBox.getText().toLowerCase(), textBox.getText().toLowerCase().equals(".all"));
-        } else
-        {
-            result = updateSearch("", false);
-        }
-        updateScrolling();
-    }
-
-    public abstract List<T> updateSearch(String search, boolean all);
-
-    public void updateScrolling()
-    {
-        canScroll = result.size() > itemsPerRow * getVisibleRows();
-        if (!canScroll)
-        {
-            offset = 0;
-        }
     }
 
     public void setX(int val)
@@ -153,9 +130,6 @@ public abstract class ScrollController<T>
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    public abstract void onClick(T t, int mX, int mY, int button);
-
     public List<Point> getItemCoordinates()
     {
         List<Point> points = new ArrayList<Point>();
@@ -181,9 +155,12 @@ public abstract class ScrollController<T>
         return points;
     }
 
-    public int getScrollingStartX()
+    @SideOnly(Side.CLIENT)
+    public abstract void onClick(T t, int mX, int mY, int button);
+
+    public boolean inArrowBounds(boolean down, int mX, int mY)
     {
-        return startX;
+        return CollisionHelper.inBounds(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
     }
 
     public int getFirstRow()
@@ -191,14 +168,24 @@ public abstract class ScrollController<T>
         return (scrollingUpperLimit + offset - getScrollingStartY()) / ITEM_SIZE_WITH_MARGIN;
     }
 
+    public int getVisibleRows()
+    {
+        return visibleRows;
+    }
+
+    public int getScrollingStartX()
+    {
+        return startX;
+    }
+
     public int getScrollingStartY()
     {
         return scrollingUpperLimit + 3;
     }
 
-    public boolean inArrowBounds(boolean down, int mX, int mY)
+    public void setVisibleRows(int n)
     {
-        return CollisionHelper.inBounds(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SIZE_W, ARROW_SIZE_H, mX, mY);
+        visibleRows = n;
     }
 
     public void onRelease(int mX, int mY)
@@ -255,9 +242,6 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void draw(GuiManager gui, T t, int x, int y, boolean hover);
-
-    @SideOnly(Side.CLIENT)
     public void drawArrow(GuiManager gui, boolean down, int mX, int mY)
     {
         if (canScroll)
@@ -268,6 +252,9 @@ public abstract class ScrollController<T>
             gui.drawTexture(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public abstract void draw(GuiManager gui, T t, int x, int y, boolean hover);
 
     public void update(float partial)
     {
@@ -318,11 +305,6 @@ public abstract class ScrollController<T>
         itemsPerRow = n;
     }
 
-    public void setVisibleRows(int n)
-    {
-        visibleRows = n;
-    }
-
     public void setItemUpperLimit(int n)
     {
         scrollingUpperLimit = n;
@@ -342,6 +324,29 @@ public abstract class ScrollController<T>
     {
         textBox.setText(s);
         updateSearch();
+    }
+
+    public void updateSearch()
+    {
+        if (hasSearchBox)
+        {
+            result = updateSearch(textBox.getText().toLowerCase(), textBox.getText().toLowerCase().equals(".all"));
+        } else
+        {
+            result = updateSearch("", false);
+        }
+        updateScrolling();
+    }
+
+    public abstract List<T> updateSearch(String search, boolean all);
+
+    public void updateScrolling()
+    {
+        canScroll = result.size() > itemsPerRow * getVisibleRows();
+        if (!canScroll)
+        {
+            offset = 0;
+        }
     }
 
     public void setTextAndCursor(String s)
@@ -370,11 +375,6 @@ public abstract class ScrollController<T>
     public long getLastUpdate()
     {
         return lastUpdate;
-    }
-
-    public int getVisibleRows()
-    {
-        return visibleRows;
     }
 
     public class Point

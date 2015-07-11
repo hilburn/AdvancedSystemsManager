@@ -1,7 +1,5 @@
 package advancedsystemsmanager.reference;
 
-import java.io.File;
-
 public class Reference
 {
 

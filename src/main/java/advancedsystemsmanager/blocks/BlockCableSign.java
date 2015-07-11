@@ -51,13 +51,6 @@ public class BlockCableSign extends BlockClusterElementBase<TileEntitySignUpdate
         return getIconFromSideAndMeta(side, 3);
     }
 
-    @SideOnly(Side.CLIENT)
-    private IIcon getIconFromSideAndMeta(int side, int meta)
-    {
-        return side == meta ? icons[0] : blockIcon;
-    }
-
-
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
     {
@@ -67,6 +60,12 @@ public class BlockCableSign extends BlockClusterElementBase<TileEntitySignUpdate
         {
             sign.setMetaData(meta);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IIcon getIconFromSideAndMeta(int side, int meta)
+    {
+        return side == meta ? icons[0] : blockIcon;
     }
 
     @Override

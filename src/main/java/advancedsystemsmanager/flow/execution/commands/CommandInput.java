@@ -32,10 +32,10 @@ public abstract class CommandInput<Type> extends CommandBase<Type>
 
     protected abstract IBuffer getNewBuffer();
 
-    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<SystemCoord> blocks, List<Menu> menus);
-
     protected void addToBuffer(List<IBufferElement<Type>> subElements, IBuffer<Type> buffer)
     {
         for (IBufferElement<Type> subElement : subElements) buffer.add(subElement);
     }
+
+    protected abstract List<IBufferElement<Type>> getBufferSubElements(int id, List<SystemCoord> blocks, List<Menu> menus);
 }

@@ -367,12 +367,6 @@ public class ContainerFilter
         }
 
         @Override
-        public boolean isVisible()
-        {
-            return page == currentMenu.getCurrentPage();
-        }
-
-        @Override
         public int getMaxNumber()
         {
             return 128;
@@ -382,6 +376,12 @@ public class ContainerFilter
         public int getMinNumber()
         {
             return negative ? -128 : super.getMinNumber();
+        }
+
+        @Override
+        public boolean isVisible()
+        {
+            return page == currentMenu.getCurrentPage();
         }
 
         @Override

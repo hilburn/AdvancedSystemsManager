@@ -231,6 +231,11 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         return 0;
     }
 
+    public boolean useAdvancedDetection()
+    {
+        return this.craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
+    }
+
     public boolean findItems(boolean remove)
     {
         List<CraftingSetting> settings = new ArrayList<CraftingSetting>();
@@ -363,11 +368,6 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
         {
             return false;
         }
-    }
-
-    public boolean useAdvancedDetection()
-    {
-        return this.craftingMenu.getResultItem().getFuzzyMode() != FuzzyMode.PRECISE;
     }
 
     public static boolean isBucket(CraftingSetting setting)

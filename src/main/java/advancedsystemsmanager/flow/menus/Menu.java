@@ -51,14 +51,14 @@ public abstract class Menu
         return false;
     }
 
-    public FlowComponent getParent()
-    {
-        return parent;
-    }
-
     public ASMPacket getWriterForClientComponentPacket(ContainerManager container)
     {
         return PacketHandler.getWriterForClientComponentPacket(container, getParent(), this);
+    }
+
+    public FlowComponent getParent()
+    {
+        return parent;
     }
 
     public void copyFrom(Menu menu)

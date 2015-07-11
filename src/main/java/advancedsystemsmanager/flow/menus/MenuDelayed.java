@@ -81,6 +81,13 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        super.writeToNBT(nbtTagCompound, pickup);
+        nbtTagCompound.setBoolean(NBT_RESTART, buttonList.getSelectedOption() == 0);
+    }
+
+    @Override
     public int getDelay()
     {
         return intervalTicks.getNumber() + intervalSeconds.getNumber() * 20;
@@ -94,20 +101,6 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        if (this.isVisible() && this.counter >= 0) StevesHooks.registerTicker(getParent(), this);
-        buttonList.setSelectedOption(nbtTagCompound.getBoolean(NBT_RESTART) ? 0 : 1);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        super.writeToNBT(nbtTagCompound, pickup);
-        nbtTagCompound.setBoolean(NBT_RESTART, buttonList.getSelectedOption() == 0);
-    }
-
-    @Override
     public void setCountdown()
     {
         int selected = buttonList.getSelectedOption();
@@ -115,12 +108,6 @@ public class MenuDelayed extends MenuTriggered
         {
             super.setCountdown();
         }
-    }
-
-    @Override
-    public boolean remove()
-    {
-        return counter < 0;
     }
 
     @Override
@@ -136,9 +123,22 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
+    public boolean remove()
+    {
+        return counter < 0;
+    }
+
+    @Override
     public String getName()
     {
         return Names.DELAY_TRIGGER;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        if (this.isVisible() && this.counter >= 0) StevesHooks.registerTicker(getParent(), this);
+        buttonList.setSelectedOption(nbtTagCompound.getBoolean(NBT_RESTART) ? 0 : 1);
     }
 
     @Override

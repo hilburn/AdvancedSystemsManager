@@ -38,16 +38,15 @@ import static org.lwjgl.opengl.GL11.*;
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = Mods.NEI)
 public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
-    private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
     protected static final float SCALING = 0.00390625F;
-    protected ContainerBase container;
-    protected boolean cached;
-    protected float scale;
+    private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
     public static FontRenderer fontRenderer;
-
     {
         fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false);
     }
+    protected ContainerBase container;
+    protected boolean cached;
+    protected float scale;
 
     public GuiBase(ContainerBase container)
     {
@@ -80,6 +79,22 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         );
     }
 
+    private void drawScaledTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
+    }
+
+    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, double u, double v)
+    {
+        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
+        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
+        tessellator.draw();
+    }
+
     public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, int[] colour)
     {
         drawScaledColouredTexture(
@@ -87,6 +102,14 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
                 w, h, srcX, srcY,
                 w, h, colour
         );
+    }
+
+    public void drawScaledColouredTexture(double x, double y, double w, double h, int srcX, int srcY, double u, double v, int[] colour)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
     }
 
     public void drawColouredTexture(int x, int y, int srcX, int srcY, int w, int h, float mult, int[] colour)
@@ -97,6 +120,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
                 w, h,
                 w, h, mult, colour
         );
+    }
+
+    private void drawScaledColouredTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v, double mult, int[] colour)
+    {
+        drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, u, v, colour);
     }
 
     public void drawDesaturatedIcon(int x, int y, int srcX, int srcY, int w, int h, int u, int v)
@@ -177,35 +205,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glEnable(GL_TEXTURE_2D);
     }
 
-    private void drawScaledTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v)
-    {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
-    }
-
-    private void drawScaledColouredTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v, double mult, int[] colour)
-    {
-        drawScaledColouredTexture(x, y, w * mult, h * mult, srcX, srcY, u, v, colour);
-    }
-
-    public void drawScaledColouredTexture(double x, double y, double w, double h, int srcX, int srcY, double u, double v, int[] colour)
-    {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
-        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
-    }
-
-    private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, double u, double v)
-    {
-        tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
-        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
-        tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
-        tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
-        tessellator.draw();
-    }
-
     public void drawSplitColouredTexture(int x, int y, int w, int h, int srcX, int srcY, int u, int v, int[] colour, int[] oldColour)
     {
         Tessellator tessellator = Tessellator.instance;
@@ -251,13 +250,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         drawAbstractPoints(tessellator, colours, points);
     }
 
-    public void drawTriangleFan(int[] colours, double... points)
-    {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawing(GL_TRIANGLE_FAN);
-        drawAbstractPoints(tessellator, colours, points);
-    }
-
     private void drawAbstractPoints(Tessellator tessellator, int[] colours, double[] points)
     {
         glDisable(GL_TEXTURE_2D);
@@ -274,27 +266,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glEnable(GL_TEXTURE_2D);
     }
 
-    protected float getScale()
+    public void drawTriangleFan(int[] colours, double... points)
     {
-        if (cached)
-        {
-            return scale;
-        } else
-        {
-            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-            float w = scaledresolution.getScaledWidth() * 0.9F;
-            float h = scaledresolution.getScaledHeight() * 0.9F;
-            float multX = w / xSize;
-            float multY = h / ySize;
-            float mult = Math.min(multX, multY);
-            if (mult > 1F && !Settings.isEnlargeInterfaces())
-            {
-                mult = 1F;
-            }
-            scale = (float)(Math.floor(mult * 1000)) / 1000F;
-            cached = true;
-            return scale;
-        }
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL_TRIANGLE_FAN);
+        drawAbstractPoints(tessellator, colours, points);
     }
 
     public void drawStringFormatted(String str, int x, int y, float mult, int color, Object... args)
@@ -306,19 +282,19 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
 //        glPushMatrix();
 //        glScalef(mult, mult, 1F);
-        fontRenderer.drawScaledString(x, y, str, color,(int)(10*mult));
+        fontRenderer.drawScaledString(x, y, str, color, (int)(10 * mult));
 //        fontRendererObj.drawString(str, (int)(x / mult), (int)(y / mult), color);
         bindTexture(getComponentResource());
         glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 //        glPopMatrix();
     }
 
-    public abstract ResourceLocation getComponentResource();
-
     public static void bindTexture(ResourceLocation resource)
     {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
     }
+
+    public abstract ResourceLocation getComponentResource();
 
     public void drawSplitString(String str, int x, int y, int w, float mult, int color)
     {
@@ -356,6 +332,14 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         drawMouseOver(getLinesFromText(str, width), x, y);
     }
 
+    public void drawMouseOver(List lst, int x, int y)
+    {
+        if (lst != null)
+        {
+            drawHoveringText(lst, x, y, fontRendererObj);
+        }
+    }
+
     public List<String> getLinesFromText(String str, int width)
     {
         List<String> lst = new ArrayList<String>();
@@ -388,14 +372,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public int getStringWidth(String str)
     {
         return fontRendererObj.getStringWidth(str);
-    }
-
-    public void drawMouseOver(List lst, int x, int y)
-    {
-        if (lst != null)
-        {
-            drawHoveringText(lst, x, y, fontRendererObj);
-        }
     }
 
     public void drawMouseOver(IAdvancedTooltip tooltip, int mX, int mY)
@@ -561,22 +537,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return "Unknown";
     }
 
-    public String getItemName(ItemStack item)
-    {
-        try
-        {
-            List str = item.getTooltip(Minecraft.getMinecraft().thePlayer, false);
-            if (str != null && str.size() > 0)
-            {
-                return (String)str.get(0);
-            }
-        } catch (Throwable ignored)
-        {
-        }
-
-        return "Unknown";
-    }
-
     private ItemStack getItemStackFromBlock(TileEntity te)
     {
         if (te != null)
@@ -599,6 +559,22 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         }
 
         return null;
+    }
+
+    public String getItemName(ItemStack item)
+    {
+        try
+        {
+            List str = item.getTooltip(Minecraft.getMinecraft().thePlayer, false);
+            if (str != null && str.size() > 0)
+            {
+                return (String)str.get(0);
+            }
+        } catch (Throwable ignored)
+        {
+        }
+
+        return "Unknown";
     }
 
     private ItemStack getItemStackFromBlock(World world, int x, int y, int z, Block block, int meta)
@@ -719,6 +695,29 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glEnable(GL_TEXTURE_2D);
     }
 
+    protected float getScale()
+    {
+        if (cached)
+        {
+            return scale;
+        } else
+        {
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+            float w = scaledresolution.getScaledWidth() * 0.9F;
+            float h = scaledresolution.getScaledHeight() * 0.9F;
+            float multX = w / xSize;
+            float multY = h / ySize;
+            float mult = Math.min(multX, multY);
+            if (mult > 1F && !Settings.isEnlargeInterfaces())
+            {
+                mult = 1F;
+            }
+            scale = (float)(Math.floor(mult * 1000)) / 1000F;
+            cached = true;
+            return scale;
+        }
+    }
+
     @Override
     public final void drawDefaultBackground()
     {
@@ -748,12 +747,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         stopScaling();
     }
 
-    private void stopScaling()
-    {
-        //stop scale
-        glPopMatrix();
-    }
-
     protected int scaleX(float x)
     {
         float scale = getScale();
@@ -770,6 +763,12 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         y += guiTop;
         y -= (this.height - this.ySize * scale) / (2 * scale);
         return (int)y;
+    }
+
+    private void stopScaling()
+    {
+        //stop scale
+        glPopMatrix();
     }
 
     public void drawFluid(Fluid fluid, int x, int y)
@@ -799,11 +798,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         }
     }
 
-    public void drawIcon(IIcon icon, int x, int y)
-    {
-        drawTexturedModelRectFromIcon(x, y, icon, 16, 16);
-    }
-
     private void setColor(int color)
     {
         float[] colorComponents = new float[3];
@@ -812,6 +806,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             colorComponents[i] = ((color >> (i * 8)) & 255) / 255F;
         }
         glColor4f(colorComponents[2], colorComponents[1], colorComponents[0], 1F);
+    }
+
+    public void drawIcon(IIcon icon, int x, int y)
+    {
+        drawTexturedModelRectFromIcon(x, y, icon, 16, 16);
     }
 
     public int getFontHeight()

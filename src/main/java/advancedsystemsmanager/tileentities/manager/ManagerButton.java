@@ -21,6 +21,12 @@ public abstract class ManagerButton implements IManagerButton
     }
 
     @Override
+    public void setClicked(int button)
+    {
+        this.clicked = button;
+    }
+
+    @Override
     public int getX()
     {
         return x;
@@ -30,12 +36,6 @@ public abstract class ManagerButton implements IManagerButton
     public int getY()
     {
         return y;
-    }
-
-    @Override
-    public void setClicked(int button)
-    {
-        this.clicked = button;
     }
 
     @Override

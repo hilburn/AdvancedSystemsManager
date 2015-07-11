@@ -7,7 +7,6 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.util.ResourceLocation;
-import uristqwerty.gui_craftguide.theme.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;

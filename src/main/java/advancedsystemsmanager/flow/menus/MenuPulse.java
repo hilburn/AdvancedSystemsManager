@@ -81,26 +81,6 @@ public class MenuPulse extends Menu
         setDefault();
     }
 
-    public void writeData(ASMPacket dw, ComponentSyncType type)
-    {
-        dw.writeByte(type.ordinal());
-        switch (type)
-        {
-            case CHECK_BOX:
-                dw.writeBoolean(usePulse);
-                break;
-            case RADIO_BUTTON:
-                dw.writeByte(radioButtons.getSelectedOption());
-                break;
-            case TEXT_BOX_1:
-                dw.writeVarIntToBuffer(secondsTextBox.getNumber());
-                break;
-            case TEXT_BOX_2:
-                dw.writeByte(ticksTextBox.getNumber());
-
-        }
-    }
-
     public void setDefault()
     {
         radioButtons.setSelectedOption(0);
@@ -165,13 +145,6 @@ public class MenuPulse extends Menu
         }
     }
 
-    public void sendClientPacket(ContainerManager container, ComponentSyncType type)
-    {
-        ASMPacket dw = getWriterForClientComponentPacket(container);
-        writeData(dw, type);
-        PacketHandler.sendDataToListeningClients(container, dw);
-    }
-
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
@@ -196,6 +169,33 @@ public class MenuPulse extends Menu
             nbtTagCompound.setByte(NBT_TYPE, (byte)radioButtons.getSelectedOption());
             nbtTagCompound.setByte(NBT_SECOND, (byte)secondsTextBox.getNumber());
             nbtTagCompound.setByte(NBT_TICK, (byte)ticksTextBox.getNumber());
+        }
+    }
+
+    public void sendClientPacket(ContainerManager container, ComponentSyncType type)
+    {
+        ASMPacket dw = getWriterForClientComponentPacket(container);
+        writeData(dw, type);
+        PacketHandler.sendDataToListeningClients(container, dw);
+    }
+
+    public void writeData(ASMPacket dw, ComponentSyncType type)
+    {
+        dw.writeByte(type.ordinal());
+        switch (type)
+        {
+            case CHECK_BOX:
+                dw.writeBoolean(usePulse);
+                break;
+            case RADIO_BUTTON:
+                dw.writeByte(radioButtons.getSelectedOption());
+                break;
+            case TEXT_BOX_1:
+                dw.writeVarIntToBuffer(secondsTextBox.getNumber());
+                break;
+            case TEXT_BOX_2:
+                dw.writeByte(ticksTextBox.getNumber());
+
         }
     }
 

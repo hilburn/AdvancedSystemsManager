@@ -111,6 +111,12 @@ public class MenuVariable extends Menu
         variables.onClick(mX, mY, button);
     }
 
+    @Override
+    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
+    {
+        variables.onRelease(mX, mY);
+    }
+
     @SideOnly(Side.CLIENT)
     @Override
     public boolean onKeyStroke(GuiManager gui, char c, int k)
@@ -119,34 +125,11 @@ public class MenuVariable extends Menu
     }
 
     @Override
-    public void onRelease(int mX, int mY, int button, boolean isMenuOpen)
-    {
-        variables.onRelease(mX, mY);
-    }
-
-    @Override
-    public void doScroll(int scroll)
-    {
-        variables.doScroll(scroll);
-    }
-
-    @Override
-    public void update(float partial)
-    {
-        variables.update(partial);
-    }
-
-    @Override
     public void copyFrom(Menu menu)
     {
         variables.setSelected(((MenuVariable)menu).getSelectedVariable());
         radioButtons.setSelectedOption(((MenuVariable)menu).radioButtons.getSelectedOption());
         executed = ((MenuVariable)menu).executed;
-    }
-
-    public Variable getVariable()
-    {
-        return getParent().getManager().getVariable(getSelectedVariable());
     }
 
     public int getSelectedVariable()
@@ -181,6 +164,23 @@ public class MenuVariable extends Menu
         {
             errors.add(Names.ALREADY_DECLARED_ERROR);
         }
+    }
+
+    @Override
+    public void update(float partial)
+    {
+        variables.update(partial);
+    }
+
+    @Override
+    public void doScroll(int scroll)
+    {
+        variables.doScroll(scroll);
+    }
+
+    public Variable getVariable()
+    {
+        return getParent().getManager().getVariable(getSelectedVariable());
     }
 
     public enum VariableMode

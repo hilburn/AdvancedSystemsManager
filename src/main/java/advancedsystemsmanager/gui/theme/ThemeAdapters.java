@@ -19,7 +19,7 @@ public class ThemeAdapters
         @Override
         public void write(JsonWriter out, HexValue value) throws IOException
         {
-            out.value(value == null? "#00000000" : value.getHexValue());
+            out.value(value == null ? "#00000000" : value.getHexValue());
         }
 
         @Override

@@ -79,6 +79,11 @@ public abstract class MenuTarget extends Menu
 
     }
 
+    public boolean isActive(int i)
+    {
+        return activatedDirections[i];
+    }
+
     public abstract Button getSecondButton();
 
     @Override
@@ -126,14 +131,14 @@ public abstract class MenuTarget extends Menu
         }
     }
 
-    public boolean isActive(int i)
-    {
-        return activatedDirections[i];
-    }
-
     public int getDirectionX(int i)
     {
         return i % 2 == 0 ? DIRECTION_X_LEFT : DIRECTION_X_RIGHT;
+    }
+
+    public int getDirectionY(int i)
+    {
+        return DIRECTION_Y + (DIRECTION_SIZE_H + DIRECTION_MARGIN) * (i / 2);
     }
 
     public boolean useAdvancedSetting(int i)
@@ -141,10 +146,8 @@ public abstract class MenuTarget extends Menu
         return advancedDirections[i];
     }
 
-    public int getDirectionY(int i)
-    {
-        return DIRECTION_Y + (DIRECTION_SIZE_H + DIRECTION_MARGIN) * (i / 2);
-    }
+    @SideOnly(Side.CLIENT)
+    public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -270,9 +273,6 @@ public abstract class MenuTarget extends Menu
 
     public abstract void onAdvancedClick(int mX, int mY, int button);
 
-    @SideOnly(Side.CLIENT)
-    public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
-
     public void setActive(int side)
     {
         activatedDirections[side] = true;
@@ -288,11 +288,11 @@ public abstract class MenuTarget extends Menu
             this.y = y;
         }
 
-        public abstract String getLabel();
-
         public String getMouseOverText()
         {
             return getLabel() + "Long";
         }
+
+        public abstract String getLabel();
     }
 }

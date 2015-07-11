@@ -220,6 +220,9 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
         }
 
         @Override
+        public void onUpdate()
+        {
+        }        @Override
         public boolean getValue()
         {
             return Settings.getSetting(name);
@@ -237,10 +240,7 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
             return key;
         }
 
-        @Override
-        public void onUpdate()
-        {
-        }
+
     }
 
     private abstract class Button

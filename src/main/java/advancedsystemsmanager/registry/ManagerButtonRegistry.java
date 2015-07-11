@@ -2,8 +2,8 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
-import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -59,6 +59,19 @@ public class ManagerButtonRegistry
         buttons.add(new ManagerButton(manager, Names.EXIT_GROUP, 36, 90)
         {
             @Override
+            public String getMouseOver()
+            {
+                for (FlowComponent item : manager.getFlowItems())
+                {
+                    if (item.isBeingMoved())
+                    {
+                        return Names.EXIT_GROUP_DROP;
+                    }
+                }
+                return super.getMouseOver();
+            }
+
+            @Override
             public boolean activateOnRelease()
             {
                 for (FlowComponent item : manager.getFlowItems())
@@ -69,9 +82,7 @@ public class ManagerButtonRegistry
                     }
                 }
                 return false;
-            }
-
-            @Override
+            }            @Override
             public boolean readData(ASMPacket packet)
             {
                 int id = packet.readInt();
@@ -85,23 +96,16 @@ public class ManagerButtonRegistry
             }
 
             @Override
+            public boolean isVisible()
+            {
+                return manager.selectedGroup != null;
+            }            @Override
             public boolean validClick()
             {
                 return true;
             }
 
-            @Override
-            public String getMouseOver()
-            {
-                for (FlowComponent item : manager.getFlowItems())
-                {
-                    if (item.isBeingMoved())
-                    {
-                        return Names.EXIT_GROUP_DROP;
-                    }
-                }
-                return super.getMouseOver();
-            }
+
 
             @Override
             public boolean writeData(ASMPacket packet)
@@ -124,11 +128,7 @@ public class ManagerButtonRegistry
                 return false;
             }
 
-            @Override
-            public boolean isVisible()
-            {
-                return manager.selectedGroup != null;
-            }
+
         });
     }
 

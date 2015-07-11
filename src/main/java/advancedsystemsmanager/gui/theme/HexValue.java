@@ -10,27 +10,12 @@ public class HexValue
 
     public HexValue()
     {
-        this.colour = new int[]{255,255,255,255};
+        this.colour = new int[]{255, 255, 255, 255};
     }
 
     public HexValue(String hex)
     {
         this.colour = getRGBAValue(hex);
-    }
-
-    public HexValue(int colour)
-    {
-        this(getRGBA(colour));
-    }
-
-    public HexValue(int[] colour)
-    {
-        this.colour = colour;
-    }
-
-    public int[] getColour()
-    {
-        return colour;
     }
 
     public static int[] getRGBAValue(String string)
@@ -43,20 +28,29 @@ public class HexValue
         return new int[]{colour >> 16 & 0xFF, colour >> 8 & 0xFF, colour & 0xFF, opaque ? 0xFF : colour >> 24 & 0xFF};
     }
 
+    public HexValue(int colour)
+    {
+        this(getRGBA(colour));
+    }
+
+    public HexValue(int[] colour)
+    {
+        this.colour = colour;
+    }
+
     public static int[] getRGBA(int colour)
     {
         return new int[]{colour >> 16 & 0xFF, colour >> 8 & 0xFF, colour & 0xFF, colour >> 24 & 0xFF};
     }
 
+    public int[] getColour()
+    {
+        return colour;
+    }
+
     public String getHexValue()
     {
         return getHexString(colour);
-    }
-
-    @Override
-    public String toString()
-    {
-        return getHexString(this.colour);
     }
 
     public static String getHexString(int[] colour)
@@ -66,5 +60,11 @@ public class HexValue
         String string = Integer.toHexString(value);
         while (string.length() < minSize) string = "0" + string;
         return "#" + string;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getHexString(this.colour);
     }
 }

@@ -36,11 +36,6 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         this(coord.x + dir.offsetX, coord.y + dir.offsetY, coord.z + dir.offsetZ, coord.world, coord.depth + 1);
     }
 
-    public SystemCoord(int x, int y, int z, World world)
-    {
-        this(x, y, z, world, 0);
-    }
-
     public SystemCoord(int x, int y, int z, World world, int depth)
     {
         this(x, y, z, world, depth, null);
@@ -63,6 +58,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         this.key = ((long)dim & 0xFF) << 48 | ((long)x & 0xFFFFF) << 28 | (z & 0xFFFFF) << 8 | (y & 0xFF);
         if (tileEntity instanceof IClusterTile)
             key |= ((long)ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
+    }
+
+    public SystemCoord(int x, int y, int z, World world)
+    {
+        this(x, y, z, world, 0);
     }
 
     public void addType(ISystemType type)
@@ -99,6 +99,15 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     }
 
     @Override
+    public int hashCode()
+    {
+        int result = 173 + x;
+        result = 31 * result + z;
+        result = 31 * result + y;
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
@@ -108,15 +117,6 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
         return x == that.x && y == that.y && z == that.z;
 
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int result = 173 + x;
-        result = 31 * result + z;
-        result = 31 * result + y;
-        return result;
     }
 
     @Override
@@ -152,11 +152,6 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         return str;
     }
 
-    public int getDistance(TileEntityManager manager)
-    {
-        return (int)Math.round(Math.sqrt(manager.getDistanceFrom(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5)));
-    }
-
     @Override
     public String getName(GuiManager gui)
     {
@@ -190,6 +185,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         return isInVariable ? "" : result;
     }
 
+    public int getDistance(TileEntityManager manager)
+    {
+        return (int)Math.round(Math.sqrt(manager.getDistanceFrom(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5)));
+    }
+
     @SideOnly(Side.CLIENT)
     public boolean isPartOfVariable(Variable variable)
     {
@@ -199,12 +199,6 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     public SystemCoord copy()
     {
         return new SystemCoord(x, y, z, world, depth, tileEntity);
-    }
-
-    public void setTileEntity(TileEntity tileEntity)
-    {
-        this.tileEntity = tileEntity;
-        setKey();
     }
 
     public boolean containerAdvancedSearch(String search)
@@ -257,6 +251,12 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     public TileEntity getTileEntity()
     {
         return tileEntity;
+    }
+
+    public void setTileEntity(TileEntity tileEntity)
+    {
+        this.tileEntity = tileEntity;
+        setKey();
     }
 
     public long getKey()

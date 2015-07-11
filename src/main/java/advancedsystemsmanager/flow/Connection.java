@@ -31,11 +31,6 @@ public class Connection
         this(componentId, connectionId, -1, -1);
     }
 
-    public Connection(int newInput, int newOutput, Connection connection)
-    {
-        this(newInput, connection.getInputConnection(), newOutput, connection.getOutputConnection());
-    }
-
     public Connection(int inputId, int inputConnection, int outputId, int outputConnection)
     {
         this.inputId = inputId;
@@ -45,15 +40,9 @@ public class Connection
         nodes = new ArrayList<Point>();
     }
 
-    public int getInputId()
+    public Connection(int newInput, int newOutput, Connection connection)
     {
-        return inputId;
-    }
-
-    public void setInputId(int componentId)
-    {
-        this.outputId = this.inputId;
-        this.inputId = componentId;
+        this(newInput, connection.getInputConnection(), newOutput, connection.getOutputConnection());
     }
 
     public int getInputConnection()
@@ -67,14 +56,51 @@ public class Connection
         this.inputConnection = connectionId;
     }
 
-    public void setOutputId(int componentId)
+    public int getOutputConnection()
     {
-        this.outputId = componentId;
+        return outputConnection;
     }
 
     public void setOutputConnection(int connectionId)
     {
         this.outputConnection = connectionId;
+    }
+
+    public static void readFromNBT(Connection[] connections, NBTTagCompound tagCompound, int inputId)
+    {
+        Connection connection = new Connection(inputId, tagCompound.getByte(NBT_CONNECTION_INPUT_CONNECTION),
+                tagCompound.getInteger(NBT_CONNECTION_OUTPUT_COMPONENT), tagCompound.getByte(NBT_CONNECTION_OUTPUT_CONNECTION));
+        if (connection.inputId != connection.outputId)
+        {
+            if (tagCompound.hasKey(NBT_NODES))
+            {
+                connection.getNodes().clear();
+                NBTTagList nodes = tagCompound.getTagList(NBT_NODES, 10);
+                for (int j = 0; j < nodes.tagCount(); j++)
+                {
+                    NBTTagCompound nodeTag = nodes.getCompoundTagAt(j);
+
+                    connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
+                }
+            }
+            connections[connection.getInputConnection()] = connection;
+        }
+    }
+
+    public List<Point> getNodes()
+    {
+        return nodes;
+    }
+
+    public int getInputId()
+    {
+        return inputId;
+    }
+
+    public void setInputId(int componentId)
+    {
+        this.outputId = this.inputId;
+        this.inputId = componentId;
     }
 
     public void setConnection(TileEntityManager manager)
@@ -127,22 +153,17 @@ public class Connection
         }
     }
 
+    public Point getSelectedNode()
+    {
+        return selected == -1 ? null : nodes.get(selected);
+    }
+
     public void adjustAllToGrid(int grid)
     {
         for (Point node : nodes)
         {
             node.adjustToGrid(grid);
         }
-    }
-
-    public List<Point> getNodes()
-    {
-        return nodes;
-    }
-
-    public Point getSelectedNode()
-    {
-        return selected == -1 ? null : nodes.get(selected);
     }
 
     public int getSelected()
@@ -179,34 +200,13 @@ public class Connection
         }
     }
 
-    public static void readFromNBT(Connection[] connections, NBTTagCompound tagCompound, int inputId)
-    {
-        Connection connection = new Connection(inputId, tagCompound.getByte(NBT_CONNECTION_INPUT_CONNECTION),
-                tagCompound.getInteger(NBT_CONNECTION_OUTPUT_COMPONENT), tagCompound.getByte(NBT_CONNECTION_OUTPUT_CONNECTION));
-        if (connection.inputId != connection.outputId)
-        {
-            if (tagCompound.hasKey(NBT_NODES))
-            {
-                connection.getNodes().clear();
-                NBTTagList nodes = tagCompound.getTagList(NBT_NODES, 10);
-                for (int j = 0; j < nodes.tagCount(); j++)
-                {
-                    NBTTagCompound nodeTag = nodes.getCompoundTagAt(j);
-
-                    connection.getNodes().add(new Point(nodeTag.getShort(NBT_POS_X), nodeTag.getShort(NBT_POS_Y)));
-                }
-            }
-            connections[connection.getInputConnection()] = connection;
-        }
-    }
-
     public int getOutputId()
     {
         return outputId;
     }
 
-    public int getOutputConnection()
+    public void setOutputId(int componentId)
     {
-        return outputConnection;
+        this.outputId = componentId;
     }
 }

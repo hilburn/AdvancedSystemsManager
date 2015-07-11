@@ -67,7 +67,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
     public String getOwnerName()
     {
-        return owner == null? "Unknown" : owner.getName();
+        return owner == null ? "Unknown" : owner.getName();
     }
 
     public GameProfile getOwner()
@@ -177,15 +177,15 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
     }
 
+    private IInventory getInventory()
+    {
+        return getContainer(IInventory.class, 0);
+    }
+
     private void unBlockUsage()
     {
         blockingUsage = false;
         chainLength = 0;
-    }
-
-    private IInventory getInventory()
-    {
-        return getContainer(IInventory.class, 0);
     }
 
     private <T> T getContainer(Class<T> type, int id)
@@ -260,14 +260,29 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         return null;
     }
 
+    public boolean isBlockingUsage()
+    {
+        return blockingUsage || chainLength >= MAX_CHAIN_LENGTH;
+    }
+
     private void blockUsage()
     {
         blockingUsage = true;
     }
 
-    public boolean isBlockingUsage()
+    private <T> T getEntityContainer(int id)
     {
-        return blockingUsage || chainLength >= MAX_CHAIN_LENGTH;
+        if (id == 0 && cachedInventoryWrapper != null)
+        {
+            return (T)cachedInventoryWrapper;
+        }
+
+        return (T)cachedEntities[id];
+    }
+
+    private boolean isEntityValid(Entity entity, Class type, int id)
+    {
+        return type.isInstance(entity) || (id == 0 && ((entity instanceof EntityPlayer && allowPlayerInteraction((EntityPlayer)entity)) || entity instanceof EntityHorse));
     }
 
     private InventoryWrapper getInventoryWrapper(Entity entity)
@@ -282,11 +297,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         {
             return null;
         }
-    }
-
-    private boolean isEntityValid(Entity entity, Class type, int id)
-    {
-        return type.isInstance(entity) || (id == 0 && ((entity instanceof EntityPlayer && allowPlayerInteraction((EntityPlayer)entity)) || entity instanceof EntityHorse));
     }
 
     public boolean allowPlayerInteraction(EntityPlayer player)
@@ -313,16 +323,6 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
         }
 
         return false;
-    }
-
-    private <T> T getEntityContainer(int id)
-    {
-        if (id == 0 && cachedInventoryWrapper != null)
-        {
-            return (T)cachedInventoryWrapper;
-        }
-
-        return (T)cachedEntities[id];
     }
 
     @Override
@@ -856,27 +856,12 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    public boolean writeData(ASMPacket packet)
     {
-        if (nbtTagCompound.hasKey(NBT_OWNER))
-        {
-            String name = nbtTagCompound.getString(NBT_OWNER);
-            UUID id = UUID.fromString(nbtTagCompound.getString(NBT_UUID));
-            owner = new GameProfile(id, name);
-            creativeMode = nbtTagCompound.getBoolean(NBT_CREATIVE);
-            doesListRequireOp = nbtTagCompound.getBoolean(NBT_LIST);
-            permissions.clear();
-
-            NBTTagList permissionTags = nbtTagCompound.getTagList(NBT_PERMISSIONS, 10);
-            for (int i = 0; i < permissionTags.tagCount(); i++)
-            {
-                NBTTagCompound permissionTag = permissionTags.getCompoundTagAt(i);
-                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME), UUID.fromString(nbtTagCompound.getString(NBT_UUID)));
-                permission.setActive(permissionTag.getBoolean(NBT_ACTIVE));
-                permission.setOp(permissionTag.getBoolean(NBT_EDITOR));
-                permissions.add(permission);
-            }
-        }
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        writeContentToNBT(tagCompound);
+        ByteBufUtils.writeTag(packet, tagCompound);
+        return true;
     }
 
     @Override
@@ -907,18 +892,33 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
+    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
     {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
+        if (nbtTagCompound.hasKey(NBT_OWNER))
+        {
+            String name = nbtTagCompound.getString(NBT_OWNER);
+            UUID id = UUID.fromString(nbtTagCompound.getString(NBT_UUID));
+            owner = new GameProfile(id, name);
+            creativeMode = nbtTagCompound.getBoolean(NBT_CREATIVE);
+            doesListRequireOp = nbtTagCompound.getBoolean(NBT_LIST);
+            permissions.clear();
+
+            NBTTagList permissionTags = nbtTagCompound.getTagList(NBT_PERMISSIONS, 10);
+            for (int i = 0; i < permissionTags.tagCount(); i++)
+            {
+                NBTTagCompound permissionTag = permissionTags.getCompoundTagAt(i);
+                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME), UUID.fromString(nbtTagCompound.getString(NBT_UUID)));
+                permission.setActive(permissionTag.getBoolean(NBT_ACTIVE));
+                permission.setOp(permissionTag.getBoolean(NBT_EDITOR));
+                permissions.add(permission);
+            }
+        }
     }
 
     @Override
-    public boolean writeData(ASMPacket packet)
+    public EnumSet<ClusterMethodRegistration> getRegistrations()
     {
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        writeContentToNBT(tagCompound);
-        ByteBufUtils.writeTag(packet, tagCompound);
-        return true;
+        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }
 
 }

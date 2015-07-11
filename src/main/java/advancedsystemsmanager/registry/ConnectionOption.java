@@ -130,6 +130,8 @@ public enum ConnectionOption
             return (selected ? getTheme().mouseover : getTheme().colour).getColour();
         }
 
+        public abstract ThemeMouseover getTheme();
+
         public int getX()
         {
             return x;
@@ -139,7 +141,5 @@ public enum ConnectionOption
         {
             return y;
         }
-
-        public abstract ThemeMouseover getTheme();
     }
 }

@@ -74,11 +74,6 @@ public abstract class MenuRedstoneSides extends Menu
         return radioButtonList.getSelectedOption() == 0;
     }
 
-    public void setFirstOption(boolean val)
-    {
-        radioButtonList.setSelectedOption(val ? 0 : 1);
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public void draw(GuiManager gui, int mX, int mY)
@@ -111,6 +106,11 @@ public abstract class MenuRedstoneSides extends Menu
 
         selection = menuRedstone.selection;
         setFirstOption(menuRedstone.useFirstOption());
+    }
+
+    public void setFirstOption(boolean val)
+    {
+        radioButtonList.setSelectedOption(val ? 0 : 1);
     }
 
     @Override

@@ -162,21 +162,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         }
     }
 
-    private void addBlockScheduledForUpdate(int side)
-    {
-        hasUpdatedThisTick = true;
-        ForgeDirection direction = ForgeDirection.getOrientation(side);
-        int x = xCoord + direction.offsetX;
-        int y = yCoord + direction.offsetY;
-        int z = zCoord + direction.offsetZ;
-
-        SystemCoord coordinate = new SystemCoord(x, y, z, this.worldObj);
-        if (!scheduledToUpdate.contains(coordinate))
-        {
-            scheduledToUpdate.add(coordinate);
-        }
-    }
-
     private void updateSideState(int side, MenuRedstoneOutput output)
     {
         int strength = updatedStrength[side];
@@ -215,6 +200,21 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
         updatedStrength[side] = strength;
     }
 
+    private void addBlockScheduledForUpdate(int side)
+    {
+        hasUpdatedThisTick = true;
+        ForgeDirection direction = ForgeDirection.getOrientation(side);
+        int x = xCoord + direction.offsetX;
+        int y = yCoord + direction.offsetY;
+        int z = zCoord + direction.offsetZ;
+
+        SystemCoord coordinate = new SystemCoord(x, y, z, this.worldObj);
+        if (!scheduledToUpdate.contains(coordinate))
+        {
+            scheduledToUpdate.add(coordinate);
+        }
+    }
+
     private void notifyUpdate(int x, int y, int z, boolean spread)
     {
         if (worldObj.getBlock(x, y, z) != BlockRegistry.cable && (x != xCoord || y != yCoord || z != zCoord))
@@ -229,31 +229,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
                 notifyUpdate(x, y + 1, z, false);
                 notifyUpdate(x, y, z - 1, false);
                 notifyUpdate(x, y, z + 1, false);
-            }
-        }
-    }
-
-    @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
-    {
-
-        NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
-        for (int i = 0; i < sidesTag.tagCount(); i++)
-        {
-
-            NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
-
-            strengths[i] = updatedStrength[i] = sideTag.getByte(NBT_STRENGTH);
-            strong[i] = updatedStrong[i] = sideTag.getBoolean(NBT_STRONG);
-
-            List<PulseTimer> timers = pulseTimers[i];
-            timers.clear();
-            NBTTagList pulsesTag = sideTag.getTagList(NBT_PULSES, 10);
-            for (int j = 0; j < pulsesTag.tagCount(); j++)
-            {
-                NBTTagCompound pulseTag = pulsesTag.getCompoundTagAt(j);
-
-                timers.add(new PulseTimer(pulseTag.getByte(NBT_STRENGTH), pulseTag.getBoolean(NBT_STRONG), pulseTag.getShort(NBT_TICK)));
             }
         }
     }
@@ -287,6 +262,31 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
 
 
         nbtTagCompound.setTag(NBT_SIDES, sidesTag);
+    }
+
+    @Override
+    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    {
+
+        NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
+        for (int i = 0; i < sidesTag.tagCount(); i++)
+        {
+
+            NBTTagCompound sideTag = sidesTag.getCompoundTagAt(i);
+
+            strengths[i] = updatedStrength[i] = sideTag.getByte(NBT_STRENGTH);
+            strong[i] = updatedStrong[i] = sideTag.getBoolean(NBT_STRONG);
+
+            List<PulseTimer> timers = pulseTimers[i];
+            timers.clear();
+            NBTTagList pulsesTag = sideTag.getTagList(NBT_PULSES, 10);
+            for (int j = 0; j < pulsesTag.tagCount(); j++)
+            {
+                NBTTagCompound pulseTag = pulsesTag.getCompoundTagAt(j);
+
+                timers.add(new PulseTimer(pulseTag.getByte(NBT_STRENGTH), pulseTag.getBoolean(NBT_STRONG), pulseTag.getShort(NBT_TICK)));
+            }
+        }
     }
 
     @Override

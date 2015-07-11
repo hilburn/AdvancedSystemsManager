@@ -5,9 +5,11 @@ import advancedsystemsmanager.gui.theme.Theme;
 import advancedsystemsmanager.gui.theme.ThemeAdapters;
 import advancedsystemsmanager.gui.theme.ThemeCommand;
 import advancedsystemsmanager.helpers.FileHelper;
-import com.google.gson.*;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.regex.Pattern;
 
 public class ThemeHandler
 {
+    public static final Gson GSON = getGson();
     private static final Pattern JSON = Pattern.compile(".*\\.json", Pattern.CASE_INSENSITIVE);
     private static final FileFilter JSON_FILTER = new FileFilter()
     {
@@ -25,11 +28,10 @@ public class ThemeHandler
             return JSON.matcher(pathname.getName()).find();
         }
     };
-    public static final Gson GSON = getGson();
+    public static Theme theme = new Theme();
     private final String backupLocation;
     private final File themeDir;
     private File themeFile;
-    public static Theme theme = new Theme();
 
     public ThemeHandler(File directory, String backupLocation)
     {
@@ -61,38 +63,6 @@ public class ThemeHandler
         this.themeFile = theme;
         loadTheme();
         return true;
-    }
-
-    public List<String> getThemes()
-    {
-        File[] files = themeDir.listFiles(JSON_FILTER);
-        List<String> result = new ArrayList<String>();
-        if (files != null)
-        {
-            for (File file : files)
-            {
-                result.add(file.getName().replace(".json", ""));
-            }
-        }
-        return result;
-    }
-
-    public JsonObject toJson(Theme theme)
-    {
-        String test = getGson().toJson(theme);
-        Theme back = getGson().fromJson(test, Theme.class);
-
-        return null;
-    }
-
-    public static Gson getGson()
-    {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(HexValue.class, ThemeAdapters.HEX_ADAPTER);
-        builder.registerTypeAdapter(ThemeCommand.CommandSet.class, ThemeAdapters.COMMAND_ADAPTER);
-        builder.setPrettyPrinting();
-        builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE_WITH_SPACES);
-        return builder.create();
     }
 
     public void saveTheme(String name)
@@ -135,5 +105,37 @@ public class ThemeHandler
             //TODO: log?
             theme = new Theme();
         }
+    }
+
+    public List<String> getThemes()
+    {
+        File[] files = themeDir.listFiles(JSON_FILTER);
+        List<String> result = new ArrayList<String>();
+        if (files != null)
+        {
+            for (File file : files)
+            {
+                result.add(file.getName().replace(".json", ""));
+            }
+        }
+        return result;
+    }
+
+    public JsonObject toJson(Theme theme)
+    {
+        String test = getGson().toJson(theme);
+        Theme back = getGson().fromJson(test, Theme.class);
+
+        return null;
+    }
+
+    public static Gson getGson()
+    {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(HexValue.class, ThemeAdapters.HEX_ADAPTER);
+        builder.registerTypeAdapter(ThemeCommand.CommandSet.class, ThemeAdapters.COMMAND_ADAPTER);
+        builder.setPrettyPrinting();
+        builder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE_WITH_SPACES);
+        return builder.create();
     }
 }

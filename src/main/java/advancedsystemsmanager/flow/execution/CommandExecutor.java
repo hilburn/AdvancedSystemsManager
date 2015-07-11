@@ -57,95 +57,6 @@ public class CommandExecutor
         this.rfBuffer = rfBuffer;
     }
 
-    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ISystemType type)
-    {
-        if (!(menu instanceof MenuContainer)) return null;
-        MenuContainer menuContainer = (MenuContainer)menu;
-        if (menuContainer.getSelectedInventories().size() == 0)
-        {
-            return null;
-        } else
-        {
-            ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
-            List<SystemCoord> inventories = manager.getConnectedInventories();
-            Variable[] variables = new Variable[0];//manager.getVariableArray();
-
-            int i;
-            label50:
-            for (i = 0; i < variables.length; ++i)
-            {
-                Variable selected = variables[i];
-                if (selected.isValid())
-                {
-                    for (long val : menuContainer.getSelectedInventories())
-                    {
-                        if (val == i)
-                        {
-                            List<Integer> selection = new ArrayList<Integer>();//selected.getContainers();
-                            Iterator<Integer> i$1 = selection.iterator();
-
-                            while (true)
-                            {
-                                if (!i$1.hasNext())
-                                {
-                                    continue label50;
-                                }
-
-                                int selected1 = i$1.next();
-                                addContainer(inventories, ret, selected1, menuContainer, type, ((MenuContainerTypes)selected.getDeclaration().getMenus().get(1)).getValidTypes());
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
-            {
-//                long var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
-//                addContainer(inventories, ret, (int)var14, menuContainer, type, SystemTypeRegistry.getTypes());
-            }
-
-            if (ret.isEmpty())
-            {
-                return null;
-            } else
-            {
-                return ret;
-            }
-        }
-    }
-
-    public static void addContainer(List<SystemCoord> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
-    {
-        if (selected >= 0 && selected < inventories.size())
-        {
-            SystemCoord connection = inventories.get(selected);
-            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
-            {
-                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
-            }
-        }
-    }
-
-    public static boolean containsTe(List<SlotInventoryHolder> lst, TileEntity te)
-    {
-        Iterator<SlotInventoryHolder> i$ = lst.iterator();
-
-        SlotInventoryHolder slotInventoryHolder;
-        do
-        {
-            if (!i$.hasNext())
-            {
-                return false;
-            }
-
-            slotInventoryHolder = i$.next();
-        }
-        while (slotInventoryHolder.getTile().xCoord != te.xCoord || slotInventoryHolder.getTile().yCoord != te.yCoord || slotInventoryHolder.getTile().zCoord != te.zCoord || !slotInventoryHolder.getTile().getClass().equals(te.getClass()));
-
-        return true;
-    }
-
     public static void getValidSlots(Menu menu, List<SlotInventoryHolder> inventories)
     {
         MenuTargetInventory menuTarget = (MenuTargetInventory)menu;
@@ -353,6 +264,95 @@ public class CommandExecutor
     public List<SlotInventoryHolder> getNodes(Menu menu)
     {
         return getContainers(this.manager, menu, SystemTypeRegistry.NODE);
+    }
+
+    public static List<SlotInventoryHolder> getContainers(TileEntityManager manager, Menu menu, ISystemType type)
+    {
+        if (!(menu instanceof MenuContainer)) return null;
+        MenuContainer menuContainer = (MenuContainer)menu;
+        if (menuContainer.getSelectedInventories().size() == 0)
+        {
+            return null;
+        } else
+        {
+            ArrayList<SlotInventoryHolder> ret = new ArrayList<SlotInventoryHolder>();
+            List<SystemCoord> inventories = manager.getConnectedInventories();
+            Variable[] variables = new Variable[0];//manager.getVariableArray();
+
+            int i;
+            label50:
+            for (i = 0; i < variables.length; ++i)
+            {
+                Variable selected = variables[i];
+                if (selected.isValid())
+                {
+                    for (long val : menuContainer.getSelectedInventories())
+                    {
+                        if (val == i)
+                        {
+                            List<Integer> selection = new ArrayList<Integer>();//selected.getContainers();
+                            Iterator<Integer> i$1 = selection.iterator();
+
+                            while (true)
+                            {
+                                if (!i$1.hasNext())
+                                {
+                                    continue label50;
+                                }
+
+                                int selected1 = i$1.next();
+                                addContainer(inventories, ret, selected1, menuContainer, type, ((MenuContainerTypes)selected.getDeclaration().getMenus().get(1)).getValidTypes());
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (i = 0; i < menuContainer.getSelectedInventories().size(); ++i)
+            {
+//                long var14 = menuContainer.getSelectedInventories().get(i) - VariableColor.values().length;
+//                addContainer(inventories, ret, (int)var14, menuContainer, type, SystemTypeRegistry.getTypes());
+            }
+
+            if (ret.isEmpty())
+            {
+                return null;
+            } else
+            {
+                return ret;
+            }
+        }
+    }
+
+    public static void addContainer(List<SystemCoord> inventories, List<SlotInventoryHolder> ret, int selected, MenuContainer menuContainer, ISystemType requestType, Collection<ISystemType> variableType)
+    {
+        if (selected >= 0 && selected < inventories.size())
+        {
+            SystemCoord connection = inventories.get(selected);
+            if (connection.isOfType(requestType) && connection.isOfAnyType(variableType) && !connection.getTileEntity().isInvalid() && !containsTe(ret, connection.getTileEntity()))
+            {
+                ret.add(new SlotInventoryHolder(selected, connection.getTileEntity(), menuContainer.getOption()));
+            }
+        }
+    }
+
+    public static boolean containsTe(List<SlotInventoryHolder> lst, TileEntity te)
+    {
+        Iterator<SlotInventoryHolder> i$ = lst.iterator();
+
+        SlotInventoryHolder slotInventoryHolder;
+        do
+        {
+            if (!i$.hasNext())
+            {
+                return false;
+            }
+
+            slotInventoryHolder = i$.next();
+        }
+        while (slotInventoryHolder.getTile().xCoord != te.xCoord || slotInventoryHolder.getTile().yCoord != te.yCoord || slotInventoryHolder.getTile().zCoord != te.zCoord || !slotInventoryHolder.getTile().getClass().equals(te.getClass()));
+
+        return true;
     }
 
     public void getValidRFStorage(Menu menu, List<SlotInventoryHolder> cells)

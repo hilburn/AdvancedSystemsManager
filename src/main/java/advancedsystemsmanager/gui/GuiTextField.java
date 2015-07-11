@@ -125,6 +125,11 @@ public class GuiTextField extends Gui
         }
     }
 
+    public boolean isSelected()
+    {
+        return selected;
+    }
+
     public void draw()
     {
         drawBackground();
@@ -170,11 +175,6 @@ public class GuiTextField extends Gui
     {
         task.cancel();
         timer.purge();
-    }
-
-    public boolean isSelected()
-    {
-        return selected;
     }
 
     private class ToggleCursor extends TimerTask

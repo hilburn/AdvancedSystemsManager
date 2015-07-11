@@ -23,12 +23,6 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     }
 
     @Override
-    public ItemStack getItemStackFromBlock()
-    {
-        return clusterElement.getItemStack(getMetadata());
-    }
-
-    @Override
     public boolean isPartOfCluster()
     {
         return isPartOfCluster;
@@ -53,20 +47,6 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     }
 
     @Override
-    public final void readFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-        readContentFromNBT(tagCompound);
-    }
-
-    @Override
-    public final void writeToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
-        writeContentToNBT(tagCompound);
-    }
-
-    @Override
     public int getMetadata()
     {
         if (isPartOfCluster)
@@ -78,9 +58,10 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
         }
     }
 
-    public void markBlockForUpdate()
+    @Override
+    public ItemStack getItemStackFromBlock()
     {
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        return clusterElement.getItemStack(getMetadata());
     }
 
     @Override
@@ -94,4 +75,23 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     }
 
     public abstract EnumSet<ClusterMethodRegistration> getRegistrations();
+
+    @Override
+    public final void readFromNBT(NBTTagCompound tagCompound)
+    {
+        super.readFromNBT(tagCompound);
+        readContentFromNBT(tagCompound);
+    }
+
+    @Override
+    public final void writeToNBT(NBTTagCompound tagCompound)
+    {
+        super.writeToNBT(tagCompound);
+        writeContentToNBT(tagCompound);
+    }
+
+    public void markBlockForUpdate()
+    {
+        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+    }
 }

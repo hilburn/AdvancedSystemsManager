@@ -2,10 +2,9 @@ package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IManagerButton;
+import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.*;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
-import advancedsystemsmanager.gui.ManagerButtonList;
-import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -18,6 +17,7 @@ import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.gui.IInterfaceRenderer;
+import advancedsystemsmanager.gui.ManagerButtonList;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
@@ -59,9 +59,9 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public static final int MAX_CABLE_LENGTH = 128;
     public static final int MAX_COMPONENT_AMOUNT = 511;
     public static final int MAX_CONNECTED_INVENTORIES = 1023;
+    public static final String NBT_COMPONENTS = "Components";
     private static final String NBT_MAX_ID = "maxID";
     private static final String NBT_TIMER = "Timer";
-    public static final String NBT_COMPONENTS = "Components";
     private static final String NBT_VARIABLES = "Variables";
     private static final String NBT_SIDES = "Sides";
     public static boolean energyCostActive;
@@ -97,36 +97,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
     }
 
-    public List<FlowComponent> removeFlowComponents(int idToRemove, boolean connected)
-    {
-        List<FlowComponent> result = new ArrayList<FlowComponent>();
-        Queue<Integer> remove = new PriorityQueue<Integer>();
-        Multimap<FlowComponent, FlowComponent> parents = getParentHierarchy();
-        remove.add(idToRemove);
-        if (!connected) getFlowItem(idToRemove).deleteConnections();
-        while (!remove.isEmpty())
-        {
-            FlowComponent removed = removeComponent(remove.poll());
-            result.add(removed);
-            for (FlowComponent child : parents.get(removed))
-            {
-                remove.add(child.getId());
-            }
-        }
-        return result;
-    }
-
-    private FlowComponent removeComponent(int idToRemove)
-    {
-        FlowComponent removed = components.get(idToRemove);
-        components.remove(idToRemove);
-        if (selectedGroup == removed)
-        {
-            selectedGroup = null;
-        }
-        return removed;
-    }
-
     public void removeFlowComponent(int idToRemove, boolean connected)
     {
         List<FlowComponent> removed;
@@ -153,6 +123,51 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         updateVariables();
     }
 
+    public FlowComponent getFlowItem(int i)
+    {
+        return components.get(i);
+    }
+
+    public List<FlowComponent> removeFlowComponents(int idToRemove, boolean connected)
+    {
+        List<FlowComponent> result = new ArrayList<FlowComponent>();
+        Queue<Integer> remove = new PriorityQueue<Integer>();
+        Multimap<FlowComponent, FlowComponent> parents = getParentHierarchy();
+        remove.add(idToRemove);
+        if (!connected) getFlowItem(idToRemove).deleteConnections();
+        while (!remove.isEmpty())
+        {
+            FlowComponent removed = removeComponent(remove.poll());
+            result.add(removed);
+            for (FlowComponent child : parents.get(removed))
+            {
+                remove.add(child.getId());
+            }
+        }
+        return result;
+    }
+
+    public void updateVariables()
+    {
+        for (Variable variable : variables.valueCollection())
+        {
+            variable.setDeclaration(null);
+        }
+
+        for (FlowComponent item : getFlowItems())
+        {
+            if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
+            {
+                int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
+                Variable variable = variables.get(selectedVariable);
+                if (variable != null && !variable.isValid())
+                {
+                    variable.setDeclaration(item);
+                }
+            }
+        }
+    }
+
     public Multimap<FlowComponent, FlowComponent> getParentHierarchy()
     {
         Multimap<FlowComponent, FlowComponent> result = HashMultimap.create();
@@ -163,9 +178,20 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         return result;
     }
 
-    public FlowComponent getFlowItem(int i)
+    private FlowComponent removeComponent(int idToRemove)
     {
-        return components.get(i);
+        FlowComponent removed = components.get(idToRemove);
+        components.remove(idToRemove);
+        if (selectedGroup == removed)
+        {
+            selectedGroup = null;
+        }
+        return removed;
+    }
+
+    public Collection<FlowComponent> getFlowItems()
+    {
+        return components.valueCollection();
     }
 
     public TLongObjectHashMap<SystemCoord> getNetwork()
@@ -213,22 +239,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             }
         }
         new Executor(this).executeTriggerCommand(component, validTriggerOutputs);
-    }
-
-    public void triggerRedstone(ITriggerNode inputTrigger)
-    {
-        for (FlowComponent item : triggers)
-        {
-            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
-            {
-                redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
-            }
-        }
-    }
-
-    public Collection<FlowComponent> getFlowItems()
-    {
-        return components.valueCollection();
     }
 
     @Override
@@ -334,21 +344,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         return result;
     }
 
-    private boolean findNewSelectedComponent(int id)
-    {
-        if (components.containsKey(id))
-        {
-            selectedGroup = components.get(id);
-            return true;
-        }
-        return false;
-    }
-
-    public List<FlowComponent> getZLevelRenderingList()
-    {
-        return zLevelRenderingList;
-    }
-
     public void updateInventories()
     {
         usingUnlimitedInventories = false;
@@ -416,6 +411,44 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         firstInventoryUpdate = false;
     }
 
+    public List<FlowComponent> getZLevelRenderingList()
+    {
+        return zLevelRenderingList;
+    }
+
+    public boolean addNewComponent(FlowComponent component)
+    {
+        boolean result = components.put(component.getId(), component) != null;
+        if (component.getType().getCommandType() == CommandType.TRIGGER) triggers.add(component);
+        if (worldObj != null && worldObj.isRemote) zLevelRenderingList.add(0, component);
+        return result;
+    }
+
+    private void addVariable(Variable variable)
+    {
+        variables.put(variable.colour, variable);
+    }
+
+    private boolean findNewSelectedComponent(int id)
+    {
+        if (components.containsKey(id))
+        {
+            selectedGroup = components.get(id);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isUsingUnlimitedStuff()
+    {
+        return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
+    }
+
+    public void addNewVariable(Variable variable)
+    {
+        variables.put(variable.colour, variable);
+    }
+
     private void addInventory(SystemCoord target)
     {
         boolean isValidConnection = false;
@@ -425,7 +458,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             if (connectionBlockType.isInstance(this, target.getTileEntity()))
             {
-                if (target.getTileEntity() instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.getTileEntity()).isOfType(connectionBlockType)) continue;
+                if (target.getTileEntity() instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.getTileEntity()).isOfType(connectionBlockType))
+                    continue;
                 isValidConnection = true;
                 target.addType(connectionBlockType);
             }
@@ -445,14 +479,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    public boolean addNewComponent(FlowComponent component)
-    {
-        boolean result = components.put(component.getId(), component) != null;
-        if (component.getType().getCommandType() == CommandType.TRIGGER) triggers.add(component);
-        if (worldObj != null && worldObj.isRemote) zLevelRenderingList.add(0, component);
-        return result;
-    }
-
     public void removeVariableDeclaration(int colour, FlowComponent component)
     {
         Variable variable = variables.get(colour);
@@ -470,36 +496,10 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    public void updateVariables()
-    {
-        for (Variable variable : variables.valueCollection())
-        {
-            variable.setDeclaration(null);
-        }
-
-        for (FlowComponent item : getFlowItems())
-        {
-            if (item.getType() == CommandRegistry.VARIABLE && item.getConnectionSet() == ConnectionSet.EMPTY)
-            {
-                int selectedVariable = ((MenuVariable)item.getMenus().get(0)).getSelectedVariable();
-                Variable variable = variables.get(selectedVariable);
-                if (variable != null && !variable.isValid())
-                {
-                    variable.setDeclaration(item);
-                }
-            }
-        }
-    }
-
     public int getNextFreeID()
     {
         while (components.containsKey(++maxID) || maxID < 0) if (maxID < 0) maxID = 0;
         return maxID;
-    }
-
-    public boolean isUsingUnlimitedStuff()
-    {
-        return components.size() > MAX_COMPONENT_AMOUNT || usingUnlimitedInventories;
     }
 
     public void triggerBUD(TileEntityBUD tileEntityBUD)
@@ -635,16 +635,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    private void addVariable(Variable variable)
-    {
-        variables.put(variable.colour, variable);
-    }
-
-    public Collection<Variable> getVariables()
-    {
-        return variables.valueCollection();
-    }
-
     public int getNextColour(int colour, int direction)
     {
         List<Variable> variables = new ArrayList<Variable>(getVariables());
@@ -659,6 +649,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             }
         }
         return variables.get(0).colour;
+    }
+
+    public Collection<Variable> getVariables()
+    {
+        return variables.valueCollection();
     }
 
     public String getUniqueComponentName(FlowComponent component)
@@ -716,11 +711,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         return variables.get(selectedVariable);
     }
 
-    public void addNewVariable(Variable variable)
-    {
-        variables.put(variable.colour, variable);
-    }
-
     public void triggerRedstone()
     {
         isPowered = new int[isPowered.length];
@@ -734,6 +724,17 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         oldPowered = isPowered;
     }
 
+    public void triggerRedstone(ITriggerNode inputTrigger)
+    {
+        for (FlowComponent item : triggers)
+        {
+            if (item.getConnectionSet() == ConnectionSet.REDSTONE)
+            {
+                redstoneTrigger.onRedstoneTrigger(item, inputTrigger);
+            }
+        }
+    }
+
     @Override
     public int[] getData()
     {
@@ -744,11 +745,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public int[] getOldData()
     {
         return oldPowered;
-    }
-
-    public boolean requiresPower()
-    {
-        return energyCostActive && !Settings.isLimitless(this);
     }
 
     @Override
@@ -777,6 +773,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public boolean canConnectEnergy(ForgeDirection forgeDirection)
     {
         return requiresPower();
+    }
+
+    public boolean requiresPower()
+    {
+        return energyCostActive && !Settings.isLimitless(this);
     }
 
     @Override

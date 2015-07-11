@@ -25,12 +25,6 @@ public class PacketEventHandler
         handlePacket(event.packet.payload(), FMLClientHandler.instance().getClient().thePlayer);
     }
 
-    @SubscribeEvent
-    public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event)
-    {
-        handlePacket(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
-    }
-
     public void handlePacket(ByteBuf buffer, EntityPlayer player)
     {
         ASMPacket packet = new ASMPacket(buffer);
@@ -71,5 +65,11 @@ public class PacketEventHandler
                 ParentCommand.handlePacket(packet);
                 break;
         }
+    }
+
+    @SubscribeEvent
+    public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event)
+    {
+        handlePacket(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
     }
 }

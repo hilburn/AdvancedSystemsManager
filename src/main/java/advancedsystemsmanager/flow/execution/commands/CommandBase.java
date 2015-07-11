@@ -100,12 +100,6 @@ public abstract class CommandBase<Type> implements ICommand
         return ((setting != null) == whitelist) || (setting != null && setting.isLimitedByAmount());
     }
 
-    @Override
-    public int getId()
-    {
-        return id;
-    }
-
     public List<Setting<Type>> getValidSettings(List<Setting<Type>> oldSettings)
     {
         List<Setting<Type>> result = new ArrayList<Setting<Type>>();
@@ -118,17 +112,15 @@ public abstract class CommandBase<Type> implements ICommand
             }
         }
         return result;
-    }
-
-    @Override
-    public ConnectionSet[] getSets()
+    }    @Override
+    public int getId()
     {
-        return connectionSets;
+        return id;
     }
 
     public Setting<Type> isValid(List<Setting<Type>> settings, Type check)
     {
-        for (Iterator<Setting<Type>> itr = settings.iterator(); itr.hasNext();)
+        for (Iterator<Setting<Type>> itr = settings.iterator(); itr.hasNext(); )
         {
             Setting<Type> setting = itr.next();
             if (setting.isContentEqual(check))
@@ -143,6 +135,14 @@ public abstract class CommandBase<Type> implements ICommand
         }
         return null;
     }
+
+    @Override
+    public ConnectionSet[] getSets()
+    {
+        return connectionSets;
+    }
+
+
 
     @Override
     public void execute(FlowComponent command, int connectionId, Executor executor)

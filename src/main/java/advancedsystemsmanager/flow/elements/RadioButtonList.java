@@ -39,7 +39,7 @@ public class RadioButtonList extends UpdateElement
 
             if (radioButton.isVisible())
             {
-                boolean selected =  getSelectedOption() == i;
+                boolean selected = getSelectedOption() == i;
                 boolean mouseover = CollisionHelper.inBounds(radioButton.getX(), radioButton.getY(), RADIO_SIZE, RADIO_SIZE, mX, mY);
 
                 gui.drawColouredTexture(radioButton.getX(), radioButton.getY(), RADIO_SRC_X, RADIO_SRC_Y, RADIO_SIZE, RADIO_SIZE, ThemeHandler.theme.menus.radioButtons.getColour(selected, mouseover));

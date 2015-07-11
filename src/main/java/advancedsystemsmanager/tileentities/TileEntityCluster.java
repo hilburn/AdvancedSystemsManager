@@ -82,28 +82,39 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    private void clearElements()
+    private ClusterPair addElement(byte id, byte meta)
     {
-        elements.clear();
-        pairs.clear();
-        interfaceObject = null;
-        camouflageObject = null;
+        IClusterElement element = ClusterRegistry.get(id);
+        if (element == null) return null;
+        return addElement(element, meta);
     }
 
-    public boolean addElement(EntityPlayer player, IClusterElement element, int damage)
+    private ClusterPair addElement(IClusterElement element, byte meta)
     {
-        //TileEntityClusterElement element = addElement(registry);
-        ClusterPair pair = addElement(element, (byte)damage);
-        if (element == null) return false;
-        if (pair.tile.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
+        TileEntity tile = element.getClusterTile(getWorldObj(), meta);
+        if ((interfaceObject != null && tile instanceof ITileInterfaceProvider) || (camouflageObject != null && tile instanceof TileEntityCamouflage))
+            return null;
+        ClusterPair pair = new ClusterPair(element, (IClusterTile)tile);
+        elements.add(element);
+        pairs.add(pair);
+        if (tile instanceof ITileInterfaceProvider)
         {
-            element.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, player, element.getItemStack(damage));
-        }
-        if (pair.tile.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_ADDED))
+            interfaceObject = (ITileInterfaceProvider)tile;
+        } else if (tile instanceof TileEntityCamouflage)
         {
-            element.getBlock().onBlockAdded(worldObj, xCoord, yCoord, zCoord);
+            camouflageObject = (TileEntityCamouflage)tile;
         }
-        return true;
+        for (ClusterMethodRegistration clusterMethodRegistration : pair.tile.getRegistrations())
+        {
+            methods.put(clusterMethodRegistration, pair);
+        }
+        tile.xCoord = xCoord;
+        tile.yCoord = yCoord;
+        tile.zCoord = zCoord;
+        tile.setWorldObj(worldObj);
+        pair.tile.setPartOfCluster(true);
+        pair.tile.setMetaData(meta);
+        return pair;
     }
 
     public void onBlockPlacedBy(EntityLivingBase entity, ItemStack itemStack)
@@ -118,6 +129,19 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
     private Collection<ClusterPair> getRegistrations(ClusterMethodRegistration method)
     {
         return methods.get(method);
+    }
+
+    public void setWorld(IClusterTile tile)
+    {
+        setWorldObject((TileEntity)tile);
+    }
+
+    public void setWorldObject(TileEntity te)
+    {
+        if (!te.hasWorldObj())
+        {
+            te.setWorldObj(this.worldObj);
+        }
     }
 
     public void onNeighborBlockChange(Block block)
@@ -165,7 +189,6 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
 
         return false;
     }
-
 
     public int isProvidingWeakPower(int side)
     {
@@ -215,6 +238,22 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         }
 
         return false;
+    }
+
+    public boolean addElement(EntityPlayer player, IClusterElement element, int damage)
+    {
+        //TileEntityClusterElement element = addElement(registry);
+        ClusterPair pair = addElement(element, (byte)damage);
+        if (element == null) return false;
+        if (pair.tile.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
+        {
+            element.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, player, element.getItemStack(damage));
+        }
+        if (pair.tile.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_ADDED))
+        {
+            element.getBlock().onBlockAdded(worldObj, xCoord, yCoord, zCoord);
+        }
+        return true;
     }
 
     @Override
@@ -345,19 +384,6 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    public void setWorld(IClusterTile tile)
-    {
-        setWorldObject((TileEntity)tile);
-    }
-
-    public void setWorldObject(TileEntity te)
-    {
-        if (!te.hasWorldObj())
-        {
-            te.setWorldObj(this.worldObj);
-        }
-    }
-
     @SideOnly(Side.CLIENT)
     private void requestData()
     {
@@ -415,41 +441,13 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         }
     }
 
-    private ClusterPair addElement(byte id, byte meta)
+    private void clearElements()
     {
-        IClusterElement element = ClusterRegistry.get(id);
-        if (element == null) return null;
-        return addElement(element, meta);
+        elements.clear();
+        pairs.clear();
+        interfaceObject = null;
+        camouflageObject = null;
     }
-
-    private ClusterPair addElement(IClusterElement element, byte meta)
-    {
-        TileEntity tile = element.getClusterTile(getWorldObj(), meta);
-        if ((interfaceObject != null && tile instanceof ITileInterfaceProvider) || (camouflageObject != null && tile instanceof TileEntityCamouflage))
-            return null;
-        ClusterPair pair = new ClusterPair(element, (IClusterTile)tile);
-        elements.add(element);
-        pairs.add(pair);
-        if (tile instanceof ITileInterfaceProvider)
-        {
-            interfaceObject = (ITileInterfaceProvider)tile;
-        } else if (tile instanceof TileEntityCamouflage)
-        {
-            camouflageObject = (TileEntityCamouflage)tile;
-        }
-        for (ClusterMethodRegistration clusterMethodRegistration : pair.tile.getRegistrations())
-        {
-            methods.put(clusterMethodRegistration, pair);
-        }
-        tile.xCoord = xCoord;
-        tile.yCoord = yCoord;
-        tile.zCoord = zCoord;
-        tile.setWorldObj(worldObj);
-        pair.tile.setPartOfCluster(true);
-        pair.tile.setMetaData(meta);
-        return pair;
-    }
-
 
     public byte[] getTypes()
     {

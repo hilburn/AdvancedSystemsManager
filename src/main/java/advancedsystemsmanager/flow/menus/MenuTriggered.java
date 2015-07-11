@@ -45,14 +45,25 @@ public abstract class MenuTriggered extends Menu
     {
     }
 
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
-    }
-
     @SideOnly(Side.CLIENT)
     public boolean onKeyStroke(GuiManager gui, char c, int k)
     {
         return this.textBoxes.onKeyStroke(gui, c, k);
+    }
+
+    public void copyFrom(Menu menu)
+    {
+        this.setDelay(((MenuTriggered)menu).getDelay());
+    }
+
+    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    {
+        nbtTagCompound.setInteger(NBT_DELAY, this.getDelay());
+        nbtTagCompound.setInteger(NBT_COUNTDOWN, this.counter);
+    }
+
+    public void onRelease(int mX, int mY, boolean isMenuOpen)
+    {
     }
 
     public void writeData(ASMPacket dw)
@@ -65,28 +76,6 @@ public abstract class MenuTriggered extends Menu
         dw.writeVarIntToBuffer(val);
     }
 
-    public void readData(ASMPacket dr)
-    {
-        this.setDelay(dr.readVarIntFromBuffer());
-    }
-
-    public void copyFrom(Menu menu)
-    {
-        this.setDelay(((MenuTriggered)menu).getDelay());
-    }
-
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
-    {
-        this.setDelay(nbtTagCompound.getInteger(NBT_DELAY));
-        counter = nbtTagCompound.getInteger(NBT_COUNTDOWN);
-    }
-
-    public void writeToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
-    {
-        nbtTagCompound.setInteger(NBT_DELAY, this.getDelay());
-        nbtTagCompound.setInteger(NBT_COUNTDOWN, this.counter);
-    }
-
     public abstract int getDelay();
 
     public abstract void setDelay(int val);
@@ -94,6 +83,17 @@ public abstract class MenuTriggered extends Menu
     public int getMin()
     {
         return 1;
+    }
+
+    public void readData(ASMPacket dr)
+    {
+        this.setDelay(dr.readVarIntFromBuffer());
+    }
+
+    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    {
+        this.setDelay(nbtTagCompound.getInteger(NBT_DELAY));
+        counter = nbtTagCompound.getInteger(NBT_COUNTDOWN);
     }
 
     public void setCountdown()
@@ -119,12 +119,12 @@ public abstract class MenuTriggered extends Menu
         resetCounter();
     }
 
+    public abstract EnumSet<ConnectionOption> getConnectionSets();
+
     public void resetCounter()
     {
         counter = 0;
     }
-
-    public abstract EnumSet<ConnectionOption> getConnectionSets();
 
     public boolean remove()
     {

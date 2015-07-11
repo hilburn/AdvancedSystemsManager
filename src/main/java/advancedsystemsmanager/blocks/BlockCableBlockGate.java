@@ -24,6 +24,39 @@ public class BlockCableBlockGate extends BlockClusterElementBase<TileEntityBlock
         super(Names.CABLE_BLOCK_GATE, 3);
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+    {
+        TileEntityBlockGate gate = getTileEntity(world, x, y, z);
+
+        if (gate != null)
+        {
+            int meta = gate.getMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
+            int direction = gate.getPlaceDirection();
+
+            if (side == meta && side == direction)
+            {
+                return icons[0];
+            } else if (side == meta)
+            {
+                return icons[1];
+            } else if (side == direction)
+            {
+                return icons[2];
+            }
+        }
+
+        return blockIcon;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IIcon getIcon(int side, int meta)
+    {
+        return side == 3 ? icons[0] : blockIcon;
+    }
+
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
@@ -52,39 +85,6 @@ public class BlockCableBlockGate extends BlockClusterElementBase<TileEntityBlock
             breaker.setMetaData(meta);
             breaker.setPlaceDirection(breaker.getMetadata());
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return side == 3 ? icons[0] : blockIcon;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TileEntityBlockGate gate = getTileEntity(world, x, y, z);
-
-        if (gate != null)
-        {
-            int meta = gate.getMetadata() % ForgeDirection.VALID_DIRECTIONS.length;
-            int direction = gate.getPlaceDirection();
-
-            if (side == meta && side == direction)
-            {
-                return icons[0];
-            } else if (side == meta)
-            {
-                return icons[1];
-            } else if (side == direction)
-            {
-                return icons[2];
-            }
-        }
-
-        return blockIcon;
     }
 
     @Override

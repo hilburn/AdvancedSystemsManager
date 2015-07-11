@@ -30,16 +30,16 @@ public abstract class BufferElementBase<Type> implements IBufferElement<Type>
     }
 
     @Override
-    public int getCommandID()
-    {
-        return this.id;
-    }
-
-    @Override
     public int getMaxWithSetting(int amount)
     {
         if (setting != null && setting.isLimitedByAmount())
             return whitelist ? Math.min(amount, setting.getAmountLeft()) : amount - setting.getAmountLeft();
         return amount;
+    }
+
+    @Override
+    public int getCommandID()
+    {
+        return this.id;
     }
 }

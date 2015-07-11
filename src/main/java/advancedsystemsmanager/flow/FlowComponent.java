@@ -163,8 +163,8 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public int parentLoadId = -1;
     public int overrideX = -1;
     public int overrideY = -1;
-    private List<IPacketSync> networkSyncList = new ArrayList<IPacketSync>();
     List<String> errors = new ArrayList<String>();
+    private List<IPacketSync> networkSyncList = new ArrayList<IPacketSync>();
 
     public FlowComponent(TileEntityManager manager, ICommand type)
     {
@@ -259,6 +259,102 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             if (component != null)
             {
                 component.isLoading = false;
+            }
+        }
+    }
+
+    public ICommand getType()
+    {
+        return type;
+    }
+
+    public void removeConnection(int id)
+    {
+        Connection connection = connections[id];
+        if (connection != null)
+        {
+            sendConnectionData(id, false, 0, 0);
+            connection.deleteConnection(manager);
+        }
+    }
+
+    private void sendConnectionData(int connectionId, boolean add, int targetComponent, int targetConnection)
+    {
+        ASMPacket packet = getSyncPacket();
+        packet.writeByte(networkSyncList.size() + 1);
+        packet.writeByte(connectionId);
+        packet.writeBoolean(add);
+        if (add)
+        {
+            packet.writeVarIntToBuffer(targetComponent);
+            packet.writeByte(targetConnection);
+        }
+        packet.sendServerPacket();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ASMPacket getSyncPacket()
+    {
+        return PacketHandler.getComponentPacket(this);
+    }
+
+    @Override
+    public void registerSyncable(IPacketSync networkSync)
+    {
+        networkSync.setId(networkSyncList.size());
+        networkSyncList.add(networkSync);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void sendPacketToServer(ASMPacket packet)
+    {
+        PacketHandler.sendDataToServer(packet);
+    }
+
+    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
+    {
+
+        if (moveCluster)
+        {
+            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
+            findCluster(cluster, component, parent);
+            for (FlowComponent flowComponent : cluster)
+            {
+                flowComponent.setParent(parent);
+                if (parent != null)
+                {
+                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
+                    {
+                        Connection connection = flowComponent.getConnection(i);
+                        if (connection != null && (connection.getInputId() == parent.getId() || connection.getOutputId() == parent.getId()))
+                        {
+                            flowComponent.removeConnection(i);
+                        }
+                    }
+                }
+            }
+        } else if (!component.equals(parent))
+        {
+            component.setParent(parent);
+            component.deleteConnections();
+        }
+    }
+
+    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
+    {
+        if (!components.contains(component) && !component.equals(parent))
+        {
+            components.add(component);
+
+            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
+            {
+                Connection connection = component.getConnection(i);
+                if (connection != null)
+                {
+                    findCluster(components, component.getManager().getFlowItem(connection.getOutputId() == component.getId() ? connection.getInputId() : connection.getOutputId()), parent);
+                }
             }
         }
     }
@@ -434,7 +530,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                         int x = node.getX() - NODE_SIZE / 2;
                         int y = node.getY() - NODE_SIZE / 2;
                         boolean selected = connectedConnection.getSelectedNode() == null && CollisionHelper.inBounds(x, y, NODE_SIZE, NODE_SIZE, mX, mY);
-                        gui.drawColouredTexture(x, y, NODE_SRC_X, NODE_SRC_Y, NODE_SIZE, NODE_SIZE, (selected? ThemeHandler.theme.commands.connectionNodes.mouseover : ThemeHandler.theme.commands.connectionNodes.colour).getColour() );
+                        gui.drawColouredTexture(x, y, NODE_SRC_X, NODE_SRC_Y, NODE_SIZE, NODE_SIZE, (selected ? ThemeHandler.theme.commands.connectionNodes.mouseover : ThemeHandler.theme.commands.connectionNodes.colour).getColour());
                     }
 
                     GL11.glPopMatrix();
@@ -470,7 +566,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             {
                 name = getShortName(gui, name);
             }
-            gui.drawString(name, x + TEXT_X, y + TEXT_Y - (!isLarge ? TEXT_Y/2 : 0), 1F, isEditing ? 0x707020 : 0x404040);
+            gui.drawString(name, x + TEXT_X, y + TEXT_Y - (!isLarge ? TEXT_Y / 2 : 0), 1F, isEditing ? 0x707020 : 0x404040);
         }
 
         if (isEditing)
@@ -562,109 +658,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                 gui.drawMouseOver(str, mX, mY);
             }
         }
-    }
-
-    public ConnectionSet getConnectionSet()
-    {
-        return connectionSet;
-    }
-
-    public void setConnectionSet(ConnectionSet connectionSet)
-    {
-        if (this.connections != null && this.connectionSet != null && !isLoading)
-        {
-            int oldLength = this.connectionSet.getConnections().length;
-            int newLength = connectionSet.getConnections().length;
-
-            for (int i = 0; i < Math.min(oldLength, newLength); i++)
-            {
-                Connection connection = connections[i];
-                if (connection != null && this.connectionSet.getConnections()[i].isInput() != connectionSet.getConnections()[i].isInput())
-                {
-                    removeConnection(i);
-                }
-            }
-
-            for (int i = newLength; i < oldLength; i++)
-            {
-                Connection connection = connections[i];
-                if (connection != null)
-                {
-                    removeConnection(i);
-                }
-            }
-
-            this.connections = Arrays.copyOf(connections, connectionSet.getConnections().length);
-        }
-        this.connectionSet = connectionSet;
-    }
-
-    public void removeConnection(int id)
-    {
-        Connection connection = connections[id];
-        if (connection != null)
-        {
-            sendConnectionData(id, false, 0, 0);
-            connection.deleteConnection(manager);
-        }
-    }
-
-    public void addConnection(int id, Connection connection, boolean sync)
-    {
-        if (sync && getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
-        {
-            sendConnectionData(id, true, connection.getOutputId(), connection.getOutputConnection());
-        }
-        connection.setConnection(manager);
-    }
-
-    public TileEntityManager getManager()
-    {
-        return manager;
-    }
-
-    public int getComponentWidth()
-    {
-        return isLarge ? COMPONENT_SIZE_LARGE_W : COMPONENT_SIZE_W;
-    }
-
-    public int getComponentHeight()
-    {
-        return isLarge ? COMPONENT_SIZE_LARGE_H : COMPONENT_SIZE_H;
-    }
-
-    public int getMenuAreaX()
-    {
-        return x + MENU_X;
-    }
-
-    public int getMenuAreaY(int i)
-    {
-        return y + getMenuItemY(i) + MENU_ITEM_SIZE_H;
-    }
-
-    public int getMenuItemY(int id)
-    {
-        int ret = MENU_Y;
-        for (int i = 0; i < id; i++)
-        {
-            if (menus.get(i).isVisible())
-            {
-                ret += MENU_ITEM_SIZE_H - 1;
-                if (openMenuId == i)
-                {
-                    ret += getMenuOpenSize() - 1;
-                }
-            }
-        }
-
-
-        return ret;
-    }
-
-    public static int getMenuOpenSize()
-    {
-        return MENU_SIZE_H - MENU_ITEM_CAPACITY * (MENU_ITEM_SIZE_H - 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -875,6 +868,96 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return (selectedComponent == null && parent == null) || (parent != null && parent.equals(selectedComponent));
     }
 
+    public TileEntityManager getManager()
+    {
+        return manager;
+    }
+
+    public int getComponentWidth()
+    {
+        return isLarge ? COMPONENT_SIZE_LARGE_W : COMPONENT_SIZE_W;
+    }
+
+    public int getComponentHeight()
+    {
+        return isLarge ? COMPONENT_SIZE_LARGE_H : COMPONENT_SIZE_H;
+    }
+
+    public int getMenuAreaX()
+    {
+        return x + MENU_X;
+    }
+
+    public int getMenuItemY(int id)
+    {
+        int ret = MENU_Y;
+        for (int i = 0; i < id; i++)
+        {
+            if (menus.get(i).isVisible())
+            {
+                ret += MENU_ITEM_SIZE_H - 1;
+                if (openMenuId == i)
+                {
+                    ret += getMenuOpenSize() - 1;
+                }
+            }
+        }
+
+
+        return ret;
+    }
+
+    public int getMenuAreaY(int i)
+    {
+        return y + getMenuItemY(i) + MENU_ITEM_SIZE_H;
+    }
+
+    public int[] getConnectionLocationFromId(int id)
+    {
+        return connectionSet.getConnectionLocation(id, this);
+    }
+
+    public ConnectionSet getConnectionSet()
+    {
+        return connectionSet;
+    }
+
+    public void setConnectionSet(ConnectionSet connectionSet)
+    {
+        if (this.connections != null && this.connectionSet != null && !isLoading)
+        {
+            int oldLength = this.connectionSet.getConnections().length;
+            int newLength = connectionSet.getConnections().length;
+
+            for (int i = 0; i < Math.min(oldLength, newLength); i++)
+            {
+                Connection connection = connections[i];
+                if (connection != null && this.connectionSet.getConnections()[i].isInput() != connectionSet.getConnections()[i].isInput())
+                {
+                    removeConnection(i);
+                }
+            }
+
+            for (int i = newLength; i < oldLength; i++)
+            {
+                Connection connection = connections[i];
+                if (connection != null)
+                {
+                    removeConnection(i);
+                }
+            }
+
+            this.connections = Arrays.copyOf(connections, connectionSet.getConnections().length);
+        }
+        this.connectionSet = connectionSet;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getName()
+    {
+        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? StatCollector.translateToLocal(getType().getName()) : name : textBox.getText();
+    }
+
     public String getShortName(GuiManager gui, String name)
     {
         if (!name.equals(cachedName))
@@ -893,10 +976,18 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return cachedShortName;
     }
 
-    @SideOnly(Side.CLIENT)
-    public String getName()
+    public static int getMenuOpenSize()
     {
-        return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? StatCollector.translateToLocal(getType().getName()) : name : textBox.getText();
+        return MENU_SIZE_H - MENU_ITEM_CAPACITY * (MENU_ITEM_SIZE_H - 1);
+    }
+
+    public void addConnection(int id, Connection connection, boolean sync)
+    {
+        if (sync && getManager().getWorldObj() != null && getManager().getWorldObj().isRemote)
+        {
+            sendConnectionData(id, true, connection.getOutputId(), connection.getOutputConnection());
+        }
+        connection.setConnection(manager);
     }
 
     public boolean checkForLoops(Connection connection)
@@ -1029,12 +1120,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         y += dy;
     }
 
-    public void adjustToGrid(int grid)
-    {
-        x = Math.round(x / grid) * grid;
-        y = Math.round(y / grid) * grid;
-    }
-
     public void onRelease(int mX, int mY, int button)
     {
         followMouse(mX, mY, button);
@@ -1084,9 +1169,10 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    public int[] getConnectionLocationFromId(int id)
+    public void adjustToGrid(int grid)
     {
-        return connectionSet.getConnectionLocation(id, this);
+        x = Math.round(x / grid) * grid;
+        y = Math.round(y / grid) * grid;
     }
 
     public boolean inArrowBounds(int internalX, int internalY)
@@ -1097,11 +1183,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     public boolean inMenuArrowBounds(int i, int internalX, int internalY)
     {
         return CollisionHelper.inBounds(MENU_X + MENU_ARROW_X, getMenuItemY(i) + MENU_ARROW_Y, MENU_ARROW_SIZE_W, MENU_ARROW_SIZE_H, internalX, internalY);
-    }
-
-    public ICommand getType()
-    {
-        return type;
     }
 
     public List<Menu> getMenus()
@@ -1134,17 +1215,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return copy;
     }
 
-    public int getId()
-    {
-        return id;
-    }
-
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-
-
     public Connection getConnection(int i)
     {
         return connections[i];
@@ -1161,6 +1231,16 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         {
             setParent(null);
         }
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     public void linkAfterLoad()
@@ -1316,46 +1396,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return childrenInputNodes;
     }
 
-    @Override
-    public int compareTo(@Nonnull FlowComponent o)
-    {
-        return id == o.id ? 0 : id < o.id ? -1 : 1;
-    }
-
-    public void resetPosition()
-    {
-        resetTimer = 20;
-    }
-
-    public boolean isInventoryListDirty()
-    {
-        return isInventoryListDirty;
-    }
-
-    public void setInventoryListDirty(boolean inventoryListDirty)
-    {
-        isInventoryListDirty = inventoryListDirty;
-    }
-
-    public void doScroll(int scroll)
-    {
-        if (isLarge)
-        {
-            if (openMenuId != -1)
-            {
-                menus.get(openMenuId).doScroll(scroll);
-            }
-        }
-    }
-
-    public void onGuiClosed()
-    {
-        for (Menu menu : menus)
-        {
-            menu.onGuiClosed();
-        }
-    }
-
 //    public void setNameEdited(boolean b)
 //    {
 //        isEditing = b;
@@ -1398,9 +1438,10 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 //        this.overrideX = overrideX;
 //    }
 
-    public Connection[] getConnections()
+    @Override
+    public int compareTo(@Nonnull FlowComponent o)
     {
-        return connections;
+        return id == o.id ? 0 : id < o.id ? -1 : 1;
     }
 
 //    public int getOpenMenuId()
@@ -1414,25 +1455,43 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 //        this.openMenuId = openMenuId;
 //    }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ASMPacket getSyncPacket()
+    public void resetPosition()
     {
-        return PacketHandler.getComponentPacket(this);
+        resetTimer = 20;
     }
 
-    @Override
-    public void registerSyncable(IPacketSync networkSync)
+    public boolean isInventoryListDirty()
     {
-        networkSync.setId(networkSyncList.size());
-        networkSyncList.add(networkSync);
+        return isInventoryListDirty;
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void sendPacketToServer(ASMPacket packet)
+    public void setInventoryListDirty(boolean inventoryListDirty)
     {
-        PacketHandler.sendDataToServer(packet);
+        isInventoryListDirty = inventoryListDirty;
+    }
+
+    public void doScroll(int scroll)
+    {
+        if (isLarge)
+        {
+            if (openMenuId != -1)
+            {
+                menus.get(openMenuId).doScroll(scroll);
+            }
+        }
+    }
+
+    public void onGuiClosed()
+    {
+        for (Menu menu : menus)
+        {
+            menu.onGuiClosed();
+        }
+    }
+
+    public Connection[] getConnections()
+    {
+        return connections;
     }
 
     @Override
@@ -1505,52 +1564,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
-    public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
-    {
-
-        if (moveCluster)
-        {
-            List<FlowComponent> cluster = new ArrayList<FlowComponent>();
-            findCluster(cluster, component, parent);
-            for (FlowComponent flowComponent : cluster)
-            {
-                flowComponent.setParent(parent);
-                if (parent != null)
-                {
-                    for (int i = 0; i < flowComponent.getConnectionSet().getConnections().length; i++)
-                    {
-                        Connection connection = flowComponent.getConnection(i);
-                        if (connection != null && (connection.getInputId() == parent.getId() || connection.getOutputId() == parent.getId()))
-                        {
-                            flowComponent.removeConnection(i);
-                        }
-                    }
-                }
-            }
-        } else if (!component.equals(parent))
-        {
-            component.setParent(parent);
-            component.deleteConnections();
-        }
-    }
-
-    public static void findCluster(List<FlowComponent> components, FlowComponent component, FlowComponent parent)
-    {
-        if (!components.contains(component) && !component.equals(parent))
-        {
-            components.add(component);
-
-            for (int i = 0; i < component.getConnectionSet().getConnections().length; i++)
-            {
-                Connection connection = component.getConnection(i);
-                if (connection != null)
-                {
-                    findCluster(components, component.getManager().getFlowItem(connection.getOutputId() == component.getId() ? connection.getInputId() : connection.getOutputId()), parent);
-                }
-            }
-        }
-    }
-
     private void sendLocationData(boolean moveConnected)
     {
         ASMPacket packet = PacketHandler.getComponentPacket(this);
@@ -1559,20 +1572,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         packet.writeShort(y);
         packet.writeBoolean(moveConnected);
         PacketHandler.sendDataToServer(packet);
-    }
-
-    private void sendConnectionData(int connectionId, boolean add, int targetComponent, int targetConnection)
-    {
-        ASMPacket packet = getSyncPacket();
-        packet.writeByte(networkSyncList.size() + 1);
-        packet.writeByte(connectionId);
-        packet.writeBoolean(add);
-        if (add)
-        {
-            packet.writeVarIntToBuffer(targetComponent);
-            packet.writeByte(targetConnection);
-        }
-        packet.sendServerPacket();
     }
 
     public void sendConnectionNodeData(int connectionId, int nodeId, int action, int x, int y)

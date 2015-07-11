@@ -101,25 +101,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
 
-    private boolean setBlockCollisionBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
-    {
-        setBlockBoundsBasedOnState(world, x, y, z);
-
-        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
-        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
-        {
-            if (!camouflage.isUseCollision())
-            {
-                return false;
-            } else if (camouflage.isFullCollision())
-            {
-                setBlockBoundsForItemRender();
-            }
-        }
-
-        return true;
-    }
-
     @Override
     public boolean isOpaqueCube()
     {
@@ -169,6 +150,25 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
             }
         }
         return false;
+    }
+
+    private boolean setBlockCollisionBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    {
+        setBlockBoundsBasedOnState(world, x, y, z);
+
+        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+        if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
+        {
+            if (!camouflage.isUseCollision())
+            {
+                return false;
+            } else if (camouflage.isFullCollision())
+            {
+                setBlockBoundsForItemRender();
+            }
+        }
+
+        return true;
     }
 
     @SideOnly(Side.CLIENT)

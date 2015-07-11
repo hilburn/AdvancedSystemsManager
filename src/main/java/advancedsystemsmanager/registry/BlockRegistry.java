@@ -11,13 +11,13 @@ import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import thevault.registry.ConfigKey;
-import thevault.registry.Register;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import thevault.registry.ConfigKey;
+import thevault.registry.Register;
 
 public class BlockRegistry
 {

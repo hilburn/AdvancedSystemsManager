@@ -26,21 +26,9 @@ public class Paddle
         this.y = sY;
     }
 
-    public void up(int amount)
-    {
-        this.y -= amount;
-        if (this.y < this.top) this.y = this.top;
-    }
-
-    public void down(int amount)
-    {
-        this.y += amount;
-        if (this.y + this.h > this.bottom) this.y = this.bottom - this.h;
-    }
-
     public void draw(GuiManager gui)
     {
-        gui.drawRectangle(x, y, x+w, y+h, GuiColourSelector.WHITE);
+        gui.drawRectangle(x, y, x + w, y + h, GuiColourSelector.WHITE);
     }
 
     public boolean checkLeft(int x, int y, int w, int h)
@@ -55,7 +43,7 @@ public class Paddle
 
     public double angleChange(Ball ball, int maxAngle)
     {
-        return (((this.y + this.h/2) - ball.y)/(this.h/2))*Math.toRadians(maxAngle);
+        return (((this.y + this.h / 2) - ball.y) / (this.h / 2)) * Math.toRadians(maxAngle);
     }
 
     public void score()
@@ -65,7 +53,7 @@ public class Paddle
 
     public String getScore()
     {
-        return ""+score;
+        return "" + score;
     }
 
     public void update(int move)
@@ -96,5 +84,17 @@ public class Paddle
         {
             down(move);
         }
+    }
+
+    public void up(int amount)
+    {
+        this.y -= amount;
+        if (this.y < this.top) this.y = this.top;
+    }
+
+    public void down(int amount)
+    {
+        this.y += amount;
+        if (this.y + this.h > this.bottom) this.y = this.bottom - this.h;
     }
 }

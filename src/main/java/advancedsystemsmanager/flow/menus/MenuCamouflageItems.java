@@ -24,9 +24,9 @@ public class MenuCamouflageItems extends MenuItem
     }
 
     @Override
-    public String getName()
+    public int getSettingCount()
     {
-        return Names.CAMOUFLAGE_ITEM_MENU;
+        return 1;
     }
 
     @Override
@@ -34,12 +34,6 @@ public class MenuCamouflageItems extends MenuItem
     {
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_LEFT, RADIO_BUTTON_Y, Names.CLEAR_CAMOUFLAGE));
         radioButtons.add(new RadioButton(RADIO_BUTTON_X_RIGHT, RADIO_BUTTON_Y, Names.SET_CAMOUFLAGE));
-    }
-
-    @Override
-    public int getSettingCount()
-    {
-        return 1;
     }
 
     @Override
@@ -82,5 +76,11 @@ public class MenuCamouflageItems extends MenuItem
         Thread thread = new Thread(new SearchItems(search, scrollControllerSearch, showAll, true));
         thread.start();
         return scrollControllerSearch.getResult();
+    }
+
+    @Override
+    public String getName()
+    {
+        return Names.CAMOUFLAGE_ITEM_MENU;
     }
 }

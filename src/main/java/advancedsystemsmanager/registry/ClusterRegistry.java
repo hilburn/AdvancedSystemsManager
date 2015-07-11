@@ -17,6 +17,16 @@ public class ClusterRegistry
         registry.put(b, element);
     }
 
+    public static ItemStack getItemStack(int id)
+    {
+        return getItemStack((byte)(id & 0xFF), id >> 8);
+    }
+
+    public static ItemStack getItemStack(byte id, int meta)
+    {
+        return registry.containsKey(id) ? registry.get(id).getItemStack(meta) : null;
+    }
+
     public static IClusterElement get(IClusterTile clusterTile)
     {
         for (IClusterElement element : registry.valueCollection())
@@ -32,16 +42,6 @@ public class ClusterRegistry
             if (elementStack.isItemEqual(stack)) return element;
         }
         return null;
-    }
-
-    public static ItemStack getItemStack(int id)
-    {
-        return getItemStack((byte)(id & 0xFF), id >> 8);
-    }
-
-    public static ItemStack getItemStack(byte id, int meta)
-    {
-        return registry.containsKey(id) ? registry.get(id).getItemStack(meta) : null;
     }
 
     public static IClusterElement get(byte id)

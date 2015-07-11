@@ -13,13 +13,13 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
             206, 215,
             306, 215,
             356, 128};
-    private static final int[] colours = new int[]{128,128,128,255, 0, 0, 255, 255, 0 ,0, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 255, 255, 0, 0};
-    private int[] hexagonColour = new int[3];
-    private static final int[] RED = new int[]{255,0,0};
-    private static final int[] GREEN = new int[]{0,255,0};
-    private static final int[] BLUE = new int[]{0,0,255};
+    private static final int[] colours = new int[]{128, 128, 128, 255, 0, 0, 255, 255, 0, 0, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 255, 255, 0, 0};
+    private static final int[] RED = new int[]{255, 0, 0};
+    private static final int[] GREEN = new int[]{0, 255, 0};
+    private static final int[] BLUE = new int[]{0, 0, 255};
     private static final int[] GREY = new int[]{128, 128, 128};
     private static float R = 100f;
+    private int[] hexagonColour = new int[3];
 
     @Override
     public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
@@ -55,8 +55,8 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
 
     private boolean isInHex(int x, int y)
     {
-        x/=R;
-        y/=R;
+        x /= R;
+        y /= R;
         float l2 = x * x + y * y;
         if (l2 > 1.0f) return false;
         if (l2 < 0.75f) return true; // (sqrt(3)/2)^2 = 3/4
@@ -73,7 +73,7 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
     private void hexClick(int mouseX, int mouseY)
     {
 
-        double theta = -Math.atan2(mouseY, mouseX );
+        double theta = -Math.atan2(mouseY, mouseX);
         double hex = Math.PI * 2 / 3;
         int[] colour1;
         int[] colour2;
@@ -81,7 +81,7 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
         double alpha = theta;
         while (alpha > hex) alpha -= hex;
         alpha *= 0.75;
-        switch((int) (theta /hex))
+        switch ((int)(theta / hex))
         {
             case 0:
                 colour1 = RED;
@@ -99,8 +99,8 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
         double x = Math.sqrt(2 * (mouseY * mouseY + mouseX * mouseX));
         double cos = x * Math.cos(alpha) / R / Math.sqrt(2);
         double sin = x * Math.sin(alpha) / R / Math.sqrt(2);
-        cos = 1/(cos-1);
-        sin = 1/(sin-1) + 1;
+        cos = 1 / (cos - 1);
+        sin = 1 / (sin - 1) + 1;
         if (cos < 1 && sin < 1)
         {
             int r = (int)(colour1[0] * cos + colour2[0] * sin) - GREY[0];

@@ -16,12 +16,12 @@ public class Ball
         this.sY = y;
         this.v = v;
         this.top = top;
-        this.bottom = bottom-h;
+        this.bottom = bottom - h;
     }
 
     public void draw(GuiManager gui)
     {
-        gui.drawRectangle(x, y, x+w, y+h, GuiColourSelector.WHITE);
+        gui.drawRectangle(x, y, x + w, y + h, GuiColourSelector.WHITE);
     }
 
     public void reset()

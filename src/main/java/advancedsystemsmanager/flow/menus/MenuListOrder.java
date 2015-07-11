@@ -102,6 +102,16 @@ public class MenuListOrder extends Menu
         textBox.setNumber(1);
     }
 
+    public boolean canReverse()
+    {
+        return getOrder() != LoopOrder.RANDOM;
+    }
+
+    public LoopOrder getOrder()
+    {
+        return LoopOrder.values()[radioButtons.getSelectedOption()];
+    }
+
     public void writeData(ASMPacket dw, UpdateType type)
     {
         dw.writeByte(type.ordinal());
@@ -120,16 +130,6 @@ public class MenuListOrder extends Menu
                 dw.writeBoolean(reversed);
         }
 
-    }
-
-    public boolean canReverse()
-    {
-        return getOrder() != LoopOrder.RANDOM;
-    }
-
-    public LoopOrder getOrder()
-    {
-        return LoopOrder.values()[radioButtons.getSelectedOption()];
     }
 
     @Override

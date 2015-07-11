@@ -135,6 +135,10 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     }
 
     @Override
+    public boolean writeData(ASMPacket packet)
+    {
+        return false;
+    }    @Override
     public Container getContainer(EntityPlayer player)
     {
         return new ContainerVoid(this, player.inventory);
@@ -152,9 +156,5 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
         return false;
     }
 
-    @Override
-    public boolean writeData(ASMPacket packet)
-    {
-        return false;
-    }
+
 }

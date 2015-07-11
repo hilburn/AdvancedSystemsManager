@@ -95,6 +95,13 @@ public class MenuTargetInventory extends MenuTarget
         };
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    {
+        textBoxes.draw(gui, mX, mY);
+    }
+
     @Override
     public void copyAdvancedSetting(Menu menu, int i)
     {
@@ -156,14 +163,6 @@ public class MenuTargetInventory extends MenuTarget
     {
         textBoxes.onClick(mX, mY, button);
     }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
-    {
-        textBoxes.draw(gui, mX, mY);
-    }
-
 
     @SideOnly(Side.CLIENT)
     @Override

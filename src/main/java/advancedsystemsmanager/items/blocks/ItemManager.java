@@ -36,6 +36,12 @@ public class ItemManager extends ItemBlock
     }
 
     @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return super.getUnlocalizedName(stack) + (stack.getItemDamage() == 0 ? "" : "_unlimited");
+    }
+
+    @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata)) return false;
@@ -48,11 +54,5 @@ public class ItemManager extends ItemBlock
             }
         }
         return true;
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-        return super.getUnlocalizedName(stack) + (stack.getItemDamage() == 0 ? "" : "_unlimited");
     }
 }

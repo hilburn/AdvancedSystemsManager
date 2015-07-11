@@ -21,7 +21,7 @@ import java.util.Hashtable;
 
 /**
  * Represents a Font object for OpenGL.
- *
+ * <p/>
  * Shamelessly adapted from Fontbox by AfterLifeLochie: https://github.com/AfterLifeLochie/fontbox
  */
 public class GLFont
@@ -42,71 +42,6 @@ public class GLFont
         this.textureId = textureId;
         this.scale = scale;
         this.metric = metric;
-    }
-
-    /**
-     * Get the name of the font.
-     *
-     * @return The name of the font
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /**
-     * Get the OpenGL texture ID for this font.
-     *
-     * @return The 2D texture ID for the font
-     */
-    public int getTextureId()
-    {
-        return textureId;
-    }
-
-    /**
-     * Get the OpenGL font scale for this font.
-     *
-     * @return The 2D font scaling ratio
-     */
-    public float getScale()
-    {
-        return scale;
-    }
-
-    public float getTextureSize()
-    {
-        return RASTER_DIM;
-    }
-
-    /**
-     * Get the font metric map associated with this font.
-     *
-     * @return The metric map
-     */
-    public GLFontMetrics getMetric()
-    {
-        return metric;
-    }
-
-    /**
-     * Delete the font. This releases all the resources associated with the font
-     * immediately.
-     */
-    public void delete()
-    {
-//		Fontbox.deleteFont(this);
-        GL11.glDeleteTextures(textureId);
-        textureId = -1;
-        name = null;
-        metric = null;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "GLFont { hash: " + System.identityHashCode(this) + ", texture: " + textureId + ", metric: "
-                + System.identityHashCode(metric) + " }";
     }
 
     /**
@@ -251,5 +186,70 @@ public class GLFont
         {
         }
         return null;
+    }
+
+    /**
+     * Get the name of the font.
+     *
+     * @return The name of the font
+     */
+    public String getName()
+    {
+        return name;
+    }
+
+    /**
+     * Get the OpenGL texture ID for this font.
+     *
+     * @return The 2D texture ID for the font
+     */
+    public int getTextureId()
+    {
+        return textureId;
+    }
+
+    /**
+     * Get the OpenGL font scale for this font.
+     *
+     * @return The 2D font scaling ratio
+     */
+    public float getScale()
+    {
+        return scale;
+    }
+
+    public float getTextureSize()
+    {
+        return RASTER_DIM;
+    }
+
+    /**
+     * Get the font metric map associated with this font.
+     *
+     * @return The metric map
+     */
+    public GLFontMetrics getMetric()
+    {
+        return metric;
+    }
+
+    /**
+     * Delete the font. This releases all the resources associated with the font
+     * immediately.
+     */
+    public void delete()
+    {
+//		Fontbox.deleteFont(this);
+        GL11.glDeleteTextures(textureId);
+        textureId = -1;
+        name = null;
+        metric = null;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "GLFont { hash: " + System.identityHashCode(this) + ", texture: " + textureId + ", metric: "
+                + System.identityHashCode(metric) + " }";
     }
 }

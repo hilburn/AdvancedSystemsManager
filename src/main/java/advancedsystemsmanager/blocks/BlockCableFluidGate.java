@@ -27,13 +27,6 @@ public class BlockCableFluidGate extends BlockClusterElementBase<TileEntityFluid
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side, int meta)
-    {
-        return side == 3 ? icons[0] : blockIcon;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
         TileEntityFluidGate gate = getTileEntity(world, x, y, z);
@@ -53,10 +46,9 @@ public class BlockCableFluidGate extends BlockClusterElementBase<TileEntityFluid
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerBlockIcons(IIconRegister register)
+    public IIcon getIcon(int side, int meta)
     {
-        super.registerBlockIcons(register);
-        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
+        return side == 3 ? icons[0] : blockIcon;
     }
 
     @Override
@@ -81,6 +73,13 @@ public class BlockCableFluidGate extends BlockClusterElementBase<TileEntityFluid
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockIcons(IIconRegister register)
+    {
+        super.registerBlockIcons(register);
+        blockIcon = register.registerIcon(Reference.RESOURCE_LOCATION + ":cable_idle");
+    }
 
     @Override
     public TileEntity createNewTileEntity(World world, int meta)

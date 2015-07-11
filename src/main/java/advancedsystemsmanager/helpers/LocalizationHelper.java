@@ -7,10 +7,9 @@ import net.minecraft.util.StatCollector;
 
 public class LocalizationHelper
 {
-    public static String translateFormatted(String key, Object... additional)
+    public static void addChatMessage(EntityPlayer player, String key)
     {
-        if (StatCollector.canTranslate(key)) return StatCollector.translateToLocalFormatted(key, additional);
-        return String.format(StatCollector.translateToFallback(key), additional);
+        player.addChatComponentMessage(new ChatComponentText(translate(key)));
     }
 
     public static String translate(String key)
@@ -19,14 +18,15 @@ public class LocalizationHelper
         return StatCollector.translateToFallback(key);
     }
 
-    public static void addChatMessage(EntityPlayer player, String key)
-    {
-        player.addChatComponentMessage(new ChatComponentText(translate(key)));
-    }
-
     public static void addChatMessageFormatted(EntityPlayer player, String key, Object... additional)
     {
         player.addChatComponentMessage(new ChatComponentText(translateFormatted(key, additional)));
+    }
+
+    public static String translateFormatted(String key, Object... additional)
+    {
+        if (StatCollector.canTranslate(key)) return StatCollector.translateToLocalFormatted(key, additional);
+        return String.format(StatCollector.translateToFallback(key), additional);
     }
 
     public static String getDirectionString(int id)

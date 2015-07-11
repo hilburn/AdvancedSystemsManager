@@ -40,6 +40,48 @@ public class TextBoxNumber extends UpdateElement
         return y;
     }
 
+    public boolean isVisible()
+    {
+        return true;
+    }
+
+    public boolean isWide()
+    {
+        return wide;
+    }
+
+    public int getWidth()
+    {
+        return wide ? TEXT_BOX_SIZE_W_WIDE : TEXT_BOX_SIZE_W;
+    }
+
+    public final boolean allowNegative()
+    {
+        return getMinNumber() < 0;
+    }
+
+    public int getMinNumber()
+    {
+        return 0;
+    }
+
+    public float getTextSize()
+    {
+        return 1;
+    }
+
+    public int getTextY()
+    {
+        return 3;
+    }
+
+    @Override
+    public boolean writeData(ASMPacket packet)
+    {
+        packet.writeVarIntToBuffer(getNumber());
+        return true;
+    }
+
     public int getNumber()
     {
         return number;
@@ -61,57 +103,15 @@ public class TextBoxNumber extends UpdateElement
         this.number = number;
     }
 
-    public int getMaxNumber()
-    {
-        return -1;
-    }
-
-    public int getMinNumber()
-    {
-        return 0;
-    }
-
-    public boolean isVisible()
-    {
-        return true;
-    }
-
-    public boolean isWide()
-    {
-        return wide;
-    }
-
-    public int getWidth()
-    {
-        return wide ? TEXT_BOX_SIZE_W_WIDE : TEXT_BOX_SIZE_W;
-    }
-
-    public final boolean allowNegative()
-    {
-        return getMinNumber() < 0;
-    }
-
-    public float getTextSize()
-    {
-        return 1;
-    }
-
-    public int getTextY()
-    {
-        return 3;
-    }
-
-    @Override
-    public boolean writeData(ASMPacket packet)
-    {
-        packet.writeVarIntToBuffer(getNumber());
-        return true;
-    }
-
     @Override
     public boolean readData(ASMPacket packet)
     {
         setNumber(packet.readVarIntFromBuffer());
         return false;
+    }
+
+    public int getMaxNumber()
+    {
+        return -1;
     }
 }

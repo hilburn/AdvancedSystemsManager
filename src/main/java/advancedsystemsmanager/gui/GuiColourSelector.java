@@ -12,12 +12,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
 {
-    private static final ResourceLocation TEXTURE = GuiBase.registerTexture("FlowComponents");
-
+    public static final int[] WHITE = new int[]{255, 255, 255};
+    public static final int[] BLACK = new int[]{0, 0, 0};
     protected static final int GRAD_WIDTH = 128;
     protected static final int GRAD_HEIGHT = 128;
     protected static final int HUE_X = 135;
-
     protected static final int HUE_WIDTH = 10;
     protected static final int HEIGHT = 128;
     protected static final int SCALING = 100;
@@ -32,19 +31,17 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     protected static final int OUTPUT_X = HUE_X + 20;
     protected static final int OUTPUT_OLD_X = HUE_X + 35;
     protected static final int OUTPUT_X_END = HUE_X + 50;
-
-    public static final int[] WHITE = new int[]{255, 255, 255};
-    public static final int[] BLACK = new int[]{0, 0, 0};
+    private static final ResourceLocation TEXTURE = GuiBase.registerTexture("FlowComponents");
     private static final int[][] HUE_SCALE = new int[][]{{255, 0, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {255, 0, 255}, {255, 0, 0}};
 
     protected int x;
     protected int y;
+    protected int[] colour = new int[3];
+    protected int[] hueValue, oldColour;
     private int saturation;
     private int value;
     private int hue;
     private boolean isDragging, moveHue, clicked, scrollHue, hasUpdated;
-    protected int[] colour = new int[3];
-    protected int[] hueValue, oldColour;
     private TextBoxNumberList textBoxes;
 
     public GuiColourSelector(int x, int y)
@@ -141,19 +138,6 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
         value = (int)(GRAD_WIDTH * SCALING * (1f - hsv[2]));
     }
 
-    private void setHue(int val)
-    {
-        hue = Math.max(Math.min(val, HEIGHT), 0) * SCALING;
-        hueValue = ColourUtils.HSBtoRGB((float)hue / (HEIGHT * SCALING), 1F, 1F);
-    }
-
-    public void setColour(int colour)
-    {
-        this.colour[0] = (byte)(colour >> 16);
-        this.colour[1] = (byte)(colour >> 8);
-        this.colour[2] = (byte)(colour);
-    }
-
     @Override
     public void drag(int mouseX, int mouseY)
     {
@@ -183,6 +167,12 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
             value = Math.max(Math.min(y - this.y, HEIGHT), 0) * SCALING;
         }
         setColour();
+    }
+
+    private void setHue(int val)
+    {
+        hue = Math.max(Math.min(val, HEIGHT), 0) * SCALING;
+        hueValue = ColourUtils.HSBtoRGB((float)hue / (HEIGHT * SCALING), 1F, 1F);
     }
 
     private void setColour()
@@ -221,15 +211,6 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     public boolean displaySplitColour()
     {
         return isDragging && !clicked;
-    }
-
-    public void onScroll(int scroll)
-    {
-        if (scrollHue)
-        {
-            setHue(hue - scroll / 20);
-            setColour();
-        }
     }
 
     @Override
@@ -274,8 +255,24 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
         return true;
     }
 
+    public void onScroll(int scroll)
+    {
+        if (scrollHue)
+        {
+            setHue(hue - scroll / 20);
+            setColour();
+        }
+    }
+
     public int[] getColour()
     {
         return colour;
+    }
+
+    public void setColour(int colour)
+    {
+        this.colour[0] = (byte)(colour >> 16);
+        this.colour[1] = (byte)(colour >> 8);
+        this.colour[2] = (byte)(colour);
     }
 }

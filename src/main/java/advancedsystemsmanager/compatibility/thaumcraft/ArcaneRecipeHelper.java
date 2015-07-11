@@ -24,14 +24,6 @@ public class ArcaneRecipeHelper
         this.gridSize = gridSize;
     }
 
-    private TileMagicWorkbench getProxyWorkbench()
-    {
-        TileMagicWorkbench workbench = new TileMagicWorkbench();
-        for (int slot = 0; slot < gridSize; slot++)
-            workbench.setInventorySlotContentsSoftly(slot, inv.getStackInSlot(firstSlot+slot));
-        return workbench;
-    }
-
     public IArcaneRecipe findArcaneRecipe(EntityPlayer player)
     {
         TileMagicWorkbench workbench = getProxyWorkbench();
@@ -40,8 +32,8 @@ public class ArcaneRecipeHelper
         {
             if (o instanceof IArcaneRecipe)
             {
-                IArcaneRecipe thisArcaneRecipe = (IArcaneRecipe) o;
-                if (((IArcaneRecipe) o).matches(workbench, player.worldObj, player))
+                IArcaneRecipe thisArcaneRecipe = (IArcaneRecipe)o;
+                if (((IArcaneRecipe)o).matches(workbench, player.worldObj, player))
                 {
                     arcaneRecipe = thisArcaneRecipe;
                     break;
@@ -49,6 +41,14 @@ public class ArcaneRecipeHelper
             }
         }
         return arcaneRecipe;
+    }
+
+    private TileMagicWorkbench getProxyWorkbench()
+    {
+        TileMagicWorkbench workbench = new TileMagicWorkbench();
+        for (int slot = 0; slot < gridSize; slot++)
+            workbench.setInventorySlotContentsSoftly(slot, inv.getStackInSlot(firstSlot + slot));
+        return workbench;
     }
 
     public AspectList getRecipeCost(IArcaneRecipe recipe)

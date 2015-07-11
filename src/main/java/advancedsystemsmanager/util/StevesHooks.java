@@ -35,6 +35,12 @@ public class StevesHooks
         return string;
     }
 
+    public static String getLabel(TileEntity tileEntity)
+    {
+        BlockCoord coord = new BlockCoord(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+        return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
+    }
+
     public static String getContentString(TileEntity tileEntity)
     {
         String result = "";
@@ -64,12 +70,6 @@ public class StevesHooks
             else result += "\n" + StatCollector.translateToLocalFormatted(Names.BARREL_CONTAINS, tankInfo);
         }
         return result;
-    }
-
-    public static String getLabel(TileEntity tileEntity)
-    {
-        BlockCoord coord = new BlockCoord(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-        return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
     public static void registerTicker(FlowComponent component, MenuTriggered menu)

@@ -14,6 +14,7 @@ import advancedsystemsmanager.reference.Metadata;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ItemRegistry;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
@@ -22,15 +23,14 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.classloading.FMLForgePlugin;
-import thevault.registry.Registerer;
-import advancedsystemsmanager.registry.ThemeHandler;
-import thevault.utils.LogHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.classloading.FMLForgePlugin;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import thevault.registry.Registerer;
+import thevault.utils.LogHelper;
 
 import java.io.File;
 

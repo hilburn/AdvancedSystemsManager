@@ -5,11 +5,11 @@ import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.items.ItemRemoteAccessor;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.common.registry.GameRegistry;
-import thevault.registry.Register;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import thevault.registry.Register;
 
 import java.util.ArrayList;
 import java.util.Arrays;
