@@ -5,7 +5,6 @@ import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.ConnectionOption;
-import advancedsystemsmanager.util.StevesHooks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -101,7 +100,7 @@ public abstract class MenuTriggered extends Menu
         if (isVisible())
         {
             counter = 0;
-            StevesHooks.registerTicker(getParent(), this);
+            getParent().getManager().addQuickTrigger(getParent());
         }
     }
 

@@ -6,17 +6,24 @@ import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.naming.BlockCoord;
+import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -140,7 +147,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     @Override
     public String getDescription(GuiManager gui)
     {
-        String str = StevesHooks.fixToolTip(gui.getBlockName(tileEntity), tileEntity);
+        String str = fixToolTip(gui.getBlockName(tileEntity), tileEntity);
 
         str += getVariableTag(gui);
 
@@ -150,6 +157,23 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         str += "\n" + StatCollector.translateToLocalFormatted(depth > 1 ? Names.CABLES_AWAY : Names.CABLE_AWAY, depth);
 
         return str;
+    }
+
+    public static String fixToolTip(String string, TileEntity tileEntity)
+    {
+        if (tileEntity != null && tileEntity.hasWorldObj())
+        {
+            String label = getLabel(tileEntity);
+            if (label != null) string = "§3" + label;
+            string += getContentString(tileEntity);
+        }
+        return string;
+    }
+
+    public static String getLabel(TileEntity tileEntity)
+    {
+        BlockCoord coord = new BlockCoord(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+        return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
     }
 
     @Override
@@ -203,9 +227,40 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public boolean containerAdvancedSearch(String search)
     {
-        String toSearch = StevesHooks.getLabel(tileEntity);
+        String toSearch = getLabel(tileEntity);
         Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
-        return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(StevesHooks.getContentString(tileEntity)).find();
+        return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(getContentString(tileEntity)).find();
+    }
+
+    public static String getContentString(TileEntity tileEntity)
+    {
+        String result = "";
+        if (tileEntity instanceof IDeepStorageUnit)
+        {
+            ItemStack stack = ((IDeepStorageUnit)tileEntity).getStoredItemType();
+            String contains = "\n";
+            if (stack == null || stack.isItemEqual(Null.NULL_STACK))
+                contains += StatCollector.translateToLocal(Names.BARREL_EMTPTY);
+            else
+                contains += StatCollector.translateToLocalFormatted(Names.BARREL_CONTAINS, stack.getDisplayName());
+            result += contains;
+        } else if (tileEntity instanceof IFluidHandler)
+        {
+            String tankInfo = "";
+            int i = 1;
+            FluidTankInfo[] fluidTankInfo = ((IFluidHandler)tileEntity).getTankInfo(ForgeDirection.UNKNOWN);
+            if (fluidTankInfo != null)
+            {
+                for (FluidTankInfo info : fluidTankInfo)
+                {
+                    if (info.fluid == null || info.fluid.getFluid() == null) continue;
+                    tankInfo += info.fluid.getLocalizedName() + (i++ < fluidTankInfo.length ? ", " : "");
+                }
+            }
+            if (tankInfo.isEmpty()) result += "\n" + StatCollector.translateToLocal(Names.BARREL_EMTPTY);
+            else result += "\n" + StatCollector.translateToLocalFormatted(Names.BARREL_CONTAINS, tankInfo);
+        }
+        return result;
     }
 
     public void resetTypes()

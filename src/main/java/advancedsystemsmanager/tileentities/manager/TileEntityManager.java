@@ -13,6 +13,7 @@ import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
 import advancedsystemsmanager.flow.menus.MenuInterval;
+import advancedsystemsmanager.flow.menus.MenuTriggered;
 import advancedsystemsmanager.flow.menus.MenuVariable;
 import advancedsystemsmanager.gui.ContainerManager;
 import advancedsystemsmanager.gui.GuiManager;
@@ -25,7 +26,6 @@ import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.util.StevesHooks;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.HashMultimap;
@@ -65,7 +65,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private static final String NBT_VARIABLES = "Variables";
     private static final String NBT_SIDES = "Sides";
     public static boolean energyCostActive;
-    public List<FlowComponent> triggers;
+    private List<FlowComponent> triggers;
+    private List<FlowComponent> quickTriggers;
     public ManagerButtonList buttons;
     public boolean serverPacket;
     public boolean variableUpdate;
@@ -92,6 +93,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         buttons = ManagerButtonRegistry.getButtons(this);
         components = new TIntObjectHashMap<FlowComponent>();
         triggers = new ArrayList<FlowComponent>();
+        quickTriggers = new ArrayList<FlowComponent>();
         network = new TLongObjectHashMap<SystemCoord>();
         variables = Variable.getDefaultVariables();
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
@@ -557,7 +559,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         serverPacket = false;
         if (!worldObj.isRemote)
         {
-            StevesHooks.tickTriggers(this);
+            quickTickTriggers();
             if (timer++ % 20 == triggerOffset)
             {
                 for (FlowComponent item : triggers)
@@ -586,6 +588,27 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 }
             }
         }
+    }
+
+    public void quickTickTriggers()
+    {
+        for (Iterator<FlowComponent> itr = quickTriggers.iterator(); itr.hasNext(); )
+        {
+            MenuTriggered toTrigger = (MenuTriggered)itr.next().getMenus().get(6);
+            if (toTrigger.isVisible())
+            {
+                toTrigger.tick();
+                if (toTrigger.remove()) itr.remove();
+            } else
+            {
+                itr.remove();
+            }
+        }
+    }
+
+    public void addQuickTrigger(FlowComponent component)
+    {
+        quickTriggers.add(component);
     }
 
     public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
@@ -678,7 +701,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
 
     public boolean hasInventory(long key)
     {
-        return network.containsKey(key);
+        return network.containsKey(key) && network.get(key).isValid();
     }
 
     public SystemCoord getInventory(long selected)

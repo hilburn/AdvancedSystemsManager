@@ -9,7 +9,6 @@ import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
-import advancedsystemsmanager.util.StevesHooks;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.EnumSet;
@@ -137,7 +136,7 @@ public class MenuDelayed extends MenuTriggered
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
-        if (this.isVisible() && this.counter >= 0) StevesHooks.registerTicker(getParent(), this);
+        if (this.isVisible() && this.counter >= 0) getParent().getManager().addQuickTrigger(getParent());
         buttonList.setSelectedOption(nbtTagCompound.getBoolean(NBT_RESTART) ? 0 : 1);
     }
 
