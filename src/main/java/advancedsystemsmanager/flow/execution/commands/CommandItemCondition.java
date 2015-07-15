@@ -29,41 +29,6 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
     }
 
     @Override
-    public List<Connection> getActiveChildren(FlowComponent command, int connectionId)
-    {
-        MenuItemCondition menuItem = (MenuItemCondition)command.getMenus().get(2);
-        List<Setting<ItemStack>> settings = getValidSettings(menuItem.getSettings());
-        Set<Setting<ItemStack>> found = new HashSet<Setting<ItemStack>>();
-        searchForStuff(getContainers(command.getManager(), (MenuInventoryCondition)command.getMenus().get(0)), settings, (MenuTargetInventory)command.getMenus().get(1), found);
-        boolean findAll = menuItem.requiresAll();
-        boolean success = findAll;
-        for (Setting<ItemStack> setting : found)
-        {
-            if (findAll && setting.getAmountLeft() > 0)
-            {
-                success = false;
-                break;
-            } else if (!findAll && setting.getAmountLeft() < 1)
-            {
-                success = true;
-                break;
-            }
-        }
-        List<Connection> active = new ArrayList<Connection>();
-        for (int i = 0; i < command.getConnectionSet().getConnections().length; ++i)
-        {
-            Connection connection = command.getConnection(i);
-            ConnectionOption option = command.getConnectionSet().getConnections()[i];
-            if (connection != null && !option.isInput() && (option == ConnectionOption.CONDITION_TRUE) == success)
-            {
-                active.add(connection);
-                break;
-            }
-        }
-        return active;
-    }
-
-    @Override
     public void searchForStuff(SystemCoord block, List<Setting<ItemStack>> settings, MenuTargetInventory target, Set<Setting<ItemStack>> found)
     {
         TileEntity entity = block.getTileEntity();

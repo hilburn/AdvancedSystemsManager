@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.menus;
 
-
 import advancedsystemsmanager.api.IConditionStuffMenu;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;

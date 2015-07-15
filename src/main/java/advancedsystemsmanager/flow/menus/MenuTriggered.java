@@ -30,18 +30,9 @@ public abstract class MenuTriggered extends Menu
         this.textBoxes.draw(gui, mX, mY);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-    }
-
     public void onClick(int mX, int mY, int button)
     {
         this.textBoxes.onClick(mX, mY, button);
-    }
-
-    public void onDrag(int mX, int mY, boolean isMenuOpen)
-    {
     }
 
     @SideOnly(Side.CLIENT)
@@ -59,10 +50,6 @@ public abstract class MenuTriggered extends Menu
     {
         nbtTagCompound.setInteger(NBT_DELAY, this.getDelay());
         nbtTagCompound.setInteger(NBT_COUNTDOWN, this.counter);
-    }
-
-    public void onRelease(int mX, int mY, boolean isMenuOpen)
-    {
     }
 
     public void writeData(ASMPacket dw)
@@ -89,7 +76,7 @@ public abstract class MenuTriggered extends Menu
         this.setDelay(dr.readVarIntFromBuffer());
     }
 
-    public void readFromNBT(NBTTagCompound nbtTagCompound, int version, boolean pickup)
+    public void readFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
     {
         this.setDelay(nbtTagCompound.getInteger(NBT_DELAY));
         counter = nbtTagCompound.getInteger(NBT_COUNTDOWN);

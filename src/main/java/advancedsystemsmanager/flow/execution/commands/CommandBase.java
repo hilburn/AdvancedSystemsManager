@@ -73,7 +73,7 @@ public abstract class CommandBase<Type> implements ICommand
             if (selected >= 0)
             {
                 SystemCoord coord = manager.getInventory(selected);
-                if (coord != null)
+                if (coord != null && coord.isValid())
                 {
                     result.add(coord);
                 } else

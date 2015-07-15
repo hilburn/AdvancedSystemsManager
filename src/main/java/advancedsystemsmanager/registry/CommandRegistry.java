@@ -20,7 +20,7 @@ public class CommandRegistry
     public static ICommand FLOW_CONTROL;
     public static CommandBase<Fluid> LIQUID_INPUT;
     public static ICommand LIQUID_OUTPUT;
-    public static ICommand LIQUID_CONDITION;
+    public static CommandFluidCondition LIQUID_CONDITION;
     public static ICommand REDSTONE_EMITTER;
     public static ICommand REDSTONE_CONDITION;
     public static ICommand VARIABLE;
@@ -82,7 +82,7 @@ public class CommandRegistry
         registerCommand(new CommandSplit());
         registerCommand(LIQUID_INPUT = new CommandFluidInput());
         registerCommand(new CommandFluidOutput());
-
+        registerCommand(LIQUID_CONDITION = new CommandFluidCondition());
         registerCommand(new CommandRedstoneOutput());
         registerCommand(new CommandRedstoneCondition());
         registerCommand(VARIABLE = new CommandVariable());
