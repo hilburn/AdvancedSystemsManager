@@ -73,7 +73,8 @@ public class ConfigHandler implements IConfigLock
         TileEntityManager.energyCostActive = config.get(CATEGORY_POWER, "enable_energy_costs", false).getBoolean();
         for (ICommand command : CommandRegistry.getCommands())
         {
-            command.setEnergyCost(config.get(CATEGORY_POWER, LocalizationHelper.translate(command.getName()), command.getEnergyCost()).getInt());
+            if (command != null)
+                command.setEnergyCost(config.get(CATEGORY_POWER, LocalizationHelper.translate(command.getName()), command.getEnergyCost()).getInt());
         }
         save();
     }

@@ -37,7 +37,8 @@ public class ThemeAdapters
             out.beginObject();
             for (ICommand command : CommandRegistry.getCommands())
             {
-                out.name(LocalizationHelper.translate(command.getName())).value(HexValue.getHexString(command.getColour()));
+                if (command != null)
+                    out.name(LocalizationHelper.translate(command.getName())).value(HexValue.getHexString(command.getColour()));
             }
             out.endObject();
         }
@@ -56,10 +57,13 @@ public class ThemeAdapters
             in.endObject();
             for (ICommand command : CommandRegistry.getCommands())
             {
-                String name = LocalizationHelper.translate(command.getName());
-                if (input.containsKey(name))
+                if (command != null)
                 {
-                    command.setColour(input.get(name).getColour());
+                    String name = LocalizationHelper.translate(command.getName());
+                    if (input.containsKey(name))
+                    {
+                        command.setColour(input.get(name).getColour());
+                    }
                 }
             }
             return new ThemeCommand.CommandSet();

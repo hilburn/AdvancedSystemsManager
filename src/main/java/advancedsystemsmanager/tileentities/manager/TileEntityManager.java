@@ -271,7 +271,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 {
                     NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
                     FlowComponent component = FlowComponent.readFromNBT(this, tagCompound, false);
-                    addNewComponent(component);
+                    if (component != null)
+                        addNewComponent(component);
                 }
                 variables.clear();
                 int variableCount = packet.readVarIntFromBuffer();
@@ -642,7 +643,8 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             NBTTagCompound component = components.getCompoundTagAt(i);
             FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, pickup);
-            addNewComponent(flowComponent);
+            if (flowComponent != null)
+                addNewComponent(flowComponent);
         }
 
         for (FlowComponent item : getFlowItems())

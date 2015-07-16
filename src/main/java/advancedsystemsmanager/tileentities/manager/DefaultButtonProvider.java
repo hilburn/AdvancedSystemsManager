@@ -24,9 +24,12 @@ public class DefaultButtonProvider implements IManagerButtonProvider
     public List<IManagerButton> getButtons(TileEntityManager manager)
     {
         List<IManagerButton> buttons = new ArrayList<IManagerButton>();
-        for (ICommand type : CommandRegistry.getCommands())
+        for (ICommand command : CommandRegistry.getCommands())
         {
-            buttons.add(new ManagerButtonCreate(manager, type));
+            if (command != null)
+            {
+                buttons.add(new ManagerButtonCreate(manager, command));
+            }
         }
         buttons.add(new ManagerButton(manager, Names.DELETE_COMMAND, DELETE_POSITION_X, DELETE_POSITION_Y)
         {

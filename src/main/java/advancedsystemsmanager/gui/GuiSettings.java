@@ -48,7 +48,7 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
         this.manager = manager;
 
         buttons = new ArrayList<Button>();
-        buttons.add(new Button(493, 5, Names.GO_BACK, 231, 12 * CommandRegistry.getCommands().size() + 1)
+        buttons.add(new Button(493, 5, Names.GO_BACK, 231, 12 * CommandRegistry.getCommands().length)
         {
             @Override
             protected void onClick()
