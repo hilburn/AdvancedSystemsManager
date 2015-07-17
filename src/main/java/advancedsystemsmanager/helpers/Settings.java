@@ -25,6 +25,7 @@ public final class Settings
     public static final String MIDDLE_CLICK = "middleClick";
     static
     {
+        settingsRegistry = new LinkedHashMap<String, Boolean>(9);
         registerSetting(AUTO_CLOSE_GROUP, false);
         registerSetting(LARGE_OPEN, true);
         registerSetting(LARGE_OPEN_MENU, true);
@@ -36,7 +37,7 @@ public final class Settings
         registerSetting(ENLARGE_INTERFACES, false);
         registerSetting(MIDDLE_CLICK, true);
     }
-    public static Map<String, Boolean> settingsRegistry = new LinkedHashMap<String, Boolean>(9);
+    public static Map<String, Boolean> settingsRegistry;
 
     private Settings()
     {
