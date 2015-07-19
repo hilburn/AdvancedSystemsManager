@@ -471,7 +471,7 @@ asm.command.clear.syntax=/asm clear
 #				OTHER
 # ======================================
 
-itemGroup.advancedsystemsmanager=Advanced System Manager
+itemGroup.AdvancedSystemsManager=Advanced System Manager
 
 asm.gui.TypeRf=RF Storage
 asm.gui.TypeRfInput=RF Provider

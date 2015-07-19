@@ -1,0 +1,16 @@
+[
+    {
+      "modid": "AdvancedSystemsManager",
+      "name": "Advanced Systems Manager",
+      "description": "",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "https://github.com/hilburn/AdvancedSystemsManager",
+      "updateUrl": "",
+      "authors": ["hilburn"],
+      "credits": "Authored by hilburn",
+      "logoFile": "",
+      "screenshots": [],
+      "dependencies": []
+    }
+]
