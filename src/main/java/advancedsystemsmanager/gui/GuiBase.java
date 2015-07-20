@@ -215,7 +215,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
         tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
         if (oldColour != null) tessellator.setColorOpaque(oldColour[0], oldColour[1], oldColour[2]);
-        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y + h, (double) this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
 
         tessellator.draw();
     }
@@ -224,23 +224,28 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         float split = (float)u / 3;
 
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL_QUADS);
         for (int i = 0; i < colour.length; i++, srcY += v)
         {
-            Tessellator tessellator = Tessellator.instance;
-            tessellator.startDrawing(GL_QUAD_STRIP);
-            tessellator.setColorOpaque(colour[i][0], colour[i][1], colour[i][2]);
-            tessellator.addVertexWithUV(x, y, (double)this.zLevel, srcX * SCALING, srcY * SCALING);
-            tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
-            tessellator.addVertexWithUV(x + split, y, (double)this.zLevel, (srcX + split) * SCALING, srcY * SCALING);
-            tessellator.addVertexWithUV(x + split, y + h, (double)this.zLevel, (srcX + split) * SCALING, (srcY + v) * SCALING);
-            tessellator.addVertexWithUV(x + w - split, y, (double)this.zLevel, (srcX + 2 * split) * SCALING, srcY * SCALING);
-            tessellator.addVertexWithUV(x + w - split, y + h, (double)this.zLevel, (srcX + 2 * split) * SCALING, (srcY + v) * SCALING);
-            tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
-            tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
-            tessellator.draw();
-
+            if (colour[i][3] > 0)
+            {
+                tessellator.setColorRGBA(colour[i][0], colour[i][1], colour[i][2], colour[i][3]);
+                tessellator.addVertexWithUV(x, y + h, (double) this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + split, y + h, (double) this.zLevel, (srcX + split) * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + split, y, (double) this.zLevel, (srcX + split) * SCALING, srcY * SCALING);
+                tessellator.addVertexWithUV(x, y, (double) this.zLevel, srcX * SCALING, srcY * SCALING);
+                tessellator.addVertexWithUV(x + split, y + h, (double) this.zLevel, (srcX + split) * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + w - split, y + h, (double) this.zLevel, (srcX + 2 * split) * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + w - split, y, (double) this.zLevel, (srcX + 2 * split) * SCALING, srcY * SCALING);
+                tessellator.addVertexWithUV(x + split, y, (double) this.zLevel, (srcX + split) * SCALING, srcY * SCALING);
+                tessellator.addVertexWithUV(x + w - split, y + h, (double) this.zLevel, (srcX + 2 * split) * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + w, y + h, (double) this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+                tessellator.addVertexWithUV(x + w, y, (double) this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
+                tessellator.addVertexWithUV(x + w - split, y, (double) this.zLevel, (srcX + 2 * split) * SCALING, srcY * SCALING);
+            }
         }
-
+        tessellator.draw();
     }
 
     public void drawPolygon(int[] colours, double... points)
