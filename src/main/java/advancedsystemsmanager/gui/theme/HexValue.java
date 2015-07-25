@@ -7,6 +7,7 @@ public class HexValue
 {
     private static final Pattern HEX = Pattern.compile("([\\dA-F]+$)", Pattern.CASE_INSENSITIVE);
     private int[] colour;
+    private int RGBA;
 
     public HexValue()
     {
@@ -16,6 +17,7 @@ public class HexValue
     public HexValue(String hex)
     {
         this.colour = getRGBAValue(hex);
+        this.RGBA = colour[3]<<24 | colour[0] << 16 | colour[1] << 8 | colour[2];
     }
 
     public static int[] getRGBAValue(String string)
@@ -46,6 +48,11 @@ public class HexValue
     public int[] getColour()
     {
         return colour;
+    }
+
+    public int getColourInt()
+    {
+        return RGBA;
     }
 
     public String getHexValue()

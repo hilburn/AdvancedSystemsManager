@@ -6,6 +6,7 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,10 +24,12 @@ public abstract class ScrollController<T>
     public static final int ARROW_X = 105;
     public static final int ARROW_Y_UP = 32;
     public static final int ARROW_Y_DOWN = 42;
+    public static final int TEXT_BOX_SIZE_U = 49;
+    public static final int TEXT_BOX_SIZE_V = 6;
     public static final int TEXT_BOX_SIZE_W = 64;
     public static final int TEXT_BOX_SIZE_H = 12;
-    public static final int TEXT_BOX_SRC_X = 0;
-    public static final int TEXT_BOX_SRC_Y = 165;
+    public static final int TEXT_BOX_SRC_X = 113;
+    public static final int TEXT_BOX_SRC_Y = 72;
     public static final int TEXT_BOX_X = 5;
     public static final int TEXT_BOX_Y = 5;
     public static final int TEXT_BOX_TEXT_X = 3;
@@ -214,8 +217,8 @@ public abstract class ScrollController<T>
 
         if (hasSearchBox)
         {
-            gui.drawTexture(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H);
-            gui.drawString(textBox.getText(), x + TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_Y + TEXT_BOX_TEXT_Y, 0xFFFFFF);
+            gui.drawTextBox(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (selected? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
+            gui.drawString(textBox.getText(), x + TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_Y + TEXT_BOX_TEXT_Y, ThemeHandler.theme.menus.textBoxes.text.getColourInt());
 
             if (selected)
             {
