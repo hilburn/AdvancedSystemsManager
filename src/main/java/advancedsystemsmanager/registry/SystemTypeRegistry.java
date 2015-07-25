@@ -72,12 +72,6 @@ public class SystemTypeRegistry
         }
 
         @Override
-        public int getDefaultRadioButton()
-        {
-            return 0;
-        }
-
-        @Override
         public void initRadioButtons(RadioButtonList radioButtonsMulti)
         {
             radioButtonsMulti.add(new RadioButton(0, Names.RUN_SHARED_ONCE));
@@ -179,12 +173,6 @@ public class SystemTypeRegistry
         @Override
         public void initRadioButtons(RadioButtonList radioButtonsMulti)
         {
-        }
-
-        @Override
-        public int getDefaultRadioButton()
-        {
-            return 0;
         }
 
         @Override
