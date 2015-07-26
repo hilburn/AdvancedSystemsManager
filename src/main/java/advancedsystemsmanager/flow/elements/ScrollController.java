@@ -18,9 +18,9 @@ public abstract class ScrollController<T>
     public static final int ITEM_SIZE = 16;
     public static final int ITEM_SIZE_WITH_MARGIN = 20;
     public static final int ARROW_SIZE_W = 10;
-    public static final int ARROW_SIZE_H = 6;
-    public static final int ARROW_SRC_X = 64;
-    public static final int ARROW_SRC_Y = 165;
+    public static final int ARROW_SIZE_H = 9;
+    public static final int ARROW_SRC_X = 72;
+    public static final int ARROW_SRC_Y = 0;
     public static final int ARROW_X = 105;
     public static final int ARROW_Y_UP = 32;
     public static final int ARROW_Y_DOWN = 42;
@@ -118,7 +118,7 @@ public abstract class ScrollController<T>
             if (CollisionHelper.inBounds(point.x, point.y, ITEM_SIZE, ITEM_SIZE, mX, mY))
             {
                 onClick(result.get(point.id), mX, mY, button);
-                break;
+                return;
             }
         }
 
@@ -213,21 +213,19 @@ public abstract class ScrollController<T>
     @SideOnly(Side.CLIENT)
     public void draw(GuiManager gui, int mX, int mY)
     {
-        int srcBoxY = selected ? 1 : 0;
-
         if (hasSearchBox)
         {
-            gui.drawTextBox(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (selected? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
+            gui.drawTextBox(x + TEXT_BOX_X, y + TEXT_BOX_Y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (selected? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
             gui.drawString(textBox.getText(), x + TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_Y + TEXT_BOX_TEXT_Y, ThemeHandler.theme.menus.textBoxes.text.getColourInt());
 
             if (selected)
             {
-                gui.drawCursor(x + TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, y + TEXT_BOX_Y + CURSOR_Y, CURSOR_Z, 0xFFFFFFFF);
+                gui.drawCursor(x + TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, y + TEXT_BOX_Y + CURSOR_Y, CURSOR_Z, ThemeHandler.theme.menus.textBoxes.text.getColourInt());
             }
 
             if (textBox.getText().length() > 0 || result.size() > 0)
             {
-                gui.drawStringFormatted(Names.ITEMS_FOUND, x + AMOUNT_TEXT_X, y + AMOUNT_TEXT_Y, 0.7F, 0x404040, result.size());
+                gui.drawStringFormatted(Names.ITEMS_FOUND, x + AMOUNT_TEXT_X, y + AMOUNT_TEXT_Y, 0.7f, 0x404040, result.size());
             }
         }
 
@@ -249,10 +247,10 @@ public abstract class ScrollController<T>
     {
         if (canScroll)
         {
-            int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0;
+//            int srcArrowX = clicked && down == (dir == 1) ? 2 : inArrowBounds(down, mX, mY) ? 1 : 0;
             int srcArrowY = down ? 1 : 0;
 
-            gui.drawTexture(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SRC_X + srcArrowX * ARROW_SIZE_W, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
+            gui.drawTexture(x + ARROW_X, y + (down ? ARROW_Y_DOWN : ARROW_Y_UP), ARROW_SRC_X, ARROW_SRC_Y + srcArrowY * ARROW_SIZE_H, ARROW_SIZE_W, ARROW_SIZE_H);
         }
     }
 

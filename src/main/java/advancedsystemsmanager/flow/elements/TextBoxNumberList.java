@@ -2,6 +2,7 @@ package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -10,9 +11,11 @@ import java.util.List;
 
 public class TextBoxNumberList
 {
+    public static final int TEXT_BOX_SIZE_U = 49;
+    public static final int TEXT_BOX_SIZE_V = 6;
     public static final int TEXT_BOX_SIZE_H = 12;
-    public static final int TEXT_BOX_SRC_X = 0;
-    public static final int TEXT_BOX_SRC_Y = 221;
+    public static final int TEXT_BOX_SRC_X = 113;
+    public static final int TEXT_BOX_SRC_Y = 72;
 
     public List<TextBoxNumber> textBoxes;
     public TextBoxNumber selectedTextBox;
@@ -29,10 +32,9 @@ public class TextBoxNumberList
         {
             if (textBox.isVisible())
             {
-                int srcTextBoxX = textBox.equals(selectedTextBox) ? 1 : 0;
-                int srcTextBoxY = textBox.isWide() ? 1 : 0;
 
-                gui.drawTexture(textBox.getX(), textBox.getY(), TEXT_BOX_SRC_X + srcTextBoxX * textBox.getWidth(), TEXT_BOX_SRC_Y + srcTextBoxY * TEXT_BOX_SIZE_H, textBox.getWidth(), TEXT_BOX_SIZE_H);
+                gui.drawTextBox(textBox.getX(), textBox.getY(), textBox.getWidth(), TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (textBox.equals(selectedTextBox)? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
+
                 String str = String.valueOf(textBox.getNumber());
                 gui.drawCenteredString(str, textBox.getX(), textBox.getY() + textBox.getTextY(), textBox.getTextSize(), textBox.getWidth(), 0xFFFFFF);
             }

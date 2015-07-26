@@ -7,6 +7,7 @@ import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,17 +16,18 @@ import net.minecraft.nbt.NBTTagList;
 
 public class MenuSignText extends Menu
 {
+    public static final int TEXT_BOX_SIZE_U = 49;
+    public static final int TEXT_BOX_SIZE_V = 6;
     public static final int TEXT_BOX_SIZE_W = 64;
     public static final int TEXT_BOX_SIZE_H = 12;
-    public static final int TEXT_BOX_SRC_X = 0;
-    public static final int TEXT_BOX_SRC_Y = 165;
+    public static final int TEXT_BOX_SRC_X = 113;
+    public static final int TEXT_BOX_SRC_Y = 72;
     public static final int TEXT_BOX_X = 5;
     public static final int TEXT_BOX_Y = 5;
     public static final int TEXT_BOX_Y_SPACING = 15;
     public static final int TEXT_BOX_TEXT_X = 3;
-    public static final int TEXT_BOX_TEXT_Y = 5;
+    public static final int TEXT_BOX_TEXT_Y = 3;
     public static final int CURSOR_X = 2;
-    public static final int CURSOR_Y = 0;
     public static final int CURSOR_Z = 5;
     public static final int CHECK_BOX_X = 75;
     public static final int CHECK_BOX_Y = 2;
@@ -58,7 +60,7 @@ public class MenuSignText extends Menu
                     hasChanged[id] = IDLE_TIME;
                 }
             };
-            textBoxes[i].setMult(0.6F);
+            //textBoxes[i].setMult(0.6F);
             textBoxes[i].setTextAndCursor("");
 
             checkBoxes.addCheckBox(new CheckBox(getParent(), Names.UPDATE_LINE, CHECK_BOX_X, CHECK_BOX_Y + TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING)
@@ -95,14 +97,14 @@ public class MenuSignText extends Menu
         {
             TextBoxLogic textBox = textBoxes[i];
 
-            int srcBoxY = selected == i ? 1 : 0;
             int y = TEXT_BOX_Y + i * TEXT_BOX_Y_SPACING;
-            gui.drawTexture(TEXT_BOX_X, y, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y + srcBoxY * TEXT_BOX_SIZE_H, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H);
-            gui.drawString(textBox.getText(), TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_TEXT_Y, 0.6F, 0xFFFFFF);
+
+            gui.drawTextBox(TEXT_BOX_X, y, TEXT_BOX_SIZE_W, TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (selected == i ? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
+            gui.drawString(textBox.getText(), TEXT_BOX_X + TEXT_BOX_TEXT_X, y + TEXT_BOX_TEXT_Y, ThemeHandler.theme.menus.textBoxes.text.getColourInt());
 
             if (selected == i)
             {
-                gui.drawCursor(TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, y + CURSOR_Y, CURSOR_Z, 0xFFFFFFFF);
+                gui.drawCursor(TEXT_BOX_X + textBox.getCursorPosition(gui) + CURSOR_X, y, CURSOR_Z, ThemeHandler.theme.menus.textBoxes.text.getColourInt());
             }
         }
         checkBoxes.draw(gui, mX, mY);

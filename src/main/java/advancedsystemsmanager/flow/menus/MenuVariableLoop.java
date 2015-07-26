@@ -13,9 +13,6 @@ import java.util.List;
 
 public class MenuVariableLoop extends Menu
 {
-    public static final int DISPLAY_X = 45;
-    public static final int DISPLAY_Y_TOP = 5;
-    public static final int DISPLAY_Y_BOT = 25;
     public static final String NBT_ELEMENT = "Element";
     private ScrollVariable variables;
 
@@ -58,6 +55,12 @@ public class MenuVariableLoop extends Menu
         {
             variables.onRelease(mX, mY);
         }
+    }
+
+    @Override
+    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    {
+        return variables.onKeyStroke(gui, c, k);
     }
 
     @Override

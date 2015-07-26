@@ -85,7 +85,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
             while (itr.hasNext())
             {
                 Fluid fluid = itr.next();
-                if (pattern.matcher(getDisplayName(fluid)).find())
+                if (!pattern.matcher(getDisplayName(fluid)).find())
                 {
                     itr.remove();
                 }

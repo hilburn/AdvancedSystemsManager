@@ -6,6 +6,7 @@ import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Null;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 
 import java.util.ArrayList;
@@ -92,10 +93,7 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
     @Override
     public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
     {
-        int srcInventoryX = this.variable == variable.colour ? 1 : 0;
-        int srcInventoryY = hover ? 1 : 0;
-
-        gui.drawTexture(x, y, MenuContainer.INVENTORY_SRC_X + srcInventoryX * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y + srcInventoryY * MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE);
+        gui.drawColouredTexture(x, y, MenuContainer.INVENTORY_SRC_X, MenuContainer.INVENTORY_SRC_Y, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(this.variable == variable.colour, hover));
         variable.draw(gui, x, y);
     }
 

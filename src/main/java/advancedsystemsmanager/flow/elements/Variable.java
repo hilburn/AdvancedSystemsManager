@@ -21,8 +21,8 @@ public class Variable implements Comparable<Variable>, IContainerSelection<GuiMa
 {
     public static final TIntObjectHashMap<String> defaultVariables = new TIntObjectHashMap<String>();
     public static final long NEGATIVE = (long)1 << 63;
-    public static final int VARIABLE_SRC_X = 32;
-    public static final int VARIABLE_SRC_Y = 130;
+    public static final int VARIABLE_SRC_X = 104;
+    public static final int VARIABLE_SRC_Y = 127;
     public static final int VARIABLE_SIZE = 14;
     public static final String NBT_EXECUTED = "Executed";
     public static final String NBT_SELECTION = "Selection";

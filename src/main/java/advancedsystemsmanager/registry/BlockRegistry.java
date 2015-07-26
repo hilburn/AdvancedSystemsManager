@@ -37,8 +37,8 @@ public class BlockRegistry
     public static BlockCableOutput cableOutput;
     @Register(tileEntity = TileEntityReceiver.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_INPUT)
     public static BlockCableInput cableInput;
-    @Register(tileEntity = TileEntityCreative.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_CREATIVE)
-    public static BlockCableCreative cableCreative;
+//    @Register(tileEntity = TileEntityCreative.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_CREATIVE)
+//    public static BlockCableCreative cableCreative;
     @Register(tileEntity = TileEntityValve.class, itemBlock = ItemAdvanced.class, name = Names.CABLE_VALVE)
     public static BlockCableValve cableValve;
     @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_BUD)
@@ -60,9 +60,9 @@ public class BlockRegistry
     public static BlockCableAE cableAENode;
     @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_RF, dependency = Mods.COFH_ENERGY)
     public static BlockCableRF cableRFNode;
-    @ConfigKey(Names.CABLE_TC)
-    @Register(tileEntity = TileEntityTCNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_TC, dependency = Mods.THAUMCRAFT)
-    public static BlockCableTC cableTCNode; // TODO add recipe
+//    @ConfigKey(Names.CABLE_TC)
+//    @Register(tileEntity = TileEntityTCNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_TC, dependency = Mods.THAUMCRAFT)
+//    public static BlockCableTC cableTCNode; // TODO add recipe
 
 
     public static void registerRecipes()

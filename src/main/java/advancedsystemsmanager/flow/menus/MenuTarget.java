@@ -9,6 +9,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,8 +24,8 @@ public abstract class MenuTarget extends Menu
 
     public static final int DIRECTION_SIZE_W = 31;
     public static final int DIRECTION_SIZE_H = 12;
-    public static final int DIRECTION_SRC_X = 0;
-    public static final int DIRECTION_SRC_Y = 70;
+    public static final int DIRECTION_SRC_X = 71;
+    public static final int DIRECTION_SRC_Y = 234;
     public static final int DIRECTION_X_LEFT = 2;
     public static final int DIRECTION_X_RIGHT = 88;
     public static final int DIRECTION_Y = 5;
@@ -101,11 +102,7 @@ public abstract class MenuTarget extends Menu
             int x = getDirectionX(i);
             int y = getDirectionY(i);
 
-            int srcDirectionX = isActive(i) ? 1 : 0;
-            int srcDirectionY = selectedDirectionId != -1 && selectedDirectionId != i ? 2 : CollisionHelper.inBounds(x, y, DIRECTION_SIZE_W, DIRECTION_SIZE_H, mX, mY) ? 1 : 0;
-
-
-            gui.drawTexture(x, y, DIRECTION_SRC_X + srcDirectionX * DIRECTION_SIZE_W, DIRECTION_SRC_Y + srcDirectionY * DIRECTION_SIZE_H, DIRECTION_SIZE_W, DIRECTION_SIZE_H);
+            gui.drawRectangle(x, y, x + DIRECTION_SIZE_W, y + DIRECTION_SIZE_H, ThemeHandler.theme.menus.checkboxes.getColour(isActive(i), selectedDirectionId == i));
 
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
@@ -118,9 +115,8 @@ public abstract class MenuTarget extends Menu
         {
             for (Button button : buttons)
             {
-                int srcButtonY = CollisionHelper.inBounds(BUTTON_X, button.y, BUTTON_SIZE_W, BUTTON_SIZE_H, mX, mY) ? 1 : 0;
 
-                gui.drawTexture(BUTTON_X, button.y, BUTTON_SRC_X, BUTTON_SRC_Y + srcButtonY * BUTTON_SIZE_H, BUTTON_SIZE_W, BUTTON_SIZE_H);
+                gui.drawRectangle(BUTTON_X, button.y, BUTTON_X + BUTTON_SIZE_W, button.y + BUTTON_SIZE_H, ThemeHandler.theme.menus.checkboxes.getColour(false, CollisionHelper.inBounds(BUTTON_X, button.y, BUTTON_SIZE_W, BUTTON_SIZE_H, mX, mY)));
                 gui.drawCenteredString(button.getLabel(), BUTTON_X, button.y + BUTTON_TEXT_Y, 0.5F, BUTTON_SIZE_W, 0x404040);
             }
 

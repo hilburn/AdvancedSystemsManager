@@ -23,13 +23,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -40,10 +41,18 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 {
     protected static final float SCALING = 0.00390625F;
     private static final ResourceLocation TERRAIN = new ResourceLocation("textures/atlas/blocks.png");
+    private static final java.util.Timer timer = new java.util.Timer();
+    private static final TimerTask task = new ToggleCursor();
+    private static boolean toggleCursor = true;
+
+
     public static FontRenderer fontRenderer;
+    static
     {
-        fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false);
+        //fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false);
+        timer.scheduleAtFixedRate(task, 0, 300);
     }
+
     protected ContainerBase container;
     protected boolean cached;
     protected float scale;
@@ -52,6 +61,13 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         super(container);
         this.container = container;
+
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        super.onGuiClosed();
     }
 
     public static ResourceLocation registerTexture(String name)
@@ -283,15 +299,15 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         drawLocalizedString(StatCollector.translateToLocalFormatted(str, args), x, y, mult, color);
     }
 
-    public void drawLocalizedString(String str, int x, int y, float mult, int color)
+    public void drawLocalizedString(String str, int x, int y, float mult, int colour)
     {
-//        glPushMatrix();
-//        glScalef(mult, mult, 1F);
-        fontRenderer.drawScaledString(x, y, str, color, (int)(10 * mult));
-//        fontRendererObj.drawString(str, (int)(x / mult), (int)(y / mult), color);
+        glPushMatrix();
+        glScalef(mult, mult, 1F);
+//        fontRenderer.drawScaledString(x, y, str, color, (int)(10 * mult));
+        fontRendererObj.drawString(str, (int)(x / mult), (int)(y / mult), colour);
         bindTexture(getComponentResource());
         glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//        glPopMatrix();
+        glPopMatrix();
     }
 
     public static void bindTexture(ResourceLocation resource)
@@ -668,7 +684,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public void drawCenteredString(String str, int x, int y, float mult, int width, int color)
     {
         str = StatCollector.translateToLocal(str);
-        drawString(str, x + (width - (int)(getStringWidth(str) * mult)) / 2, y, mult, color);
+        drawString(str, x + (width - (int) (getStringWidth(str) * mult)) / 2, y, mult, color);
     }
 
     public void drawCursor(int x, int y, int z, int color)
@@ -678,13 +694,16 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawCursor(int x, int y, int z, float size, int color)
     {
-        glPushMatrix();
-        glTranslatef(0, 0, z);
-        glTranslatef(x, y, 0);
-        glScalef(size, size, 0);
-        glTranslatef(-x, -y, 0);
-        Gui.drawRect(x, y + 1, x + 1, y + 10, color);
-        glPopMatrix();
+        if (toggleCursor)
+        {
+            glPushMatrix();
+            glTranslatef(0, 0, z);
+            glTranslatef(x, y, 0);
+            glScalef(size, size, 0);
+            glTranslatef(-x, -y, 0);
+            Gui.drawRect(x, y + 1, x + 1, y + 10, color);
+            glPopMatrix();
+        }
     }
 
     public void drawLines(int[] points, int[] colour)
@@ -857,5 +876,14 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h)
     {
         return !(x + w < this.guiLeft || x > this.guiLeft + this.width || y + h < this.guiTop || y > this.guiTop + this.height);
+    }
+
+    private static class ToggleCursor extends TimerTask
+    {
+        @Override
+        public void run()
+        {
+            toggleCursor = !toggleCursor;
+        }
     }
 }

@@ -125,7 +125,7 @@ public class MenuCrafting extends MenuItem
     @Override
     public void onSettingContentChange()
     {
-        resultItem.setFluid(dummy.getResult());
+        resultItem.setContent(dummy.getResult());
     }
 
     public CraftingDummy getDummy()

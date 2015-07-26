@@ -16,6 +16,7 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
@@ -43,8 +44,8 @@ public class MenuContainer extends Menu implements IPacketSync
     public static final int BACK_Y = 57;
 
     public static final int INVENTORY_SIZE = 16;
-    public static final int INVENTORY_SRC_X = 30;
-    public static final int INVENTORY_SRC_Y = 20;
+    public static final int INVENTORY_SRC_X = 88;
+    public static final int INVENTORY_SRC_Y = 127;
 
     public static final int RADIO_BUTTON_MULTI_X = 2;
     public static final int RADIO_BUTTON_MULTI_Y = 27;
@@ -558,10 +559,7 @@ public class MenuContainer extends Menu implements IPacketSync
     @SideOnly(Side.CLIENT)
     public void drawContainer(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, List<Long> selected, int x, int y, boolean hover)
     {
-        int srcInventoryX = selected.contains(iContainerSelection.getId()) ? 1 : 0;
-        int srcInventoryY = hover ? 1 : 0;
-
-        gui.drawTexture(x, y, INVENTORY_SRC_X + srcInventoryX * INVENTORY_SIZE, INVENTORY_SRC_Y + srcInventoryY * INVENTORY_SIZE, INVENTORY_SIZE, INVENTORY_SIZE);
+        gui.drawColouredTexture(x, y, INVENTORY_SRC_X, INVENTORY_SRC_Y, INVENTORY_SIZE, INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(selected.contains(iContainerSelection.getId()), hover));
         iContainerSelection.draw(gui, x, y);
     }
 

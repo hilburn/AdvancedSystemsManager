@@ -8,6 +8,7 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,9 +29,9 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     public static final int SETTING_SRC_Y = 189;
     public static final int EDIT_ITEM_X = 5;
     public static final int EDIT_ITEM_Y = 5;
-    public static final int BACK_SRC_X = 46;
-    public static final int BACK_SRC_Y = 52;
-    public static final int BACK_SIZE_W = 9;
+    public static final int BACK_SRC_X = 85;
+    public static final int BACK_SRC_Y = 9;
+    public static final int BACK_SIZE_W = 10;
     public static final int BACK_SIZE_H = 9;
     public static final int BACK_X = 108;
     public static final int BACK_Y = 57;
@@ -126,7 +127,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             @Override
             public void onClick(Type o, int mX, int mY, int button)
             {
-                selectedSetting.setFluid(o);
+                selectedSetting.setContent(o);
                 ASMPacket packet = getSyncPacket();
                 packet.writeByte(1);
                 selectedSetting.writeContentData(packet);
@@ -181,13 +182,14 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             @Override
             public void draw(GuiManager gui, Setting<Type> setting, int x, int y, boolean hover)
             {
-                int srcSettingX = setting.isValid() ? 0 : 1;
-                int srcSettingY = hover ? 1 : 0;
-
-                gui.drawTexture(x, y, SETTING_SRC_X + srcSettingX * ITEM_SIZE, SETTING_SRC_Y + srcSettingY * ITEM_SIZE, ITEM_SIZE, ITEM_SIZE);
                 if (setting.isValid())
                 {
+                    gui.drawColouredTexture(x, y, MenuContainer.INVENTORY_SRC_X, MenuContainer.INVENTORY_SRC_Y, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(false, hover));
                     drawSettingObject(gui, setting, x, y);
+                }
+                else
+                {
+                    gui.drawColouredTexture(x, y, MenuContainer.INVENTORY_SRC_X - MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SRC_Y, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(false, hover));
                 }
             }
 
@@ -305,7 +307,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             drawInfoMenuContent(gui, mX, mY);
 
             int srcDeleteY = inDeleteBounds(mX, mY) ? 1 : 0;
-            gui.drawTexture(DELETE_X, DELETE_Y, DELETE_SRC_X, DELETE_SRC_Y + srcDeleteY * DELETE_SIZE_H, DELETE_SIZE_W, DELETE_SIZE_H);
+            //gui.drawTexture(DELETE_X, DELETE_Y, DELETE_SRC_X, DELETE_SRC_Y + srcDeleteY * DELETE_SIZE_H, DELETE_SIZE_W, DELETE_SIZE_H);
             gui.drawCenteredString(Names.DELETE, DELETE_X, DELETE_Y + DELETE_TEXT_Y, 0.7F, DELETE_SIZE_W, 0xBB4040);
         } else
         {
@@ -323,7 +325,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         {
             int srcBackX = inBackBounds(mX, mY) ? 1 : 0;
 
-            gui.drawTexture(BACK_X, BACK_Y, BACK_SRC_X + srcBackX * BACK_SIZE_W, BACK_SRC_Y, BACK_SIZE_W, BACK_SIZE_H);
+            gui.drawColouredTexture(BACK_X, BACK_Y, BACK_SRC_X, BACK_SRC_Y, BACK_SIZE_W, BACK_SIZE_H, new int[] {255, 0, 0, 255});
         }
     }
 

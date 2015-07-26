@@ -9,6 +9,7 @@ import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,10 +24,10 @@ public class MenuItem extends MenuStuff<ItemStack>
     public static final int DMG_VAL_TEXT_X = 15;
     public static final int DMG_VAL_TEXT_Y = 55;
 
-    public static final int ARROW_SRC_X = 18;
-    public static final int ARROW_SRC_Y = 20;
-    public static final int ARROW_WIDTH = 6;
-    public static final int ARROW_HEIGHT = 10;
+    public static final int ARROW_SRC_X = 72;
+    public static final int ARROW_SRC_Y = 18;
+    public static final int ARROW_WIDTH = 9;
+    public static final int ARROW_HEIGHT = 12;
     public static final int ARROW_X_LEFT = 5;
     public static final int ARROW_X_RIGHT = 109;
     public static final int ARROW_Y = 37;
@@ -228,10 +229,8 @@ public class MenuItem extends MenuStuff<ItemStack>
             int x = i == 0 ? ARROW_X_LEFT : ARROW_X_RIGHT;
             int y = ARROW_Y;
 
-            int srcXArrow = i;
-            int srcYArrow = CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY) ? 1 : 0;
 
-            gui.drawTexture(x, y, ARROW_SRC_X + srcXArrow * ARROW_WIDTH, ARROW_SRC_Y + srcYArrow * ARROW_HEIGHT, ARROW_WIDTH, ARROW_HEIGHT);
+            gui.drawColouredTexture(x, y, ARROW_SRC_X + i * ARROW_WIDTH, ARROW_SRC_Y, ARROW_WIDTH, ARROW_HEIGHT, 0.7f, ThemeHandler.theme.menus.radioButtons.getColour(true, CollisionHelper.inBounds(x, y, ARROW_WIDTH, ARROW_HEIGHT, mX, mY)));
         }
         gui.drawCenteredString(getSelectedSetting().getFuzzyMode().toString(), ARROW_X_LEFT, ARROW_TEXT_Y, 0.7F, ARROW_X_RIGHT - ARROW_X_LEFT + ARROW_WIDTH, 0x404040);
     }

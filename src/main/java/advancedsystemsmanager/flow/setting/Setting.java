@@ -119,7 +119,7 @@ public abstract class Setting<Type>
         }
     }
 
-    public abstract void setFluid(Type obj);
+    public abstract void setContent(Type obj);
 
     public abstract boolean isContentEqual(Type check);
 

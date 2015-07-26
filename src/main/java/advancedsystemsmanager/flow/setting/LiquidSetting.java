@@ -101,7 +101,7 @@ public class LiquidSetting extends Setting<Fluid>
     }
 
     @Override
-    public void setFluid(Fluid obj)
+    public void setContent(Fluid obj)
     {
         fluid = obj;
         setDefaultAmount();

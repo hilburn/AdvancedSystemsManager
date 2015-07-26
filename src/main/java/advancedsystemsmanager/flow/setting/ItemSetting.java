@@ -113,7 +113,7 @@ public class ItemSetting extends Setting<ItemStack>
     }
 
     @Override
-    public void setFluid(ItemStack obj)
+    public void setContent(ItemStack obj)
     {
         content = obj.copy();
     }
