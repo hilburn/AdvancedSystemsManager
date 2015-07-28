@@ -40,6 +40,8 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int GROUP_NODE = 14;
     protected static final int CAMOUFLAGE = 15;
     protected static final int SIGN = 16;
+    protected static final int ASPECT_INPUT = 17;
+    protected static final int ASPECT_OUTPUT = 18;
 
     protected int id;
     protected String name;

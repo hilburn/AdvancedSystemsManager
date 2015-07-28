@@ -465,7 +465,6 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             }
         }
 
-
         boolean hasConnection = false;
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {

@@ -47,6 +47,8 @@ public class Names
     public static final String NODE = GUI_PREFIX + "Node";
     public static final String CAMOUFLAGE = GUI_PREFIX + "Camouflage";
     public static final String SIGN = GUI_PREFIX + "Sign";
+    public static final String ASPECT_INPUT = GUI_PREFIX + "AspectInput";
+    public static final String ASPECT_OUTPUT = GUI_PREFIX + "AspectOutput";
     public static final String RF_INPUT = GUI_PREFIX + "RfInput";
     public static final String RF_OUTPUT = GUI_PREFIX + "RfOutput";
     public static final String RF_CONDITION = GUI_PREFIX + "RfCondition";
@@ -124,6 +126,7 @@ public class Names
     public static final String BUCKETS = GUI_PREFIX + "Buckets";
     public static final String MILLI_BUCKETS = GUI_PREFIX + "MilliBuckets";
     public static final String LIQUIDS_MENU = GUI_PREFIX + "LiquidsMenu";
+    public static final String ASPECTS_MENU = GUI_PREFIX + "AspectsMenu";
     public static final String USE_ALL = GUI_PREFIX + "UseAll";
     public static final String REVERSED = GUI_PREFIX + "Reversed";
     public static final String LOOP_ORDER_MENU = GUI_PREFIX + "LoopOrderMenu";
@@ -216,6 +219,8 @@ public class Names
     public static final String ITEMS_FOUND = GUI_PREFIX + "ItemsFound";
     public static final String REDSTONE_EMITTER_SIDES_MENU = GUI_PREFIX + "RedstoneEmitterSidesMenu";
     public static final String REDSTONE_EMITTER_SIDES_INFO = GUI_PREFIX + "RedstoneEmitterSidesInfo";
+    public static final String NO_ASPECT_SELECTED = GUI_PREFIX + "NoAspectSelected";
+    public static final String CHANGE_ASPECT = GUI_PREFIX + "ChangeAspect";
     public static final String TYPE_INVENTORY = GUI_PREFIX + "Inventory";
     public static final String TYPE_TANK = GUI_PREFIX + "Tank";
     public static final String TYPE_EMITTER = GUI_PREFIX + "Emitter";
@@ -311,6 +316,7 @@ public class Names
     public static final String ALL_ITEMS = GUI_PREFIX + "AllItems";
     public static final String TARGET_MENU = GUI_PREFIX + "TargetMenu";
     public static final String TYPE_SIGN = GUI_PREFIX + "TypeSign";
+    public static final String TYPE_ASPECT = GUI_PREFIX + "TypeAspect";
     public static final String SIGNS = GUI_PREFIX + "Signs";
     public static final String NO_SIGNS_ERROR = GUI_PREFIX + "NoSignsError";
     public static final String SIGN_TEXT = GUI_PREFIX + "SignText";
