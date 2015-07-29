@@ -23,13 +23,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.Timer;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL12;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
@@ -434,14 +432,14 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
             this.zLevel = 500.0F;
             itemRender.zLevel = 500.0F;
-            int j1 = -267386864;
+            int j1 = 0xF0100010;
             this.drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, j1, j1);
             this.drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, j1, j1);
             this.drawGradientRect(x - 3, y - 3, x + width + 3, y + height + 3, j1, j1);
             this.drawGradientRect(x - 4, y - 3, x - 3, y + height + 3, j1, j1);
             this.drawGradientRect(x + width + 3, y - 3, x + width + 4, y + height + 3, j1, j1);
-            int k1 = 1347420415;
-            int l1 = (k1 & 16711422) >> 1 | k1 & -16777216;
+            int k1 = 0x505000FF;
+            int l1 = (k1 & 0xFEFEFE) >> 1 | k1 & 0xFF000000;
             this.drawGradientRect(x - 3, y - 2, x - 3 + 1, y + height + 2, k1, l1);
             this.drawGradientRect(x + width + 2, y - 2, x + width + 3, y + height + 2, k1, l1);
             this.drawGradientRect(x - 3, y - 3, x + width + 3, y - 2, k1, k1);
@@ -539,7 +537,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawBlock(TileEntity te, int x, int y)
     {
-        ItemStack item = getItemStackFromBlock(te);
+        ItemStack item = getItemStackFromTile(te);
         if (item != null)
         {
             drawItemStack(item, x, y);
@@ -548,7 +546,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public String getBlockName(TileEntity te)
     {
-        ItemStack item = getItemStackFromBlock(te);
+        ItemStack item = getItemStackFromTile(te);
 
         if (item != null)
         {
@@ -558,7 +556,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return "Unknown";
     }
 
-    private ItemStack getItemStackFromBlock(TileEntity te)
+    private ItemStack getItemStackFromTile(TileEntity te)
     {
         if (te != null)
         {
@@ -750,7 +748,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         startScaling();
     }
 
-    private void startScaling()
+    private void startScaling() //TODO: Check this maths
     {
         //start scale
         glPushMatrix();
