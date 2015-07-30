@@ -19,7 +19,7 @@ public class GuiVoid extends GuiBase
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
+    protected void drawGuiBackground(float partialTick, int mX, int mY)
     {
         bindTexture(TEXTURE);
         drawTexture(0, 0, 0, 0, xSize, ySize);

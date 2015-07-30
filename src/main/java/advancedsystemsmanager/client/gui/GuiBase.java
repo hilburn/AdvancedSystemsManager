@@ -742,32 +742,24 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     }
 
     @Override
-    public final void drawDefaultBackground()
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
     {
-        super.drawDefaultBackground();
-
         startScaling();
+        drawGuiBackground(partialTick, mX, mY);
+        stopScaling();
     }
 
-    private void startScaling()
+    protected abstract void drawGuiBackground(float partialTick, int mX, int mY);
+
+    protected void startScaling()
     {
-        //start scale
         glPushMatrix();
 
         cached = false;
         float scale = getScale();
 
         glScalef(scale, scale, 1);
-//        glTranslatef(guiLeft, guiTop, 0.0F);
         glTranslatef((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale), 0.0F);
-    }
-
-    @Override
-    public void drawScreen(int x, int y, float f)
-    {
-        super.drawScreen(scaleX(x), scaleY(y), f);
-
-        stopScaling();
     }
 
     protected int scaleX(float x)
@@ -788,9 +780,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         return (int)y;
     }
 
-    private void stopScaling()
+    protected void stopScaling()
     {
-        //stop scale
         glPopMatrix();
     }
 

@@ -163,7 +163,7 @@ public class GuiManager extends GuiBase
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mX, int mY)
+    protected void drawGuiBackground(float partialTick, int mX, int mY)
     {
         drawBackground();
 
@@ -257,7 +257,6 @@ public class GuiManager extends GuiBase
             }
         }
         CollisionHelper.enable();
-
     }
 
     private void drawBackground()
