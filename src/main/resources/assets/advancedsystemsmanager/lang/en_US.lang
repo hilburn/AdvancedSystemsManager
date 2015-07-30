@@ -24,6 +24,7 @@ tile.system_cable_camo_shape.name=Transforming Cable Camouflage
 tile.system_cable_sign.name=Sign Updater
 tile.system_cable_rf.name=RF Node
 tile.system_cable_ae.name=Energistics Connector
+tile.system_cable_tc.name=Thaumic Connector
 
 # ======================================
 #				ITEMS
@@ -505,3 +506,9 @@ asm.gui.stored_location=Data stored from Manager at:
 asm.gui.linked_location=Linked to Manager at:
 asm.gui.wrongDim=Wrong Dimension
 
+asm.gui.AspectInput=Input (A)
+asm.gui.AspectInputLong=Aspect Input
+asm.gui.AspectOutput=Output (A)
+asm.gui.AspectOutputLong=Aspect Output
+asm.gui.TypeAspectMenu=Containers
+asm.gui.AspectsMenu=Aspects
