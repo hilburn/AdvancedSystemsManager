@@ -8,7 +8,7 @@ import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;

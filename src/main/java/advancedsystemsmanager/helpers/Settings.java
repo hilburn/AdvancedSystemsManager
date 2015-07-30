@@ -1,7 +1,7 @@
 package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.gui.GuiSettings;
+import advancedsystemsmanager.client.gui.GuiSettings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

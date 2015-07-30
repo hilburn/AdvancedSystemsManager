@@ -3,7 +3,7 @@ package advancedsystemsmanager.registry;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.ManagerButtonList;
+import advancedsystemsmanager.client.gui.ManagerButtonList;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;

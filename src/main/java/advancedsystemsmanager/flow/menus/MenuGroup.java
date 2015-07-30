@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.reference.Names;

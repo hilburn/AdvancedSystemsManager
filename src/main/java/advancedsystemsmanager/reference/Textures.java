@@ -1,6 +1,6 @@
 package advancedsystemsmanager.reference;
 
-import advancedsystemsmanager.gui.GuiBase;
+import advancedsystemsmanager.client.gui.GuiBase;
 import net.minecraft.util.ResourceLocation;
 
 public class Textures

@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.elements;
 
-import advancedsystemsmanager.gui.GuiBase;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;

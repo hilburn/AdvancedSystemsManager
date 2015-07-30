@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;

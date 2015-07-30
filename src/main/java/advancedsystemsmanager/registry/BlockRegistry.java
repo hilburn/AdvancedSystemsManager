@@ -1,6 +1,7 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.blocks.*;
+import advancedsystemsmanager.client.render.RenderCamouflage;
 import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;

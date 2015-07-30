@@ -2,8 +2,8 @@ package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.GuiManager;
-import advancedsystemsmanager.gui.TextColour;
+import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.TextColour;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ColourUtils;
 import cpw.mods.fml.relauncher.Side;

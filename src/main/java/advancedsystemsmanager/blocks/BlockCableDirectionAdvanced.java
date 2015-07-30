@@ -19,7 +19,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-
 public abstract class BlockCableDirectionAdvanced<T extends TileEntity & IClusterTile> extends BlockClusterElementBase<T>
 {
     public BlockCableDirectionAdvanced(String name)

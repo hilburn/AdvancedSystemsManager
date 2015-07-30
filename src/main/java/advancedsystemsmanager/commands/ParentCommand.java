@@ -1,7 +1,7 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.api.network.IPacketSync;
-import advancedsystemsmanager.gui.TextColour;
+import advancedsystemsmanager.client.gui.TextColour;
 import advancedsystemsmanager.network.ASMPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;

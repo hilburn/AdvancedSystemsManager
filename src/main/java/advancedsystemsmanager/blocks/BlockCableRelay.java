@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-//This is indeed not a subclass to the cable, you can't relay signals through this block
 public class BlockCableRelay extends BlockCableDirectionAdvanced<TileEntityRelay>
 {
     public BlockCableRelay()
@@ -42,7 +41,6 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced<TileEntityRelay
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack item)
     {
         super.onBlockPlacedBy(world, x, y, z, entity, item);
-
         TileEntityRelay relay = getTileEntity(world, x, y, z);
         if (relay != null && isAdvanced(relay.getMetadata()) && !world.isRemote)
         {
@@ -60,7 +58,6 @@ public class BlockCableRelay extends BlockCableDirectionAdvanced<TileEntityRelay
             {
                 FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
             }
-
             return true;
         } else
         {

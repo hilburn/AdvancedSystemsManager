@@ -1,9 +1,9 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.gui.theme.HexValue;
-import advancedsystemsmanager.gui.theme.Theme;
-import advancedsystemsmanager.gui.theme.ThemeAdapters;
-import advancedsystemsmanager.gui.theme.ThemeCommand;
+import advancedsystemsmanager.client.gui.theme.HexValue;
+import advancedsystemsmanager.client.gui.theme.Theme;
+import advancedsystemsmanager.client.gui.theme.ThemeAdapters;
+import advancedsystemsmanager.client.gui.theme.ThemeCommand;
 import advancedsystemsmanager.helpers.FileHelper;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

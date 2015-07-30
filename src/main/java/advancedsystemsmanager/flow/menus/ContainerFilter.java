@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;

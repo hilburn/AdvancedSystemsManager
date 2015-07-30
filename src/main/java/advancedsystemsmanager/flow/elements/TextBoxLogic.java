@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.network.IPacketProvider;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

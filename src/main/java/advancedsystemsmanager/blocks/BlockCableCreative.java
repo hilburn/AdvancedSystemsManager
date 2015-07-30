@@ -6,7 +6,6 @@ import advancedsystemsmanager.tileentities.TileEntityCreative;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-
 public class BlockCableCreative extends BlockClusterElementBase<TileEntityCreative>
 {
     public BlockCableCreative()

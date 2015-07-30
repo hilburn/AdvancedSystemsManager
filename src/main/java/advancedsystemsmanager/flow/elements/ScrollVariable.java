@@ -3,7 +3,7 @@ package advancedsystemsmanager.flow.elements;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ThemeHandler;

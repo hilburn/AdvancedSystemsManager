@@ -2,8 +2,8 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.gui.ContainerVoid;
-import advancedsystemsmanager.gui.GuiVoid;
+import advancedsystemsmanager.containers.ContainerVoid;
+import advancedsystemsmanager.client.gui.GuiVoid;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.client.gui.GuiScreen;

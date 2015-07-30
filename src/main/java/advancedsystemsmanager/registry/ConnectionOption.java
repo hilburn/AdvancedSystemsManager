@@ -1,7 +1,7 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.theme.ThemeMouseover;
+import advancedsystemsmanager.client.gui.theme.ThemeMouseover;
 import advancedsystemsmanager.reference.Names;
 
 public enum ConnectionOption

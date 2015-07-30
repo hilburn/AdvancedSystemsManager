@@ -3,8 +3,8 @@ package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.gui.ContainerManager;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.containers.ContainerManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;

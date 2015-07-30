@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MenuTargetRF extends MenuTarget

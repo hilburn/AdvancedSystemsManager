@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network;
 
-import advancedsystemsmanager.gui.ContainerBase;
+import advancedsystemsmanager.containers.ContainerBase;
 import advancedsystemsmanager.reference.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
