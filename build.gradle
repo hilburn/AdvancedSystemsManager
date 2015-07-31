@@ -35,11 +35,6 @@ repositories {
         name "Waila Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
-
-    maven {
-        name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release-local"
-    }
     ivy {
         name 'FMP'
         artifactPattern "http://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
@@ -111,4 +106,12 @@ task sourceJar(type: Jar, dependsOn: 'sourceMainJava') {
 
 artifacts {
     archives sourceJar, deobfJar
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "src/api/java"
+        }
+    }
 }
