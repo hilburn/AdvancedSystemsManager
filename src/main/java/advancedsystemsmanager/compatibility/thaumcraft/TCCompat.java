@@ -1,8 +1,8 @@
 package advancedsystemsmanager.compatibility.thaumcraft;
 
+import advancedsystemsmanager.client.gui.GuiBase;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.compatibility.CompatBase;
-import advancedsystemsmanager.gui.GuiBase;
-import advancedsystemsmanager.gui.GuiManager;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;

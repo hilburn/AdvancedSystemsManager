@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.compatibility.thaumcraft.TCCompat;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.setting.AspectSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import thaumcraft.api.aspects.Aspect;
