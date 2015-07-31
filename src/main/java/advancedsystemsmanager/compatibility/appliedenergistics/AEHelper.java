@@ -12,17 +12,36 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.me.GridAccessException;
-import appeng.me.cache.P2PCache;
-import appeng.util.item.AEFluidStack;
-import appeng.util.item.AEItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 
 public class AEHelper
 {
     IActionHost host;
+    private static Method createAEFluidStack;
+    private static Method createAEItemStack;
+
+    static
+    {
+        try
+        {
+            Class AEItemStack = Class.forName("appeng.util.item.AEItemStack");
+            createAEItemStack = AEItemStack.getDeclaredMethod("create", ItemStack.class);
+
+            Class AEFluidStack = Class.forName("appeng.util.item.AEFluidStack");
+            createAEItemStack = AEFluidStack.getDeclaredMethod("create", FluidStack.class);
+        } catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public AEHelper(IActionHost host)
     {
@@ -60,26 +79,6 @@ public class AEHelper
         if (grid == null)
             throw new GridAccessException();
         return grid;
-    }
-
-    /**
-     * Get the {@link P2PCache}
-     *
-     * @return the {@link P2PCache} for the {@link IGridNode}
-     * @throws GridAccessException
-     */
-    public P2PCache getP2P() throws GridAccessException
-    {
-        IGrid grid = getGrid();
-        if (grid == null)
-            throw new GridAccessException();
-
-        P2PCache pg = grid.getCache(P2PCache.class);
-
-        if (pg == null)
-            throw new GridAccessException();
-
-        return pg;
     }
 
     /**
@@ -132,7 +131,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getItemInventory().canAccept(AEItemStack.create(stack));
+            return getStorage().getItemInventory().canAccept(createItemStack(stack));
         } catch (GridAccessException e)
         {
             return false;
@@ -151,7 +150,7 @@ public class AEHelper
         {
             try
             {
-                return getStorage().getItemInventory().injectItems(AEItemStack.create(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
+                return getStorage().getItemInventory().injectItems(createItemStack(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
             } catch (GridAccessException ignored)
             {
             }
@@ -179,7 +178,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getItemInventory().extractItems(AEItemStack.create(stack), Actionable.MODULATE, new MachineSource(host)).getItemStack();
+            return getStorage().getItemInventory().extractItems(createItemStack(stack), Actionable.MODULATE, new MachineSource(host)).getItemStack();
         } catch (GridAccessException e)
         {
             return null;
@@ -207,7 +206,7 @@ public class AEHelper
     }
 
     /**
-     * Extract given {@link appeng.util.item.AEItemStack}
+     * Extract given {@link appeng.api.storage.data.IAEItemStack}
      *
      * @param stack the to extract {@link IAEItemStack}
      * @return the extracted {@link IAEItemStack} can be null
@@ -233,7 +232,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getFluidInventory().canAccept(AEFluidStack.create(stack));
+            return getStorage().getFluidInventory().canAccept(createFluidStack(stack));
         } catch (GridAccessException e)
         {
             return false;
@@ -252,7 +251,7 @@ public class AEHelper
         {
             try
             {
-                return getStorage().getFluidInventory().injectItems(AEFluidStack.create(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
+                return getStorage().getFluidInventory().injectItems(createFluidStack(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
             } catch (GridAccessException ignored)
             {
             }
@@ -270,7 +269,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getFluidInventory().extractItems(AEFluidStack.create(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
+            return getStorage().getFluidInventory().extractItems(createFluidStack(stack), simulate ? Actionable.SIMULATE : Actionable.MODULATE, new MachineSource(host));
         } catch (GridAccessException e)
         {
             return null;
@@ -308,7 +307,7 @@ public class AEHelper
     }
 
     /**
-     * Find an {@link AEItemStack}
+     * Find an IAEItemStack
      *
      * @param stack the {@link ItemStack} to find
      * @return
@@ -317,7 +316,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getItemInventory().getStorageList().findPrecise(AEItemStack.create(stack));
+            return getStorage().getItemInventory().getStorageList().findPrecise(createItemStack(stack));
         } catch (GridAccessException e)
         {
             return null;
@@ -334,7 +333,7 @@ public class AEHelper
     {
         try
         {
-            return getStorage().getFluidInventory().getStorageList().findPrecise(AEFluidStack.create(stack));
+            return getStorage().getFluidInventory().getStorageList().findPrecise(createFluidStack(stack));
         } catch (GridAccessException e)
         {
             return null;
@@ -368,6 +367,28 @@ public class AEHelper
         {
             return getStorage().getFluidInventory().getStorageList().iterator();
         } catch (GridAccessException e)
+        {
+            return null;
+        }
+    }
+    
+    private static IAEFluidStack createFluidStack(FluidStack fluid)
+    {
+        try
+        {
+            return (IAEFluidStack)createAEFluidStack.invoke(null, fluid);
+        } catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    private static IAEItemStack createItemStack(ItemStack stack)
+    {
+        try
+        {
+            return (IAEItemStack)createAEItemStack.invoke(null, stack);
+        } catch (Exception e)
         {
             return null;
         }
