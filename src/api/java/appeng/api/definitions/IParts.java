@@ -66,6 +66,8 @@ public interface IParts
 
 	IItemDefinition annihilationPlane();
 
+	IItemDefinition identityAnnihilationPlane();
+
 	IItemDefinition formationPlane();
 
 	IItemDefinition p2PTunnelME();
@@ -81,6 +83,8 @@ public interface IParts
 	IItemDefinition p2PTunnelRF();
 
 	IItemDefinition p2PTunnelLight();
+
+	IItemDefinition p2PTunnelOpenComputers();
 
 	IItemDefinition cableAnchor();
 

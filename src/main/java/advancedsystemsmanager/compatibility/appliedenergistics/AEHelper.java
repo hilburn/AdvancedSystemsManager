@@ -1,5 +1,6 @@
 package advancedsystemsmanager.compatibility.appliedenergistics;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -15,33 +16,11 @@ import appeng.me.GridAccessException;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
 
 public class AEHelper
 {
     IActionHost host;
-    private static Method createAEFluidStack;
-    private static Method createAEItemStack;
-
-    static
-    {
-        try
-        {
-            Class AEItemStack = Class.forName("appeng.util.item.AEItemStack");
-            createAEItemStack = AEItemStack.getDeclaredMethod("create", ItemStack.class);
-
-            Class AEFluidStack = Class.forName("appeng.util.item.AEFluidStack");
-            createAEItemStack = AEFluidStack.getDeclaredMethod("create", FluidStack.class);
-        } catch (ClassNotFoundException e)
-        {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-    }
 
     public AEHelper(IActionHost host)
     {
@@ -374,23 +353,11 @@ public class AEHelper
     
     private static IAEFluidStack createFluidStack(FluidStack fluid)
     {
-        try
-        {
-            return (IAEFluidStack)createAEFluidStack.invoke(null, fluid);
-        } catch (Exception e)
-        {
-            return null;
-        }
+        return AEApi.instance().storage().createFluidStack(fluid);
     }
 
     private static IAEItemStack createItemStack(ItemStack stack)
     {
-        try
-        {
-            return (IAEItemStack)createAEItemStack.invoke(null, stack);
-        } catch (Exception e)
-        {
-            return null;
-        }
+        return AEApi.instance().storage().createItemStack(stack);
     }
 }
