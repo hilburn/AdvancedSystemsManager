@@ -5,6 +5,7 @@ import advancedsystemsmanager.commands.CommandPastebin;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.Loader;
 import net.minecraftforge.common.config.Configuration;

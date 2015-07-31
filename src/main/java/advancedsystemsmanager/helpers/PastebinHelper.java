@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Threaded
+public class PastebinHelper
 {
 
     private static ClipboardOwner clippy = new ClipboardOwner()
@@ -33,7 +33,7 @@ public class Threaded
         }
     };
 
-    private Threaded()
+    private PastebinHelper()
     {
 
     }

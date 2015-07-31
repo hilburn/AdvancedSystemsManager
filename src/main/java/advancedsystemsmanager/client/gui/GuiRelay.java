@@ -604,7 +604,7 @@ public class GuiRelay extends GuiBase
         dw.writeBoolean(false); //existing
         dw.writeVarIntToBuffer(id);
         dw.writeBoolean(true); //deleted
-        PacketHandler.sendDataToServer(dw);
+        dw.sendServerPacket();
     }
 
     private void removeUser()
@@ -625,7 +625,7 @@ public class GuiRelay extends GuiBase
         dw.writeBoolean(false); //no user data
         dw.writeBoolean(relay.isCreativeMode());
         dw.writeBoolean(relay.doesListRequireOp());
-        PacketHandler.sendDataToServer(dw);
+        dw.sendServerPacket();
     }
 
     private void addUser()
@@ -636,7 +636,7 @@ public class GuiRelay extends GuiBase
         GameProfile user = getUser();
         dw.writeStringToBuffer(user.getName());
         dw.writeUUID(user.getId());
-        PacketHandler.sendDataToServer(dw);
+        dw.sendServerPacket();
     }
 
     private void updateUser(int id)
@@ -649,7 +649,7 @@ public class GuiRelay extends GuiBase
         dw.writeBoolean(false); //update
         dw.writeBoolean(permission.isActive());
         dw.writeBoolean(permission.isOp());
-        PacketHandler.sendDataToServer(dw);
+        dw.sendServerPacket();
     }
 
     private abstract class Button

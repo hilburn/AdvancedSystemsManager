@@ -19,7 +19,6 @@ import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.IInterfaceRenderer;
 import advancedsystemsmanager.client.gui.ManagerButtonList;
-import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Mods;

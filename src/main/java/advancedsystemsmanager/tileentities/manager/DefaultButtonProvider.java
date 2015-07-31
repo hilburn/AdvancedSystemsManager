@@ -5,7 +5,6 @@ import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.helpers.CopyHelper;
-import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;

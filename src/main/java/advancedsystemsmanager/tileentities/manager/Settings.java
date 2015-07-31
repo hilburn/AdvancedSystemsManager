@@ -1,10 +1,10 @@
-package advancedsystemsmanager.helpers;
+package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.client.gui.GuiSettings;
+import advancedsystemsmanager.helpers.ConfigHandler;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -129,10 +129,10 @@ public final class Settings
     {
         if (manager.getWorldObj().isRemote)
         {
-            ASMPacket packet = PacketHandler.getBaseContainerPacket();
+            ASMPacket packet = PacketHandler.getServerPacket();
             packet.writeByte(PacketHandler.SETTING_MESSAGE);
             packet.writeBoolean(limitless);
-            PacketHandler.sendDataToServer(packet);
+            packet.sendServerPacket();
         } else
         {
             int meta = manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord);

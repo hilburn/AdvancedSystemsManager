@@ -10,7 +10,7 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Settings;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
@@ -310,7 +310,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
     @SideOnly(Side.CLIENT)
     public void sendPacketToServer(ASMPacket packet)
     {
-        PacketHandler.sendDataToServer(packet);
+        packet.sendServerPacket();
     }
 
     public static void moveComponents(FlowComponent component, FlowComponent parent, boolean moveCluster)
@@ -1570,7 +1570,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         packet.writeShort(x);
         packet.writeShort(y);
         packet.writeBoolean(moveConnected);
-        PacketHandler.sendDataToServer(packet);
+        packet.sendServerPacket();
     }
 
     public void sendConnectionNodeData(int connectionId, int nodeId, int action, int x, int y)

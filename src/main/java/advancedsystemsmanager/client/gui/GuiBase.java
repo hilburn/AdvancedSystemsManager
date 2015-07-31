@@ -2,7 +2,7 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.client.gui.fonts.FontRenderer;
 import advancedsystemsmanager.containers.ContainerBase;
-import advancedsystemsmanager.helpers.Settings;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;

@@ -5,7 +5,7 @@ import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.helpers.Settings;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -186,7 +186,7 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
     @Override
     public ASMPacket getSyncPacket()
     {
-        return PacketHandler.getBaseContainerPacket();
+        return PacketHandler.getServerPacket();
     }
 
     @Override
