@@ -165,6 +165,9 @@ public class GuiManager extends GuiBase
     @Override
     protected void drawGuiBackground(float partialTick, int mX, int mY)
     {
+        mX = scaleX(mX);
+        mY = scaleY(mY);
+
         drawBackground();
 
         mX -= guiLeft;
