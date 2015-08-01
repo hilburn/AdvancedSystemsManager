@@ -40,8 +40,12 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int GROUP_NODE = 14;
     protected static final int CAMOUFLAGE = 15;
     protected static final int SIGN = 16;
-    protected static final int ASPECT_INPUT = 17;
-    protected static final int ASPECT_OUTPUT = 18;
+    protected static final int RF_INPUT = 17;
+    protected static final int RF_OUTPUT = 18;
+    protected static final int RF_CONDITION = 19;
+    protected static final int ASPECT_INPUT = 22;
+    protected static final int ASPECT_OUTPUT = 23;
+    protected static final int ASPECT_CONDITION = 24;
 
     protected int id;
     protected String name;
@@ -114,7 +118,9 @@ public abstract class CommandBase<Type> implements ICommand
             }
         }
         return result;
-    }    @Override
+    }
+
+    @Override
     public int getId()
     {
         return id;

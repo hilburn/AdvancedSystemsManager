@@ -1,13 +1,15 @@
-package advancedsystemsmanager.flow.menus;
+package advancedsystemsmanager.compatibility.rf.menus;
 
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuTarget;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class MenuTargetRF extends MenuTarget
+public class MenuRFTarget extends MenuTarget
 {
 
-    public MenuTargetRF(FlowComponent parent)
+    public MenuRFTarget(FlowComponent parent)
     {
         super(parent);
     }

@@ -2,13 +2,11 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.execution.ICommand;
+import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectInput;
+import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectOutput;
 import advancedsystemsmanager.flow.execution.commands.*;
-import gnu.trove.map.hash.TIntIntHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class CommandRegistry
@@ -37,7 +35,7 @@ public class CommandRegistry
     {
         if (command.getId() >= commands.length)
         {
-            ICommand[] newCommands = new ICommand[command.getId()];
+            ICommand[] newCommands = new ICommand[command.getId()+5];
             System.arraycopy(commands, 0, newCommands, 0, commands.length);
             commands = newCommands;
         }
@@ -84,8 +82,5 @@ public class CommandRegistry
         registerCommand(NODE = new CommandGroupNode());
         registerCommand(new CommandCamouflage());
         registerCommand(new CommandSign());
-
-        registerCommand(new CommandAspectInput());
-        registerCommand(new CommandAspectOutput());
     }
 }

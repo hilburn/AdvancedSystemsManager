@@ -2,6 +2,8 @@ package advancedsystemsmanager.flow.execution;
 
 import advancedsystemsmanager.api.IConditionStuffMenu;
 import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.compatibility.rf.menus.MenuRFCondition;
+import advancedsystemsmanager.compatibility.rf.menus.MenuRFTarget;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.Variable;
@@ -357,7 +359,7 @@ public class CommandExecutor
 
     public void getValidRFStorage(Menu menu, List<SlotInventoryHolder> cells)
     {
-        MenuTargetRF menuTarget = (MenuTargetRF)menu;
+        MenuRFTarget menuTarget = (MenuRFTarget)menu;
         List<SlotInventoryHolder> result = new ArrayList<SlotInventoryHolder>();
         for (SlotInventoryHolder cell1 : cells)
         {
@@ -407,7 +409,7 @@ public class CommandExecutor
 
     public void getInputRF(Menu menu, List<SlotInventoryHolder> inputStorage)
     {
-        MenuTargetRF menuTarget = (MenuTargetRF)menu;
+        MenuRFTarget menuTarget = (MenuRFTarget)menu;
         List<Integer> validSides = getValidSides(menuTarget);
         for (SlotInventoryHolder anInputStorage : inputStorage)
         {
@@ -428,7 +430,7 @@ public class CommandExecutor
         }
     }
 
-    public List<Integer> getValidSides(MenuTargetRF menuTarget)
+    public List<Integer> getValidSides(MenuRFTarget menuTarget)
     {
         List<Integer> validDirections = new ArrayList<Integer>();
         for (int side = 0; side < MenuTarget.directions.length; ++side)
@@ -443,7 +445,7 @@ public class CommandExecutor
 
     public void insertRF(Menu menu, List<SlotInventoryHolder> outputStorage)
     {
-        MenuTargetRF menuTarget = (MenuTargetRF)menu;
+        MenuRFTarget menuTarget = (MenuRFTarget)menu;
         long bufferSize = 0;
         for (RFBufferElement rfElement : rfBuffer)
             bufferSize += rfElement.getMaxExtract();

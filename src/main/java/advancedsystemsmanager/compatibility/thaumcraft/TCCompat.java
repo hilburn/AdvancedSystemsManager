@@ -1,22 +1,40 @@
 package advancedsystemsmanager.compatibility.thaumcraft;
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.compatibility.CompatBase;
+import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectInput;
+import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectOutput;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.IAspectContainer;
 
 import java.awt.*;
 
 public class TCCompat extends CompatBase
 {
-
+    public static ISystemType ASPECT_CONTAINER;
 
     @Override
     protected void init()
     {
-
+        ASPECT_CONTAINER = SystemTypeRegistry.register(new SystemTypeRegistry.SystemType<IAspectContainer>(Names.TYPE_ASPECT, false)
+        {
+            @Override
+            public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+            {
+                return tileEntity instanceof IAspectContainer;
+            }
+        });
+        CommandRegistry.registerCommand(new CommandAspectInput());
+        CommandRegistry.registerCommand(new CommandAspectOutput());
     }
 
     public static void drawAspect(GuiManager gui, Aspect aspect, int x, int y)

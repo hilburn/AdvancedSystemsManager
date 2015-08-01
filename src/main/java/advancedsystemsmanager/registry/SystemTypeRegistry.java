@@ -23,7 +23,7 @@ import java.util.Set;
 public class SystemTypeRegistry
 {
     private static final List<ISystemType> types = new ArrayList<ISystemType>();
-    public static final ISystemType INVENTORY = register(new SystemType<IInventory>(Names.TYPE_INVENTORY, false)
+    public static final ISystemType INVENTORY = register(new SystemType<IInventory>(Names.TYPE_INVENTORY)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -37,7 +37,7 @@ public class SystemTypeRegistry
             return tileEntity instanceof IInventory ? (IInventory)tileEntity : null;
         }
     });
-    public static final ISystemType TANK = register(new SystemType<IFluidHandler>(Names.TYPE_TANK, false)
+    public static final ISystemType TANK = register(new SystemType<IFluidHandler>(Names.TYPE_TANK)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -51,7 +51,7 @@ public class SystemTypeRegistry
             return tileEntity instanceof IFluidHandler ? (IFluidHandler)tileEntity : ((IInternalTank)tileEntity).getTank();
         }
     });
-    public static final ISystemType EMITTER = register(new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER, false)
+    public static final ISystemType EMITTER = register(new SystemType<IRedstoneEmitter>(Names.TYPE_EMITTER)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -64,7 +64,7 @@ public class SystemTypeRegistry
         {
         }
     });
-    public static final ISystemType RECEIVER = register(new SystemType<IRedstoneReceiver>(Names.TYPE_RECEIVER, false)
+    public static final ISystemType RECEIVER = register(new SystemType<IRedstoneReceiver>(Names.TYPE_RECEIVER)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -86,7 +86,7 @@ public class SystemTypeRegistry
             return parent.getConnectionSet() == ConnectionSet.REDSTONE;
         }
     });
-    public static final ISystemType NODE = register(new SystemType<IRedstoneNode>(Names.TYPE_NODE, true)
+    public static final ISystemType NODE = register(new SystemType<IRedstoneNode>(Names.TYPE_NODE)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -114,7 +114,7 @@ public class SystemTypeRegistry
             return types.contains(EMITTER) || types.contains(RECEIVER);
         }
     });
-    public static final ISystemType BUD = register(new SystemType<TileEntityBUD>(Names.TYPE_BUD, false)
+    public static final ISystemType BUD = register(new SystemType<TileEntityBUD>(Names.TYPE_BUD)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -135,7 +135,7 @@ public class SystemTypeRegistry
             radioButtonsMulti.add(new RadioButton(1, Names.REQUIRE_ONE_TARGET));
         }
     });
-    public static final ISystemType CAMOUFLAGE = register(new SystemType<TileEntityCamouflage>(Names.TYPE_CAMOUFLAGE, false)
+    public static final ISystemType CAMOUFLAGE = register(new SystemType<TileEntityCamouflage>(Names.TYPE_CAMOUFLAGE)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
@@ -148,29 +148,15 @@ public class SystemTypeRegistry
         {
         }
     });
-    public static final ISystemType SIGN = register(new SystemType<TileEntitySignUpdater>(Names.TYPE_SIGN, false)
+    public static final ISystemType SIGN = register(new SystemType<TileEntitySignUpdater>(Names.TYPE_SIGN)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
         {
             return tileEntity instanceof TileEntitySignUpdater;
         }
-
-        @Override
-        public void initRadioButtons(RadioButtonList radioButtonsMulti)
-        {
-            super.initRadioButtons(radioButtonsMulti);
-        }
     });
-    public static final ISystemType ASPECT_CONTAINER = register(new SystemType<IAspectContainer>(Names.TYPE_ASPECT, false)
-    {
-        @Override
-        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
-        {
-            return tileEntity instanceof IAspectContainer;
-        }
-    });
-    public static final ISystemType VARIABLE = new SystemType(Names.TYPE_VARIABLE, false)
+    public static final ISystemType VARIABLE = new SystemType(Names.TYPE_VARIABLE)
     {
 
         @Override
@@ -207,7 +193,12 @@ public class SystemTypeRegistry
 
         private boolean group;
 
-        private SystemType(String name, boolean group)
+        public SystemType(String name)
+        {
+            this(name, false);
+        }
+
+        public SystemType(String name, boolean group)
         {
             this.name = name;
             this.group = group;
@@ -248,8 +239,13 @@ public class SystemTypeRegistry
         {
             if (container.selectedInventories.isEmpty() && container.isVisible())
             {
-                errors.add(name + "Error");
+                errors.add(getErrorName());
             }
+        }
+
+        protected String getErrorName()
+        {
+            return name + "Error";
         }
 
         @Override

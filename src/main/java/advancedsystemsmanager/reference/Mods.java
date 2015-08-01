@@ -26,7 +26,6 @@ public class Mods
     public static final String COMPUTERCRAFT_TURTLE = "CCTurtle";
     public static final String COFHCORE = "CoFHCore";
     public static final String COFH_ENERGY = "CoFHAPI|energy";
-    public static final String COFH_BLOCK = "CoFH|block";
     public static final String CRYSTALWING = "CrystalWing";
     public static final String DIRECTIONHUD = "DirectionHUD";
     public static final String DENSEORES = "denseores";

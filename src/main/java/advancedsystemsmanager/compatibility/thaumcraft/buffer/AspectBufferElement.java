@@ -1,6 +1,7 @@
-package advancedsystemsmanager.flow.execution.buffers.elements;
+package advancedsystemsmanager.compatibility.thaumcraft.buffer;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.flow.execution.buffers.elements.BufferElementBase;
 import advancedsystemsmanager.flow.setting.Setting;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.IAspectContainer;

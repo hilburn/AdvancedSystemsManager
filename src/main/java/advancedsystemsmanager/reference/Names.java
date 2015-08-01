@@ -49,13 +49,12 @@ public class Names
     public static final String SIGN = GUI_PREFIX + "Sign";
     public static final String ASPECT_INPUT = GUI_PREFIX + "AspectInput";
     public static final String ASPECT_OUTPUT = GUI_PREFIX + "AspectOutput";
+    public static final String RF_CONDITION = GUI_PREFIX + "RfCondition";
+    public static final String RF_AMOUNT = GUI_PREFIX + "RfAmountMenu";
+    public static final String RF_CONDITION_MENU = GUI_PREFIX + "RfConditionMenu";
+    public static final String RF_STORAGE = GUI_PREFIX + "RfStorage";
     public static final String RF_INPUT = GUI_PREFIX + "RfInput";
     public static final String RF_OUTPUT = GUI_PREFIX + "RfOutput";
-    public static final String RF_CONDITION = GUI_PREFIX + "RfCondition";
-    public static final String RF_CONDITION_MENU = GUI_PREFIX + "RfConditionMenu";
-    public static final String TYPE_RF = GUI_PREFIX + "TypeRf";
-    public static final String TYPE_RF_INPUT = GUI_PREFIX + "TypeRfInput";
-    public static final String TYPE_RF_OUTPUT = GUI_PREFIX + "TypeRfOutput";
     public static final String RF_CONDITION_INFO = GUI_PREFIX + "RfConditionInfo";
     public static final String RF_CONDITION_ERROR = GUI_PREFIX + "RfConditionError";
     public static final String NO_RF_ERROR = GUI_PREFIX + "NoRfError";

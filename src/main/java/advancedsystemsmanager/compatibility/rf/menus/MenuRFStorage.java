@@ -1,7 +1,8 @@
-package advancedsystemsmanager.flow.menus;
+package advancedsystemsmanager.compatibility.rf.menus;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.menus.MenuContainer;
 
 import java.util.HashSet;
 import java.util.Set;

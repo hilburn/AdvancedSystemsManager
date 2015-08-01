@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-@Optional.Interface(iface = "cofh.api.block.IDismantleable", modid = Mods.COFH_BLOCK)
+@Optional.Interface(iface = "cofh.api.block.IDismantleable", modid = Mods.COFHCORE)
 public class BlockBase extends Block implements IDismantleable
 {
     @SideOnly(Side.CLIENT)
@@ -77,7 +77,7 @@ public class BlockBase extends Block implements IDismantleable
     }
 
     @Override
-    @Optional.Method(modid = Mods.COFH_BLOCK)
+    @Optional.Method(modid = Mods.COFHCORE)
     public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock)
     {
         ArrayList<ItemStack> list = getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
@@ -89,7 +89,7 @@ public class BlockBase extends Block implements IDismantleable
     }
 
     @Override
-    @Optional.Method(modid = Mods.COFH_BLOCK)
+    @Optional.Method(modid = Mods.COFHCORE)
     public boolean canDismantle(EntityPlayer entityPlayer, World world, int x, int y, int z)
     {
         return entityPlayer.isSneaking();

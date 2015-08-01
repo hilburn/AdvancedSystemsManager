@@ -1,4 +1,4 @@
-package advancedsystemsmanager.compatibility.appliedenergistics;
+package advancedsystemsmanager.compatibility.appliedenergistics.buffer;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.Key;

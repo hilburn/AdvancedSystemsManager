@@ -1,11 +1,13 @@
-package advancedsystemsmanager.flow.execution.commands;
+package advancedsystemsmanager.compatibility.thaumcraft.commands;
 
 import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.Key;
+import advancedsystemsmanager.compatibility.thaumcraft.TCCompat;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.execution.commands.CommandOutput;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuAspect;
+import advancedsystemsmanager.compatibility.thaumcraft.menus.MenuAspect;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
@@ -48,7 +50,6 @@ public class CommandAspectOutput extends CommandOutput<Aspect>
                     if (aspectBufferElement.getSizeLeft() == 0)
                         aspectBufferElement.remove();
                 }
-
             }
         }
     }
@@ -56,7 +57,7 @@ public class CommandAspectOutput extends CommandOutput<Aspect>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuContainer(component, SystemTypeRegistry.ASPECT_CONTAINER));
+        menus.add(new MenuContainer(component, TCCompat.ASPECT_CONTAINER));
         menus.add(new MenuAspect(component, false));
     }
 }

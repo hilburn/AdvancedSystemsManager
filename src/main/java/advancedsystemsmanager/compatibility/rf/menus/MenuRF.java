@@ -1,7 +1,8 @@
-package advancedsystemsmanager.flow.menus;
+package advancedsystemsmanager.compatibility.rf.menus;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import advancedsystemsmanager.util.SystemCoord;
@@ -10,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public abstract class MenuRF extends MenuContainer
+public class MenuRF extends MenuContainer
 {
     public MenuRF(FlowComponent parent, ISystemType validType)
     {
@@ -24,16 +25,6 @@ public abstract class MenuRF extends MenuContainer
             if (block.getTileEntity() == node) return getSelectedInventories().contains(block.getId());
         }
         return false;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addErrors(List<String> errors)
-    {
-        if (this.selectedInventories.isEmpty() && this.isVisible())
-        {
-            errors.add(Names.NO_RF_ERROR);
-        }
     }
 
     public void updateConnectedNodes()

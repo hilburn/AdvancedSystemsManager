@@ -2,6 +2,18 @@ package advancedsystemsmanager.compatibility.rf;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.compatibility.CompatBase;
+import advancedsystemsmanager.compatibility.rf.commands.CommandRFInput;
+import advancedsystemsmanager.compatibility.rf.commands.CommandRFOutput;
+import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.registry.SystemTypeRegistry;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import cofh.api.energy.IEnergyConnection;
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+import net.minecraft.tileentity.TileEntity;
+
+import java.util.Set;
 
 public class RFCompat extends CompatBase
 {
@@ -12,10 +24,56 @@ public class RFCompat extends CompatBase
     @Override
     protected void init()
     {
-//        if (BlockRegistry.cableRFNode != null)
-//            ClusterRegistry.register(TileEntityRFNode.class, BlockRegistry.cableRFNode);
-//        StevesEnum.RF_INPUT = StevesEnum.addComponentType(17, ICommand.CommandType.INPUT, StevesEnum.RF_INPUT_SHORT, StevesEnum.RF_INPUT_LONG, new ConnectionSet[]{ConnectionSet.STANDARD}, MenuRFInput.class, MenuTargetRF.class, MenuResult.class);
-//        StevesEnum.RF_OUTPUT = StevesEnum.addComponentType(18, ICommand.CommandType.OUTPUT, StevesEnum.RF_OUTPUT_SHORT, StevesEnum.RF_OUTPUT_LONG, new ConnectionSet[]{ConnectionSet.STANDARD}, MenuRFOutput.class, MenuTargetRF.class, MenuResult.class);
-//        StevesEnum.RF_CONDITION = StevesEnum.addComponentType(19, ICommand.CommandType.COMMAND_CONTROL, StevesEnum.RF_CONDITION_SHORT, StevesEnum.RF_CONDITION_LONG, new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION}, MenuRFStorage.class, MenuTargetRF.class, MenuRFCondition.class, MenuResult.class);
+        RF_PROVIDER = SystemTypeRegistry.register(new SystemTypeRegistry.SystemType<IEnergyProvider>(Names.RF_INPUT)
+        {
+            @Override
+            public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+            {
+                return tileEntity instanceof IEnergyProvider;
+            }
+
+            @Override
+            protected String getErrorName()
+            {
+                return Names.NO_RF_ERROR;
+            }
+        });
+        RF_RECEIVER = SystemTypeRegistry.register(new SystemTypeRegistry.SystemType<IEnergyReceiver>(Names.RF_OUTPUT)
+        {
+            @Override
+            public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+            {
+                return tileEntity instanceof IEnergyReceiver;
+            }
+
+            @Override
+            protected String getErrorName()
+            {
+                return Names.NO_RF_ERROR;
+            }
+        });
+        RF_STORAGE = SystemTypeRegistry.register(new SystemTypeRegistry.SystemType<IEnergyConnection>(Names.RF_STORAGE)
+        {
+            @Override
+            public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+            {
+                return tileEntity instanceof IEnergyProvider;
+            }
+
+            @Override
+            public boolean containsGroup(Set<ISystemType> types)
+            {
+                return types.contains(RF_RECEIVER) || types.contains(RF_PROVIDER);
+            }
+
+            @Override
+            protected String getErrorName()
+            {
+                return Names.NO_RF_ERROR;
+            }
+        });
+        CommandRegistry.registerCommand(new CommandRFInput());
+        CommandRegistry.registerCommand(new CommandRFOutput());
+//        StevesEnum.RF_CONDITION = StevesEnum.addComponentType(19, ICommand.CommandType.COMMAND_CONTROL, StevesEnum.RF_CONDITION_SHORT, StevesEnum.RF_CONDITION_LONG, new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION}, MenuRFStorage.class, MenuRFTarget.class, MenuRFCondition.class, MenuResult.class);
     }
 }

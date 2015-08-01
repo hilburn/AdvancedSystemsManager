@@ -1,5 +1,6 @@
-package advancedsystemsmanager.flow.setting;
+package advancedsystemsmanager.compatibility.thaumcraft.setting;
 
+import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.nbt.NBTTagCompound;
