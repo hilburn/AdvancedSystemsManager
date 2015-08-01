@@ -3,7 +3,7 @@ package advancedsystemsmanager.items;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
-import advancedsystemsmanager.gui.GuiLabeler;
+import advancedsystemsmanager.client.gui.GuiLabeler;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;

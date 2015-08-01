@@ -5,8 +5,8 @@ import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.gui.ContainerBase;
-import advancedsystemsmanager.gui.ContainerManager;
+import advancedsystemsmanager.containers.ContainerBase;
+import advancedsystemsmanager.containers.ContainerManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -32,34 +32,34 @@ public class PacketHandler
 
     public static void sendAllData(Container container, ICrafting crafting, ITileInterfaceProvider te)
     {
-        ASMPacket dw = new ASMPacket();
+        ASMPacket packet = new ASMPacket();
 
-        dw.writeByte(CONTAINER);
-        dw.writeByte(container.windowId);
-        te.writeData(dw);
+        packet.writeByte(CONTAINER);
+        packet.writeByte(container.windowId);
+        te.writeData(packet);
 
-        sendDataToPlayer(crafting, dw);
+        sendDataToPlayer(crafting, packet);
     }
 
-    public static void sendDataToPlayer(ICrafting crafting, ASMPacket dw)
+    public static void sendDataToPlayer(ICrafting crafting, ASMPacket packet)
     {
         if (crafting instanceof EntityPlayerMP)
         {
             EntityPlayerMP player = (EntityPlayerMP)crafting;
 
-            dw.sendPlayerPacket(player);
+            packet.sendPlayerPacket(player);
         }
     }
 
     public static ASMPacket getWriterForUpdate(Container container)
     {
-        ASMPacket dw = new ASMPacket();
+        ASMPacket packet = new ASMPacket();
 
-        dw.writeByte(CONTAINER);
-        dw.writeByte(container.windowId);
-        dw.writeBoolean(true); //updated data
+        packet.writeByte(CONTAINER);
+        packet.writeByte(container.windowId);
+        packet.writeBoolean(true); //updated data
 
-        return dw;
+        return packet;
     }
 
     public static ASMPacket getCommandPacket()
@@ -69,32 +69,24 @@ public class PacketHandler
         return packet;
     }
 
-    @SideOnly(Side.CLIENT)
-    public static ASMPacket getBaseContainerPacket()
-    {
-        Container container = Minecraft.getMinecraft().thePlayer.openContainer;
-        if (container != null) return getContainerPacket(container);
-        return null;
-    }
-
     public static ASMPacket getContainerPacket(Container container)
     {
-        ASMPacket dw = new ASMPacket();
-        dw.writeByte(CONTAINER);
-        dw.writeByte(container.windowId);
-        return dw;
+        ASMPacket packet = new ASMPacket();
+        packet.writeByte(CONTAINER);
+        packet.writeByte(container.windowId);
+        return packet;
     }
 
-    public static void sendDataToListeningClients(ContainerBase container, ASMPacket dw)
+    public static void sendDataToListeningClients(ContainerBase container, ASMPacket packet)
     {
-        dw.sendPlayerPackets(true, container);
+        packet.sendPlayerPackets(true, container);
     }
 
     public static ASMPacket getComponentPacket(FlowComponent component)
     {
-        ASMPacket dw = PacketHandler.getServerPacket();
-        createComponentPacket(dw, component);
-        return dw;
+        ASMPacket packet = PacketHandler.getServerPacket();
+        createComponentPacket(packet, component);
+        return packet;
     }
 
     @SideOnly(Side.CLIENT)
@@ -104,17 +96,17 @@ public class PacketHandler
         return getContainerPacket(container);
     }
 
-    private static void createComponentPacket(ASMPacket dw, FlowComponent component)
+    private static void createComponentPacket(ASMPacket packet, FlowComponent component)
     {
-        dw.writeByte(SYNC_COMPONENT);
-        dw.writeVarIntToBuffer(component.getId());
+        packet.writeByte(SYNC_COMPONENT);
+        packet.writeVarIntToBuffer(component.getId());
     }
 
     public static ASMPacket getWriterForClientComponentPacket(ContainerManager container, FlowComponent component, Menu menu)
     {
-        ASMPacket dw = PacketHandler.getContainerPacket(container);
-        createComponentPacket(dw, component);
-        return dw;
+        ASMPacket packet = PacketHandler.getContainerPacket(container);
+        createComponentPacket(packet, component);
+        return packet;
     }
 
     public static void sendBlockPacket(IPacketBlock block, EntityPlayer player, int id)
@@ -140,15 +132,15 @@ public class PacketHandler
 
     public static ASMPacket constructBlockPacket(TileEntity te, IPacketBlock block, int id)
     {
-        ASMPacket dw = new ASMPacket(20);
-        dw.writeByte(BLOCK);
-        dw.writeInt(te.xCoord);
-        dw.writeByte(te.yCoord);
-        dw.writeInt(te.zCoord);
-        dw.writeByte(id);
+        ASMPacket packet = new ASMPacket(20);
+        packet.writeByte(BLOCK);
+        packet.writeInt(te.xCoord);
+        packet.writeByte(te.yCoord);
+        packet.writeInt(te.zCoord);
+        packet.writeByte(id);
 
-        block.writeData(dw, id);
-        return dw;
+        block.writeData(packet, id);
+        return packet;
     }
 
     public static void sendButtonPacket(int index, IManagerButton button)
@@ -157,12 +149,12 @@ public class PacketHandler
         packet.writeByte(BUTTON_CLICK);
         packet.writeByte(index);
         if (button.writeData(packet))
-            PacketHandler.sendDataToServer(packet);
+            packet.sendServerPacket();
     }
 
-    public static void sendDataToServer(ASMPacket dw)
+    public static void sendDataToServer(ASMPacket packet)
     {
-        dw.sendServerPacket();
+        packet.sendServerPacket();
     }
 
     public static void sendVariablePacket(int colour)

@@ -11,6 +11,28 @@
     "Text": "#ffffff",
     "Type": "#c6c6c6",
     "Menu Area": "#dcdcdc",
+    "Commands": {
+      "Trigger": "#c6c6c6",
+      "Input": "#80b093",
+      "Output": "#80b093",
+      "Condition": "#80b093",
+      "Flow": "#c6c6c6",
+      "Input (L)": "#809bb0",
+      "Output (L)": "#809bb0",
+      "Condition (L)": "#809bb0",
+      "Emitter": "#b08080",
+      "Condition (R)": "#b08080",
+      "Variable": "#b0a380",
+      "For Each": "#b0a380",
+      "Group": "#80b0ac",
+      "Node": "#80b0ac",
+      "Camouflage": "#4a5150",
+      "Sign": "#9b9570",
+      "Input (RF)": "#b08080",
+      "Output (RF)": "#b08080",
+      "Input (A)": "#b080af",
+      "Output (A)": "#b080af"
+    },
     "Connections": {
       "Input": {
         "Colour": "#2b798c",
@@ -28,28 +50,12 @@
     "Connection Nodes": {
       "Colour": "#949494",
       "Mouseover": "#d4d4d4"
-    },
-    "Commands": {
-	  "Trigger": "#c6c6c6",
-	  "Input": "#80b093",
-	  "Output": "#80b093",
-	  "Flow": "#c6c6c6",
-	  "Input (L)": "#809bb0",
-	  "Output (L)": "#809bb0",
-	  "Emitter": "#b08080",
-	  "Condition (R)": "#b08080",
-	  "Variable": "#b0a380",
-	  "For Each": "#b0a380",
-	  "Group": "#80b0ac",
-	  "Node": "#80b0ac",
-	  "Camouflage": "#4a5150",
-	  "Sign": "#9b9570"
     }
   },
   "Menus": {
     "Title Background": "#dcdcdc",
     "Selected Title Background": "#a2a2a2",
-	"Title Text": "#404040",
+    "Title Text": "#404040",
     "Open Menu Background": "#00000000",
     "Checkboxes": {
       "Base Colour": "#bfbfbf",

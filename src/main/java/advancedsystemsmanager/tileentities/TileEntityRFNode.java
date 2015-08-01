@@ -2,11 +2,11 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
+import advancedsystemsmanager.compatibility.rf.RFCompat;
+import advancedsystemsmanager.compatibility.rf.menus.MenuRFTarget;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.flow.menus.MenuRF;
-import advancedsystemsmanager.flow.menus.MenuRFInput;
-import advancedsystemsmanager.flow.menus.MenuTargetRF;
+import advancedsystemsmanager.compatibility.rf.menus.MenuRF;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -176,8 +176,8 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         {
             for (FlowComponent component : components)
             {
-                boolean[] array = getSides(component.getMenus().get(0) instanceof MenuRFInput);
-                MenuTargetRF target = (MenuTargetRF)component.getMenus().get(1);
+                boolean[] array = getSides(component.getType() == RFCompat.RF_PROVIDER);
+                MenuRFTarget target = (MenuRFTarget)component.getMenus().get(1);
                 for (int i = 0; i < 6; i++)
                 {
                     boolean active = target.isActive(i);

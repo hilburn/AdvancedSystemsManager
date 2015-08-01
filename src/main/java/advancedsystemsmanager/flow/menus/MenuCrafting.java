@@ -5,7 +5,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.CraftingDummy;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;

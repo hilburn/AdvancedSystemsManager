@@ -6,7 +6,6 @@ import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuCraftingPriority;
 import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.menus.MenuTarget;
-import advancedsystemsmanager.helpers.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import net.minecraft.util.ResourceLocation;

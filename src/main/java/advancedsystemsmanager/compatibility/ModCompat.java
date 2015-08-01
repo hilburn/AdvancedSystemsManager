@@ -30,7 +30,7 @@ public enum ModCompat
         this("minecraft", "Minecraft", compatClass, true);
     }
 
-    private ModCompat(String modId, String modName, CompatBase compatClass, boolean loaded)
+    ModCompat(String modId, String modName, CompatBase compatClass, boolean loaded)
     {
         this.modId = modId;
         this.modName = modName;

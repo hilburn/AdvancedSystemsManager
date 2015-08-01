@@ -1,6 +1,6 @@
 package advancedsystemsmanager.commands;
 
-import advancedsystemsmanager.helpers.Threaded;
+import advancedsystemsmanager.helpers.PastebinHelper;
 import advancedsystemsmanager.items.ItemDuplicator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
@@ -45,7 +45,7 @@ public class CommandPastebin extends CommandDuplicator
             {
                 if (ItemDuplicator.validateNBT(duplicator) && duplicator.hasTagCompound())
                 {
-                    new Thread(new Threaded.Put(duplicator, sender, arguments)).start();
+                    new Thread(new PastebinHelper.Put(duplicator, sender, arguments)).start();
                 } else
                 {
                     throw new CommandException("asm.command.nothingToSave");
@@ -56,7 +56,7 @@ public class CommandPastebin extends CommandDuplicator
                 {
                     throw new WrongUsageException("stevesaddons.command." + getCommandName() + ".syntax");
                 }
-                new Thread(new Threaded.Set(duplicator, sender, arguments)).start();
+                new Thread(new PastebinHelper.Set(duplicator, sender, arguments)).start();
             } else
             {
                 throw new WrongUsageException("asm.command." + getCommandName() + ".syntax");

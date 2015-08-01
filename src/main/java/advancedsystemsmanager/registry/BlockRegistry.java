@@ -1,6 +1,7 @@
 package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.blocks.*;
+import advancedsystemsmanager.client.render.RenderCamouflage;
 import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
@@ -62,7 +63,7 @@ public class BlockRegistry
     public static BlockCableRF cableRFNode;
 //    @ConfigKey(Names.CABLE_TC)
 //    @Register(tileEntity = TileEntityTCNode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_TC, dependency = Mods.THAUMCRAFT)
-//    public static BlockCableTC cableTCNode; // TODO add recipe
+//    public static BlockCableTC cableTCNode; // TODO add recipe and find uss
 
 
     public static void registerRecipes()

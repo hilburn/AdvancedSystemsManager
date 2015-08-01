@@ -12,7 +12,7 @@ public interface IBuffer<Type>
     public static final String FLUID = "fluid";
     public static final String RF = "rf";
     public static final String GAS = "gas";
-    public static final String ESSENTIA = "essentia";
+    public static final String ASPECT = "aspect";
 
     boolean contains(Type type);
 

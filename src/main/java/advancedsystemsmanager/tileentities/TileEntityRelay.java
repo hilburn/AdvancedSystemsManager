@@ -1,8 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.gui.ContainerRelay;
-import advancedsystemsmanager.gui.GuiRelay;
+import advancedsystemsmanager.containers.ContainerRelay;
+import advancedsystemsmanager.client.gui.GuiRelay;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
@@ -237,11 +237,11 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1));
             if (entities != null)
             {
-                double closest = -1;
+                double closest = Double.MAX_VALUE;
                 for (Entity entity : entities)
                 {
                     double distance = entity.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                    if (isEntityValid(entity, type, id) && (closest == -1 || distance < closest))
+                    if (isEntityValid(entity, type, id) && distance < closest)
                     {
                         closest = distance;
                         cachedEntities[id] = entity;
@@ -321,8 +321,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
                 }
             }
         }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -676,7 +675,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
     @Override
     public boolean readData(ASMPacket buf, EntityPlayer player)
     {
-        readContentFromNBT(ByteBufUtils.readTag(buf));
+        readUpdatedData(buf, player);
         return false;
     }
 

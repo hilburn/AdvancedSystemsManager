@@ -1,13 +1,11 @@
 package advancedsystemsmanager.blocks;
 
-
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityValve;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-//This is indeed not a subclass to the cable, you can't relay signals through this block
 public class BlockCableValve extends BlockCableDirectionAdvanced<TileEntityValve>
 {
 
@@ -21,7 +19,6 @@ public class BlockCableValve extends BlockCableDirectionAdvanced<TileEntityValve
     {
         return new TileEntityValve();
     }
-
 
     @Override
     protected String getFrontTextureName(boolean isAdvanced)

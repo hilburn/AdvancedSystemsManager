@@ -3,7 +3,7 @@ package advancedsystemsmanager;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.flow.setting.ModItemHelper;
-import advancedsystemsmanager.gui.GuiHandler;
+import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.helpers.ConfigHandler;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;

@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-
 public class BlockCableCamouflages extends BlockCamouflageBase
 {
 

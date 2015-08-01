@@ -25,7 +25,6 @@ public class BlockCableInput extends BlockClusterElementBase<TileEntityReceiver>
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
         super.onNeighborBlockChange(world, x, y, z, block);
-
         updateRedstone(world, x, y, z);
     }
 
@@ -33,7 +32,6 @@ public class BlockCableInput extends BlockClusterElementBase<TileEntityReceiver>
     public void onBlockAdded(World world, int x, int y, int z)
     {
         super.onBlockAdded(world, x, y, z);
-
         updateRedstone(world, x, y, z);
     }
 

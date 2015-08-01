@@ -2,7 +2,7 @@ package advancedsystemsmanager.network;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.commands.ParentCommand;
-import advancedsystemsmanager.gui.ContainerBase;
+import advancedsystemsmanager.containers.ContainerBase;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;

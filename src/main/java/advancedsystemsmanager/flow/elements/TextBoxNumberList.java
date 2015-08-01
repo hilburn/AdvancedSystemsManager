@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.elements;
 
-import advancedsystemsmanager.gui.GuiBase;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -32,9 +32,7 @@ public class TextBoxNumberList
         {
             if (textBox.isVisible())
             {
-
                 gui.drawTextBox(textBox.getX(), textBox.getY(), textBox.getWidth(), TEXT_BOX_SIZE_H, TEXT_BOX_SRC_X, TEXT_BOX_SRC_Y, TEXT_BOX_SIZE_U, TEXT_BOX_SIZE_V, (textBox.equals(selectedTextBox)? ThemeHandler.theme.menus.textBoxes.selected : ThemeHandler.theme.menus.textBoxes.background).getColour(), ThemeHandler.theme.menus.textBoxes.border.getColour());
-
                 String str = String.valueOf(textBox.getNumber());
                 gui.drawCenteredString(str, textBox.getX(), textBox.getY() + textBox.getTextY(), textBox.getTextSize(), textBox.getWidth(), 0xFFFFFF);
             }

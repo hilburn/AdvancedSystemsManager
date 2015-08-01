@@ -1,5 +1,6 @@
 package advancedsystemsmanager.api.execution;
 
+import cofh.api.energy.IEnergyProvider;
 import net.minecraft.item.ItemStack;
 
 public class Key<Type>
@@ -53,6 +54,29 @@ public class Key<Type>
         public boolean equals(Object obj)
         {
             return obj instanceof ItemKey && key.isItemEqual(((ItemKey)obj).key);
+        }
+    }
+
+    public static class RFKey extends Key<Integer>
+    {
+        IEnergyProvider source;
+
+        public RFKey(IEnergyProvider source, int id)
+        {
+            super(id);
+        }
+
+        @Override
+        void setHashCode(Integer key)
+        {
+            super.setHashCode(key);
+            hashCode |= source.hashCode() << 5;
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            return obj instanceof RFKey && source == ((RFKey) obj).source;
         }
     }
 }

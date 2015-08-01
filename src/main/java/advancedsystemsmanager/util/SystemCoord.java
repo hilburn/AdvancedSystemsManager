@@ -5,7 +5,7 @@ import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;

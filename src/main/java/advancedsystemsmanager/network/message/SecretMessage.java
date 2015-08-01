@@ -1,6 +1,6 @@
 package advancedsystemsmanager.network.message;
 
-import advancedsystemsmanager.gui.ContainerBase;
+import advancedsystemsmanager.containers.ContainerBase;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

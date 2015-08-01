@@ -40,8 +40,11 @@ public class JabbaCompat extends CompatBase
 
     public void registerWithDolly(Class<? extends TileEntity> tileEntity)
     {
-        extensions.add(tileEntity);
-        extensionsNames.add(tileEntity.getSimpleName());
-        map.put(tileEntity.getSimpleName(), tileEntity);
+        if (extensions != null)
+        {
+            extensions.add(tileEntity);
+            extensionsNames.add(tileEntity.getSimpleName());
+            map.put(tileEntity.getSimpleName(), tileEntity);
+        }
     }
 }

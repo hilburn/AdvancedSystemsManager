@@ -12,7 +12,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-
 public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEntityCamouflage>
 {
     public static int RENDER_ID;
@@ -37,7 +36,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     public boolean getBlocksMovement(IBlockAccess world, int x, int y, int z)
     {
         TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
-
         return camouflage == null || camouflage.isNormalBlock();
     }
 
@@ -63,7 +61,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
         TileEntityCamouflage te = getTileEntity(world, x, y, z);
-
         if (te != null)
         {
             IIcon icon = te.getIconWithDefault(world, x, y, z, this, side, false);
@@ -73,7 +70,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
                 return icon;
             }
         }
-
         return getDefaultIcon(side, world.getBlockMetadata(x, y, z), 0);
     }
 
@@ -84,8 +80,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         {
             return null;
         }
-
-
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
@@ -97,7 +91,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         {
             setBlockBounds(0, 0, 0, 0, 0, 0);
         }
-
         return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
 
@@ -114,7 +107,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         {
             setBlockBounds(0, 0, 0, 0, 0, 0);
         }
-
         return super.collisionRayTrace(world, x, y, z, start, end);
     }
 
