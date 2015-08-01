@@ -391,7 +391,7 @@ public class MenuContainer extends Menu implements IPacketSync
                 @SideOnly(Side.CLIENT)
                 public boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
                 {
-                    if (CollisionHelper.inBounds(x, y, 16, 16, mX, mY))
+                    if (CollisionHelper.inBounds(x-2, y+24, 16, 16, mX, mY)) // TODO find a reason for these offsets
                     {
                         List<String> itemText = itemTexts[direction.ordinal()];
                         if (itemText != null)
