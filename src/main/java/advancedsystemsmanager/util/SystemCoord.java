@@ -308,6 +308,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         return tileEntity;
     }
 
+    public int getComparatorOutput(int side)
+    {
+        return world.getBlock(x, y, z).getComparatorInputOverride(world, x, y, z, side);
+    }
+
     public void setTileEntity(TileEntity tileEntity)
     {
         this.tileEntity = tileEntity;

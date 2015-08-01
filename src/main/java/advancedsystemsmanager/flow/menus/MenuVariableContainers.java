@@ -8,7 +8,6 @@ import advancedsystemsmanager.registry.SystemTypeRegistry;
 import java.util.HashSet;
 import java.util.Set;
 
-
 public class MenuVariableContainers extends MenuContainer
 {
     public MenuVariableContainers(FlowComponent parent)
