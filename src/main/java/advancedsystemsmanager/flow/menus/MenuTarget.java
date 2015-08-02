@@ -51,7 +51,7 @@ public abstract class MenuTarget extends Menu
     public MenuTarget(FlowComponent parent)
     {
         super(parent);
-        buttons = new Button[]{new Button(parent, 5)
+        Button first = new Button(parent, 5)
         {
             @Override
             public String getLabel()
@@ -74,8 +74,10 @@ public abstract class MenuTarget extends Menu
                 activatedDirections[data >> 1] = (data & 1) == 1;
                 return false;
             }
-        },
-                getSecondButton()};
+        };
+        Button second = getSecondButton();
+        buttons = second == null ? new Button[]{first} : new Button[]{first, second};
+
         selectedDirectionId = -1;
 
     }

@@ -64,13 +64,14 @@ public class Key<Type>
         public RFKey(IEnergyProvider source, int id)
         {
             super(id);
+            this.source = source;
+            hashCode |= source.hashCode() << 5;
         }
 
         @Override
         void setHashCode(Integer key)
         {
-            super.setHashCode(key);
-            hashCode |= source.hashCode() << 5;
+            hashCode = key;
         }
 
         @Override

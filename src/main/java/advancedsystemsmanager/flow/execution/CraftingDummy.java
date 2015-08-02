@@ -1,6 +1,5 @@
 package advancedsystemsmanager.flow.execution;
 
-
 import advancedsystemsmanager.flow.menus.MenuCrafting;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.ItemSetting;
@@ -23,7 +22,6 @@ public class CraftingDummy extends InventoryCrafting
     {
         super(null, 3, 3);
         inventoryWidth = 3;
-
         this.crafting = crafting;
     }
 
@@ -37,7 +35,9 @@ public class CraftingDummy extends InventoryCrafting
         {
             this.overrideMap = null;
         }
-    }    @Override
+    }
+
+    @Override
     public int getSizeInventory()
     {
         return 9;
@@ -63,7 +63,9 @@ public class CraftingDummy extends InventoryCrafting
         }
 
         return null;
-    }    @Override
+    }
+
+    @Override
     public ItemStack getStackInSlot(int id)
     {
         if (overrideMap != null && overrideMap.get(id) != null && overrideMap.get(id).stackSize > 0)
@@ -90,7 +92,9 @@ public class CraftingDummy extends InventoryCrafting
         ItemStack itemStack = recipe.getCraftingResult(this);
         this.overrideMap = null;
         return result.isEqualForCommandExecutor(itemStack);
-    }    @Override
+    }
+
+    @Override
     public ItemStack getStackInRowAndColumn(int par1, int par2)
     {
         if (par1 >= 0 && par1 < this.inventoryWidth)
@@ -103,17 +107,11 @@ public class CraftingDummy extends InventoryCrafting
         }
     }
 
-
-
-
-
     @Override
     public ItemStack getStackInSlotOnClosing(int par1)
     {
         return null;
     }
-
-
 
     @Override
     public ItemStack decrStackSize(int par1, int par2)
@@ -121,11 +119,9 @@ public class CraftingDummy extends InventoryCrafting
         return null;
     }
 
-
     @Override
     public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
     {
-
     }
 
 

@@ -575,7 +575,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
     public Set<ISystemType> getValidTypes()
     {
-        return new HashSet<ISystemType>(Arrays.asList(type));
+        return new HashSet<ISystemType>(Collections.singletonList(type));
     }
 
     public boolean isVariableAllowed(Set<ISystemType> validTypes, Variable variable)

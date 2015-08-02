@@ -49,16 +49,12 @@ public class AdvancedSystemsManager
     public static ModMetadata metadata;
 
     public static GuiHandler guiHandler = new GuiHandler();
-
     public static LogHelper log = new LogHelper(Reference.ID);
-
     public static ConfigHandler configHandler;
-
     public static CreativeTabs creativeTab;
-
     public static Registerer registerer;
-
     public static ThemeHandler themeHandler;
+    private static File configDir;
 
     public static boolean DEV_ENVIRONMENT = FMLForgePlugin.RUNTIME_DEOBF;
 
@@ -66,17 +62,10 @@ public class AdvancedSystemsManager
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = Metadata.init(metadata);
-        File configDir = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
+        configDir = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
         if (!configDir.exists()) configDir.mkdir();
         configHandler = new ConfigHandler(new File(configDir.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
         configHandler.init();
-        if (event.getSide() == Side.CLIENT)
-        {
-            themeHandler = new ThemeHandler(configDir, Reference.THEMES);
-            if (!themeHandler.setTheme(ConfigHandler.theme))
-                themeHandler.setTheme("default");
-        }
-
         creativeTab = new CreativeTabs(Reference.ID)
         {
             @Override
@@ -124,12 +113,19 @@ public class AdvancedSystemsManager
     @SuppressWarnings(value = "unchecked")
     public void postInit(FMLPostInitializationEvent event)
     {
+
     }
 
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event)
     {
         configHandler.loadPowerValues();
+        if (event.getSide() == Side.CLIENT)
+        {
+            themeHandler = new ThemeHandler(configDir, Reference.THEMES);
+            if (!themeHandler.setTheme(ConfigHandler.theme))
+                themeHandler.setTheme("default");
+        }
     }
 
     @Mod.EventHandler
