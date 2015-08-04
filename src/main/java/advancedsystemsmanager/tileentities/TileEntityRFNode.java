@@ -25,10 +25,11 @@ import java.util.Set;
 
 public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener, IPacketBlock
 {
+    private static final int SIDES = 6;
     public static final int MAX_BUFFER = 96000;
     private static final String STORED = "Stored";
-    private boolean[] inputSides = new boolean[6];
-    private boolean[] outputSides = new boolean[6];
+    private boolean[] inputSides = new boolean[SIDES];
+    private boolean[] outputSides = new boolean[SIDES];
     private Set<FlowComponent> components = new HashSet<FlowComponent>();
     private boolean updated = true;
     private int stored;
@@ -40,7 +41,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         if (!worldObj.isRemote)
         {
             if (!this.isPartOfCluster() && updated) sendUpdatePacket();
-            for (int i = 0; i < inputSides.length; i++)
+            for (int i = 0; i < SIDES; i++)
             {
                 ForgeDirection dir = ForgeDirection.getOrientation(i);
                 TileEntity te = getTileEntity(dir);
@@ -182,15 +183,15 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         if (components.isEmpty())
         {
             this.updated = true;
-            this.inputSides = new boolean[6];
-            this.outputSides = new boolean[6];
+            this.inputSides = new boolean[SIDES];
+            this.outputSides = new boolean[SIDES];
         } else
         {
             for (FlowComponent component : components)
             {
                 boolean[] array = getSides(component.getType() == RFCompat.RF_PROVIDER);
                 MenuRFTarget target = (MenuRFTarget)component.getMenus().get(1);
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < SIDES; i++)
                 {
                     boolean active = target.isActive(i);
                     if (active != array[i]) updated = true;
@@ -235,8 +236,8 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     public void readData(ASMPacket packet, int id)
     {
-        outputSides = packet.readBooleanArray(outputSides.length);
-        inputSides = packet.readBooleanArray(inputSides.length);
+        outputSides = packet.readBooleanArray(SIDES);
+        inputSides = packet.readBooleanArray(SIDES);
         markBlockForUpdate();
     }
 }
