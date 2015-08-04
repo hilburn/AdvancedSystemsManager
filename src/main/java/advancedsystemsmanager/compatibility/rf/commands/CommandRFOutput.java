@@ -48,7 +48,7 @@ public class CommandRFOutput extends CommandOutput<Integer>
                     {
                         IBufferElement<Integer> rfBufferElement = itr.next().getValue();
                         int amount = rfBufferElement.getSizeLeft();
-                        amount = receiver.receiveEnergy(ForgeDirection.VALID_DIRECTIONS[side], amount, true);
+                        amount = receiver.receiveEnergy(ForgeDirection.VALID_DIRECTIONS[side], amount, false);
                         rfBufferElement.reduceBufferAmount(amount);
                         if (rfBufferElement.getSizeLeft() == 0)
                             rfBufferElement.remove();
