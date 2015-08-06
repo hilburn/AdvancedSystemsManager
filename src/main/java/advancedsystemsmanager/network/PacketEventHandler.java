@@ -22,12 +22,12 @@ public class PacketEventHandler
     @SubscribeEvent
     public void onClientPacket(FMLNetworkEvent.ClientCustomPacketEvent event)
     {
-        handlePacket(event.packet.payload(), FMLClientHandler.instance().getClient().thePlayer);
+        handlePacket(event.packet.payload(), FMLClientHandler.instance().getClient().thePlayer, Side.CLIENT);
     }
 
-    public void handlePacket(ByteBuf buffer, EntityPlayer player)
+    public void handlePacket(ByteBuf buffer, EntityPlayer player, Side side)
     {
-        ASMPacket packet = new ASMPacket(buffer);
+        ASMPacket packet = new ASMPacket(buffer, side);
         if (player instanceof EntityPlayerMP) packet.setPlayer((EntityPlayerMP)player);
         int action = packet.readUnsignedByte();
 
@@ -70,6 +70,6 @@ public class PacketEventHandler
     @SubscribeEvent
     public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event)
     {
-        handlePacket(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
+        handlePacket(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity, Side.SERVER);
     }
 }

@@ -26,7 +26,7 @@ import java.util.Set;
 public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener, IPacketBlock
 {
     private static final int SIDES = 6;
-    public static final int MAX_BUFFER = 96000;
+    public static int MAX_BUFFER = 96000;
     private static final String STORED = "Stored";
     private boolean[] inputSides = new boolean[SIDES];
     private boolean[] outputSides = new boolean[SIDES];
@@ -50,10 +50,10 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
                     int amount = ((IEnergyProvider)te).extractEnergy(dir.getOpposite(), MAX_BUFFER - stored, false);
                     this.receiveEnergy(dir, amount, false);
                 }
-                if (outputSides[i] && te instanceof IEnergyReceiver)
+                else if (outputSides[i] && te instanceof IEnergyReceiver)
                 {
                     int amount = ((IEnergyReceiver)te).receiveEnergy(dir.getOpposite(), stored, false);
-                    this.receiveEnergy(dir, amount, false);
+                    this.extractEnergy(dir, amount, false);
                 }
             }
         }
@@ -63,6 +63,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     public Packet getDescriptionPacket()
     {
         PacketHandler.sendBlockPacket(this, null, 0);
+        updated = false;
         return null;
     }
 
@@ -85,13 +86,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             int toReceive = Math.min(maxReceive, MAX_BUFFER - stored);
             if (!simulate) stored += toReceive;
             return toReceive;
-        } else if (outputSides[from.ordinal()])
-        {
-            TileEntity entity = getTileEntity(from);
-            if (entity instanceof IEnergyReceiver)
-            {
-                return ((IEnergyReceiver) entity).receiveEnergy(from.getOpposite(), maxReceive, simulate);
-            }
         }
         return 0;
     }
@@ -122,11 +116,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             int toExtract = Math.min(maxExtract, stored);
             if (!simulate) stored -= toExtract;
             return toExtract;
-        } else if (inputSides[from.ordinal()])
-        {
-            TileEntity entity = getTileEntity(from);
-            if(entity instanceof IEnergyProvider)
-                return ((IEnergyProvider) entity).extractEnergy(from, maxExtract, simulate);
         }
         return 0;
     }
@@ -238,6 +227,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     {
         outputSides = packet.readBooleanArray(SIDES);
         inputSides = packet.readBooleanArray(SIDES);
-        markBlockForUpdate();
+        markBlockForRenderUpdate();
     }
 }
