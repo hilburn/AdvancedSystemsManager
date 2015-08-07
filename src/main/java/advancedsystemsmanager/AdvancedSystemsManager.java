@@ -2,9 +2,10 @@ package advancedsystemsmanager;
 
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
-import advancedsystemsmanager.flow.setting.ModItemHelper;
+import advancedsystemsmanager.helpers.ModItemHelper;
 import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.helpers.ConfigHandler;
+import advancedsystemsmanager.helpers.OreDictionaryHelper;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.MessageHandler;
@@ -98,7 +99,7 @@ public class AdvancedSystemsManager
         packetHandler.register(new PacketEventHandler());
 
         NetworkRegistry.INSTANCE.registerGuiHandler(AdvancedSystemsManager.INSTANCE, guiHandler);
-
+        OreDictionaryHelper.registerUsefulThings();
         ItemRegistry.registerRecipes();
         BlockRegistry.registerRecipes();
         EventHandler handler = new EventHandler();

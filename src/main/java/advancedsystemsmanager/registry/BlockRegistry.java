@@ -17,6 +17,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import thevault.registry.ConfigKey;
 import thevault.registry.Register;
 
@@ -132,6 +133,12 @@ public class BlockRegistry
                 Blocks.dispenser
         );
 
+        GameRegistry.addShapelessRecipe(new ItemStack(cableFluidGate, 1),
+                cable,
+                Items.bucket,
+                Blocks.dispenser
+        );
+
         GameRegistry.addShapelessRecipe(new ItemStack(cableValve, 1, 8),
                 new ItemStack(cableValve, 1, 0),
                 Items.gold_ingot
@@ -140,16 +147,11 @@ public class BlockRegistry
         GameRegistry.addShapelessRecipe(new ItemStack(cableCluster, 1),
                 cable,
                 Items.ender_pearl,
-                Items.ender_pearl,
+                Items.slime_ball,
                 Items.ender_pearl
         );
 
-        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 0),
-                cable,
-                new ItemStack(Blocks.wool, 1, 14),
-                new ItemStack(Blocks.wool, 1, 13),
-                new ItemStack(Blocks.wool, 1, 11)
-        );
+        GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(cableCamouflage, 1, 0), cable, "wool", "wool", "wool"));
 
         GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 1),
                 new ItemStack(cableCamouflage, 1, 0),
