@@ -44,7 +44,10 @@ public class MenuRF extends MenuContainer
             for (SystemCoord connection : getParent().getManager().getConnectedInventories())
             {
                 if (connection.getTileEntity() instanceof TileEntityRFNode)
-                    ((TileEntityRFNode)connection.getTileEntity()).update(getParent());
+                {
+                    ((TileEntityRFNode) connection.getTileEntity()).update(getParent());
+                    ((TileEntityRFNode) connection.getTileEntity()).updateConnections();
+                }
             }
         }
     }

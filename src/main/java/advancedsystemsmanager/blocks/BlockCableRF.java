@@ -42,17 +42,8 @@ public class BlockCableRF extends BlockClusterElementBase<TileEntityRFNode>
     @SideOnly(Side.CLIENT)
     private IIcon getIcon(TileEntityRFNode te, int side)
     {
-        boolean in = te.isInput(side);
         boolean out = te.isOutput(side);
-        if (in)
-        {
-            if (out) return icons[3];
-            return icons[2];
-        } else
-        {
-            if (out) return icons[1];
-            return icons[0];
-        }
+        return te.isInput(side) ? out ? icons[3] : icons[2] : out? icons[1] : icons[0];
     }
 
     @Override

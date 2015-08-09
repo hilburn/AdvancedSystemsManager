@@ -71,7 +71,7 @@ public abstract class MenuTarget extends Menu
             public boolean readData(ASMPacket packet)
             {
                 int data = packet.readByte();
-                activatedDirections[data >> 1] = (data & 1) == 1;
+                setDirection(data >> 1, (data & 1) == 1);
                 return false;
             }
         };
@@ -80,6 +80,11 @@ public abstract class MenuTarget extends Menu
 
         selectedDirectionId = -1;
 
+    }
+
+    protected void setDirection(int dir, boolean val)
+    {
+        activatedDirections[dir] = val;
     }
 
     public boolean isActive(int i)

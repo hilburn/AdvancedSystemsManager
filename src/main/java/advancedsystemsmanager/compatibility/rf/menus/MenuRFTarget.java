@@ -15,6 +15,20 @@ public class MenuRFTarget extends MenuTarget
     }
 
     @Override
+    protected void setDirection(int dir, boolean val)
+    {
+        super.setDirection(dir, val);
+        if (!getParent().getManager().getWorldObj().isRemote)
+        {
+            Menu menu = getParent().getMenu(0);
+            if (menu instanceof MenuRF)
+            {
+                ((MenuRF) menu).updateConnectedNodes();
+            }
+        }
+    }
+
+    @Override
     public Button getSecondButton()
     {
         return null;

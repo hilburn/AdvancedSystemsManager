@@ -559,6 +559,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         serverPacket = false;
         if (!worldObj.isRemote)
         {
+            updateFirst();
             quickTickTriggers();
             if (timer++ % 20 == triggerOffset)
             {

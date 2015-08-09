@@ -100,6 +100,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         stored = tagCompound.getInteger(STORED);
+        updated = true;
     }
 
     @Override
@@ -141,7 +142,14 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     public void added(TileEntityManager manager)
     {
-        for (FlowComponent component : manager.getFlowItems()) update(component);
+        if (!worldObj.isRemote)
+        {
+            for (FlowComponent component : manager.getFlowItems())
+            {
+                update(component);
+            }
+            updateConnections();
+        }
     }
 
     public void update(FlowComponent component)
@@ -154,20 +162,18 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
                 if (!components.contains(component))
                 {
                     components.add(component);
-                    updateConnections();
                 }
             } else
             {
                 if (components.contains(component))
                 {
                     components.remove(component);
-                    updateConnections();
                 }
             }
         }
     }
 
-    private void updateConnections()
+    public void updateConnections()
     {
         if (components.isEmpty())
         {
@@ -178,13 +184,16 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         {
             for (FlowComponent component : components)
             {
-                boolean[] array = getSides(component.getType() == RFCompat.RF_PROVIDER);
+                boolean[] array = getSides(component.getType() == RFCompat.RF_INPUT_COMMAND);
                 MenuRFTarget target = (MenuRFTarget)component.getMenus().get(1);
                 for (int i = 0; i < SIDES; i++)
                 {
                     boolean active = target.isActive(i);
-                    if (active != array[i]) updated = true;
-                    array[i] = active;
+                    if (active != array[i])
+                    {
+                        updated = true;
+                        array[i] = active;
+                    }
                 }
             }
         }
