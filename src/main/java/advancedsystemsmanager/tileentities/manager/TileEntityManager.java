@@ -117,6 +117,10 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         if (!worldObj.isRemote)
         {
             triggers.removeAll(removed);
+            for (FlowComponent delete : removed)
+            {
+                delete.onDelete();
+            }
         } else
         {
             zLevelRenderingList.removeAll(removed);

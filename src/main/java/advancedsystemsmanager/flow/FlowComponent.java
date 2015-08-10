@@ -1493,6 +1493,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         }
     }
 
+    public void onDelete()
+    {
+        for (Menu menu : menus)
+        {
+            menu.onDelete();
+        }
+    }
+
     public Connection[] getConnections()
     {
         return connections;

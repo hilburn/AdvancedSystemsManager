@@ -10,6 +10,7 @@ import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MenuRF extends MenuContainer
@@ -35,6 +36,22 @@ public class MenuRF extends MenuContainer
         if (packet.getSide() == Side.SERVER)
             updateConnectedNodes();
         return result;
+    }
+
+    @Override
+    public void onDelete()
+    {
+        List<Long> blocks = new ArrayList<Long>(getSelectedInventories());
+        getSelectedInventories().clear();
+        for (long id : blocks)
+        {
+            SystemCoord connection = getParent().getManager().getInventory(id);
+            if (connection.getTileEntity() instanceof TileEntityRFNode)
+            {
+                ((TileEntityRFNode) connection.getTileEntity()).update(getParent());
+                ((TileEntityRFNode) connection.getTileEntity()).updateConnections();
+            }
+        }
     }
 
     public void updateConnectedNodes()
