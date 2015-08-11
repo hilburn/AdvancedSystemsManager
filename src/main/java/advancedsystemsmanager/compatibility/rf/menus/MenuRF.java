@@ -24,6 +24,7 @@ public class MenuRF extends MenuContainer
     {
         for (long id : getSelectedInventories())
         {
+            if (getParent().getManager().getInventory(id) == null) continue;
             if (getParent().getManager().getInventory(id).getTileEntity() == node) return true;
         }
         return false;
