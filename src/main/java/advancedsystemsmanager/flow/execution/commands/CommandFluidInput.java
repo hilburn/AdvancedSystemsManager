@@ -68,7 +68,7 @@ public class CommandFluidInput extends CommandInput<Fluid>
                     if (target.activatedDirections[i])
                     {
                         FluidTankInfo[] tankInfos = tank.getTankInfo(ForgeDirection.getOrientation(i));
-                        if (tankInfos == null || tankInfos[0] == null || tankInfos[0].fluid == null || tankInfos[0].fluid.amount == 0)
+                        if (tankInfos == null || tankInfos.length == 0 || tankInfos[0] == null || tankInfos[0].fluid == null || tankInfos[0].fluid.amount == 0)
                             continue;
                         boolean safeToAdd = true;
                         for (FluidTankInfo tankInfo : tankInfoMap.values())
