@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class WailaCompat extends CompatBase
 {
+    @Optional.Method(modid = Mods.WAILA)
     public static void callbackRegister(IWailaRegistrar registrar)
     {
         WailaLabelProvider labelProvider = new WailaLabelProvider();
