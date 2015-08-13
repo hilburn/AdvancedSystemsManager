@@ -6,6 +6,7 @@ import advancedsystemsmanager.compatibility.jabba.JabbaCompat;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.compatibility.thaumcraft.TCCompat;
 import advancedsystemsmanager.compatibility.waila.WailaCompat;
+import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.reference.Mods;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModAPIManager;
@@ -58,16 +59,46 @@ public enum ModCompat
         this(modId, modName, null);
     }
 
-    public static void loadAll()
+    public static void preInit()
     {
         for (ModCompat compat : values())
-            compat.load();
+        {
+            if (compat.compatClass != null)
+            {
+                compat.compatClass.preInit(compat);
+            }
+        }
     }
 
-    private void load()
+    public static void init()
     {
-        if (compatClass != null)
-            compatClass.load(this);
+        for (ModCompat compat : values())
+        {
+            if (compat.isLoaded() && compat.compatClass != null)
+            {
+                compat.compatClass.init();
+            }
+        }
+    }
+
+    public static void postInit()
+    {
+        for (ModCompat compat : values())
+        {
+            if (compat.isLoaded() && compat.compatClass != null)
+            {
+                compat.compatClass.postInit();
+            }
+        }
+    }
+
+    public static void registerLabel(Class clazz)
+    {
+        if (WAILA.isLoaded())
+        {
+            ((WailaCompat)WAILA.compatClass).registerLabelProvider(clazz);
+        }
+        ItemLabeler.registerClass(clazz);
     }
 
     public String getModId()

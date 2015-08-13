@@ -3,6 +3,7 @@ package advancedsystemsmanager.compatibility.rf;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.compatibility.CompatBase;
+import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.compatibility.rf.commands.CommandRFInput;
 import advancedsystemsmanager.compatibility.rf.commands.CommandRFOutput;
 import advancedsystemsmanager.reference.Names;
@@ -79,5 +80,12 @@ public class RFCompat extends CompatBase
         RF_INPUT_COMMAND = CommandRegistry.registerCommand(new CommandRFInput());
         RF_OUTPUT_COMMAND = CommandRegistry.registerCommand(new CommandRFOutput());
 //        StevesEnum.RF_CONDITION = StevesEnum.addComponentType(19, ICommand.CommandType.COMMAND_CONTROL, StevesEnum.RF_CONDITION_SHORT, StevesEnum.RF_CONDITION_LONG, new ConnectionSet[]{ConnectionSet.STANDARD_CONDITION}, MenuRFStorage.class, MenuRFTarget.class, MenuRFCondition.class, MenuResult.class);
+    }
+
+    @Override
+    protected void postInit()
+    {
+        ModCompat.registerLabel(IEnergyProvider.class);
+        ModCompat.registerLabel(IEnergyReceiver.class);
     }
 }

@@ -89,6 +89,8 @@ public class AdvancedSystemsManager
         MessageHandler.init();
 
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
+
+        ModCompat.preInit();
     }
 
     @Mod.EventHandler
@@ -107,14 +109,14 @@ public class AdvancedSystemsManager
         MinecraftForge.EVENT_BUS.register(handler);
         PROXY.initHandlers();
 
-        ModCompat.loadAll();
+        ModCompat.init();
     }
 
     @Mod.EventHandler
     @SuppressWarnings(value = "unchecked")
     public void postInit(FMLPostInitializationEvent event)
     {
-
+        ModCompat.postInit();
     }
 
     @Mod.EventHandler

@@ -2,7 +2,9 @@ package advancedsystemsmanager.compatibility.waila;
 
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
+import cpw.mods.fml.common.Optional;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -16,6 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+@Optional.Interface(iface = "mcp.mobius.waila.api.IWailaDataProvider", modid = Mods.WAILA)
 public class WailaLabelProvider implements IWailaDataProvider
 {
 
