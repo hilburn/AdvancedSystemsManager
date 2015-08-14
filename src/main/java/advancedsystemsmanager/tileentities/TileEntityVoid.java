@@ -5,7 +5,10 @@ import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.containers.ContainerVoid;
 import advancedsystemsmanager.client.gui.GuiVoid;
 import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.Optional;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -16,10 +19,16 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.aspects.AspectList;
+import thaumcraft.api.aspects.IAspectContainer;
 
 import java.util.EnumSet;
 
-public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider, IClusterTile
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY),
+        @Optional.Interface(iface = "thaumcraft.api.aspects.IAspectContainer", modid = Mods.THAUMCRAFT)})
+public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider, IClusterTile, IEnergyReceiver, IAspectContainer
 {
 
     @Override
@@ -157,4 +166,94 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     }
 
 
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int receiveEnergy(ForgeDirection forgeDirection, int amount, boolean simulate)
+    {
+        return amount;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int getEnergyStored(ForgeDirection forgeDirection)
+    {
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public int getMaxEnergyStored(ForgeDirection forgeDirection)
+    {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.COFH_ENERGY)
+    public boolean canConnectEnergy(ForgeDirection forgeDirection)
+    {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public AspectList getAspects()
+    {
+        return new AspectList();
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public void setAspects(AspectList aspectList)
+    {
+
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public boolean doesContainerAccept(Aspect aspect)
+    {
+        return true;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public int addToContainer(Aspect aspect, int i)
+    {
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public boolean takeFromContainer(Aspect aspect, int i)
+    {
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public boolean takeFromContainer(AspectList aspectList)
+    {
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public boolean doesContainerContainAmount(Aspect aspect, int i)
+    {
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public boolean doesContainerContain(AspectList aspectList)
+    {
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.THAUMCRAFT)
+    public int containerContains(Aspect aspect)
+    {
+        return 0;
+    }
 }
