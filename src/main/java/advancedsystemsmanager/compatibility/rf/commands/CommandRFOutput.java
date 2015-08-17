@@ -4,15 +4,14 @@ import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
-import advancedsystemsmanager.compatibility.rf.menus.MenuRF;
 import advancedsystemsmanager.compatibility.rf.menus.MenuRFAmount;
 import advancedsystemsmanager.compatibility.rf.menus.MenuRFTarget;
-import advancedsystemsmanager.compatibility.thaumcraft.menus.MenuAspect;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.commands.CommandOutput;
 import advancedsystemsmanager.flow.menus.Menu;
 
+import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyReceiver;
@@ -35,7 +34,7 @@ public class CommandRFOutput extends CommandOutput<Integer>
         MenuRFTarget target = (MenuRFTarget) component.getMenus().get(1);
         int maxAmount = ((MenuRFAmount) component.getMenus().get(2)).getAmount();
         maxAmount = maxAmount == 0 ? Integer.MAX_VALUE : maxAmount;
-        for (SystemCoord block : getContainers(component.getManager(), (MenuRF)component.getMenus().get(0)))
+        for (SystemCoord block : getContainers(component.getManager(), (MenuContainer)component.getMenus().get(0)))
         {
             int max = maxAmount;
             IEnergyReceiver receiver = (IEnergyReceiver)block.getTileEntity();
@@ -48,8 +47,10 @@ public class CommandRFOutput extends CommandOutput<Integer>
                     {
                         IBufferElement<Integer> rfBufferElement = itr.next().getValue();
                         int amount = rfBufferElement.getSizeLeft();
+                        amount = Math.min(max, amount);
                         amount = receiver.receiveEnergy(ForgeDirection.VALID_DIRECTIONS[side], amount, false);
                         rfBufferElement.reduceBufferAmount(amount);
+                        max -= amount;
                         if (rfBufferElement.getSizeLeft() == 0)
                             rfBufferElement.remove();
                     }
@@ -61,7 +62,7 @@ public class CommandRFOutput extends CommandOutput<Integer>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuRF(component, RFCompat.RF_RECEIVER));
+        menus.add(new MenuContainer(component, RFCompat.RF_RECEIVER));
         menus.add(new MenuRFTarget(component));
         menus.add(new MenuRFAmount(component));
     }

@@ -5,6 +5,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityRFNode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -21,6 +22,18 @@ public class BlockCableRF extends BlockClusterElementBase<TileEntityRFNode>
     public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEntityRFNode();
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TileEntityRFNode)
+        {
+            ((TileEntityRFNode) te).cycleSide(side);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -42,8 +55,7 @@ public class BlockCableRF extends BlockClusterElementBase<TileEntityRFNode>
     @SideOnly(Side.CLIENT)
     private IIcon getIcon(TileEntityRFNode te, int side)
     {
-        boolean out = te.isOutput(side);
-        return te.isInput(side) ? out ? icons[3] : icons[2] : out? icons[1] : icons[0];
+        return icons[te.getIconIndex(side)];
     }
 
     @Override

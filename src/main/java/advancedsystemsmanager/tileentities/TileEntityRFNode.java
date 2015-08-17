@@ -1,15 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.api.tileentities.ISystemListener;
-import advancedsystemsmanager.compatibility.rf.RFCompat;
-import advancedsystemsmanager.compatibility.rf.menus.MenuRFTarget;
-import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.Menu;
-import advancedsystemsmanager.compatibility.rf.menus.MenuRF;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
@@ -19,19 +12,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
-public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, ISystemListener, IPacketBlock
+public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, IPacketBlock
 {
     private static final int SIDES = 6;
     public static int MAX_BUFFER = 96000;
     private static final String STORED = "Stored";
-    private boolean[] inputSides = new boolean[SIDES];
-    private boolean[] outputSides = new boolean[SIDES];
-    private Set<FlowComponent> components = new HashSet<FlowComponent>();
-    private boolean updated = true;
+    private static final String SIDES_TAG = "Sides";
+    private short sides = 0xFFF;
     private int stored;
 
     @Override
@@ -40,17 +28,16 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         super.updateEntity();
         if (!worldObj.isRemote)
         {
-            if (!this.isPartOfCluster() && updated) sendUpdatePacket();
             for (int i = 0; i < SIDES; i++)
             {
                 ForgeDirection dir = ForgeDirection.getOrientation(i);
                 TileEntity te = getTileEntity(dir);
-                if (inputSides[i] && te instanceof IEnergyProvider)
+                if (isInput(i) && te instanceof IEnergyProvider)
                 {
                     int amount = ((IEnergyProvider)te).extractEnergy(dir.getOpposite(), MAX_BUFFER - stored, false);
                     this.receiveEnergy(dir, amount, false);
                 }
-                else if (outputSides[i] && te instanceof IEnergyReceiver)
+                if (isOutput(i) && te instanceof IEnergyReceiver)
                 {
                     int amount = ((IEnergyReceiver)te).receiveEnergy(dir.getOpposite(), stored, false);
                     this.extractEnergy(dir, amount, false);
@@ -62,15 +49,13 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     public Packet getDescriptionPacket()
     {
-        PacketHandler.sendBlockPacket(this, null, 0);
-        updated = false;
+        sendUpdatePacket();
         return null;
     }
 
     private void sendUpdatePacket()
     {
         PacketHandler.sendBlockPacket(this, null, 0);
-        updated = false;
     }
 
     private TileEntity getTileEntity(ForgeDirection dir)
@@ -78,10 +63,26 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         return worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
     }
 
+    public void cycleSide(int side)
+    {
+        side *= 2;
+        int cur = sides >> side & 3;
+        cur += 3;
+        cur %= 4;
+        sides &= ~(3 << side);
+        sides |= cur << side;
+        markBlockForRenderUpdate();
+    }
+
+    public int getIconIndex(int side)
+    {
+        return (sides >> side * 2) & 3;
+    }
+
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
-        if (inputSides[from.ordinal()])
+        if (isInput(from.ordinal()))
         {
             int toReceive = Math.min(maxReceive, MAX_BUFFER - stored);
             if (!simulate) stored += toReceive;
@@ -94,13 +95,14 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         tagCompound.setInteger(STORED, stored);
+        tagCompound.setShort(SIDES_TAG, sides);
     }
 
     @Override
     public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         stored = tagCompound.getInteger(STORED);
-        updated = true;
+        sides = tagCompound.getShort(SIDES_TAG);
     }
 
     @Override
@@ -112,7 +114,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
-        if (outputSides[from.ordinal()])
+        if (isOutput(from.ordinal()))
         {
             int toExtract = Math.min(maxExtract, stored);
             if (!simulate) stored -= toExtract;
@@ -136,106 +138,29 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     @Override
     public boolean canConnectEnergy(ForgeDirection from)
     {
-        return outputSides[from.ordinal()] || inputSides[from.ordinal()];
-    }
-
-    @Override
-    public void added(TileEntityManager manager)
-    {
-        if (!worldObj.isRemote)
-        {
-            for (FlowComponent component : manager.getFlowItems())
-            {
-                update(component);
-            }
-            updateConnections();
-        }
-    }
-
-    public void update(FlowComponent component)
-    {
-        Menu menu = component.getMenus().get(0);
-        if (menu instanceof MenuRF)
-        {
-            if (((MenuRF)menu).isSelected(this))
-            {
-                if (!components.contains(component))
-                {
-                    components.add(component);
-                }
-            } else
-            {
-                if (components.contains(component))
-                {
-                    components.remove(component);
-                }
-            }
-        }
-    }
-
-    public void updateConnections()
-    {
-        if (components.isEmpty())
-        {
-            this.updated = true;
-            this.inputSides = new boolean[SIDES];
-            this.outputSides = new boolean[SIDES];
-        } else
-        {
-            for (FlowComponent component : components)
-            {
-                boolean[] array = getSides(component.getType() == RFCompat.RF_INPUT_COMMAND);
-                MenuRFTarget target = (MenuRFTarget)component.getMenus().get(1);
-                for (int i = 0; i < SIDES; i++)
-                {
-                    boolean active = target.isActive(i);
-                    if (active != array[i])
-                    {
-                        updated = true;
-                        array[i] = active;
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean[] getSides(boolean input)
-    {
-        return input ? inputSides : outputSides;
-    }
-
-    @Override
-    public void removed(TileEntityManager tileEntityManager)
-    {
-//        managers.remove(tileEntityManager);
-        for (Iterator<FlowComponent> itr = components.iterator(); itr.hasNext(); )
-        {
-            if (itr.next().getManager() == tileEntityManager) itr.remove();
-        }
+        return (sides & (3 << from.ordinal() * 2)) != 0;
     }
 
     public boolean isInput(int side)
     {
-        return inputSides[side];
+        return (sides & (2 << side * 2)) != 0;
     }
 
     public boolean isOutput(int side)
     {
-        return outputSides[side];
+        return (sides & (1 << side * 2)) != 0;
     }
 
     @Override
     public void writeData(ASMPacket packet, int id)
     {
-        packet.writeBooleanArray(outputSides);
-        packet.writeBooleanArray(inputSides);
+        packet.writeShort(sides);
     }
 
     @Override
     public void readData(ASMPacket packet, int id)
     {
-        outputSides = packet.readBooleanArray(SIDES);
-        inputSides = packet.readBooleanArray(SIDES);
+        sides = packet.readShort();
         markBlockForRenderUpdate();
     }
 }

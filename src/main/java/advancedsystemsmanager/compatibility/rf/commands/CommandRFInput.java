@@ -4,13 +4,13 @@ import advancedsystemsmanager.api.execution.IBuffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.compatibility.rf.buffer.RFBufferElement;
-import advancedsystemsmanager.compatibility.rf.menus.MenuRF;
 import advancedsystemsmanager.compatibility.rf.menus.MenuRFAmount;
 import advancedsystemsmanager.compatibility.rf.menus.MenuRFTarget;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.commands.CommandInput;
 import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyProvider;
@@ -29,7 +29,7 @@ public class CommandRFInput extends CommandInput<Integer>
     @Override
     public void getMenus(FlowComponent component, List<Menu> menus)
     {
-        menus.add(new MenuRF(component, RFCompat.RF_PROVIDER));
+        menus.add(new MenuContainer(component, RFCompat.RF_PROVIDER));
         menus.add(new MenuRFTarget(component));
         menus.add(new MenuRFAmount(component));
     }

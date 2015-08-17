@@ -98,8 +98,4 @@ public abstract class Menu
     public void onGuiClosed()
     {
     }
-
-    public void onDelete()
-    {
-    }
 }

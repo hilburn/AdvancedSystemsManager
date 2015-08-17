@@ -319,11 +319,6 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         setKey();
     }
 
-    public long getKey()
-    {
-        return key;
-    }
-
     public Set<ISystemType> getTypes()
     {
         return types;
