@@ -32,15 +32,18 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
             {
                 ForgeDirection dir = ForgeDirection.getOrientation(i);
                 TileEntity te = getTileEntity(dir);
-                if (isInput(i) && te instanceof IEnergyProvider)
+                if (te != null && !(te instanceof TileEntityRFNode || te instanceof TileEntityCluster))
                 {
-                    int amount = ((IEnergyProvider)te).extractEnergy(dir.getOpposite(), MAX_BUFFER - stored, false);
-                    this.receiveEnergy(dir, amount, false);
-                }
-                if (isOutput(i) && te instanceof IEnergyReceiver)
-                {
-                    int amount = ((IEnergyReceiver)te).receiveEnergy(dir.getOpposite(), stored, false);
-                    this.extractEnergy(dir, amount, false);
+                    if (isInput(i) && te instanceof IEnergyProvider)
+                    {
+                        int amount = ((IEnergyProvider) te).extractEnergy(dir.getOpposite(), MAX_BUFFER - stored, false);
+                        this.receiveEnergy(dir, amount, false);
+                    }
+                    if (isOutput(i) && te instanceof IEnergyReceiver)
+                    {
+                        int amount = ((IEnergyReceiver) te).receiveEnergy(dir.getOpposite(), stored, false);
+                        this.extractEnergy(dir, amount, false);
+                    }
                 }
             }
         }
