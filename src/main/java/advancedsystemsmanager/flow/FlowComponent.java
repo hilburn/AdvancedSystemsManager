@@ -1189,6 +1189,11 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
         return menus;
     }
 
+    public Menu getMenu(int menu)
+    {
+        return menus.get(menu);
+    }
+
     public FlowComponent copy()
     {
         FlowComponent copy = new FlowComponent(manager, x, y, id, type);

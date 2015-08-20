@@ -11,6 +11,7 @@ import java.util.*;
 
 public class CopyHelper
 {
+
     public static Collection<FlowComponent> copyCommandsWithChildren(TileEntityManager manager, FlowComponent toCopy, boolean limitless, boolean connected)
     {
         Map<FlowComponent, FlowComponent> added = new LinkedHashMap<FlowComponent, FlowComponent>();
@@ -22,6 +23,7 @@ public class CopyHelper
         {
             List<FlowComponent> cluster = new ArrayList<FlowComponent>();
             FlowComponent.findCluster(cluster, toCopy, null);
+            Collections.sort(cluster);
             for (FlowComponent component : cluster)
             {
                 copyCommandsWithChildren(manager, added, component, component.getParent(), existingParents, false);
@@ -55,7 +57,9 @@ public class CopyHelper
         }
         newComponent.setId(manager.getNextFreeID());
         added.put(toCopy, newComponent);
-        for (FlowComponent component : existingParents.get(toCopy))
+        List<FlowComponent> children = new ArrayList<FlowComponent>(existingParents.get(toCopy));
+        Collections.sort(children);
+        for (FlowComponent component : children)
         {
             copyCommandsWithChildren(manager, added, component, newComponent, existingParents, false);
         }

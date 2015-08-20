@@ -4,6 +4,7 @@ import advancedsystemsmanager.containers.ContainerBase;
 import advancedsystemsmanager.reference.Reference;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,6 +22,7 @@ import static advancedsystemsmanager.AdvancedSystemsManager.packetHandler;
 public class ASMPacket extends PacketBuffer
 {
     List<EntityPlayerMP> players;
+    Side side;
 
     public ASMPacket()
     {
@@ -32,9 +34,15 @@ public class ASMPacket extends PacketBuffer
         super(Unpooled.buffer(size));
     }
 
-    public ASMPacket(ByteBuf buffer)
+    public ASMPacket(ByteBuf buffer, Side side)
     {
         super(buffer);
+        this.side = side;
+    }
+
+    public Side getSide()
+    {
+        return side;
     }
 
     public void setPlayer(EntityPlayerMP player)
@@ -163,7 +171,7 @@ public class ASMPacket extends PacketBuffer
 
     public ASMPacket copy()
     {
-        return new ASMPacket(super.copy());
+        return new ASMPacket(super.copy(), this.side);
     }
 
     public void writeBooleanArray(boolean... val)

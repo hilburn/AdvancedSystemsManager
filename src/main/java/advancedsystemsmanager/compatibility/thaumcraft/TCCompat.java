@@ -4,6 +4,7 @@ import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.compatibility.CompatBase;
+import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectInput;
 import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectOutput;
 import advancedsystemsmanager.reference.Names;
@@ -35,6 +36,12 @@ public class TCCompat extends CompatBase
         });
         CommandRegistry.registerCommand(new CommandAspectInput());
         CommandRegistry.registerCommand(new CommandAspectOutput());
+    }
+
+    @Override
+    protected void postInit()
+    {
+        ModCompat.registerLabel(IAspectContainer.class);
     }
 
     public static void drawAspect(GuiManager gui, Aspect aspect, int x, int y)

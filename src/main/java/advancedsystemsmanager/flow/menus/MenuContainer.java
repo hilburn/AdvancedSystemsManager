@@ -257,8 +257,6 @@ public class MenuContainer extends Menu implements IPacketSync
             @SideOnly(Side.CLIENT)
             class ToolTip implements IAdvancedTooltip
             {
-                public static final int SRC_X = 30;
-                public static final int SRC_Y = 20;
                 public ItemStack[] items;
                 public List<String>[] itemTexts;
                 List<String> prefix;
@@ -356,14 +354,11 @@ public class MenuContainer extends Menu implements IPacketSync
                 {
                     GL11.glColor4f(1, 1, 1, 1);
                     GuiBase.bindTexture(gui.getComponentResource());
-                    gui.drawTexture(x, y, SRC_X, SRC_Y + (CollisionHelper.inBounds(x, y, 16, 16, mX, mY) ? 16 : 0), 16, 16);
+                    gui.drawColouredTexture(x, y, INVENTORY_SRC_X, INVENTORY_SRC_Y, INVENTORY_SIZE, INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(false, CollisionHelper.inBounds(x, y, INVENTORY_SIZE, INVENTORY_SIZE, mX, mY)));
 
                     ItemStack item = items[direction.ordinal()];
                     if (item != null && item.getItem() != null)
-                    {
                         gui.drawItemStack(item, x, y);
-//                        gui.drawItemAmount(item, x, y);
-                    }
                 }
 
                 @SideOnly(Side.CLIENT)
@@ -396,7 +391,7 @@ public class MenuContainer extends Menu implements IPacketSync
                 @SideOnly(Side.CLIENT)
                 public boolean drawBlockMouseOver(GuiBase gui, int x, int y, int mX, int mY, ForgeDirection direction)
                 {
-                    if (CollisionHelper.inBounds(x, y, 16, 16, mX, mY))
+                    if (CollisionHelper.inBounds(x-2, y+24, 16, 16, mX, mY)) // TODO find a reason for these offsets
                     {
                         List<String> itemText = itemTexts[direction.ordinal()];
                         if (itemText != null)
@@ -580,7 +575,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
     public Set<ISystemType> getValidTypes()
     {
-        return new HashSet<ISystemType>(Arrays.asList(type));
+        return new HashSet<ISystemType>(Collections.singletonList(type));
     }
 
     public boolean isVariableAllowed(Set<ISystemType> validTypes, Variable variable)

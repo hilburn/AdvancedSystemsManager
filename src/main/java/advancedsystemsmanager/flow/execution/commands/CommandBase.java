@@ -1,5 +1,6 @@
 package advancedsystemsmanager.flow.execution.commands;
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.flow.Connection;
@@ -15,10 +16,7 @@ import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public abstract class CommandBase<Type> implements ICommand
 {
@@ -67,10 +65,10 @@ public abstract class CommandBase<Type> implements ICommand
 
     public static List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer container)
     {
-        return getContainers(manager, container.selectedInventories);
+        return getContainers(manager, container.getSelectedInventories(), container.getValidTypes());
     }
 
-    private static List<SystemCoord> getContainers(TileEntityManager manager, List<Long> selectedInventories)
+    private static List<SystemCoord> getContainers(TileEntityManager manager, List<Long> selectedInventories, Set<ISystemType> types)
     {
         List<SystemCoord> result = new ArrayList<SystemCoord>();
         for (Iterator<Long> itr = selectedInventories.iterator(); itr.hasNext(); )
@@ -79,19 +77,20 @@ public abstract class CommandBase<Type> implements ICommand
             if (selected >= 0)
             {
                 SystemCoord coord = manager.getInventory(selected);
-                if (coord != null && coord.isValid())
+                if (coord == null || !coord.isOfAnyType(types))
+                {
+                    itr.remove();
+                }
+                else if (coord.isValid())
                 {
                     result.add(coord);
-                } else
-                {
-//                    itr.remove();
                 }
             } else
             {
                 Variable variable = manager.getVariable((int)selected);
                 if (variable != null)
                 {
-                    result.addAll(getContainers(manager, variable.getContainers()));
+                    result.addAll(getContainers(manager, variable.getContainers(), types));
                 } else
                 {
 //                    itr.remove();

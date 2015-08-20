@@ -1,6 +1,7 @@
 package advancedsystemsmanager.compatibility.rf.buffer;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
+import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.execution.buffers.elements.BufferElementBase;
 import cofh.api.energy.IEnergyProvider;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,6 +17,12 @@ public class RFBufferElement extends BufferElementBase<Integer>
         this.source = provider;
         this.direction = direction;
         this.amount = amount;
+    }
+
+    @Override
+    public Key<Integer> getKey()
+    {
+        return new Key.RFKey(source, id);
     }
 
     @Override

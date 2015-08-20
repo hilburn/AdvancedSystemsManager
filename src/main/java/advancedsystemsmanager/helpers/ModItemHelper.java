@@ -1,4 +1,4 @@
-package advancedsystemsmanager.flow.setting;
+package advancedsystemsmanager.helpers;
 
 
 import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;

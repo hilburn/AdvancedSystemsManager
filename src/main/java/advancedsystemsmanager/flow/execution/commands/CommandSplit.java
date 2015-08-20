@@ -46,7 +46,7 @@ public class CommandSplit extends CommandBase
                     }
                 }
             }
-            if (amount > 1)
+            if (connections.size() > 1)
             {
                 Set<String> buffers = executor.getBuffers();
                 for (int i = 0; i < connections.size(); i++)
@@ -63,7 +63,7 @@ public class CommandSplit extends CommandBase
                         new Executor(command.manager, newBuffers, new HashSet<Integer>(executor.usedCommands)).executeCommand(output, connections.get(i).getOutputConnection());
                     }
                 }
-            } else
+            } else if (connections.size() == 1)
             {
                 FlowComponent output = command.getManager().getFlowItem(connections.get(0).getOutputId());
                 if (output != null)

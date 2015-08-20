@@ -50,7 +50,7 @@ public class ItemRemoteAccessor extends ItemBase
             int x = stack.getTagCompound().getInteger(X);
             int y = stack.getTagCompound().getInteger(Y);
             int z = stack.getTagCompound().getInteger(Z);
-            if (managerWorld.getChunkProvider().chunkExists(x / 16, z / 16))
+            if (managerWorld.blockExists(x, y, z))
             {
                 if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
                     FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
@@ -142,7 +142,7 @@ public class ItemRemoteAccessor extends ItemBase
     {
         if (stack.hasTagCompound() && stack.getItemDamage() == 0 && world.provider.dimensionId != stack.getTagCompound().getByte(WORLD))
         {
-            return icons[5];
+            return icons[4];
         }
         return icons[stack.getItemDamage() + (stack.hasTagCompound() ? 0 : 2)];
     }

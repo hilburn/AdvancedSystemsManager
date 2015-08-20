@@ -12,9 +12,7 @@ import advancedsystemsmanager.flow.execution.Executor;
 import advancedsystemsmanager.flow.execution.TriggerHelper;
 import advancedsystemsmanager.flow.execution.TriggerHelperBUD;
 import advancedsystemsmanager.flow.execution.TriggerHelperRedstone;
-import advancedsystemsmanager.flow.menus.MenuInterval;
-import advancedsystemsmanager.flow.menus.MenuTriggered;
-import advancedsystemsmanager.flow.menus.MenuVariable;
+import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.IInterfaceRenderer;
@@ -403,9 +401,19 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             {
                 if (oldCoordinate.getTileEntity() instanceof ISystemListener)
                 {
-                    if (!network.containsKey(oldCoordinate.getKey()))
+                    if (!network.containsKey(oldCoordinate.getId()))
                     {
                         ((ISystemListener)oldCoordinate.getTileEntity()).removed(this);
+                        for (FlowComponent component : components.valueCollection())
+                        {
+                            for (Menu menu : component.getMenus())
+                            {
+                                if (menu instanceof MenuContainer)
+                                {
+                                    ((MenuContainer) menu).getSelectedInventories().remove(oldCoordinate.getId());
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -473,7 +481,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             {
                 usingUnlimitedInventories = true;
             }
-            network.put(target.getKey(), target);
+            network.put(target.getId(), target);
             if (target.getTileEntity() instanceof ISystemListener)
             {
                 ((ISystemListener)target.getTileEntity()).added(this);
@@ -559,6 +567,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         serverPacket = false;
         if (!worldObj.isRemote)
         {
+            updateFirst();
             quickTickTriggers();
             if (timer++ % 20 == triggerOffset)
             {

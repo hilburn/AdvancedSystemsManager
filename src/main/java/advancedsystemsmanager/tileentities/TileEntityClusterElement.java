@@ -94,4 +94,9 @@ public abstract class TileEntityClusterElement extends TileEntity implements ICl
     {
         this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
+
+    public void markBlockForRenderUpdate()
+    {
+        this.worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
+    }
 }

@@ -3,6 +3,8 @@ package advancedsystemsmanager.items;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
+import advancedsystemsmanager.api.tileentities.IInternalInventory;
+import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.client.gui.GuiLabeler;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -32,6 +34,7 @@ import java.util.List;
 public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
 {
     public static final String LABEL = "Label";
+    private static List<Class> registeredClasses = new ArrayList<Class>();
 
     public ItemLabeler()
     {
@@ -72,7 +75,21 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     public static boolean isValidTile(World world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
-        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IEnergyProvider || te instanceof IEnergyReceiver || te instanceof IClusterTile;
+        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IClusterTile || te instanceof IInternalInventory || te instanceof IInternalTank || isValidClass(te);
+    }
+
+    public static void registerClass(Class clazz)
+    {
+        registeredClasses.add(clazz);
+    }
+
+    private static boolean isValidClass(TileEntity te)
+    {
+        for (Class registered : registeredClasses)
+        {
+            if (registered.isInstance(te)) return true;
+        }
+        return false;
     }
 
     @Override
