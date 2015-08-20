@@ -6,6 +6,8 @@ import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -71,6 +73,7 @@ public class CommandTheme implements ISubCommand, IPacketSync
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean readData(ASMPacket packet)
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
