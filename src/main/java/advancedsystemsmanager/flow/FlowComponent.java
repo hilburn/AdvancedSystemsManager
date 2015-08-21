@@ -484,7 +484,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
             Connection current = manager.getCurrentlyConnecting();
             if (current != null && current.getInputId() == id && current.getInputConnection() == i)
             {
-                gui.drawLines(new int[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, ThemeHandler.theme.lines.getColour());
+                gui.drawLines(new double[]{location[0] + connectionWidth / 2, location[1] + connectionHeight / 2, overrideX != -1 ? overrideX : mX, overrideY != -1 ? overrideY : mY}, ThemeHandler.theme.lines.getColour());
             }
 
             Connection connectedConnection = connections[i];
@@ -511,7 +511,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
                     GL11.glPushMatrix();
                     GL11.glTranslatef(0, 0, -zLevel);
                     List<Point> nodes = connectedConnection.getNodes();
-                    int[] points = new int[nodes.size() * 2 + 4];
+                    double[] points = new double[nodes.size() * 2 + 4];
                     int j = 0;
                     points[j++] = startX;
                     points[j++] = startY;

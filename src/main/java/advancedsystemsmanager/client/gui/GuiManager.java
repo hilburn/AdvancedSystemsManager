@@ -207,16 +207,17 @@ public class GuiManager extends GuiBase
 
         int zLevel = Z_LEVEL_COMPONENT_START;
         int openCount = 0;
-        for (FlowComponent itemBase : manager.getZLevelRenderingList())
+        setLineWidth(5);
+        for (FlowComponent component : manager.getZLevelRenderingList())
         {
-            if (itemBase.isVisible())
+            if (component.isVisible())
             {
-                if (itemBase.isOpen() && openCount == Z_LEVEL_OPEN_MAXIMUM)
+                if (component.isOpen() && openCount == Z_LEVEL_OPEN_MAXIMUM)
                 {
-                    itemBase.close();
+                    component.close();
                 }
 
-                if (itemBase.isOpen())
+                if (component.isOpen())
                 {
                     zLevel -= Z_LEVEL_COMPONENT_OPEN_DIFFERENCE;
                     openCount++;
@@ -224,9 +225,9 @@ public class GuiManager extends GuiBase
                 {
                     zLevel -= Z_LEVEL_COMPONENT_CLOSED_DIFFERENCE;
                 }
-                itemBase.draw(this, mX, mY, zLevel);
+                component.draw(this, mX, mY, zLevel);
 
-                if (itemBase.isBeingMoved() || CollisionHelper.inBounds(itemBase.getX(), itemBase.getY(), itemBase.getComponentWidth(), itemBase.getComponentHeight(), mX, mY))
+                if (component.isBeingMoved() || CollisionHelper.inBounds(component.getX(), component.getY(), component.getComponentWidth(), component.getComponentHeight(), mX, mY))
                 {
                     CollisionHelper.disable();
                 }

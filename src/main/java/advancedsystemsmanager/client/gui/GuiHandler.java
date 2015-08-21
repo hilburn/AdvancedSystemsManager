@@ -2,6 +2,7 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -67,8 +68,8 @@ public class GuiHandler implements IGuiHandler
 
                 if (te != null && te instanceof ITileInterfaceProvider)
                 {
-//                    if (te instanceof TileEntityManager)
-//                        ((TileEntityManager)te).specialRenderer = new GuiVariable((TileEntityManager)te);
+                    if (te instanceof TileEntityManager)
+                        ((TileEntityManager)te).specialRenderer = new GuiTestBed();
                     return ((ITileInterfaceProvider)te).getGui(player);
                 }
                 break;

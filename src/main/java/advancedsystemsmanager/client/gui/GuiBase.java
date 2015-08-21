@@ -43,8 +43,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     private static final java.util.Timer timer = new java.util.Timer();
     private static final TimerTask task = new ToggleCursor();
     private static boolean toggleCursor = true;
-
-
+    private int lineWidth = 1;
     public static FontRenderer fontRenderer;
     static
     {
@@ -82,6 +81,11 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     public void setZLevel(float val)
     {
         this.zLevel = val;
+    }
+
+    public void setLineWidth(int width)
+    {
+        this.lineWidth = width;
     }
 
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
@@ -284,6 +288,13 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glShadeModel(GL_FLAT);
         glEnable(GL_ALPHA_TEST);
         glEnable(GL_TEXTURE_2D);
+    }
+
+    public void drawTriangleStrip(int[] colours, double[] points)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawing(GL_TRIANGLE_STRIP);
+        drawAbstractPoints(tessellator, colours, points);
     }
 
     public void drawTriangleFan(int[] colours, double... points)
@@ -705,12 +716,16 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         }
     }
 
-    public void drawLines(int[] points, int[] colour)
+    public void drawLines(double[] points, int[] colour)
     {
         glDisable(GL_TEXTURE_2D);
+        glEnable (GL_LINE_SMOOTH);
+        glEnable (GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL_LINE_STRIP);
-        glLineWidth(5 * getScale());
+        glLineWidth(lineWidth * getScale());
         tessellator.setColorRGBA(colour[0], colour[1], colour[2], colour[3]);
         for (int i = 0; i < points.length; )
             tessellator.addVertex(points[i++], points[i++], 0);
