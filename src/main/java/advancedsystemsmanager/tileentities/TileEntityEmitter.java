@@ -382,7 +382,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             }
         }
 
-        if (updateClient)
+        if (updateClient && !isPartOfCluster())
         {
             PacketHandler.sendBlockPacket(this, null, 0);
         }
