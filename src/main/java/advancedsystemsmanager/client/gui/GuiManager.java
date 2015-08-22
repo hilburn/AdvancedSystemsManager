@@ -1,7 +1,5 @@
 package advancedsystemsmanager.client.gui;
 
-import advancedsystemsmanager.animation.AnimationController;
-import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -44,9 +42,7 @@ public class GuiManager extends GuiBase
     public static int Z_LEVEL_COMPONENT_START = 500;
     public static int Z_LEVEL_OPEN_MAXIMUM = 5;
     public IPacketSync selectedComponent;
-    public IGuiElement hoverComponent;
     private long lastTicks;
-    private AnimationController controller;
     private boolean useButtons = true;
     private boolean useInfo = true;
     private boolean useMouseOver = true;
