@@ -1,8 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.containers.ContainerRelay;
 import advancedsystemsmanager.client.gui.GuiRelay;
+import advancedsystemsmanager.containers.ContainerRelay;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;

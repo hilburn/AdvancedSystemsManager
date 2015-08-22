@@ -36,23 +36,23 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager guiManager, int mouseX, int mouseY, int zLevel)
+    public void draw(GuiBase GuiBase, int mouseX, int mouseY, int zLevel)
     {
-        GuiManager.bindTexture(BUTTONS);
+        advancedsystemsmanager.client.gui.GuiBase.bindTexture(BUTTONS);
         for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
             IManagerButton button = itr.next();
             boolean selected = CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY);
-            guiManager.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.backgroundMouseover : ThemeHandler.theme.buttons.background).getColour());
-            guiManager.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X + BUTTON_SIZE, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.foregroundMouseover : ThemeHandler.theme.buttons.foreground).getColour());
+            GuiBase.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.backgroundMouseover : ThemeHandler.theme.buttons.background).getColour());
+            GuiBase.drawColouredTexture(itr.x, itr.y, TileEntityManager.BUTTON_SRC_X + BUTTON_SIZE, TileEntityManager.BUTTON_SRC_Y, BUTTON_SIZE, BUTTON_SIZE, (selected ? ThemeHandler.theme.buttons.foregroundMouseover : ThemeHandler.theme.buttons.foreground).getColour());
             ResourceLocation location = button.getTexture();
             if (location == BUTTONS)
-                guiManager.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
+                GuiBase.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
             else
             {
-                GuiManager.bindTexture(location);
-                guiManager.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
-                GuiManager.bindTexture(BUTTONS);
+                advancedsystemsmanager.client.gui.GuiBase.bindTexture(location);
+                GuiBase.drawTexture(itr.x, itr.y, button.getX(), button.getY(), BUTTON_ICON_SIZE, BUTTON_ICON_SIZE);
+                advancedsystemsmanager.client.gui.GuiBase.bindTexture(BUTTONS);
             }
             itr.nextPosition();
         }
@@ -60,23 +60,24 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawMouseOver(GuiManager guiManager, int mouseX, int mouseY)
+    public boolean drawMouseOver(GuiBase GuiBase, int mouseX, int mouseY)
     {
         for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
         {
             IManagerButton button = itr.next();
             if (CollisionHelper.inBounds(itr.x, itr.y, BUTTON_SIZE, BUTTON_SIZE, mouseX, mouseY))
             {
-                guiManager.drawMouseOver(button.getMouseOver(), mouseX, mouseY);
-                break;
+                GuiBase.drawMouseOver(button.getMouseOver(), mouseX, mouseY);
+                return true;
             }
             itr.nextPosition();
         }
+        return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager guiManager, char character, int key)
+    public boolean onKeyStroke(GuiBase GuiBase, char character, int key)
     {
         return false;
     }

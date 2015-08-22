@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.ConnectionOption;
 import cpw.mods.fml.relauncher.Side;
@@ -25,7 +25,7 @@ public abstract class MenuTriggered extends Menu
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         this.textBoxes.draw(gui, mX, mY);
     }
@@ -36,7 +36,7 @@ public abstract class MenuTriggered extends Menu
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return this.textBoxes.onKeyStroke(gui, c, k);
     }

@@ -1,11 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -76,7 +76,7 @@ public abstract class MenuRedstoneSides extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         gui.drawSplitString(getMessage(), TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X, 0.7F, 0x404040);
 
@@ -85,12 +85,6 @@ public abstract class MenuRedstoneSides extends Menu
     }
 
     public abstract String getMessage();
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-    }
 
     @Override
     public void onClick(int mX, int mY, int button)

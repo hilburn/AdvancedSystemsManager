@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -61,7 +61,7 @@ public class MenuTargetTank extends MenuTarget
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    public void drawAdvancedComponent(GuiBase gui, int mX, int mY)
     {
         radioButtons.draw(gui, mX, mY);
     }

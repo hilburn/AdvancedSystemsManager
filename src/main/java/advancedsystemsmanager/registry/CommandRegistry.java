@@ -2,8 +2,6 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.execution.ICommand;
-import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectInput;
-import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectOutput;
 import advancedsystemsmanager.flow.execution.commands.*;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;

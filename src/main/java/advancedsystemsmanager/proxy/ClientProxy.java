@@ -1,7 +1,7 @@
 package advancedsystemsmanager.proxy;
 
-import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.threading.ThreadSafeHandler;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;

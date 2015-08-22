@@ -2,7 +2,6 @@ package advancedsystemsmanager.compatibility.thaumcraft;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.client.gui.GuiBase;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.compatibility.CompatBase;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.compatibility.thaumcraft.commands.CommandAspectInput;
@@ -44,7 +43,7 @@ public class TCCompat extends CompatBase
         ModCompat.registerLabel(IAspectContainer.class);
     }
 
-    public static void drawAspect(GuiManager gui, Aspect aspect, int x, int y)
+    public static void drawAspect(GuiBase gui, Aspect aspect, int x, int y)
     {
         GL11.glPushMatrix();
         GL11.glAlphaFunc(GL11.GL_GREATER, 1 / 255F);

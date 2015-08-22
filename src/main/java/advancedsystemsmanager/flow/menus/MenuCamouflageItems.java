@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.relauncher.Side;
@@ -44,7 +44,7 @@ public class MenuCamouflageItems extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         super.draw(gui, mX, mY);
 

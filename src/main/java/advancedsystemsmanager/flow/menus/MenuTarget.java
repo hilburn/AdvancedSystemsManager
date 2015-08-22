@@ -2,9 +2,9 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.api.network.IPacketProvider;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.UpdateElement;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
@@ -102,7 +102,7 @@ public abstract class MenuTarget extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         for (int i = 0; i < directions.length; i++)
         {
@@ -150,11 +150,11 @@ public abstract class MenuTarget extends Menu
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawAdvancedComponent(GuiManager gui, int mX, int mY);
+    public abstract void drawAdvancedComponent(GuiBase gui, int mX, int mY);
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         if (selectedDirectionId != -1)
         {
@@ -163,10 +163,11 @@ public abstract class MenuTarget extends Menu
                 if (CollisionHelper.inBounds(BUTTON_X, button.y, BUTTON_SIZE_W, BUTTON_SIZE_H, mX, mY))
                 {
                     gui.drawMouseOver(button.getMouseOverText(), mX, mY);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)

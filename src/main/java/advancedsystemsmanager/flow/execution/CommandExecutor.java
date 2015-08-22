@@ -158,7 +158,7 @@ public class CommandExecutor
                         List<SlotInventoryHolder> conditionInventory = this.getInventories(command.getMenus().get(0));
                         if (conditionInventory != null)
                         {
-                            this.getValidSlots(command.getMenus().get(1), conditionInventory);
+                            getValidSlots(command.getMenus().get(1), conditionInventory);
                             if (this.searchForStuff(command.getMenus().get(2), conditionInventory, false))
                             {
                                 this.executeChildCommands(command, EnumSet.of(ConnectionOption.CONDITION_TRUE));

@@ -2,13 +2,13 @@ package advancedsystemsmanager.registry;
 
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.gui.IManagerButtonProvider;
-import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.client.gui.ManagerButtonList;
-import advancedsystemsmanager.tileentities.manager.Settings;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.DefaultButtonProvider;
 import advancedsystemsmanager.tileentities.manager.ManagerButton;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.client.gui.GuiScreen;
 

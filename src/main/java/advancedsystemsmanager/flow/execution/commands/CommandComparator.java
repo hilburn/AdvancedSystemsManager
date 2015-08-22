@@ -3,7 +3,6 @@ package advancedsystemsmanager.flow.execution.commands;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
-
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemCoord;
 

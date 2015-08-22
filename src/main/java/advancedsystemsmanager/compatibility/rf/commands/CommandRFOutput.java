@@ -10,7 +10,6 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.buffers.Buffer;
 import advancedsystemsmanager.flow.execution.commands.CommandOutput;
 import advancedsystemsmanager.flow.menus.Menu;
-
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.SystemCoord;

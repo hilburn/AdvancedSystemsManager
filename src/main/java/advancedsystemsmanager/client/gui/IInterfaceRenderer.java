@@ -9,7 +9,7 @@ public interface IInterfaceRenderer
 {
     void draw(GuiManager gui, int mX, int mY);
 
-    void drawMouseOver(GuiManager gui, int mX, int mY);
+    boolean drawMouseOver(GuiManager gui, int mX, int mY);
 
     void onClick(GuiManager gui, int mX, int mY, int button);
 

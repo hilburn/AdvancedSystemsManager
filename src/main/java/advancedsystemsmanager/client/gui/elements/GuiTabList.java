@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement<GuiBase>
+public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
 {
     private static int TAB_WIDTH_MAX = 80;
     private static int MAX_TABS = 8;
@@ -99,9 +99,9 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement<GuiBase
     }
 
     @Override
-    public void drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
+    public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
-
+        return false;
     }
 
     @Override

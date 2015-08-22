@@ -2,10 +2,10 @@ package advancedsystemsmanager.flow.menus;
 
 
 import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -89,7 +89,7 @@ public class MenuContainerTypes extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         checkBoxes.draw(gui, mX, mY);
     }

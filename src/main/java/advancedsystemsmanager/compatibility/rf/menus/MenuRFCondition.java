@@ -1,9 +1,9 @@
 package advancedsystemsmanager.compatibility.rf.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -42,7 +42,7 @@ public class MenuRFCondition extends MenuRFAmount
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         gui.drawSplitString(Names.RF_CONDITION_INFO, 5, 5, 110, 0.7F, 4210752);
         this.checkBoxes.draw(gui, mX, mY);

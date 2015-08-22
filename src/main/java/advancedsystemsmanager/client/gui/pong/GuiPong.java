@@ -88,9 +88,9 @@ public class GuiPong implements IInterfaceRenderer
     }
 
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiManager gui, int mX, int mY)
     {
-
+        return false;
     }
 
     @Override

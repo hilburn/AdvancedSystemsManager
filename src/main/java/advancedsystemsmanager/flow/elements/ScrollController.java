@@ -2,7 +2,7 @@ package advancedsystemsmanager.flow.elements;
 
 
 import advancedsystemsmanager.api.network.IPacketProvider;
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
@@ -197,7 +197,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         if (selected && hasSearchBox)
         {
@@ -211,7 +211,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         if (hasSearchBox)
         {
@@ -243,7 +243,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawArrow(GuiManager gui, boolean down, int mX, int mY)
+    public void drawArrow(GuiBase gui, boolean down, int mX, int mY)
     {
         if (canScroll)
         {
@@ -255,7 +255,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void draw(GuiManager gui, T t, int x, int y, boolean hover);
+    public abstract void draw(GuiBase gui, T t, int x, int y, boolean hover);
 
     public void update(float partial)
     {
@@ -285,7 +285,7 @@ public abstract class ScrollController<T>
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         List<Point> points = getItemCoordinates();
         for (Point point : points)
@@ -293,13 +293,14 @@ public abstract class ScrollController<T>
             if (CollisionHelper.inBounds(point.x, point.y, ITEM_SIZE, ITEM_SIZE, mX, mY))
             {
                 drawMouseOver(gui, result.get(point.id), mX, mY);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawMouseOver(GuiManager gui, T t, int mX, int mY);
+    public abstract void drawMouseOver(GuiBase gui, T t, int mX, int mY);
 
     public void setItemsPerRow(int n)
     {

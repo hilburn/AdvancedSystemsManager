@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.elements;
 
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,7 +15,7 @@ public class WideNumberBoxList
     public WideNumberBox selectedTextBox;
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         Iterator i$ = this.textBoxes.iterator();
 
@@ -62,7 +62,7 @@ public class WideNumberBoxList
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         if (this.selectedTextBox != null && this.selectedTextBox.isVisible())
         {

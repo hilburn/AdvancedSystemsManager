@@ -2,9 +2,8 @@ package advancedsystemsmanager.api.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiScreen;
 
-public interface IGuiListElement<Gui extends GuiScreen> extends IGuiElement<Gui>
+public interface IGuiListElement extends IGuiElement
 {
     @SideOnly(Side.CLIENT)
     int getWidth();

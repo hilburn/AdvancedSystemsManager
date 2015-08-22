@@ -5,18 +5,18 @@ import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.api.network.IPacketProvider;
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.elements.TextBoxLogic;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuResult;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.registry.ThemeHandler;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -410,7 +410,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY, int zLevel)
+    public void draw(GuiBase gui, int mX, int mY, int zLevel)
     {
         GL11.glPushMatrix();
         GL11.glTranslatef(0, 0, zLevel);
@@ -582,7 +582,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
         {
             if (isEditing)
             {
-                gui.drawCursor(x + TEXT_X + (int)((textBox.getCursorPosition(gui) + CURSOR_X)), y + TEXT_Y + (int)(CURSOR_Y), CURSOR_Z, 1F, 0xFFFFFFFF);
+                gui.drawCursor(x + TEXT_X + (textBox.getCursorPosition(gui) + CURSOR_X), y + TEXT_Y + CURSOR_Y, CURSOR_Z, 1F, 0xFFFFFFFF);
                 for (int i = 0; i < 2; i++)
                 {
                     int buttonX = x + EDIT_X_SMALL;
@@ -607,7 +607,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         for (int i = 0; i < connectionSet.getConnections().length; i++)
         {
@@ -621,6 +621,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
             if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
             {
                 gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - connectionSet.getInputs())), mX, mY);
+                return true;
             }
         }
 
@@ -655,12 +656,14 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
                     str += StatCollector.translateToLocal(errors.get(i));
                 }
                 gui.drawMouseOver(str, mX, mY);
+                return true;
             }
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         if (isLarge && isEditing)
         {
@@ -957,7 +960,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IP
         return textBox.getText() == null ? name == null || GuiScreen.isCtrlKeyDown() ? StatCollector.translateToLocal(getType().getName()) : name : textBox.getText();
     }
 
-    public String getShortName(GuiManager gui, String name)
+    public String getShortName(GuiBase gui, String name)
     {
         if (!name.equals(cachedName))
         {

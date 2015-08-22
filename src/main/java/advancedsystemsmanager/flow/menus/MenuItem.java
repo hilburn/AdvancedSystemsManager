@@ -1,11 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.FuzzyMode;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -169,7 +169,7 @@ public class MenuItem extends MenuStuff<ItemStack>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawResultObject(GuiManager gui, ItemStack obj, int x, int y)
+    public void drawResultObject(GuiBase gui, ItemStack obj, int x, int y)
     {
         gui.drawItemStack(obj, x, y);
 //        gui.drawItemAmount(obj, x, y);
@@ -177,7 +177,7 @@ public class MenuItem extends MenuStuff<ItemStack>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawSettingObject(GuiManager gui, Setting<ItemStack> setting, int x, int y)
+    public void drawSettingObject(GuiBase gui, Setting<ItemStack> setting, int x, int y)
     {
         drawResultObject(gui, setting.getContent(), x, y);
     }
@@ -217,7 +217,7 @@ public class MenuItem extends MenuStuff<ItemStack>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    public void drawInfoMenuContent(GuiBase gui, int mX, int mY)
     {
         if (damageValueTextBox.isVisible())
         {

@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.setting.LiquidSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
@@ -96,7 +96,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawResultObject(GuiManager gui, Fluid obj, int x, int y)
+    public void drawResultObject(GuiBase gui, Fluid obj, int x, int y)
     {
         gui.drawFluid(obj, x, y);
     }
@@ -119,7 +119,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawSettingObject(GuiManager gui, Setting setting, int x, int y)
+    public void drawSettingObject(GuiBase gui, Setting setting, int x, int y)
     {
         drawResultObject(gui, ((LiquidSetting)setting).getFluid(), x, y);
     }
@@ -138,7 +138,7 @@ public class MenuLiquid extends MenuStuff<Fluid>
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    public void drawInfoMenuContent(GuiBase gui, int mX, int mY)
     {
         if (selectedSetting.isLimitedByAmount())
         {

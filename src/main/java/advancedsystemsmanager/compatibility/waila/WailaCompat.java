@@ -6,8 +6,6 @@ import advancedsystemsmanager.compatibility.CompatBase;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaRegistrar;

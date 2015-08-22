@@ -3,7 +3,7 @@ package advancedsystemsmanager.client.gui.elements;
 import advancedsystemsmanager.api.gui.IGuiListElement;
 import advancedsystemsmanager.client.gui.GuiBase;
 
-public class GuiListElement implements IGuiListElement<GuiBase>
+public class GuiListElement implements IGuiListElement
 {
     int width, height, x, y;
 
@@ -50,9 +50,9 @@ public class GuiListElement implements IGuiListElement<GuiBase>
     }
 
     @Override
-    public void drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
+    public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
-
+        return false;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.network.IPacketProvider;
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ public class TextBoxLogic extends UpdateElement
     }
 
     @SideOnly(Side.CLIENT)
-    public void addText(GuiManager gui, String str)
+    public void addText(GuiBase gui, String str)
     {
         String newText = text.substring(0, cursor) + str + text.substring(cursor);
 
@@ -40,7 +40,7 @@ public class TextBoxLogic extends UpdateElement
     }
 
     @SideOnly(Side.CLIENT)
-    public void deleteText(GuiManager gui, int direction)
+    public void deleteText(GuiBase gui, int direction)
     {
         if (cursor + direction >= 0 && cursor + direction <= text.length())
         {
@@ -57,7 +57,7 @@ public class TextBoxLogic extends UpdateElement
     }
 
     @SideOnly(Side.CLIENT)
-    public void moveCursor(GuiManager gui, int steps)
+    public void moveCursor(GuiBase gui, int steps)
     {
         cursor += steps;
 
@@ -74,7 +74,7 @@ public class TextBoxLogic extends UpdateElement
         this.text = text;
     }
 
-    public int getCursorPosition(GuiManager gui)
+    public int getCursorPosition(GuiBase gui)
     {
         if (updatedCursor)
         {
@@ -86,7 +86,7 @@ public class TextBoxLogic extends UpdateElement
     }
 
     @SideOnly(Side.CLIENT)
-    public void onKeyStroke(GuiManager gui, char c, int k)
+    public void onKeyStroke(GuiBase gui, char c, int k)
     {
         if (k == 203)
         {

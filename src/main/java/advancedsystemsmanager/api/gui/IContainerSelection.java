@@ -1,22 +1,21 @@
 package advancedsystemsmanager.api.gui;
 
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiScreen;
 
 public interface IContainerSelection
 {
     long getId();
 
     @SideOnly(Side.CLIENT)
-    void draw(GuiManager gui, int x, int y);
+    void draw(GuiBase gui, int x, int y);
 
     @SideOnly(Side.CLIENT)
-    String getDescription(GuiManager gui);
+    String getDescription(GuiBase gui);
 
     @SideOnly(Side.CLIENT)
-    String getName(GuiManager gui);
+    String getName(GuiBase gui);
 
     boolean isVariable(); //fast access
 }

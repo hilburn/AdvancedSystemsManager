@@ -1,7 +1,7 @@
 package advancedsystemsmanager.compatibility.rf.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuTarget;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +21,7 @@ public class MenuRFTarget extends MenuTarget
     }
 
     @Override
-    public void drawAdvancedComponent(GuiManager guiManager, int i, int i1)
+    public void drawAdvancedComponent(GuiBase guiManager, int i, int i1)
     {
 
     }

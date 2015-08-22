@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -43,7 +43,7 @@ public class MenuInterval extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         gui.drawSplitString(Names.INTERVAL_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X * 2, 0.7F, 0x404040);
         gui.drawString(Names.SECOND, TEXT_SECONDS_X, TEXT_SECOND_Y, 0.7F, 0x404040);
@@ -59,7 +59,7 @@ public class MenuInterval extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return textBoxes.onKeyStroke(gui, c, k);
     }

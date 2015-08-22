@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionOption;
@@ -50,7 +50,7 @@ public class MenuDelayed extends MenuTriggered
     }
 
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         gui.drawSplitString(Names.DELAY_INFO, TEXT_MARGIN_X, TEXT_Y, MENU_WIDTH - TEXT_MARGIN_X, 0.7F, 4210752);
         buttonList.draw(gui, mX, mY);

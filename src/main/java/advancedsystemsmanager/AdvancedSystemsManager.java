@@ -1,10 +1,10 @@
 package advancedsystemsmanager;
 
+import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
-import advancedsystemsmanager.helpers.ModItemHelper;
-import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.helpers.ConfigHandler;
+import advancedsystemsmanager.helpers.ModItemHelper;
 import advancedsystemsmanager.helpers.OreDictionaryHelper;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;

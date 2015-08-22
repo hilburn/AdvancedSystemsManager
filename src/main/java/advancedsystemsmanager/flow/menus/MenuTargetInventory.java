@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -97,7 +97,7 @@ public class MenuTargetInventory extends MenuTarget
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawAdvancedComponent(GuiManager gui, int mX, int mY)
+    public void drawAdvancedComponent(GuiBase gui, int mX, int mY)
     {
         textBoxes.draw(gui, mX, mY);
     }
@@ -166,7 +166,7 @@ public class MenuTargetInventory extends MenuTarget
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return selectedDirectionId != -1 && useAdvancedSetting(selectedDirectionId) && textBoxes.onKeyStroke(gui, c, k);
     }

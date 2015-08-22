@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.ScrollVariable;
 import advancedsystemsmanager.flow.elements.Variable;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,16 +30,16 @@ public class MenuVariableLoop extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         variables.draw(gui, mX, mY);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
-        variables.drawMouseOver(gui, mX, mY);
+        return variables.drawMouseOver(gui, mX, mY);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MenuVariableLoop extends Menu
     }
 
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return variables.onKeyStroke(gui, c, k);
     }

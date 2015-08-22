@@ -3,12 +3,13 @@ package advancedsystemsmanager.flow.execution.commands;
 import advancedsystemsmanager.api.IConditionStuffMenu;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.menus.*;
+import advancedsystemsmanager.flow.menus.MenuContainer;
+import advancedsystemsmanager.flow.menus.MenuStuff;
+import advancedsystemsmanager.flow.menus.MenuTarget;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemCoord;
-import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashSet;

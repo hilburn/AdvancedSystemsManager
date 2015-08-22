@@ -1,6 +1,6 @@
 package advancedsystemsmanager.compatibility.rf.menus;
 
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.flow.elements.WideNumberBox;
@@ -31,7 +31,7 @@ public class MenuRFAmount extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         gui.drawSplitString(Names.RF_CONDITION_INFO, 5, 5, 110, 0.7F, 4210752);
         this.textBoxes.draw(gui, mX, mY);
@@ -46,7 +46,7 @@ public class MenuRFAmount extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return this.textBoxes.onKeyStroke(gui, c, k);
     }

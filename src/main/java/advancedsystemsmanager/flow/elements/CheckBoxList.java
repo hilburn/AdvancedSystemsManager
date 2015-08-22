@@ -1,6 +1,6 @@
 package advancedsystemsmanager.flow.elements;
 
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.registry.ThemeHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +31,7 @@ public class CheckBoxList
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         for (CheckBox checkBox : checkBoxes)
         {

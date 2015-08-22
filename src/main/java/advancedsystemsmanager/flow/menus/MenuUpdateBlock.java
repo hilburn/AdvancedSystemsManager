@@ -1,13 +1,13 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.TextBoxNumber;
 import advancedsystemsmanager.flow.elements.TextBoxNumberList;
 import advancedsystemsmanager.flow.setting.ItemSetting;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -310,7 +310,7 @@ public class MenuUpdateBlock extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         if (!isEditing() && !isSearching())
         {
@@ -329,17 +329,18 @@ public class MenuUpdateBlock extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         if (isEditing() || isSearching() || useId)
         {
             super.drawMouseOver(gui, mX, mY);
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         if (!isEditing() && !isSearching())
         {

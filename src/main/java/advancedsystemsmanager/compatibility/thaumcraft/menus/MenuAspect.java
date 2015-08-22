@@ -1,10 +1,10 @@
 package advancedsystemsmanager.compatibility.thaumcraft.menus;
 
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.compatibility.thaumcraft.TCCompat;
+import advancedsystemsmanager.compatibility.thaumcraft.setting.AspectSetting;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuStuff;
-import advancedsystemsmanager.compatibility.thaumcraft.setting.AspectSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -55,7 +55,7 @@ public class MenuAspect extends MenuStuff<Aspect>
     }
 
     @Override
-    public void drawResultObject(GuiManager gui, Aspect obj, int x, int y)
+    public void drawResultObject(GuiBase gui, Aspect obj, int x, int y)
     {
         TCCompat.drawAspect(gui, obj, x, y);
     }
@@ -75,7 +75,7 @@ public class MenuAspect extends MenuStuff<Aspect>
     }
 
     @Override
-    public void drawSettingObject(GuiManager gui, Setting<Aspect> setting, int x, int y)
+    public void drawSettingObject(GuiBase gui, Setting<Aspect> setting, int x, int y)
     {
         drawResultObject(gui, setting.getContent(), x, y);
     }
@@ -93,7 +93,7 @@ public class MenuAspect extends MenuStuff<Aspect>
     }
 
     @Override
-    public void drawInfoMenuContent(GuiManager gui, int mX, int mY)
+    public void drawInfoMenuContent(GuiBase gui, int mX, int mY)
     {
 
     }

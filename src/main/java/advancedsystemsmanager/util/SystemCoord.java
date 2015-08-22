@@ -3,9 +3,10 @@ package advancedsystemsmanager.util;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
+import advancedsystemsmanager.client.gui.GuiBase;
+import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
@@ -139,20 +140,20 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     }
 
     @Override
-    public void draw(GuiManager gui, int x, int y)
+    public void draw(GuiBase gui, int x, int y)
     {
         gui.drawBlock(tileEntity, x, y);
     }
 
     @Override
-    public String getDescription(GuiManager gui)
+    public String getDescription(GuiBase gui)
     {
         String str = fixToolTip(gui.getBlockName(tileEntity), tileEntity);
 
         str += getVariableTag(gui);
 
         str += "\n" + StatCollector.translateToLocalFormatted(Names.LOCATION, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-        int distance = getDistance(gui.getManager());
+        int distance = getDistance(((GuiManager)gui).getManager());
         str += "\n" + StatCollector.translateToLocalFormatted(distance > 1 ? Names.BLOCKS_AWAY : Names.BLOCK_AWAY, distance);
         str += "\n" + StatCollector.translateToLocalFormatted(depth > 1 ? Names.CABLES_AWAY : Names.CABLE_AWAY, depth);
 
@@ -177,7 +178,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     }
 
     @Override
-    public String getName(GuiManager gui)
+    public String getName(GuiBase gui)
     {
         return gui.getBlockName(tileEntity);
     }
@@ -189,14 +190,14 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     }
 
     @SideOnly(Side.CLIENT)
-    private String getVariableTag(GuiManager gui)
+    private String getVariableTag(GuiBase gui)
     {
         boolean isInVariable = false;
         String result = "";
 
         if (GuiScreen.isShiftKeyDown())
         {
-            for (Variable variable : gui.getManager().getVariables())
+            for (Variable variable : ((GuiManager)gui).getManager().getVariables())
             {
                 if (isPartOfVariable(variable))
                 {

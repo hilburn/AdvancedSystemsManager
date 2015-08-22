@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
+import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.containers.ContainerManager;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
@@ -96,7 +96,7 @@ public class MenuPulse extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         checkBoxes.draw(gui, mX, mY);
         if (usePulse)
@@ -123,7 +123,7 @@ public class MenuPulse extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return usePulse && textBoxes.onKeyStroke(gui, c, k);
 

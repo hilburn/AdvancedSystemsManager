@@ -2,12 +2,13 @@ package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.execution.buffers.elements.FluidBufferElement;
-import advancedsystemsmanager.flow.menus.*;
+import advancedsystemsmanager.flow.menus.Menu;
+import advancedsystemsmanager.flow.menus.MenuLiquidCondition;
+import advancedsystemsmanager.flow.menus.MenuTankCondition;
+import advancedsystemsmanager.flow.menus.MenuTargetTank;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.SystemCoord;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;

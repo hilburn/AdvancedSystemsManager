@@ -2,8 +2,8 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.containers.ContainerVoid;
 import advancedsystemsmanager.client.gui.GuiVoid;
+import advancedsystemsmanager.containers.ContainerVoid;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.util.ClusterMethodRegistration;

@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -140,17 +140,11 @@ public class MenuListOrder extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         radioButtons.draw(gui, mX, mY);
         checkBoxes.draw(gui, mX, mY);
         textBoxes.draw(gui, mX, mY);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
     }
 
     @Override
@@ -163,7 +157,7 @@ public class MenuListOrder extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return textBoxes.onKeyStroke(gui, c, k);
     }

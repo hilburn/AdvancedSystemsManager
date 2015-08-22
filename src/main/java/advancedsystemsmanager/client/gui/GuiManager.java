@@ -1,9 +1,9 @@
 package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.client.gui.pong.GuiPong;
 import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.client.gui.pong.GuiPong;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.message.SecretMessage;

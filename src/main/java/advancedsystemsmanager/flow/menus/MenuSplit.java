@@ -1,11 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import cpw.mods.fml.relauncher.Side;
@@ -97,7 +97,7 @@ public class MenuSplit extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         if (useSplit())
         {
@@ -109,12 +109,6 @@ public class MenuSplit extends Menu
     public boolean useSplit()
     {
         return radioButtons.getSelectedOption() == 1;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
     }
 
     @Override

@@ -1,11 +1,11 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.CraftingDummy;
 import advancedsystemsmanager.flow.setting.CraftingSetting;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
@@ -98,7 +98,7 @@ public class MenuCrafting extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         super.draw(gui, mX, mY);
         if (!isEditing() && !isSearching() && resultItem.getItem() != null)
@@ -110,7 +110,7 @@ public class MenuCrafting extends MenuItem
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         super.drawMouseOver(gui, mX, mY);
         if (!isEditing() && !isSearching() && resultItem.getItem() != null)
@@ -118,8 +118,10 @@ public class MenuCrafting extends MenuItem
             if (CollisionHelper.inBounds(getResultX(), getResultY(), ITEM_SIZE, ITEM_SIZE, mX, mY))
             {
                 gui.drawMouseOver(getResultObjectMouseOver(resultItem.getItem()), mX, mY);
+                return true;
             }
         }
+        return false;
     }
 
     @Override

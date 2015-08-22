@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.MenuContainer;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.ThemeHandler;
@@ -91,14 +91,14 @@ public class ScrollVariable extends ScrollController<Variable> implements IPacke
     }
 
     @Override
-    public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
+    public void draw(GuiBase gui, Variable variable, int x, int y, boolean hover)
     {
         gui.drawColouredTexture(x, y, MenuContainer.INVENTORY_SRC_X, MenuContainer.INVENTORY_SRC_Y, MenuContainer.INVENTORY_SIZE, MenuContainer.INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(this.variable == variable.colour, hover));
         variable.draw(gui, x, y);
     }
 
     @Override
-    public void drawMouseOver(GuiManager gui, Variable variable, int mX, int mY)
+    public void drawMouseOver(GuiBase gui, Variable variable, int mX, int mY)
     {
         gui.drawMouseOver(variable.getDescription(gui), mX, mY);
     }

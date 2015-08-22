@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.elements.*;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -145,13 +145,13 @@ public class ContainerFilter
             }
 
             @Override
-            public void draw(GuiManager gui, Variable variable, int x, int y, boolean hover)
+            public void draw(GuiBase gui, Variable variable, int x, int y, boolean hover)
             {
                 currentMenu.drawContainer(gui, variable, filterVariableSelection, x, y, hover);
             }
 
             @Override
-            public void drawMouseOver(GuiManager gui, Variable variable, int mX, int mY)
+            public void drawMouseOver(GuiBase gui, Variable variable, int mX, int mY)
             {
                 gui.drawMouseOver(currentMenu.getMouseOverForContainer(variable, filterVariableSelection), mX, mY);
             }

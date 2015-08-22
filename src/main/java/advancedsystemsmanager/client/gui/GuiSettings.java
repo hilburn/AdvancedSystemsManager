@@ -5,12 +5,12 @@ import advancedsystemsmanager.api.network.IPacketSync;
 import advancedsystemsmanager.flow.elements.CheckBox;
 import advancedsystemsmanager.flow.elements.CheckBoxList;
 import advancedsystemsmanager.helpers.CollisionHelper;
-import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
 import advancedsystemsmanager.registry.CommandRegistry;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -137,12 +137,13 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
     }
 
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiManager gui, int mX, int mY)
     {
         for (Button button : buttons)
         {
-            button.drawMouseOver(gui, mX, mY);
+            if (button.drawMouseOver(gui, mX, mY)) return true;
         }
+        return false;
     }
 
     @Override
@@ -273,12 +274,14 @@ public class GuiSettings implements IInterfaceRenderer, IPacketProvider
             return CollisionHelper.inBounds(x, y, BUTTON_SIZE, BUTTON_SIZE, mX, mY);
         }
 
-        private void drawMouseOver(GuiManager gui, int mX, int mY)
+        private boolean drawMouseOver(GuiManager gui, int mX, int mY)
         {
             if (inBounds(mX, mY))
             {
                 gui.drawMouseOver(name, mX, mY);
+                return true;
             }
+            return false;
         }
 
         protected abstract void onClick();

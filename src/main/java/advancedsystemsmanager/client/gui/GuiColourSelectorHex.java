@@ -22,20 +22,20 @@ public class GuiColourSelectorHex implements IGuiElement
     private int[] hexagonColour = new int[3];
 
     @Override
-    public void draw(GuiManager guiBase, int mouseX, int mouseY, int zLevel)
+    public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
     {
         guiBase.drawTriangleFan(colours, points);
         guiBase.drawRainbowRectangle(400, 20, 20, 216, GuiColourSelector.WHITE, hexagonColour, GuiColourSelector.BLACK);
     }
 
     @Override
-    public void drawMouseOver(GuiManager guiBase, int mouseX, int mouseY)
+    public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
-
+        return false;
     }
 
     @Override
-    public boolean onKeyStroke(GuiManager guiBase, char character, int key)
+    public boolean onKeyStroke(GuiBase guiBase, char character, int key)
     {
         return false;
     }

@@ -1,7 +1,7 @@
 package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.network.IPacketProvider;
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.registry.ThemeHandler;
@@ -31,7 +31,7 @@ public class RadioButtonList extends UpdateElement
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         for (int i = 0; i < radioButtonList.size(); i++)
         {

@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.menus;
 
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.RadioButton;
 import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.registry.ConnectionSet;
@@ -81,16 +81,9 @@ public class MenuResult extends Menu
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         radioButtons.draw(gui, mX, mY);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
-    {
-
     }
 
     @Override

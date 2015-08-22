@@ -2,11 +2,11 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.client.gui.fonts.FontRenderer;
 import advancedsystemsmanager.containers.ContainerBase;
-import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
+import advancedsystemsmanager.tileentities.manager.Settings;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -29,8 +29,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.opengl.GL12;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -234,7 +235,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         tessellator.addVertexWithUV(x, y + h, (double)this.zLevel, srcX * SCALING, (srcY + v) * SCALING);
         tessellator.addVertexWithUV(x + w, y, (double)this.zLevel, (srcX + u) * SCALING, srcY * SCALING);
         if (oldColour != null) tessellator.setColorOpaque(oldColour[0], oldColour[1], oldColour[2]);
-        tessellator.addVertexWithUV(x + w, y + h, (double) this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
+        tessellator.addVertexWithUV(x + w, y + h, (double)this.zLevel, (srcX + u) * SCALING, (srcY + v) * SCALING);
 
         tessellator.draw();
     }
@@ -722,7 +723,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glEnable (GL_LINE_SMOOTH);
         glEnable (GL_BLEND);
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+        glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawing(GL_LINE_STRIP);
         glLineWidth(lineWidth * getScale());

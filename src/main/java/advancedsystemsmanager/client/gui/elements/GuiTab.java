@@ -3,7 +3,7 @@ package advancedsystemsmanager.client.gui.elements;
 import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.client.gui.GuiBase;
 
-public class GuiTab implements IGuiElement<GuiBase>
+public class GuiTab implements IGuiElement
 {
     protected static float SLOPE = 0.3F;
     private double x;
@@ -76,9 +76,9 @@ public class GuiTab implements IGuiElement<GuiBase>
     }
 
     @Override
-    public void drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
+    public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
-
+        return false;
     }
 
     @Override

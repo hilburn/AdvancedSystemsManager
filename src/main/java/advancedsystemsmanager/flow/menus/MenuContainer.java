@@ -4,14 +4,14 @@ package advancedsystemsmanager.flow.menus;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.api.network.IPacketSync;
-import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.flow.elements.RadioButtonList;
-import advancedsystemsmanager.flow.elements.ScrollController;
-import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.IAdvancedTooltip;
 import advancedsystemsmanager.client.gui.TextColour;
+import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.flow.elements.RadioButtonList;
+import advancedsystemsmanager.flow.elements.ScrollController;
+import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.network.ASMPacket;
@@ -187,14 +187,14 @@ public class MenuContainer extends Menu implements IPacketSync
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void draw(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, boolean hover)
+            public void draw(GuiBase gui, IContainerSelection iContainerSelection, int x, int y, boolean hover)
             {
                 drawContainer(gui, iContainerSelection, selectedInventories, x, y, hover);
             }
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void drawMouseOver(GuiManager gui, int mX, int mY)
+            public boolean drawMouseOver(GuiBase gui, int mX, int mY)
             {
                 if (locked && GuiBase.isShiftKeyDown())
                 {
@@ -211,17 +211,18 @@ public class MenuContainer extends Menu implements IPacketSync
                         cachedContainer = null;
                     }
                 }
+                return false;
             }
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int mX, int mY)
+            public void drawMouseOver(GuiBase gui, IContainerSelection iContainerSelection, int mX, int mY)
             {
                 drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
             }
 
             @SideOnly(Side.CLIENT)
-            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
+            public boolean drawMouseOver(GuiBase gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
             {
                 boolean isBlock = !iContainerSelection.isVariable();
 
@@ -252,6 +253,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
                     gui.drawMouseOver(lines, mX, mY);
                 }
+                return false;
             }
 
             @SideOnly(Side.CLIENT)
@@ -264,7 +266,7 @@ public class MenuContainer extends Menu implements IPacketSync
                 List<String> lockedSuffix;
 
                 @SideOnly(Side.CLIENT)
-                public ToolTip(GuiManager gui, SystemCoord block)
+                public ToolTip(GuiBase gui, SystemCoord block)
                 {
                     items = new ItemStack[ForgeDirection.VALID_DIRECTIONS.length];
                     itemTexts = new List[ForgeDirection.VALID_DIRECTIONS.length];
@@ -376,16 +378,14 @@ public class MenuContainer extends Menu implements IPacketSync
                 }
 
                 @SideOnly(Side.CLIENT)
-                public void drawMouseOverMouseOver(GuiBase gui, int x, int y, int mX, int mY)
+                public boolean drawMouseOverMouseOver(GuiBase gui, int x, int y, int mX, int mY)
                 {
-                    boolean ignored =
-                            drawBlockMouseOver(gui, x + 25, y + 5, mX, mY, ForgeDirection.NORTH) ||
-                                    drawBlockMouseOver(gui, x + 5, y + 25, mX, mY, ForgeDirection.WEST) ||
-                                    drawBlockMouseOver(gui, x + 25, y + 45, mX, mY, ForgeDirection.SOUTH) ||
-                                    drawBlockMouseOver(gui, x + 45, y + 25, mX, mY, ForgeDirection.EAST) ||
-
-                                    drawBlockMouseOver(gui, x + 80, y + 15, mX, mY, ForgeDirection.UP) ||
-                                    drawBlockMouseOver(gui, x + 80, y + 35, mX, mY, ForgeDirection.DOWN);
+                    return drawBlockMouseOver(gui, x + 25, y + 5, mX, mY, ForgeDirection.NORTH) ||
+                            drawBlockMouseOver(gui, x + 5, y + 25, mX, mY, ForgeDirection.WEST) ||
+                            drawBlockMouseOver(gui, x + 25, y + 45, mX, mY, ForgeDirection.SOUTH) ||
+                            drawBlockMouseOver(gui, x + 45, y + 25, mX, mY, ForgeDirection.EAST) ||
+                            drawBlockMouseOver(gui, x + 80, y + 15, mX, mY, ForgeDirection.UP) ||
+                            drawBlockMouseOver(gui, x + 80, y + 35, mX, mY, ForgeDirection.DOWN);
                 }
 
                 @SideOnly(Side.CLIENT)
@@ -552,7 +552,7 @@ public class MenuContainer extends Menu implements IPacketSync
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawContainer(GuiManager gui, IContainerSelection iContainerSelection, List<Long> selected, int x, int y, boolean hover)
+    public void drawContainer(GuiBase gui, IContainerSelection iContainerSelection, List<Long> selected, int x, int y, boolean hover)
     {
         gui.drawColouredTexture(x, y, INVENTORY_SRC_X, INVENTORY_SRC_Y, INVENTORY_SIZE, INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(selected.contains(iContainerSelection.getId()), hover));
         iContainerSelection.draw(gui, x, y);
@@ -627,14 +627,14 @@ public class MenuContainer extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         clientUpdate = true;
-        cachedInterface = gui;
+        cachedInterface = (GuiManager)gui;
         filter.currentMenu = this;
         if (currentPage == Page.MAIN)
         {
-            inventories = getInventories(gui.getManager());
+            inventories = getInventories(getParent().getManager());
             scrollController.draw(gui, mX, mY);
 
         } else if (currentPage == Page.MULTI)
@@ -669,7 +669,7 @@ public class MenuContainer extends Menu implements IPacketSync
             filter.radioButtonVariable.draw(gui, mX, mY);
             if (filter.isVariableListVisible())
             {
-                inventories = getInventories(gui.getManager());
+                inventories = getInventories(getParent().getManager());
                 filter.scrollControllerVariable.draw(gui, mX, mY);
             }
         }
@@ -693,7 +693,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         filter.currentMenu = this;
         if (currentPage == Page.MAIN)
@@ -713,18 +713,21 @@ public class MenuContainer extends Menu implements IPacketSync
                 str += "\n" + StatCollector.translateToLocal(Names.Z) + " (" + (filter.lowerRange[2].getNumber() + getParent().getManager().zCoord) + ", " + (filter.higherRange[2].getNumber() + getParent().getManager().zCoord) + ")";
 
                 gui.drawMouseOver(str, mX, mY);
+                return true;
             }
         }
 
         for (Button button : buttons)
         {
-            button.drawMouseOver(gui, mX, mY);
+            if (button.drawMouseOver(gui, mX, mY)) return true;
         }
 
         if (currentPage.parent != null && inBackBounds(mX, mY))
         {
             gui.drawMouseOver(StatCollector.translateToLocal(Names.GO_BACK), mX, mY);
+            return true;
         }
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
@@ -781,7 +784,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         filter.currentMenu = this;
         return currentPage == Page.MAIN ? scrollController.onKeyStroke(gui, c, k) : filter.textBoxes.onKeyStroke(gui, c, k);
@@ -976,7 +979,7 @@ public class MenuContainer extends Menu implements IPacketSync
         abstract void onClick();
 
         @SideOnly(Side.CLIENT)
-        void draw(GuiManager gui, int mX, int mY)
+        void draw(GuiBase gui, int mX, int mY)
         {
             if (isVisible())
             {
@@ -996,12 +999,14 @@ public class MenuContainer extends Menu implements IPacketSync
         }
 
         @SideOnly(Side.CLIENT)
-        void drawMouseOver(GuiManager gui, int mX, int mY)
+        boolean drawMouseOver(GuiBase gui, int mX, int mY)
         {
             if (inBounds(mX, mY))
             {
                 gui.drawMouseOver(description, mX, mY);
+                return true;
             }
+            return false;
         }
     }
 

@@ -1,10 +1,10 @@
 package advancedsystemsmanager.flow.menus;
 
 import advancedsystemsmanager.api.network.IPacketSync;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.elements.*;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
@@ -137,13 +137,13 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             }
 
             @Override
-            public void draw(GuiManager gui, Type o, int x, int y, boolean hover)
+            public void draw(GuiBase gui, Type o, int x, int y, boolean hover)
             {
                 drawResultObject(gui, o, x, y);
             }
 
             @Override
-            public void drawMouseOver(GuiManager gui, Type o, int mX, int mY)
+            public void drawMouseOver(GuiBase gui, Type o, int mX, int mY)
             {
                 if (o != null)
                 {
@@ -180,7 +180,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             }
 
             @Override
-            public void draw(GuiManager gui, Setting<Type> setting, int x, int y, boolean hover)
+            public void draw(GuiBase gui, Setting<Type> setting, int x, int y, boolean hover)
             {
                 if (setting.isValid())
                 {
@@ -194,7 +194,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
             }
 
             @Override
-            public void drawMouseOver(GuiManager gui, Setting<Type> setting, int mX, int mY)
+            public void drawMouseOver(GuiBase gui, Setting<Type> setting, int mX, int mY)
             {
                 if (setting.isValid())
                 {
@@ -230,7 +230,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawResultObject(GuiManager gui, Type obj, int x, int y);
+    public abstract void drawResultObject(GuiBase gui, Type obj, int x, int y);
 
     @SideOnly(Side.CLIENT)
     public abstract List<String> getResultObjectMouseOver(Type obj);
@@ -243,7 +243,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     public abstract void updateTextBoxes();
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawSettingObject(GuiManager gui, Setting<Type> setting, int x, int y);
+    public abstract void drawSettingObject(GuiBase gui, Setting<Type> setting, int x, int y);
 
     @SideOnly(Side.CLIENT)
     public abstract List<String> getSettingObjectMouseOver(Setting<Type> setting);
@@ -294,7 +294,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void draw(GuiManager gui, int mX, int mY)
+    public void draw(GuiBase gui, int mX, int mY)
     {
         if (isEditing())
         {
@@ -330,7 +330,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
     }
 
     @SideOnly(Side.CLIENT)
-    public abstract void drawInfoMenuContent(GuiManager gui, int mX, int mY);
+    public abstract void drawInfoMenuContent(GuiBase gui, int mX, int mY);
 
     public boolean inDeleteBounds(int mX, int mY)
     {
@@ -359,16 +359,18 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
         if (isEditing())
         {
             if (CollisionHelper.inBounds(EDIT_ITEM_X, EDIT_ITEM_Y, ITEM_SIZE, ITEM_SIZE, mX, mY))
             {
                 scrollControllerSelected.drawMouseOver(gui, selectedSetting, mX, mY);
+                return true;
             } else if (inDeleteBounds(mX, mY))
             {
                 gui.drawMouseOver(Names.DELETE_ITEM_SELECTION, mX, mY);
+                return true;
             }
         } else if (isListVisible())
         {
@@ -379,7 +381,9 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
         if (selectedSetting != null && inBackBounds(mX, mY))
         {
             gui.drawMouseOver(isEditing() ? Names.GO_BACK : Names.CANCEL, mX, mY);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -432,7 +436,7 @@ public abstract class MenuStuff<Type> extends Menu implements IPacketSync
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return isSearching() && getScrollingList().onKeyStroke(gui, c, k) || isEditing() && numberTextBoxes.onKeyStroke(gui, c, k);
     }

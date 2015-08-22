@@ -1,8 +1,8 @@
 package advancedsystemsmanager.flow.menus;
 
-import advancedsystemsmanager.flow.FlowComponent;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.containers.ContainerManager;
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -25,11 +25,12 @@ public abstract class Menu
     public abstract String getName();
 
     @SideOnly(Side.CLIENT)
-    public abstract void draw(GuiManager gui, int mX, int mY);
+    public abstract void draw(GuiBase gui, int mX, int mY);
 
     @SideOnly(Side.CLIENT)
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiBase gui, int mX, int mY)
     {
+        return false;
     }
 
     @SideOnly(Side.CLIENT)
@@ -46,7 +47,7 @@ public abstract class Menu
     }
 
     @SideOnly(Side.CLIENT)
-    public boolean onKeyStroke(GuiManager gui, char c, int k)
+    public boolean onKeyStroke(GuiBase gui, char c, int k)
     {
         return false;
     }

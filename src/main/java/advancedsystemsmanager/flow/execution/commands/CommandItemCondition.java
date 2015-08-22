@@ -1,7 +1,6 @@
 package advancedsystemsmanager.flow.execution.commands;
 
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
-import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuInventoryCondition;
@@ -9,7 +8,6 @@ import advancedsystemsmanager.flow.menus.MenuItemCondition;
 import advancedsystemsmanager.flow.menus.MenuTargetInventory;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -17,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

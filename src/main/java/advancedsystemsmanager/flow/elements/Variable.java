@@ -1,9 +1,9 @@
 package advancedsystemsmanager.flow.elements;
 
 import advancedsystemsmanager.api.gui.IContainerSelection;
-import advancedsystemsmanager.flow.FlowComponent;
-import advancedsystemsmanager.client.gui.GuiManager;
+import advancedsystemsmanager.client.gui.GuiBase;
 import advancedsystemsmanager.client.gui.TextColour;
+import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ColourUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -139,21 +139,21 @@ public class Variable implements Comparable<Variable>, IContainerSelection
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void draw(GuiManager gui, int x, int y)
+    public void draw(GuiBase gui, int x, int y)
     {
         gui.drawColouredTexture(x + 1, y + 1, VARIABLE_SRC_X, VARIABLE_SRC_Y, VARIABLE_SIZE, VARIABLE_SIZE, rgba);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getDescription(GuiManager gui)
+    public String getDescription(GuiBase gui)
     {
         return textColour.toString() + getNameFromColor();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public String getName(GuiManager gui)
+    public String getName(GuiBase gui)
     {
         return getNameFromColor();
     }

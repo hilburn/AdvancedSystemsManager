@@ -83,10 +83,9 @@ public class GuiVariable implements IInterfaceRenderer
     }
 
     @Override
-    public void drawMouseOver(GuiManager gui, int mX, int mY)
+    public boolean drawMouseOver(GuiManager gui, int mX, int mY)
     {
-        colourSelector.drawMouseOver(gui, mX, mY);
-        variables.drawMouseOver(gui, mX, mY);
+        return colourSelector.drawMouseOver(gui, mX, mY) || variables.drawMouseOver(gui, mX, mY);
     }
 
     @Override
