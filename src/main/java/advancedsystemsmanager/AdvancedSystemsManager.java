@@ -88,7 +88,7 @@ public class AdvancedSystemsManager
 
         MessageHandler.init();
 
-        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.ID);
+        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel("ASM");
 
         ModCompat.preInit();
     }

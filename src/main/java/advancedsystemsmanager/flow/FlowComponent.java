@@ -620,7 +620,7 @@ public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<Gui
 
             if (CollisionHelper.inBounds(location[0], location[1], CONNECTION_SIZE_W, CONNECTION_SIZE_H, mX, mY))
             {
-                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - 5) - connectionSet.getInputs()), mX, mY);
+                gui.drawMouseOver(connection.getName(this, (connection.isInput() ? i : i - connectionSet.getInputs())), mX, mY);
             }
         }
 

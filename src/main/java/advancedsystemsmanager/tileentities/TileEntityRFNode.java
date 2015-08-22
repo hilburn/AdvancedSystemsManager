@@ -58,7 +58,10 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
 
     private void sendUpdatePacket()
     {
-        PacketHandler.sendBlockPacket(this, null, 0);
+        if (!isPartOfCluster())
+        {
+            PacketHandler.sendBlockPacket(this, null, 0);
+        }
     }
 
     private TileEntity getTileEntity(ForgeDirection dir)

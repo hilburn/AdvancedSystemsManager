@@ -1,13 +1,12 @@
 package advancedsystemsmanager.network;
 
 import advancedsystemsmanager.network.message.*;
-import advancedsystemsmanager.reference.Reference;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
 public class MessageHandler
 {
-    public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper(Reference.ID + "-Simple");
+    public static SimpleNetworkWrapper INSTANCE = new SimpleNetworkWrapper("ASM-Simple");
     public static int ID;
 
     public static void init()
