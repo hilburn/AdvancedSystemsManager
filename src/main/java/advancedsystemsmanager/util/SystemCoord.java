@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection<GuiManager>
+public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 {
     private int x, y, z, depth, dim;
     private long key;

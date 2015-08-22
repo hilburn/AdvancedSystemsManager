@@ -127,47 +127,50 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
 
                     for (int slot : slots)
                     {
-                        ItemStack itemInSlot = inventory.getStackInSlot(slot);
-                        boolean newItem = itemInSlot == null;
-                        if (newItem || itemInSlot.isItemEqual(itemStack) && ItemStack.areItemStackTagsEqual(itemStack, itemInSlot) && itemStack.isStackable())
+                        if (inventory.isItemValidForSlot(slot, itemStack))
                         {
-                            int itemCountInSlot = newItem ? 0 : itemInSlot.stackSize;
-                            int moveCount = Math.min(itemBufferElement.getSizeLeft(), Math.min(inventory.getInventoryStackLimit(), itemStack.getMaxStackSize()) - itemCountInSlot);
-                            moveCount = itemBufferElement.getMaxWithSetting(moveCount);
-                            if (outputCounter)
+                            ItemStack itemInSlot = inventory.getStackInSlot(slot);
+                            boolean newItem = itemInSlot == null;
+                            if (newItem || itemInSlot.isItemEqual(itemStack) && ItemStack.areItemStackTagsEqual(itemStack, itemInSlot) && itemStack.isStackable())
                             {
-                                moveCount = Math.min(moveCount, setting.getAmountLeft());
-                            }
-                            if (moveCount > 0)
-                            {
-                                if (newItem)
-                                {
-                                    itemInSlot = itemStack.copy();
-                                    itemInSlot.stackSize = 0;
-                                }
-
-                                itemBufferElement.reduceBufferAmount(moveCount);
+                                int itemCountInSlot = newItem ? 0 : itemInSlot.stackSize;
+                                int moveCount = Math.min(itemBufferElement.getSizeLeft(), Math.min(inventory.getInventoryStackLimit(), itemStack.getMaxStackSize()) - itemCountInSlot);
+                                moveCount = itemBufferElement.getMaxWithSetting(moveCount);
                                 if (outputCounter)
                                 {
-                                    setting.reduceAmount(moveCount);
+                                    moveCount = Math.min(moveCount, setting.getAmountLeft());
                                 }
-                                itemInSlot.stackSize += moveCount;
-                                if (newItem)
+                                if (moveCount > 0)
                                 {
-                                    inventory.setInventorySlotContents(slot, itemInSlot);
-                                }
+                                    if (newItem)
+                                    {
+                                        itemInSlot = itemStack.copy();
+                                        itemInSlot.stackSize = 0;
+                                    }
 
-                                boolean done = false;
-                                if (itemBufferElement.getSizeLeft() == 0)
-                                {
-                                    iterator.remove();
-                                    done = true;
-                                }
+                                    itemBufferElement.reduceBufferAmount(moveCount);
+                                    if (outputCounter)
+                                    {
+                                        setting.reduceAmount(moveCount);
+                                    }
+                                    itemInSlot.stackSize += moveCount;
+                                    if (newItem)
+                                    {
+                                        inventory.setInventorySlotContents(slot, itemInSlot);
+                                    }
 
-                                itemBufferElement.onUpdate();
-                                if (done)
-                                {
-                                    break;
+                                    boolean done = false;
+                                    if (itemBufferElement.getSizeLeft() == 0)
+                                    {
+                                        iterator.remove();
+                                        done = true;
+                                    }
+
+                                    itemBufferElement.onUpdate();
+                                    if (done)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
                         }

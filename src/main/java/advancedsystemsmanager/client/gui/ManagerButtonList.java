@@ -6,6 +6,8 @@ import advancedsystemsmanager.helpers.CollisionHelper;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_ICON_SIZE;
 import static advancedsystemsmanager.api.gui.IManagerButton.BUTTON_SIZE;
 import static advancedsystemsmanager.reference.Textures.BUTTONS;
 
-public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement<GuiManager>
+public class ManagerButtonList extends ArrayList<IManagerButton> implements IGuiElement
 {
     private static final int BUTTON_SPACING = 0;
     private int x = 20, y = 20, maxHeight = 218;
@@ -33,6 +35,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void draw(GuiManager guiManager, int mouseX, int mouseY, int zLevel)
     {
         GuiManager.bindTexture(BUTTONS);
@@ -56,6 +59,7 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void drawMouseOver(GuiManager guiManager, int mouseX, int mouseY)
     {
         for (VisibleIterator itr = new VisibleIterator(); itr.hasNext(); )
@@ -71,12 +75,14 @@ public class ManagerButtonList extends ArrayList<IManagerButton> implements IGui
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean onKeyStroke(GuiManager guiManager, char character, int key)
     {
         return false;
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean onClick(int mouseX, int mouseY, int button)
     {
         return onClick(mouseX, mouseY, button, false);

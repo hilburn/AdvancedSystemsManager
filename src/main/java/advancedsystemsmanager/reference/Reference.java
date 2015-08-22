@@ -9,7 +9,10 @@ public class Reference
     // Internal mod name used for reference purposes and resource gathering.
     public static final String ID = "AdvancedSystemsManager";
 
-    public static final String RESOURCE_LOCATION = "advancedsystemsmanager";
+    //Shorter string for network channel names
+    public static final String NETWORK_ID = "ASM";
+
+    public static final String RESOURCE_LOCATION = ID.toLowerCase();
     public static final String ASSETS = "/assets/" + RESOURCE_LOCATION + "/";
     public static final String THEMES = ASSETS + "themes/";
 

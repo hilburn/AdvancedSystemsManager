@@ -71,9 +71,9 @@ public class MenuContainer extends Menu implements IPacketSync
     public static boolean hasUpdated;
     public Page currentPage;
     public List<Long> selectedInventories;
-    public List<IContainerSelection<GuiManager>> inventories;
+    public List<IContainerSelection> inventories;
     public RadioButtonList radioButtonsMulti;
-    public ScrollController<IContainerSelection<GuiManager>> scrollController;
+    public ScrollController<IContainerSelection> scrollController;
     public ISystemType type;
     @SideOnly(Side.CLIENT)
     public GuiManager cachedInterface;
@@ -94,7 +94,7 @@ public class MenuContainer extends Menu implements IPacketSync
         initRadioButtons();
         radioButtonsMulti.setSelectedOption(getDefaultRadioButton());
 
-        scrollController = new ScrollController<IContainerSelection<GuiManager>>(getParent(), getDefaultSearch())
+        scrollController = new ScrollController<IContainerSelection>(getParent(), getDefaultSearch())
         {
             public boolean locked;
             public int lockedX;
@@ -102,15 +102,15 @@ public class MenuContainer extends Menu implements IPacketSync
             @SideOnly(Side.CLIENT)
             public ToolTip cachedTooltip;
             public long cachedId;
-            public IContainerSelection<GuiManager> cachedContainer;
+            public IContainerSelection cachedContainer;
             public boolean keepCache;
 
             @Override
-            public List<IContainerSelection<GuiManager>> updateSearch(String search, boolean all)
+            public List<IContainerSelection> updateSearch(String search, boolean all)
             {
                 if (search.equals("") || !clientUpdate || cachedInterface == null)
                 {
-                    return new ArrayList<IContainerSelection<GuiManager>>();
+                    return new ArrayList<IContainerSelection>();
                 }
 
                 if (inventories == null)
@@ -122,19 +122,19 @@ public class MenuContainer extends Menu implements IPacketSync
                 {
                     List<Variable> variables = new ArrayList<Variable>(getParent().getManager().getVariables());
                     Collections.sort(variables);
-                    return new ArrayList<IContainerSelection<GuiManager>>(variables);
+                    return new ArrayList<IContainerSelection>(variables);
                 }
 
 
                 boolean noFilter = search.equals(".nofilter");
                 boolean selected = search.equals(".selected");
 
-                List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>(inventories);
+                List<IContainerSelection> ret = new ArrayList<IContainerSelection>(inventories);
 
-                Iterator<IContainerSelection<GuiManager>> iterator = ret.iterator();
+                Iterator<IContainerSelection> iterator = ret.iterator();
                 while (iterator.hasNext())
                 {
-                    IContainerSelection<GuiManager> element = iterator.next();
+                    IContainerSelection element = iterator.next();
 
                     if (selected && selectedInventories.contains(element.getId()))
                     {
@@ -156,7 +156,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void onClick(IContainerSelection<GuiManager> iContainerSelection, int mX, int mY, int button)
+            public void onClick(IContainerSelection iContainerSelection, int mX, int mY, int button)
             {
                 if (GuiScreen.isShiftKeyDown() && mX != -1 && mY != -1)
                 {
@@ -187,7 +187,7 @@ public class MenuContainer extends Menu implements IPacketSync
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void draw(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int x, int y, boolean hover)
+            public void draw(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, boolean hover)
             {
                 drawContainer(gui, iContainerSelection, selectedInventories, x, y, hover);
             }
@@ -215,13 +215,13 @@ public class MenuContainer extends Menu implements IPacketSync
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int mX, int mY)
             {
                 drawMouseOver(gui, iContainerSelection, mX, mY, mX, mY);
             }
 
             @SideOnly(Side.CLIENT)
-            public void drawMouseOver(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, int x, int y, int mX, int mY)
+            public void drawMouseOver(GuiManager gui, IContainerSelection iContainerSelection, int x, int y, int mX, int mY)
             {
                 boolean isBlock = !iContainerSelection.isVariable();
 
@@ -502,11 +502,11 @@ public class MenuContainer extends Menu implements IPacketSync
         return ".all";
     }
 
-    public List<IContainerSelection<GuiManager>> getInventories(TileEntityManager manager)
+    public List<IContainerSelection> getInventories(TileEntityManager manager)
     {
         Set<ISystemType> validTypes = getValidTypes();
         List<SystemCoord> tempInventories = manager.getConnectedInventories();
-        List<IContainerSelection<GuiManager>> ret = new ArrayList<IContainerSelection<GuiManager>>();
+        List<IContainerSelection> ret = new ArrayList<IContainerSelection>();
         filterVariables.clear();
 
         for (Variable variable : manager.getVariables())
@@ -552,13 +552,13 @@ public class MenuContainer extends Menu implements IPacketSync
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawContainer(GuiManager gui, IContainerSelection<GuiManager> iContainerSelection, List<Long> selected, int x, int y, boolean hover)
+    public void drawContainer(GuiManager gui, IContainerSelection iContainerSelection, List<Long> selected, int x, int y, boolean hover)
     {
         gui.drawColouredTexture(x, y, INVENTORY_SRC_X, INVENTORY_SRC_Y, INVENTORY_SIZE, INVENTORY_SIZE, ThemeHandler.theme.menus.checkboxes.getColour(selected.contains(iContainerSelection.getId()), hover));
         iContainerSelection.draw(gui, x, y);
     }
 
-    public List<String> getMouseOverForContainer(IContainerSelection<GuiManager> iContainerSelection, List<Long> selected)
+    public List<String> getMouseOverForContainer(IContainerSelection iContainerSelection, List<Long> selected)
     {
         List<String> ret = new ArrayList<String>();
         if (cachedInterface != null)

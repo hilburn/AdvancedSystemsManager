@@ -1,6 +1,5 @@
 package advancedsystemsmanager.client.gui;
 
-import advancedsystemsmanager.api.gui.IGuiElement;
 import advancedsystemsmanager.flow.elements.ScrollVariable;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.helpers.CollisionHelper;
@@ -18,7 +17,6 @@ public class GuiVariable implements IInterfaceRenderer
     protected TileEntityManager manager;
     private GuiColourSelector colourSelector;
     private ScrollVariable variables;
-    private IGuiElement<GuiBase> test;
 
     public GuiVariable(TileEntityManager te)
     {

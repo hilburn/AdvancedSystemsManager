@@ -78,7 +78,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
                             slots = new int[end - start];
                             for (int j = 0; j < slots.length; ) slots[j + start] = j++;
                         }
-                        scanSlots(id, inventory, checkedSlots, slots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements);
+                        scanSlots(id, inventory, checkedSlots, slots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements, i);
                     }
                 }
             }
@@ -86,7 +86,7 @@ public class CommandItemInput extends CommandInput<ItemStack>
         return subElements;
     }
 
-    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements)
+    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements, int side)
     {
         for (int slot : toScan)
         {
@@ -94,10 +94,13 @@ public class CommandItemInput extends CommandInput<ItemStack>
             if (slot > end) return;
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack == null) continue;
-            Setting<ItemStack> setting = isValid(settings, stack);
-            if (isValidSetting(whitelist, setting))
-                subElements.add(new ItemBufferElement(id, inventory, slot, setting, whitelist));
-            checked.add(slot);
+            if (!(inventory instanceof ISidedInventory) || ((ISidedInventory)inventory).canExtractItem(slot, stack, side))
+            {
+                Setting<ItemStack> setting = isValid(settings, stack);
+                if (isValidSetting(whitelist, setting))
+                    subElements.add(new ItemBufferElement(id, inventory, slot, setting, whitelist));
+                checked.add(slot);
+            }
         }
     }
 }

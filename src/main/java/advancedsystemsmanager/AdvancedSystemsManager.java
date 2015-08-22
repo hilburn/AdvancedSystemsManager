@@ -34,6 +34,7 @@ import thevault.registry.Registerer;
 import thevault.utils.LogHelper;
 
 import java.io.File;
+import java.util.Set;
 
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION_FULL)
 public class AdvancedSystemsManager
@@ -88,7 +89,7 @@ public class AdvancedSystemsManager
 
         MessageHandler.init();
 
-        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel("ASM");
+        packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.NETWORK_ID);
 
         ModCompat.preInit();
     }
@@ -99,7 +100,6 @@ public class AdvancedSystemsManager
         PROXY.init();
 
         packetHandler.register(new PacketEventHandler());
-
         NetworkRegistry.INSTANCE.registerGuiHandler(AdvancedSystemsManager.INSTANCE, guiHandler);
         OreDictionaryHelper.registerUsefulThings();
         ItemRegistry.registerRecipes();
@@ -117,6 +117,9 @@ public class AdvancedSystemsManager
     public void postInit(FMLPostInitializationEvent event)
     {
         ModCompat.postInit();
+        Set<String> set = NetworkRegistry.INSTANCE.channelNamesFor(Side.CLIENT);
+        set = NetworkRegistry.INSTANCE.channelNamesFor(Side.SERVER);
+        return;
     }
 
     @Mod.EventHandler

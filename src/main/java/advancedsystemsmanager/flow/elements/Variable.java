@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Variable implements Comparable<Variable>, IContainerSelection<GuiManager>
+public class Variable implements Comparable<Variable>, IContainerSelection
 {
     public static final TIntObjectHashMap<String> defaultVariables = new TIntObjectHashMap<String>();
     public static final long NEGATIVE = (long)1 << 63;
