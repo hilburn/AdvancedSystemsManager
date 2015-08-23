@@ -1,56 +1,51 @@
 package advancedsystemsmanager.client.gui;
 
-import advancedsystemsmanager.client.gui.elements.GuiTabList;
+import advancedsystemsmanager.client.gui.elements.GuiMenuScreen;
 
 public class GuiTestBed implements IInterfaceRenderer
 {
-    GuiTabList tabs;
+    GuiMenuScreen testElement;
 
     public GuiTestBed()
     {
-        tabs = new GuiTabList();
-        tabs.addNewTab();
-        tabs.addNewTab();
-        tabs.addNewTab();
-        tabs.addNewTab();
-        tabs.addNewTab();
-        tabs.addNewTab();
+        testElement = new GuiMenuScreen(0, 0, 200, 300);
     }
 
     @Override
     public void draw(GuiManager gui, int mX, int mY)
     {
-        tabs.draw(gui, mX, mY, 1);
+        testElement.draw(gui, mX, mY, 1);
     }
 
     @Override
     public boolean drawMouseOver(GuiManager gui, int mX, int mY)
     {
+        testElement.drawMouseOver(gui, mX, mY);
         return false;
     }
 
     @Override
     public void onClick(GuiManager gui, int mX, int mY, int button)
     {
-        tabs.onClick(mX, mY, button);
+        testElement.onClick(mX, mY, button);
     }
 
     @Override
     public void onDrag(GuiManager gui, int mX, int mY)
     {
-
+        testElement.drag(mX, mY);
     }
 
     @Override
     public void onRelease(GuiManager gui, int mX, int mY, int button)
     {
-
+        testElement.release(mX, mY);
     }
 
     @Override
     public boolean onKeyTyped(GuiManager gui, char c, int k)
     {
-        tabs.addNewTab();
+//        tabs.addNewTab();
         return false;
     }
 

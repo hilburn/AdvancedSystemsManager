@@ -15,10 +15,10 @@ public class GuiTab implements IGuiElement
     static int[] DESELECTED_COLOURS = new int[]{0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d, 0x1d};
     static int[] OUTLINE_COLOURS = new int[]{0x64, 0x64, 0x64, 0xff};
 
-    public GuiTab(GuiTabList list)
+    public GuiTab(GuiTabList list, String name)
     {
         this.parentList = list;
-        label = String.valueOf(list.size());
+        label = name;
         list.add(this);
         setX();
         recalculateCoordinates();
@@ -78,7 +78,7 @@ public class GuiTab implements IGuiElement
     @Override
     public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
-        return false;
+        return onClick(mouseX, mouseY, 0);
     }
 
     @Override

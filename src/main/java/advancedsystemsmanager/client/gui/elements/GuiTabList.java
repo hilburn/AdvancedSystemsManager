@@ -9,22 +9,29 @@ import java.util.ArrayList;
 public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
 {
     private static int TAB_WIDTH_MAX = 80;
-    private static int MAX_TABS = 8;
-    private static int WIDTH_BORDER = 40;
-    protected int tabHeight = 15, height = 15, width = 512;
+    private static final int MAX_TABS = 8;
+    private static final int WIDTH_BORDER = 40;
+    protected int tabHeight = 15, height = 15, width;
     protected float tabWidth = TAB_WIDTH_MAX;
     protected int x, y;
     private int startIndex;
     private GuiTab selected;
 
-    public GuiTabList()
+    public GuiTabList(int x, int y, int width)
     {
-        x = 1; y = 100;
+        this.x = x;
+        this.y = y;
+        this.width = width;
     }
 
-    public GuiTab addNewTab()
+    public int getSelectedTab()
     {
-        GuiTab result = new GuiTab(this);
+        return indexOf(selected);
+    }
+
+    public GuiTab addNewTab(String label)
+    {
+        GuiTab result = new GuiTab(this, label);
         selected = result;
         recalculateWidths();
         return result;
@@ -101,6 +108,13 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
     @Override
     public boolean drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
     {
+        mouseX -= x;
+        mouseY -= y;
+        for (GuiTab tab : this)
+        {
+            if (tab.drawMouseOver(guiBase, mouseX, mouseY))
+                return true;
+        }
         return false;
     }
 
@@ -117,7 +131,7 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
         mouseY -= y;
         for (GuiTab tab : this)
         {
-            if (tab.onClick(mouseX, mouseY, button))
+            if (tab.isVisible() && tab.onClick(mouseX, mouseY, button))
             {
                 setSelected(tab);
                 return true;
