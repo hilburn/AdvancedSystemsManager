@@ -166,9 +166,6 @@ public class GuiManager extends GuiBase
 
         drawBackground();
 
-        mX -= guiLeft;
-        mY -= guiTop;
-
         bindTexture(COMPONENTS);
 
         if (closeSpecialRenderer)
@@ -317,9 +314,6 @@ public class GuiManager extends GuiBase
 
         super.mouseClicked(x, y, button);
 
-        x -= guiLeft;
-        y -= guiTop;
-
         if (hasSpecialRenderer())
         {
             getSpecialRenderer().onClick(this, x, y, button);
@@ -353,9 +347,6 @@ public class GuiManager extends GuiBase
 
         super.mouseClickMove(x, y, button, ticks);
 
-        x -= guiLeft;
-        y -= guiTop;
-
         if (hasSpecialRenderer())
         {
             getSpecialRenderer().onDrag(this, x, y);
@@ -376,9 +367,6 @@ public class GuiManager extends GuiBase
         y = scaleY(y);
 
         super.mouseMovedOrUp(x, y, button);
-
-        x -= guiLeft;
-        y -= guiTop;
 
         if (hasSpecialRenderer())
         {

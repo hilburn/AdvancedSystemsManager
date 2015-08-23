@@ -41,9 +41,9 @@ public class GuiMenuScreen implements IGuiElement, IDraggable
         tabs.draw(gui, mouseX, mouseY, zLevel);
 
         gui.drawRectangle(border, top_border, w-border, h-border, BACKGROUND_COLOUR);
-        gui.setBounds(border, top_border, w - 2 * border, h - border);
+        gui.setBounds(border, top_border, w - 2 * border, h - top_border - border);
         gui.drawRectangle(-1000, h / 2 - 5, 1000, h / 2 + 5, new int[]{255, 255, 255});
-        gui.setBounds(border + 50, top_border, w, h);
+        gui.setBounds(border + 50, top_border, w - 2 * border, h);
         gui.drawRectangle(-1000, h / 2 - 50, 1000, h / 2 - 20, new int[]{0, 255, 255});
         gui.endBounds();
         gui.drawRectangle(-1000, h/2+20, 1000, h/2+50, new int[]{255,0,255});
@@ -112,7 +112,7 @@ public class GuiMenuScreen implements IGuiElement, IDraggable
 
     private void setCursor()
     {
-        switch (mouseover)
+        switch (mouseover | direction)
         {
             case 2:
             case 8:

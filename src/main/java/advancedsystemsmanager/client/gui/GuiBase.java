@@ -65,7 +65,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         super(container);
         this.container = container;
-
     }
 
     @Override
@@ -96,19 +95,9 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     public void drawTexture(int x, int y, int srcX, int srcY, int w, int h)
     {
-        drawScaledTexture(
-                x, y,
-                srcX, srcY,
-                w, h,
-                w, h
-        );
-    }
-
-    private void drawScaledTexture(double x, double y, int srcX, int srcY, double w, double h, int u, int v)
-    {
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        drawTexture(tessellator, x, y, w, h, srcX, srcY, u, v);
+        drawTexture(tessellator, x, y, w, h, srcX, srcY, w, h);
     }
 
     private void drawTexture(Tessellator tessellator, double x, double y, double w, double h, int srcX, int srcY, double u, double v)
@@ -379,7 +368,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         float antiMCScaleH = (float)this.mc.displayHeight / this.height * scale;
         float antiMCScaleW = (float)this.mc.displayWidth / this.width * scale;
         float bottomY = this.mc.displayHeight  - (offsetY + y + height) * antiMCScaleH;
-        glScissor((int)((offsetX + x) * antiMCScaleW),(int) (bottomY), (int)(width * antiMCScaleW), (int)(height * antiMCScaleH));
+        glScissor(Math.round((offsetX + x) * antiMCScaleW), Math.round(bottomY), (int)(width * antiMCScaleW), (int)(height * antiMCScaleH));
     }
 
     public void endBounds()
@@ -870,7 +859,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         cached = false;
         float scale = getScale();
 
-        translate((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale));
+        translate((this.width - this.xSize * scale) / (2), (this.height - this.ySize * scale) / (2));
 
         glScalef(scale, scale, 1);
     }
@@ -878,25 +867,25 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     protected int scaleX(float x)
     {
         float scale = getScale();
+//        x /= scale;
+        x -= (this.width - this.xSize * scale) / (2);
         x /= scale;
-        x += guiLeft;
-        x -= (this.width - this.xSize * scale) / (2 * scale);
         return (int)x;
     }
 
     protected int scaleY(float y)
     {
         float scale = getScale();
+//
+        y -= (this.height - this.ySize * scale) / (2);
         y /= scale;
-        y += guiTop;
-        y -= (this.height - this.ySize * scale) / (2 * scale);
         return (int)y;
     }
 
     protected void stopScaling()
     {
         float scale = getScale();
-        untranslate((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale));
+        untranslate((this.width - this.xSize * scale) / (2), (this.height - this.ySize * scale) / (2));
     }
 
     public void drawFluid(Fluid fluid, int x, int y)
