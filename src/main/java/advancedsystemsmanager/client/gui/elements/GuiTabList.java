@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
 {
     private static int TAB_WIDTH_MAX = 80;
+//    private static final int TAB_WIDTH_MIN = 30;
     private static final int MAX_TABS = 8;
     private static final int WIDTH_BORDER = 40;
     protected int tabHeight = 15, height = 15, width;
@@ -27,6 +28,12 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
     public int getSelectedTab()
     {
         return indexOf(selected);
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+        recalculateWidths();
     }
 
     public GuiTab addNewTab(String label)
@@ -55,8 +62,7 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
     @Override
     public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
     {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 0);
+        guiBase.translate(x, y);
         guiBase.setLineWidth(2);
         GuiTab tab;
         for (int i = size(); --i >= 0;)
@@ -76,7 +82,7 @@ public class GuiTabList extends ArrayList<GuiTab> implements IGuiElement
                 }
             }
         }
-        GL11.glPopMatrix();
+        guiBase.untranslate(x, y);
     }
 
     public void removeTab(GuiTab tab)

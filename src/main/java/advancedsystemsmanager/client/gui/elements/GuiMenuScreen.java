@@ -22,22 +22,34 @@ public class GuiMenuScreen implements IGuiElement, IDraggable
         this.y = y;
         this.w = w;
         this.h = h;
-        this.tabs = new GuiTabList(border, top_border - border, w - 5*border);
+        this.tabs = new GuiTabList(border, top_border - border, getTabWidth());
         this.tabs.addNewTab("Settings");
         this.tabs.addNewTab("Comments");
+    }
+
+    private int getTabWidth()
+    {
+        return w - 5 * border;
     }
 
     @Override
     public void draw(GuiBase gui, int mouseX, int mouseY, int zLevel)
     {
-        GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 0);
+        gui.translate(x, y);
 
         gui.drawRectangle(0, 0, w, h, BORDER_COLOUR);
-        gui.drawRectangle(border, top_border, w-border, h-border, BACKGROUND_COLOUR);
         tabs.draw(gui, mouseX, mouseY, zLevel);
 
-        GL11.glPopMatrix();
+        gui.drawRectangle(border, top_border, w-border, h-border, BACKGROUND_COLOUR);
+        gui.setBounds(border, top_border, w - 2 * border, h - border);
+        gui.drawRectangle(-1000, h / 2 - 5, 1000, h / 2 + 5, new int[]{255, 255, 255});
+        gui.setBounds(border + 50, top_border, w, h);
+        gui.drawRectangle(-1000, h / 2 - 50, 1000, h / 2 - 20, new int[]{0, 255, 255});
+        gui.endBounds();
+        gui.drawRectangle(-1000, h/2+20, 1000, h/2+50, new int[]{255,0,255});
+        gui.endBounds();
+
+        gui.untranslate(x, y);
     }
 
     @Override
@@ -149,6 +161,7 @@ public class GuiMenuScreen implements IGuiElement, IDraggable
                 {
                     x += dX;
                     w -= dX;
+                    tabs.setWidth(getTabWidth());
                 }
                 if ((direction & 4) > 0)
                 {
@@ -157,6 +170,7 @@ public class GuiMenuScreen implements IGuiElement, IDraggable
                 if ((direction & 8) > 0)
                 {
                     w += dX;
+                    tabs.setWidth(getTabWidth());
                 }
             }
         }

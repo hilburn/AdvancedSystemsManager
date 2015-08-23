@@ -71,7 +71,7 @@ public class GuiTab implements IGuiElement
         guiBase.drawLines(outline, OUTLINE_COLOURS);
         if (label != null)
         {
-            guiBase.drawString(label, (int)(x + parentList.tabHeight * SLOPE + 2), -10, 0xFFFFFFFF);
+            guiBase.drawClippedString(label, (int)(x + parentList.tabHeight * SLOPE + 2), -10, 0xFFFFFFFF, 10, (int)(parentList.tabWidth * 0.6), 10);
         }
     }
 

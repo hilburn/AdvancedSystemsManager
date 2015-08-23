@@ -191,10 +191,7 @@ public class GuiManager extends GuiBase
         //update components completely independent on their visibility
         long ms = Minecraft.getSystemTime();
         float elapsedSeconds = (ms - this.lastTicks) / 1000F;
-//        if (controller != null)
-//        {
-//            controller.update(elapsedSeconds);
-//        }
+
         for (FlowComponent component : manager.getFlowItems())
         {
             component.update(elapsedSeconds);

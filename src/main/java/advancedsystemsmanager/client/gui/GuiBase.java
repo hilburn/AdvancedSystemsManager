@@ -27,10 +27,13 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL12;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.TimerTask;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -46,6 +49,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     private static boolean toggleCursor = true;
     private int lineWidth = 1;
     public static FontRenderer fontRenderer;
+    private float offsetX, offsetY;
+    private Stack<IntBuffer> scissorBounds = new Stack<IntBuffer>();
     static
     {
         //fontRenderer = new FontRenderer(new Font(Font.SANS_SERIF, Font.PLAIN, 32), false);
@@ -316,9 +321,103 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
         glScalef(mult, mult, 1F);
 //        fontRenderer.drawScaledString(x, y, str, color, (int)(10 * mult));
         fontRendererObj.drawString(str, (int)(x / mult), (int)(y / mult), colour);
-        bindTexture(getComponentResource());
+//        bindTexture(getComponentResource());
         glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         glPopMatrix();
+    }
+
+    public void drawClippedString(String str, int x, int y, int colour, int height, int width, int fadeWidth)
+    {
+//        glEnable(GL_ALPHA_TEST);
+//        glColorMask(false, false, false, true);
+//
+//        glDisable(GL_TEXTURE_2D);
+//        glDisable(GL_ALPHA_TEST);
+//        glAlphaFunc(GL_LESS, 0.9F);
+        //TODO: why no quadstrip?
+        zLevel += 1;
+        width -= 30;
+        glShadeModel(GL_SMOOTH);
+        Tessellator tessellator = Tessellator.instance;
+        glDisable(GL_TEXTURE_2D);
+        tessellator.startDrawing(GL_QUADS);
+        tessellator.setColorRGBA(255, 255, 255, 255);
+        tessellator.addVertex(x, y + height, zLevel);
+        tessellator.addVertex(x + width, y + height, zLevel);
+        tessellator.addVertex(x + width, y, zLevel);
+        tessellator.addVertex(x, y, zLevel);
+        tessellator.addVertex(x + width, y + height, zLevel);
+        tessellator.setColorRGBA(255, 255, 255, 0);
+        tessellator.addVertex(x + width + fadeWidth, y + height, zLevel);
+        tessellator.addVertex(x + width + fadeWidth, y, zLevel);
+        tessellator.setColorRGBA(255, 255, 255, 255);
+        tessellator.addVertex(x + width, y, zLevel);
+//
+//        glEnable(GL_ALPHA_TEST);
+        tessellator.draw();
+        zLevel-=1;
+        glEnable(GL_TEXTURE_2D);
+//        glDisable(GL_ALPHA_TEST);
+//        glColorMask(true, true, true, true);
+//        glEnable(GL_BLEND);
+//        glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA );
+//        drawLocalizedString(str, x, y, 1f, colour);
+        glShadeModel(GL_FLAT);
+//        glDisable(GL_BLEND);
+    }
+
+    public void setBounds(int x, int y, int width, int height)
+    {
+        if (!glIsEnabled(GL_SCISSOR_TEST))
+        {
+            glEnable(GL_SCISSOR_TEST);
+        } else
+        {
+            scissorBounds.push(getBounds());
+        }
+        float scale = getScale();
+        float antiMCScaleH = (float)this.mc.displayHeight / this.height * scale;
+        float antiMCScaleW = (float)this.mc.displayWidth / this.width * scale;
+        float bottomY = this.mc.displayHeight  - (offsetY + y + height) * antiMCScaleH;
+        glScissor((int)((offsetX + x) * antiMCScaleW),(int) (bottomY), (int)(width * antiMCScaleW), (int)(height * antiMCScaleH));
+    }
+
+    public void endBounds()
+    {
+        if (scissorBounds.isEmpty())
+        {
+            glDisable(GL_SCISSOR_TEST);
+        } else
+        {
+            setBounds(scissorBounds.pop());
+        }
+    }
+
+    private void setBounds(IntBuffer bounds)
+    {
+        glScissor(bounds.get(), bounds.get(), bounds.get(), bounds.get());
+    }
+
+    public IntBuffer getBounds()
+    {
+        IntBuffer result = BufferUtils.createIntBuffer(16);
+        glGetInteger(GL_SCISSOR_BOX, result);
+        return result;
+    }
+
+    public void translate(float x, float y)
+    {
+        glPushMatrix();
+        glTranslatef(x, y, 0);
+        offsetX += x;
+        offsetY += y;
+    }
+
+    public void untranslate(float x, float y)
+    {
+        glPopMatrix();
+        offsetX -= x;
+        offsetY -= y;
     }
 
     public static void bindTexture(ResourceLocation resource)
@@ -744,9 +843,7 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
             ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
             float w = scaledresolution.getScaledWidth() * 0.9F;
             float h = scaledresolution.getScaledHeight() * 0.9F;
-            float multX = w / xSize;
-            float multY = h / ySize;
-            float mult = Math.min(multX, multY);
+            float mult = Math.min(w / xSize, h / ySize);
             if (mult > 1F && !Settings.isEnlargeInterfaces())
             {
                 mult = 1F;
@@ -769,13 +866,13 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     protected void startScaling()
     {
-        glPushMatrix();
 
         cached = false;
         float scale = getScale();
 
+        translate((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale));
+
         glScalef(scale, scale, 1);
-        glTranslatef((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale), 0.0F);
     }
 
     protected int scaleX(float x)
@@ -798,7 +895,8 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
 
     protected void stopScaling()
     {
-        glPopMatrix();
+        float scale = getScale();
+        untranslate((this.width - this.xSize * scale) / (2 * scale), (this.height - this.ySize * scale) / (2 * scale));
     }
 
     public void drawFluid(Fluid fluid, int x, int y)
