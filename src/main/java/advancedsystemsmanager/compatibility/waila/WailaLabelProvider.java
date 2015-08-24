@@ -23,6 +23,7 @@ public class WailaLabelProvider implements IWailaDataProvider
 {
 
     @Override
+    @Optional.Method(modid = Mods.WAILA)
     public ItemStack getWailaStack(IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
         return null;
@@ -30,6 +31,7 @@ public class WailaLabelProvider implements IWailaDataProvider
 
     @Override
     @SuppressWarnings("unchecked")
+    @Optional.Method(modid = Mods.WAILA)
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
         ITaggedList tagged = (ITaggedList)list;
@@ -46,18 +48,21 @@ public class WailaLabelProvider implements IWailaDataProvider
     }
 
     @Override
+    @Optional.Method(modid = Mods.WAILA)
     public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
         return list;
     }
 
     @Override
+    @Optional.Method(modid = Mods.WAILA)
     public List<String> getWailaTail(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
         return list;
     }
 
     @Override
+    @Optional.Method(modid = Mods.WAILA)
     public NBTTagCompound getNBTData(EntityPlayerMP entityPlayerMP, TileEntity tileEntity, NBTTagCompound nbtTagCompound, World world, int i, int i1, int i2)
     {
         return null;
