@@ -2,7 +2,7 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.api.gui.IGuiElement;
 
-public class GuiColourSelectorHex implements IGuiElement<GuiBase>
+public class GuiColourSelectorHex implements IGuiElement
 {
     private static final double[] points = new double[]{
             256, 128,
@@ -22,20 +22,20 @@ public class GuiColourSelectorHex implements IGuiElement<GuiBase>
     private int[] hexagonColour = new int[3];
 
     @Override
-    public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
+    public void draw(GuiManager guiBase, int mouseX, int mouseY, int zLevel)
     {
         guiBase.drawTriangleFan(colours, points);
         guiBase.drawRainbowRectangle(400, 20, 20, 216, GuiColourSelector.WHITE, hexagonColour, GuiColourSelector.BLACK);
     }
 
     @Override
-    public void drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
+    public void drawMouseOver(GuiManager guiBase, int mouseX, int mouseY)
     {
 
     }
 
     @Override
-    public boolean onKeyStroke(GuiBase guiBase, char character, int key)
+    public boolean onKeyStroke(GuiManager guiBase, char character, int key)
     {
         return false;
     }

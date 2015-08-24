@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FlowComponent implements Comparable<FlowComponent>, IGuiElement<GuiManager>, IPacketSync, IPacketProvider
+public class FlowComponent implements Comparable<FlowComponent>, IGuiElement, IPacketSync, IPacketProvider
 {
     public static final int COMPONENT_START_X = 100;
     public static final int COMPONENT_START_Y = 50;

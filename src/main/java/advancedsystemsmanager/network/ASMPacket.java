@@ -72,7 +72,7 @@ public class ASMPacket extends PacketBuffer
 
     public FMLProxyPacket getPacket()
     {
-        return new FMLProxyPacket(this, Reference.ID);
+        return new FMLProxyPacket(this, Reference.NETWORK_ID);
     }
 
     public void sendPlayerPackets(double x, double y, double z, double r, int dimension)

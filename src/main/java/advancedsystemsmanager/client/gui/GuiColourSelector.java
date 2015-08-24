@@ -10,7 +10,7 @@ import advancedsystemsmanager.util.ColourUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
+public class GuiColourSelector implements IGuiElement, IDraggable
 {
     public static final int[] WHITE = new int[]{255, 255, 255};
     public static final int[] BLACK = new int[]{0, 0, 0};
@@ -185,7 +185,7 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     }
 
     @Override
-    public void draw(GuiBase guiBase, int mouseX, int mouseY, int zLevel)
+    public void draw(GuiManager guiBase, int mouseX, int mouseY, int zLevel)
     {
         GuiBase.bindTexture(TEXTURE);
         guiBase.drawRainbowRectangle(x + HUE_X, y, HUE_WIDTH, HEIGHT, HUE_SCALE);
@@ -214,13 +214,13 @@ public class GuiColourSelector implements IGuiElement<GuiBase>, IDraggable
     }
 
     @Override
-    public void drawMouseOver(GuiBase guiBase, int mouseX, int mouseY)
+    public void drawMouseOver(GuiManager guiBase, int mouseX, int mouseY)
     {
         scrollHue = CollisionHelper.inBounds(x + HUE_X, y, HUE_WIDTH, HEIGHT, mouseX, mouseY) || CollisionHelper.inBounds(x, y, GRAD_WIDTH, GRAD_HEIGHT, mouseX, mouseY);
     }
 
     @Override
-    public boolean onKeyStroke(GuiBase guiBase, char character, int key)
+    public boolean onKeyStroke(GuiManager guiBase, char character, int key)
     {
         return textBoxes.onKeyStroke(guiBase, character, key);
     }
