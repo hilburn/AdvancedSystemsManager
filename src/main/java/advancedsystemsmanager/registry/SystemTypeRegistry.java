@@ -175,6 +175,14 @@ public class SystemTypeRegistry
         {
         }
     };
+    public static final ISystemType COMPARATOR = register(new SystemType("Comparator")
+    {
+        @Override
+        public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
+        {
+            return tileEntity.getBlockType().hasComparatorInputOverride();
+        }
+    });
 
     public static ISystemType register(ISystemType type)
     {

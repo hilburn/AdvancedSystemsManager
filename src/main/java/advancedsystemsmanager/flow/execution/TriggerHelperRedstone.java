@@ -41,7 +41,7 @@ public class TriggerHelperRedstone extends TriggerHelper
     @Override
     public boolean isBlockPowered(FlowComponent component, int power)
     {
-        MenuRedstoneStrength menuStrength = (MenuRedstoneStrength)component.getMenus().get(strengthId);
+        MenuRedstoneStrength menuStrength = (MenuRedstoneStrength)(component.menus.size() > strengthId ? component.getMenu(strengthId) : component.getMenu(2));
         boolean inRange = menuStrength.getLow() <= power && power <= menuStrength.getHigh();
 
         return inRange != menuStrength.isInverted();
