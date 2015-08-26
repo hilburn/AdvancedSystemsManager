@@ -78,6 +78,8 @@ asm.gui.RfOutputLong=RF Output
 asm.gui.RfOutput=Output (RF)
 asm.gui.RfCondition=RF Condition
 asm.gui.RfConditionLong=RF Condition
+asm.gui.Comparator=Comparator
+asm.gui.ComparatorLong=Comparator Condition
 
 # ======================================
 #			CONNECTION OPTIONS
@@ -139,6 +141,7 @@ asm.gui.ContainerTypeMenu=Container Types
 asm.gui.CraftingMenu=Crafting
 asm.gui.EmitterMenu=Emitters
 asm.gui.EmitterError=No emitter selected
+asm.gui.ComparatorMenu=Comparable
 asm.gui.RequiresAll=Requires all
 asm.gui.IfAny=If Any
 asm.gui.WhiteList=White list

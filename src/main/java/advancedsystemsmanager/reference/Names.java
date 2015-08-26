@@ -3,6 +3,11 @@ package advancedsystemsmanager.reference;
 public class Names
 {
     public static final String PREFIX = "system_";
+
+    //##############################################
+    //               Blocks
+    //##############################################
+
     public static final String MANAGER = PREFIX + "manager";
 
     public static final String CABLE = PREFIX + "cable";
@@ -24,9 +29,17 @@ public class Names
     public static final String CABLE_AE = CABLE + "_ae";
     public static final String CABLE_TC = CABLE + "_tc";
 
+    //##############################################
+    //               Items
+    //##############################################
+
     public static final String DUPLICATOR = PREFIX + "duplicator";
     public static final String LABELER = PREFIX + "labeler";
     public static final String REMOTE_ACCESS = PREFIX + "remote_access";
+
+    //##############################################
+    //               Items
+    //##############################################
 
     public static final String GUI_PREFIX = "asm.gui.";
 
@@ -47,6 +60,7 @@ public class Names
     public static final String NODE = GUI_PREFIX + "Node";
     public static final String CAMOUFLAGE = GUI_PREFIX + "Camouflage";
     public static final String SIGN = GUI_PREFIX + "Sign";
+    public static final String COMPARATOR_CONDITION = GUI_PREFIX + "Comparator";
     public static final String ASPECT_INPUT = GUI_PREFIX + "AspectInput";
     public static final String ASPECT_OUTPUT = GUI_PREFIX + "AspectOutput";
     public static final String RF_CONDITION = GUI_PREFIX + "RfCondition";

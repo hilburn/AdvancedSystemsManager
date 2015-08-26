@@ -4,6 +4,7 @@ import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.*;
 
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: WIP command that treats the comparator input of any block as a redstone condition.
-public class CommandComparator extends CommandBase
+public class CommandComparatorCondition extends CommandBase
 {
-    public CommandComparator()
+    public CommandComparatorCondition()
     {
-        super(165467, "Test", CommandType.COMMAND_CONTROL, ConnectionSet.STANDARD_CONDITION);
+        super(24, Names.COMPARATOR_CONDITION, CommandType.COMMAND_CONTROL, ConnectionSet.STANDARD_CONDITION);
     }
 
     @Override

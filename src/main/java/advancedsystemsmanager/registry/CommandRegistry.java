@@ -82,5 +82,6 @@ public class CommandRegistry
         registerCommand(NODE = new CommandGroupNode());
         registerCommand(new CommandCamouflage());
         registerCommand(new CommandSign());
+        registerCommand(new CommandComparatorCondition());
     }
 }

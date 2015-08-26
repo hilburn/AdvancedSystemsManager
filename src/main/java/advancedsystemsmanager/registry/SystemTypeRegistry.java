@@ -175,7 +175,7 @@ public class SystemTypeRegistry
         {
         }
     };
-    public static final ISystemType COMPARATOR = register(new SystemType("Comparator")
+    public static final ISystemType COMPARATOR = register(new SystemType(Names.COMPARATOR_CONDITION)
     {
         @Override
         public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
