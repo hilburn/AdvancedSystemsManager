@@ -72,6 +72,7 @@ public class Mods
     public static final String SGCRAFT = "SGCraft";
     public static final String STARTINGINVENTORY = "StartingInventory";
     public static final String STATUSEFFECTHUD = "StatusEffectHUD";
+    public static final String STEVESADDONS = "StevesAddons";
     public static final String STEVESCARTS = "StevesCarts";
     public static final String STEVESFACTORYMANAGER = "StevesFactoryManager";
     public static final String TINKERSCONSTRUCT = "TConstruct";

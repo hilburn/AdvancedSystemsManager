@@ -6,6 +6,7 @@ import advancedsystemsmanager.helpers.ModItemHelper;
 import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.helpers.ConfigHandler;
 import advancedsystemsmanager.helpers.OreDictionaryHelper;
+import advancedsystemsmanager.helpers.RemapHelper;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.MessageHandler;
@@ -92,6 +93,8 @@ public class AdvancedSystemsManager
         packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(Reference.NETWORK_ID);
 
         ModCompat.preInit();
+
+        FMLCommonHandler.instance().bus().register(new RemapHelper());
     }
 
     @Mod.EventHandler
