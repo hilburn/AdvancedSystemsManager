@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class BlockManager extends BlockTileBase
 {
@@ -108,7 +109,7 @@ public class BlockManager extends BlockTileBase
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
     {
-        return new ArrayList<ItemStack>(Arrays.asList(getPickBlock(null, world, x, y, z, null)));
+        return new ArrayList<ItemStack>(Collections.singletonList(getPickBlock(null, world, x, y, z, null)));
     }
 
     public static NBTTagCompound getTagCompound(World world, int x, int y, int z)
