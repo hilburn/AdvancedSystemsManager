@@ -56,6 +56,8 @@ public class BlockRegistry
     @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_VOID)
     public static BlockCableVoid cableVoid;
 
+    public static BlockCableQuantum cableQuantum;
+
     //    Mod Cluster Elements
     @ConfigKey(Names.CABLE_AE)
     @Register(tileEntity = TileEntityAENode.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)

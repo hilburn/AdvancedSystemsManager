@@ -7,9 +7,11 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntityQuantumCable extends TileEntity
 {
     public static final String NBT_QUANTUM_KEY = "quantumKey";
+    public static final String NBT_QUANTUM_RANGE = "quantumRange";
     private static int NEXT_QUANTUM_KEY = 0;
     private static TIntObjectHashMap<Pair> quantumRegistry = new TIntObjectHashMap<Pair>();
     private int quantumKey;
+    private int quantumRange;
 
     public static int getNextQuantumKey()
     {
@@ -33,11 +35,29 @@ public class TileEntityQuantumCable extends TileEntity
     public void writeContentToNBT(NBTTagCompound tagCompound)
     {
         tagCompound.setInteger(NBT_QUANTUM_KEY, quantumKey);
+        tagCompound.setInteger(NBT_QUANTUM_RANGE, quantumRange);
     }
 
     public void readContentFromNBT(NBTTagCompound tagCompound)
     {
         setQuantumKey(tagCompound.getInteger(NBT_QUANTUM_KEY));
+        quantumRange = tagCompound.getInteger(NBT_QUANTUM_RANGE);
+    }
+
+    private boolean isInRange(TileEntityQuantumCable paired)
+    {
+        return (isInterDimensional() && paired.hasWorldObj() && paired.getWorldObj().provider.dimensionId != getWorldObj().provider.dimensionId) ||
+                (getRange(quantumRange) * getRange(quantumRange) <= getDistanceFrom(paired.xCoord + 0.5d, paired.yCoord + 0.5d, paired.zCoord + 0.5d));
+    }
+
+    public static int getRange(int quantumRange)
+    {
+        return quantumRange * quantumRange + 5;
+    }
+
+    public boolean isInterDimensional()
+    {
+        return quantumRange == 9;
     }
 
     public static TileEntityQuantumCable getPairedCable(TileEntityQuantumCable cable)
@@ -46,7 +66,7 @@ public class TileEntityQuantumCable extends TileEntity
         if (pair != null)
         {
             TileEntityQuantumCable paired = pair.getPairedCable(cable);
-            if (paired != null && !paired.isInvalid() && paired.getWorldObj().blockExists(paired.xCoord, paired.yCoord, paired.zCoord))
+            if (paired != null && !paired.isInvalid() && paired.hasWorldObj() && paired.getWorldObj().blockExists(paired.xCoord, paired.yCoord, paired.zCoord) && paired.isInRange(cable))
             {
                 return paired;
             }
@@ -73,6 +93,17 @@ public class TileEntityQuantumCable extends TileEntity
         addCable(this);
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof TileEntityQuantumCable)
+        {
+            TileEntityQuantumCable other = (TileEntityQuantumCable) obj;
+            return other.xCoord == xCoord && other.yCoord == yCoord && other.zCoord == zCoord && other.quantumKey == quantumKey;
+        }
+        return false;
+    }
+
     public int getQuantumKey()
     {
         return quantumKey;
@@ -81,7 +112,6 @@ public class TileEntityQuantumCable extends TileEntity
     private static class Pair
     {
         private final TileEntityQuantumCable[] cables = new TileEntityQuantumCable[2];
-        private int cableID;
         private int key;
 
         private Pair(TileEntityQuantumCable cable)
@@ -97,17 +127,13 @@ public class TileEntityQuantumCable extends TileEntity
 
         public boolean addCable(TileEntityQuantumCable cable)
         {
-            if (cableID < 2)
-            {
-                cables[cableID++] = cable;
-                return true;
-            }
-            return false;
+            cables[cable.equals(cables[0]) ? 0 : 1] = cable;
+            return true;
         }
 
         public TileEntityQuantumCable getPairedCable(TileEntityQuantumCable cable)
         {
-            return cables[0] == cable ? cables[1] : cables[1] == cable ? cables[0] : null;
+            return cables[0].equals(cable) ? cables[1] : cables[1].equals(cable) ? cables[0] : null;
         }
 
         @Override
