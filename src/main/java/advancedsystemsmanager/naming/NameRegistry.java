@@ -1,115 +1,99 @@
 package advancedsystemsmanager.naming;
 
-import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.message.FullDataSyncMessage;
-import advancedsystemsmanager.network.message.NameDataUpdateMessage;
-import advancedsystemsmanager.network.message.WorldDataSyncMessage;
+import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NameRegistry
 {
-    public static NameRegistry instance = new NameRegistry();
+    private static final SaveNameData nameData = new SaveNameData();
 
-    private Map<Integer, NameData> nameMapping = new HashMap<Integer, NameData>();
+    static
+    {
+        AdvancedSystemsManager.worldSave.save(nameData);
+    }
 
     public static String getSavedName(World world, int x, int y, int z)
     {
-        NameData data = instance.nameMapping.get(world.provider.dimensionId);
-        if (data == null) return null;
-        return data.get(new BlockCoord(x, y, z));
+        return getSavedName(world.provider.dimensionId, x, y, z);
     }
 
-    public static String getSavedName(int dimensionId, BlockCoord coord)
+    public static String getSavedName(int dim, int x, int y, int z)
     {
-        NameData data = instance.nameMapping.get(dimensionId);
-        if (data == null) return null;
-        return data.get(coord);
+        return nameData.getSavedName(dim, x, y, z);
     }
 
     public static void saveName(World world, int x, int y, int z, String name)
     {
         BlockCoord coord = new BlockCoord(x, y, z, name);
+        ASMPacket packet = getSavePacket(world.provider.dimensionId, coord);
         if (world.isRemote)
         {
-            MessageHandler.INSTANCE.sendToServer(new NameDataUpdateMessage(world.provider.dimensionId, coord));
+            packet.sendServerPacket();
         } else
         {
-            if (!instance.nameMapping.containsKey(world.provider.dimensionId))
-                instance.nameMapping.put(world.provider.dimensionId, new NameData());
-            NameData data = instance.nameMapping.get(world.provider.dimensionId);
-            data.markDirty();
-            MessageHandler.INSTANCE.sendToAll(new NameDataUpdateMessage(world.provider.dimensionId, coord));
+            nameData.put(coord, world.provider.dimensionId);
+            packet.sendToAll();
         }
     }
 
-    public static void saveName(NameDataUpdateMessage message)
+    private static ASMPacket getSavePacket(int dim, BlockCoord coord)
     {
-        if (!instance.nameMapping.containsKey(message.dimId)) instance.nameMapping.put(message.dimId, new NameData());
-        NameData data = instance.nameMapping.get(message.dimId);
-        data.put(message.blockCoord);
+        ASMPacket packet = PacketHandler.getNamePacket();
+        packet.writeByte(SaveNameData.ADD);
+        packet.writeByte(dim);
+        coord.writeData(packet);
+        return packet;
     }
 
     public static boolean removeName(World world, int x, int y, int z)
     {
-        BlockCoord coord = new BlockCoord(x, y, z, "");
-        if (!instance.nameMapping.containsKey(world.provider.dimensionId)) return false;
-        NameData data = instance.nameMapping.get(world.provider.dimensionId);
-        if (!data.names.containsKey(coord)) return false;
+        if (!nameData.contains(world.provider.dimensionId, x, y, z)) return false;
+        ASMPacket packet = getRemovePacket(world.provider.dimensionId, x, y, z);
         if (world.isRemote)
-            MessageHandler.INSTANCE.sendToServer(new NameDataUpdateMessage(world.provider.dimensionId, coord, true));
-        else
         {
-            data.remove(coord);
-            data.markDirty();
-            MessageHandler.INSTANCE.sendToAll(new NameDataUpdateMessage(world.provider.dimensionId, coord, true));
+            packet.sendServerPacket();
+        } else
+        {
+            nameData.remove(world.provider.dimensionId, x, y, z);
+            packet.sendToAll();
         }
         return true;
     }
 
-    public static void removeName(NameDataUpdateMessage message)
+    private static ASMPacket getRemovePacket(int dim, int x, int y, int z)
     {
-        if (!instance.nameMapping.containsKey(message.dimId)) return;
-        NameData data = instance.nameMapping.get(message.dimId);
-        data.markDirty();
-        data.remove(message.blockCoord);
-    }
-
-    public static void setWorldData(WorldDataSyncMessage message)
-    {
-        NameData nameData = new NameData();
-        nameData.readFromNBT(message.tagCompound);
-        NameRegistry.setWorldData(message.dimId, nameData);
-    }
-
-    public static void setWorldData(int dim, NameData data)
-    {
-        instance.nameMapping.put(dim, data);
-        MessageHandler.INSTANCE.sendToAll(new WorldDataSyncMessage(dim, data));
-    }
-
-    public static NameData getWorldData(int dim, boolean unload)
-    {
-        NameData data = instance.nameMapping.get(dim);
-        if (unload) instance.nameMapping.remove(dim);
-        return data;
-    }
-
-    public static void setNameData(Map<Integer, NameData> nameMapping)
-    {
-        instance.nameMapping.putAll(nameMapping);
+        ASMPacket packet = PacketHandler.getNamePacket();
+        packet.writeByte(SaveNameData.REMOVE);
+        packet.writeByte(dim);
+        packet.writeInt(x);
+        packet.writeByte(y);
+        packet.writeInt(z);
+        return packet;
     }
 
     public static void syncNameData(EntityPlayerMP player)
     {
-        MessageHandler.INSTANCE.sendTo(new FullDataSyncMessage(instance.nameMapping), player);
+        ASMPacket packet = PacketHandler.getNamePacket();
+        nameData.writeData(packet);
+        packet.sendPlayerPacket(player);
     }
 
     public static void clear()
     {
-        instance.nameMapping.clear();
+        nameData.clear();
+    }
+
+    public static void updateClient(ASMPacket packet)
+    {
+        nameData.readData(packet);
+    }
+
+    public static void updateServer(ASMPacket packet)
+    {
+        updateClient(packet);
+        packet.sendToAll();
     }
 }

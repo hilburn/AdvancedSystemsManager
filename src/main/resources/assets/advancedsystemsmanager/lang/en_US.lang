@@ -2,7 +2,7 @@
 #				BLOCKS
 # ======================================
 
-tile.system_manager.name=Systems Manager
+tile.system_manager.name=Advanced Systems Manager
 tile.system_manager_unlimited.name=Unlimited Systems Manager
 tile.system_cable.name=System Cable
 tile.system_cable_relay.name=Inventory Relay
@@ -25,6 +25,7 @@ tile.system_cable_sign.name=Sign Updater
 tile.system_cable_rf.name=RF Node
 tile.system_cable_ae.name=Energistics Connector
 tile.system_cable_tc.name=Thaumic Connector
+tile.system_cable_quantum.name=Quantum Cable
 
 # ======================================
 #				ITEMS
@@ -516,3 +517,7 @@ asm.gui.AspectOutput=Output (A)
 asm.gui.AspectOutputLong=Aspect Output
 asm.gui.TypeAspectMenu=Containers
 asm.gui.AspectsMenu=Aspects
+
+asm.gui.quantum.pair=Quantum Entanglement Reference: %d
+asm.gui.quantum.range=Tunnelling Range: %d
+asm.gui.quantum.interdimensional=Interdimensional Tunnelling

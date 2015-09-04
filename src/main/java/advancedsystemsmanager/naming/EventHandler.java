@@ -2,8 +2,7 @@ package advancedsystemsmanager.naming;
 
 import advancedsystemsmanager.items.ItemDuplicator;
 import advancedsystemsmanager.items.ItemLabeler;
-import advancedsystemsmanager.network.MessageHandler;
-import advancedsystemsmanager.network.message.SearchRegistryGenerateMessage;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -16,10 +15,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.WorldEvent;
 
 public class EventHandler
 {
@@ -29,7 +26,7 @@ public class EventHandler
         if (event.player instanceof EntityPlayerMP)
         {
             NameRegistry.syncNameData((EntityPlayerMP)event.player);
-            MessageHandler.INSTANCE.sendTo(new SearchRegistryGenerateMessage(), (EntityPlayerMP)event.player);
+            PacketHandler.sendLogonMessage((EntityPlayerMP) event.player);
         }
     }
 
@@ -37,30 +34,6 @@ public class EventHandler
     public void blockBreak(BlockEvent.BreakEvent event)
     {
         NameRegistry.removeName(event.world, event.x, event.y, event.z);
-    }
-
-    @SubscribeEvent
-    public void worldLoad(WorldEvent.Load event)
-    {
-        WorldSavedData data = event.world.perWorldStorage.loadData(NameData.class, NameData.KEY);
-        if (data != null)
-            NameRegistry.setWorldData(event.world.provider.dimensionId, (NameData)data);
-    }
-
-    @SubscribeEvent
-    public void worldSave(WorldEvent.Save event)
-    {
-        NameData nameData = NameRegistry.getWorldData(event.world.provider.dimensionId, false);
-        if (nameData != null)
-            event.world.perWorldStorage.setData(NameData.KEY, nameData);
-    }
-
-    @SubscribeEvent
-    public void worldUnload(WorldEvent.Unload event)
-    {
-        NameData nameData = NameRegistry.getWorldData(event.world.provider.dimensionId, false);
-        if (nameData != null)
-            event.world.perWorldStorage.setData(NameData.KEY, nameData);
     }
 
     @SubscribeEvent

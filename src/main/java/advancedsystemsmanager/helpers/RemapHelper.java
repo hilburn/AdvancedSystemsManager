@@ -81,8 +81,7 @@ public class RemapHelper
         remapRegistry.put(thing.getName(), thing);
     }
 
-    @SubscribeEvent
-    public void missingMapping(FMLMissingMappingsEvent event)
+    public static void handleRemap(FMLMissingMappingsEvent event)
     {
         for (FMLMissingMappingsEvent.MissingMapping mapping : event.getAll())
         {

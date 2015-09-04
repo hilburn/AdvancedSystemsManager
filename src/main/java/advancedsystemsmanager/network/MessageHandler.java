@@ -12,12 +12,7 @@ public class MessageHandler
     public static void init()
     {
         ID = 0;
-        register(NameDataUpdateMessage.class, Side.CLIENT);
-        register(NameDataUpdateMessage.class, Side.SERVER);
-        register(FullDataSyncMessage.class, Side.CLIENT);
-        register(WorldDataSyncMessage.class, Side.CLIENT);
         register(LabelSyncMessage.class, Side.SERVER);
-        register(SearchRegistryGenerateMessage.class, Side.CLIENT);
         register(SecretMessage.class, Side.SERVER);
     }
 

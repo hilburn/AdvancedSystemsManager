@@ -1,21 +1,35 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.helpers.SavableData;
+import advancedsystemsmanager.reference.Reference;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldSavedData;
 
 public class TileEntityQuantumCable extends TileEntity
 {
     public static final String NBT_QUANTUM_KEY = "quantumKey";
     public static final String NBT_QUANTUM_RANGE = "quantumRange";
-    private static int NEXT_QUANTUM_KEY = 0;
+    private static final QuantumSave NEXT_QUANTUM_KEY;
     private static TIntObjectHashMap<Pair> quantumRegistry = new TIntObjectHashMap<Pair>();
     private int quantumKey;
     private int quantumRange;
 
+    static
+    {
+        AdvancedSystemsManager.worldSave.save(NEXT_QUANTUM_KEY = new QuantumSave());
+    }
+
     public static int getNextQuantumKey()
     {
-        return NEXT_QUANTUM_KEY++;
+        return NEXT_QUANTUM_KEY.getNextID();
+    }
+
+    public static int peekNextQuantumKey()
+    {
+        return NEXT_QUANTUM_KEY.peekNextID();
     }
 
     @Override
@@ -140,6 +154,62 @@ public class TileEntityQuantumCable extends TileEntity
         public int hashCode()
         {
             return key;
+        }
+    }
+
+    public static class QuantumSave extends SavableData
+    {
+        private static final String KEY = "quantumSave";
+        private int ID = 0;
+
+        public QuantumSave(String key)
+        {
+            super(key);
+        }
+
+        @Override
+        protected SavableData getNew()
+        {
+            return new QuantumSave();
+        }
+
+        public QuantumSave()
+        {
+            this(Reference.NETWORK_ID + "." + KEY);
+        }
+
+        @Override
+        public boolean copyFrom(WorldSavedData worldSavedData)
+        {
+            if (worldSavedData instanceof QuantumSave)
+            {
+                ID = ((QuantumSave) worldSavedData).ID;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound tag)
+        {
+            ID = tag.getInteger(KEY);
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound tag)
+        {
+            tag.setInteger(KEY, ID);
+        }
+
+        public int getNextID()
+        {
+            markDirty();
+            return ++ID;
+        }
+
+        public int peekNextID()
+        {
+            return ID+1;
         }
     }
 }

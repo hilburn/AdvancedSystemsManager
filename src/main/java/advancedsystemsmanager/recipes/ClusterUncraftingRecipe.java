@@ -2,6 +2,7 @@ package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.items.blocks.ItemCluster;
 import advancedsystemsmanager.registry.BlockRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.inventory.IInventory;
@@ -15,6 +16,11 @@ public class ClusterUncraftingRecipe implements IRecipe
 {
     private static ItemStack cluster = new ItemStack(BlockRegistry.cableCluster);
     private static ItemStack advcluster = new ItemStack(BlockRegistry.cableCluster, 1, 8);
+
+    public ClusterUncraftingRecipe()
+    {
+        FMLCommonHandler.instance().bus().register(this);
+    }
 
     static
     {

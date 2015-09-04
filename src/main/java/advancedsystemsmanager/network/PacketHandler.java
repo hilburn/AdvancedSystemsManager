@@ -29,6 +29,8 @@ public class PacketHandler
     public static final int CONTAINER = 0;
     public static final int BLOCK = 1;
     public static final int COMMAND = 2;
+    public static final int NAME = 3;
+    public static final int GENERATE_SEARCH = 4;
 
     public static void sendAllData(Container container, ICrafting crafting, ITileInterfaceProvider te)
     {
@@ -163,5 +165,19 @@ public class PacketHandler
         packet.writeByte(NEW_VARIABLE);
         packet.writeMedium(colour);
         packet.sendServerPacket();
+    }
+
+    public static ASMPacket getNamePacket()
+    {
+        ASMPacket packet = new ASMPacket();
+        packet.writeByte(NAME);
+        return packet;
+    }
+
+    public static void sendLogonMessage(EntityPlayerMP player)
+    {
+        ASMPacket packet = new ASMPacket();
+        packet.writeByte(GENERATE_SEARCH);
+        packet.sendPlayerPacket(player);
     }
 }

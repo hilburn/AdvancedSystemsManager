@@ -2,11 +2,8 @@ package advancedsystemsmanager;
 
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
-import advancedsystemsmanager.helpers.ModItemHelper;
+import advancedsystemsmanager.helpers.*;
 import advancedsystemsmanager.client.gui.GuiHandler;
-import advancedsystemsmanager.helpers.ConfigHandler;
-import advancedsystemsmanager.helpers.OreDictionaryHelper;
-import advancedsystemsmanager.helpers.RemapHelper;
 import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.MessageHandler;
@@ -57,6 +54,8 @@ public class AdvancedSystemsManager
     public static CreativeTabs creativeTab;
     public static Registerer registerer;
     public static ThemeHandler themeHandler;
+    public static WorldSaveHelper worldSave;
+
     private static File configDir;
 
     public static boolean DEV_ENVIRONMENT = FMLForgePlugin.RUNTIME_DEOBF;
@@ -94,7 +93,8 @@ public class AdvancedSystemsManager
 
         ModCompat.preInit();
 
-        FMLCommonHandler.instance().bus().register(new RemapHelper());
+        worldSave = new WorldSaveHelper();
+        MinecraftForge.EVENT_BUS.register(worldSave);
     }
 
     @Mod.EventHandler
@@ -120,27 +120,24 @@ public class AdvancedSystemsManager
     public void postInit(FMLPostInitializationEvent event)
     {
         ModCompat.postInit();
-        Set<String> set = NetworkRegistry.INSTANCE.channelNamesFor(Side.CLIENT);
-        set = NetworkRegistry.INSTANCE.channelNamesFor(Side.SERVER);
-        return;
     }
 
     @Mod.EventHandler
     public void loadComplete(FMLLoadCompleteEvent event)
     {
         configHandler.loadPowerValues();
-        if (event.getSide() == Side.CLIENT)
-        {
-            themeHandler = new ThemeHandler(configDir, Reference.THEMES);
-            if (!themeHandler.setTheme(ConfigHandler.theme))
-                themeHandler.setTheme("default");
-        }
     }
+
+    @Mod.EventHandler
+    public void missingMapping(FMLMissingMappingsEvent event)
+    {
+        RemapHelper.handleRemap(event);
+    }
+
 
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event)
     {
-        NameRegistry.clear();
         ModItemHelper.init();
         event.registerServerCommand(ParentCommand.instance);
         File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");

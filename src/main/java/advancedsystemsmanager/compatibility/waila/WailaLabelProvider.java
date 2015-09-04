@@ -37,8 +37,7 @@ public class WailaLabelProvider implements IWailaDataProvider
         ITaggedList tagged = (ITaggedList)list;
         if (iWailaDataAccessor.getBlock() != null && tagged.getEntries(Names.LABELLED).isEmpty())
         {
-            BlockCoord coord = new BlockCoord(iWailaDataAccessor.getPosition().blockX, iWailaDataAccessor.getPosition().blockY, iWailaDataAccessor.getPosition().blockZ);
-            String label = NameRegistry.getSavedName(iWailaDataAccessor.getWorld().provider.dimensionId, coord);
+            String label = NameRegistry.getSavedName(iWailaDataAccessor.getWorld().provider.dimensionId, iWailaDataAccessor.getPosition().blockX, iWailaDataAccessor.getPosition().blockY, iWailaDataAccessor.getPosition().blockZ);
             if (label != null)
             {
                 tagged.add(StatCollector.translateToLocalFormatted(Names.LABELLED, label), Names.LABELLED);

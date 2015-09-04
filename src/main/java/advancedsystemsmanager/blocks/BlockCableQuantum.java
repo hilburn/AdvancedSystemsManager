@@ -1,6 +1,7 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.api.tileentities.ICable;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import advancedsystemsmanager.util.SystemCoord;
@@ -16,9 +17,9 @@ import java.util.*;
 
 public class BlockCableQuantum extends BlockTileBase implements ICable
 {
-    public BlockCableQuantum(String name)
+    public BlockCableQuantum()
     {
-        super(name);
+        super(Names.CABLE_QUANTUM);
     }
 
     @Override
@@ -82,8 +83,9 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    public TileEntity createNewTileEntity(World world, int meta)
     {
         return new TileEntityQuantumCable();
     }
+
 }

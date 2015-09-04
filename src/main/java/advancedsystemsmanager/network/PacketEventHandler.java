@@ -3,6 +3,8 @@ package advancedsystemsmanager.network;
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.containers.ContainerBase;
+import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
@@ -63,6 +65,18 @@ public class PacketEventHandler
                 break;
             case PacketHandler.COMMAND:
                 ParentCommand.handlePacket(packet);
+                break;
+            case PacketHandler.NAME:
+                if (player instanceof EntityPlayerMP)
+                {
+                    NameRegistry.updateServer(packet);
+                } else
+                {
+                    NameRegistry.updateClient(packet);
+                }
+                break;
+            case PacketHandler.GENERATE_SEARCH:
+                SearchItems.setItems();
                 break;
         }
     }

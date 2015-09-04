@@ -1,11 +1,17 @@
 package advancedsystemsmanager.naming;
 
+import advancedsystemsmanager.api.network.IPacketReader;
+import advancedsystemsmanager.api.network.IPacketWriter;
+import advancedsystemsmanager.network.ASMPacket;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class BlockCoord
+public class BlockCoord implements IPacketReader, IPacketWriter
 {
-    public int x, y, z;
-    public String name;
+    private int x, y, z;
+    private String name;
+
+    public BlockCoord()
+    {}
 
     public BlockCoord(int x, int y, int z, String name)
     {
@@ -33,17 +39,27 @@ public class BlockCoord
         NBTTagCompound result = new NBTTagCompound();
         result.setInteger("x", x);
         result.setInteger("z", z);
-        result.setShort("y", (short)y);
-        if (this.name != null) result.setString("n", name);
+        result.setShort("y", (short) y);
+        if (this.name != null && !name.isEmpty()) result.setString("n", name);
         return result;
+    }
+
+    public boolean isAt(int x, int y, int z)
+    {
+        return x == this.x && y == this.y && z == this.z;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     @Override
     public int hashCode()
     {
-        int result = 121 * (x ^ (x >>> 16));
-        result = 15 * result + (y ^ (y << 16));
-        result = 15 * result + (z ^ (z >>> 16));
+        int result = 173 + x;
+        result = 31 * result + z;
+        result = 31 * result + y;
         return result;
     }
 
@@ -62,5 +78,30 @@ public class BlockCoord
     public String toString()
     {
         return "[x: " + x + ", y: " + y + ", z: " + z + "]" + (name != null ? name : "");
+    }
+
+    @Override
+    public boolean readData(ASMPacket packet)
+    {
+        this.x = packet.readInt();
+        this.y = packet.readUnsignedByte();
+        this.z = packet.readInt();
+        this.name = packet.readStringFromBuffer();
+        return false;
+    }
+
+    @Override
+    public boolean writeData(ASMPacket packet)
+    {
+        packet.writeInt(x);
+        packet.writeByte(y);
+        packet.writeInt(z);
+        packet.writeStringToBuffer(name == null ? "" : name);
+        return false;
+    }
+
+    public boolean hasName()
+    {
+        return name != null && !name.isEmpty();
     }
 }

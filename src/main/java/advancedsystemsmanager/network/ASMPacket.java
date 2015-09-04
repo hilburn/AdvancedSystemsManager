@@ -85,6 +85,11 @@ public class ASMPacket extends PacketBuffer
         packetHandler.sendTo(getPacket(), player);
     }
 
+    public void sendToAll()
+    {
+        packetHandler.sendToAll(getPacket());
+    }
+
     public void sendServerPacket()
     {
         packetHandler.sendToServer(getPacket());

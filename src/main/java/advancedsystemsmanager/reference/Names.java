@@ -23,6 +23,7 @@ public class Names
     public static final String CABLE_CLUSTER = CABLE + "_cluster";
     public static final String CABLE_CAMO = CABLE + "_camo";
     public static final String CABLE_SIGN = CABLE + "_sign";
+    public static final String CABLE_QUANTUM = CABLE + "_quantum";
     public static final String ADVANCED_SUFFIX = "_advanced";
 
     public static final String CABLE_RF = CABLE + "_rf";
@@ -384,6 +385,11 @@ public class Names
     public static final String BARREL_CONTAINS = GUI_PREFIX + "idsucompat.contains";
     public static final String LABEL_SAVED = GUI_PREFIX + "chat.saved";
     public static final String LABEL_CLEARED = GUI_PREFIX + "chat.cleared";
+
+
+    public static final String QUANTUM_PAIRING = GUI_PREFIX + "quantum.pair";
+    public static final String QUANTUM_RANGE = GUI_PREFIX + "quantum.range";
+    public static final String QUANTUM_INTERDIMENSIONAL = GUI_PREFIX + "quantum.interdimensional";
 
     public static final String COMMAND_PREFIX = "asm.command.";
     public static final String COMMAND_PLAYER_ONLY = COMMAND_PREFIX + "playerOnly";

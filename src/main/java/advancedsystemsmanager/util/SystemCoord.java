@@ -172,8 +172,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public static String getLabel(TileEntity tileEntity)
     {
-        BlockCoord coord = new BlockCoord(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
-        return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, coord);
+        return NameRegistry.getSavedName(tileEntity.getWorldObj().provider.dimensionId, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
     }
 
     @Override

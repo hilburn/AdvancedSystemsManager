@@ -71,7 +71,7 @@ public class QuantumCraftingRecipe implements IRecipe
                 }
             }
         }
-        int quantumRange = enderEye < 8 ? Math.max(enderPearl, enderEye) : 9;
+        int quantumRange = enderEye < 8 ? enderPearl + enderEye : 9;
         if (quantumRange == 0)
         {
             return null;
@@ -79,7 +79,7 @@ public class QuantumCraftingRecipe implements IRecipe
         ItemStack result = new ItemStack(BlockRegistry.cableQuantum, 2);
         NBTTagCompound tagCompound = new NBTTagCompound();
         tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, quantumRange);
-        tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY, TileEntityQuantumCable.getNextQuantumKey());
+        tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY, TileEntityQuantumCable.peekNextQuantumKey());
         result.setTagCompound(tagCompound);
         return result;
     }

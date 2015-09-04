@@ -6,11 +6,11 @@ import advancedsystemsmanager.items.blocks.*;
 import advancedsystemsmanager.recipes.ClusterRecipe;
 import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
 import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
+import advancedsystemsmanager.recipes.QuantumCraftingRecipe;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -55,7 +55,7 @@ public class BlockRegistry
     public static BlockCableSign cableSign;
     @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.CABLE_VOID)
     public static BlockCableVoid cableVoid;
-
+    @Register(tileEntity = TileEntityQuantumCable.class, itemBlock = ItemQuantum.class, name = Names.CABLE_QUANTUM)
     public static BlockCableQuantum cableQuantum;
 
     //    Mod Cluster Elements
@@ -188,8 +188,7 @@ public class BlockRegistry
 
         GameRegistry.addRecipe(new ClusterUpgradeRecipe());
         GameRegistry.addRecipe(new ClusterRecipe());
-        ClusterUncraftingRecipe uncrafting = new ClusterUncraftingRecipe();
-        GameRegistry.addRecipe(uncrafting);
-        FMLCommonHandler.instance().bus().register(uncrafting);
+        GameRegistry.addRecipe(new ClusterUncraftingRecipe());
+        GameRegistry.addRecipe(new QuantumCraftingRecipe());
     }
 }
