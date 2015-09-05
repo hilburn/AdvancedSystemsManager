@@ -1,4 +1,4 @@
-package advancedsystemsmanager.wrappers;
+package advancedsystemsmanager.util.wrappers;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.entity.passive.EntityHorse;

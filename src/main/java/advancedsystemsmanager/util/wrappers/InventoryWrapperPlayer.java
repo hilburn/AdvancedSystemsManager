@@ -1,4 +1,4 @@
-package advancedsystemsmanager.wrappers;
+package advancedsystemsmanager.util.wrappers;
 
 
 import net.minecraft.entity.player.EntityPlayer;
