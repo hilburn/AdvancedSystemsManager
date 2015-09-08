@@ -5,7 +5,6 @@ import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.helpers.*;
 import advancedsystemsmanager.client.gui.GuiHandler;
 import advancedsystemsmanager.naming.EventHandler;
-import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.PacketEventHandler;
 import advancedsystemsmanager.proxy.CommonProxy;
@@ -21,7 +20,6 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,7 +30,6 @@ import thevault.registry.Registerer;
 import thevault.utils.LogHelper;
 
 import java.io.File;
-import java.util.Set;
 
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION_FULL)
 public class AdvancedSystemsManager

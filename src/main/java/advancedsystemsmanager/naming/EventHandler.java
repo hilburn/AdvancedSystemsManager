@@ -1,5 +1,6 @@
 package advancedsystemsmanager.naming;
 
+import advancedsystemsmanager.api.items.ILeftClickItem;
 import advancedsystemsmanager.items.ItemDuplicator;
 import advancedsystemsmanager.items.ItemLabeler;
 import advancedsystemsmanager.network.PacketHandler;
@@ -42,42 +43,10 @@ public class EventHandler
         ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && stack != null)
         {
-            World world = event.world;
-            int x = event.x;
-            int y = event.y;
-            int z = event.z;
-            EntityPlayer player = event.entityPlayer;
-            if (stack.getItem() == ItemRegistry.labeler)
+            if (stack.getItem() instanceof ILeftClickItem)
             {
-                if (ItemLabeler.isValidTile(world, x, y, z))
+                if (((ILeftClickItem) stack.getItem()).leftClick(event.entityPlayer, stack, event.world, event.x, event.y, event.z, event.face))
                 {
-                    String label = ItemLabeler.getLabel(stack);
-                    if (label.isEmpty())
-                    {
-                        if (NameRegistry.removeName(world, x, y, z))
-                        {
-                            player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(Names.LABEL_CLEARED)));
-                        }
-                    } else
-                    {
-                        NameRegistry.saveName(world, x, y, z, label);
-                        player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(Names.LABEL_SAVED, label)));
-                    }
-                    event.setCanceled(true);
-                }
-            } else if (stack.getItem() == ItemRegistry.duplicator && player.isSneaking())
-            {
-                TileEntity te = world.getTileEntity(x, y, z);
-                if (te instanceof TileEntityManager)
-                {
-                    world.removeTileEntity(x, y, z);
-                    TileEntityManager manager = new TileEntityManager();
-                    if (stack.hasTagCompound() && ItemDuplicator.validateNBT(stack))
-                    {
-                        manager.readFromNBT(stack.getTagCompound());
-                        stack.setTagCompound(null);
-                    }
-                    world.setTileEntity(x, y, z, manager);
                     event.setCanceled(true);
                 }
             }

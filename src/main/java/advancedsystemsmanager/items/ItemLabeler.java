@@ -2,10 +2,12 @@ package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
+import advancedsystemsmanager.api.items.ILeftClickItem;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.client.gui.GuiLabeler;
+import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
@@ -24,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -31,7 +34,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
+public class ItemLabeler extends ItemBase implements IItemInterfaceProvider, ILeftClickItem
 {
     public static final String LABEL = "Label";
     private static List<Class> registeredClasses = new ArrayList<Class>();
@@ -146,5 +149,27 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider
     @Override
     public void readData(ItemStack stack, ASMPacket buf, EntityPlayer player)
     {
+    }
+
+    @Override
+    public boolean leftClick(EntityPlayer player, ItemStack stack, World world, int x, int y, int z, int face)
+    {
+        if (ItemLabeler.isValidTile(world, x, y, z))
+        {
+            String label = ItemLabeler.getLabel(stack);
+            if (label.isEmpty())
+            {
+                if (NameRegistry.removeName(world, x, y, z))
+                {
+                    player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal(Names.LABEL_CLEARED)));
+                }
+            } else
+            {
+                NameRegistry.saveName(world, x, y, z, label);
+                player.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocalFormatted(Names.LABEL_SAVED, label)));
+            }
+            return true;
+        }
+        return false;
     }
 }

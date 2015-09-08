@@ -1,5 +1,6 @@
 package advancedsystemsmanager.items;
 
+import advancedsystemsmanager.api.items.ILeftClickItem;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemDuplicator extends ItemBase
+public class ItemDuplicator extends ItemBase implements ILeftClickItem
 {
     public static final String AUTHOR = "Author";
     public static final String CONTENTS = "ManagerContents";
@@ -77,6 +78,25 @@ public class ItemDuplicator extends ItemBase
             }
         }
         validateNBT(stack);
+        return false;
+    }
+
+    @Override
+    public boolean leftClick(EntityPlayer player, ItemStack stack, World world, int x, int y, int z, int face)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof TileEntityManager)
+        {
+            world.removeTileEntity(x, y, z);
+            TileEntityManager manager = new TileEntityManager();
+            if (stack.hasTagCompound() && ItemDuplicator.validateNBT(stack))
+            {
+                manager.readFromNBT(stack.getTagCompound());
+                stack.setTagCompound(null);
+            }
+            world.setTileEntity(x, y, z, manager);
+            return true;
+        }
         return false;
     }
 }
