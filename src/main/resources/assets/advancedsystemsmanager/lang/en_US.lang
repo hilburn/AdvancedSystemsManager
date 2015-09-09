@@ -267,6 +267,7 @@ asm.gui.Tank=Tank
 asm.gui.Emitter=Emitter
 asm.gui.Receiver=Receiver
 asm.gui.RedstoneNode=Node
+asm.gui.RfStorage=RF Storage
 asm.gui.Bud=BUD
 asm.gui.OrderStandard=Standard
 asm.gui.OrderCable=Cable order
@@ -490,7 +491,7 @@ asm.gui.RfConditionInfo=Set the trigger level in the text box, and trigger above
 asm.gui.RfConditionError=Invalid trigger level
 asm.gui.Below=Trigger low
 
-asm.gui.DelayOutput=Delayed Output
+asm.gui.ConnectionDelayOutput=Delayed Output
 asm.gui.DelayTrigger=Delayed Trigger
 asm.gui.DelayInfo=Set the delay in seconds, ticks before the trigger fires (minimum 5 ticks)
 asm.gui.DelayError=Delay too low.
