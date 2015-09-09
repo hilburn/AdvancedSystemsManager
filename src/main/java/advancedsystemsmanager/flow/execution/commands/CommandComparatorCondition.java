@@ -14,12 +14,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: WIP command that treats the comparator input of any block as a redstone condition.
 public class CommandComparatorCondition extends CommandBase
 {
     public CommandComparatorCondition()
     {
-        super(24, Names.COMPARATOR_CONDITION, CommandType.COMMAND_CONTROL, ConnectionSet.STANDARD_CONDITION);
+        super(COMPARATOR_CONDITION, Names.COMPARATOR_CONDITION, CommandType.COMMAND_CONTROL, ConnectionSet.STANDARD_CONDITION);
     }
 
     @Override

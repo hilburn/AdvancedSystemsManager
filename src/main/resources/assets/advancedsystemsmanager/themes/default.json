@@ -31,7 +31,8 @@
       "Input (RF)": "#b08080",
       "Output (RF)": "#b08080",
       "Input (A)": "#b080af",
-      "Output (A)": "#b080af"
+      "Output (A)": "#b080af",
+      "Comparator": "#b08080"
     },
     "Connections": {
       "Input": {

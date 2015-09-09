@@ -44,6 +44,7 @@ public abstract class CommandBase<Type> implements ICommand
     protected static final int ASPECT_INPUT = 22;
     protected static final int ASPECT_OUTPUT = 23;
     protected static final int ASPECT_CONDITION = 24;
+    protected static final int COMPARATOR_CONDITION = 31;
 
     protected int id;
     protected String name;
