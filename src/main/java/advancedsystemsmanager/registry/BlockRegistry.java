@@ -173,7 +173,12 @@ public class BlockRegistry
                 Items.feather
         );
 
-        GameRegistry.addRecipe(new ItemStack(cableRFNode), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', new ItemStack(cable));
+        GameRegistry.addShapelessRecipe(new ItemStack(cableVoid), cable, Items.magma_cream, Items.blaze_rod);
+
+        if (cableRFNode != null)
+        {
+            GameRegistry.addRecipe(new ItemStack(cableRFNode), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', new ItemStack(cable));
+        }
         if (cableAENode != null)
         {
             ItemStack aeInterface = new ItemStack(GameRegistry.findBlock("appliedenergistics2", "tile.BlockInterface"));

@@ -9,6 +9,8 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemCoord;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +41,7 @@ public class CommandVariable extends CommandBase
         {
             if (menuVariable.isDeclaration())
             {
-                variable.setContainers(menuVariableContainers.getSelectedInventories());
+                variable.setContainers(new ArrayList<Long>(menuVariableContainers.getSelectedInventories()));
             } else
             {
                 MenuVariable.VariableMode mode = menuVariable.getVariableMode();

@@ -88,7 +88,7 @@ public class Executor
             ConnectionOption option = command.getConnectionSet().getConnections()[i];
             if (connection != null && !option.isInput() && validTriggerOutputs.contains(option))
             {
-                if (!usedCommands.contains(connection.getOutputId()))
+//                if (!usedCommands.contains(connection.getOutputId()))
                     this.executeCommand(this.manager.getFlowItem(connection.getOutputId()), connection.getOutputConnection());
             }
         }

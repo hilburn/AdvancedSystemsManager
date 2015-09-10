@@ -51,7 +51,7 @@ public abstract class CommandBase<Type> implements ICommand
     protected String longName;
     protected ConnectionSet[] connectionSets;
     protected CommandType type;
-    protected EnumSet<ConnectionOption> outputs = EnumSet.allOf(ConnectionOption.class);
+    protected EnumSet<ConnectionOption> outputs = EnumSet.copyOf(ConnectionOption.OUTPUTS);
     protected int energyCost;
     protected int[] colour = new int[]{0xc6, 0xc6, 0xc6, 0xff};
 

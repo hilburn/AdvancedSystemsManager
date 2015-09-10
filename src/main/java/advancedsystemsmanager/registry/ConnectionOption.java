@@ -4,6 +4,8 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.client.gui.theme.ThemeMouseover;
 import advancedsystemsmanager.reference.Names;
 
+import java.util.EnumSet;
+
 public enum ConnectionOption
 {
     STANDARD_INPUT(Names.CONNECTION_INPUT, ConnectionType.INPUT),
@@ -50,6 +52,14 @@ public enum ConnectionOption
                     return id < component.getChildrenOutputNodes().size();
                 }
             };
+    public static final EnumSet<ConnectionOption> OUTPUTS = EnumSet.noneOf(ConnectionOption.class);
+    static
+    {
+        for (ConnectionOption option : values())
+        {
+            if (option.getType() == ConnectionType.OUTPUT) OUTPUTS.add(option);
+        }
+    }
     public String name;
     public ConnectionType type;
 

@@ -13,6 +13,7 @@ import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemCoord;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -38,20 +39,19 @@ public class CommandLoop extends CommandBase
         Variable list = ((MenuVariableLoop)command.menus.get(0)).getVariable();
         if (list != null && list.isValid())
         {
-            List<Long> selection = ((MenuListOrder)command.getMenus().get(2)).applyOrder(list.getContainers());
+            list.applyOrder((MenuListOrder) command.getMenus().get(2));
             Set<ISystemType> validTypes = ((MenuContainerTypes)command.getMenus().get(1)).getValidTypes();
 
-            for (long selected : selection)
+            for (int i = 0; i< list.getNumContainers(); i++)
             {
-                SystemCoord inventory = command.getManager().getInventory(selected);
+                list.setContainerIndex(i);
+                SystemCoord inventory = command.getManager().getInventory(list.getContainer());
                 if (inventory != null && inventory.isOfAnyType(validTypes))
                 {
-                    list.clearContainers();
-                    list.add(selected);
                     executor.executeChildCommands(command, EnumSet.of(ConnectionOption.FOR_EACH));
                 }
             }
-            list.setContainers(selection);
+            list.setContainerIndex(-1);
         }
     }
 }

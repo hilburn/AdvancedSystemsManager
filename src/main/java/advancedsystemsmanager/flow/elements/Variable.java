@@ -4,6 +4,7 @@ import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.TextColour;
+import advancedsystemsmanager.flow.menus.MenuListOrder;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.util.ColourUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -15,6 +16,7 @@ import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Variable implements Comparable<Variable>, IContainerSelection
@@ -37,6 +39,7 @@ public class Variable implements Comparable<Variable>, IContainerSelection
     private float[] hsv = new float[3];
     private int[] rgba = new int[4];
     private String defaultName;
+    private int containerIndex;
 
     static
     {
@@ -191,7 +194,12 @@ public class Variable implements Comparable<Variable>, IContainerSelection
 
     public List<Long> getContainers()
     {
-        return containers;
+        return containerIndex == -1 ? containers : Collections.singletonList(containers.get(containerIndex));
+    }
+
+    public void applyOrder(MenuListOrder order)
+    {
+        order.applyOrder(containers);
     }
 
     public void setContainers(List<Long> containers)
@@ -205,6 +213,21 @@ public class Variable implements Comparable<Variable>, IContainerSelection
         {
             containers.add(id);
         }
+    }
+
+    public long getContainer()
+    {
+        return containerIndex == -1 || containerIndex >= getNumContainers() ? -1 : containers.get(containerIndex);
+    }
+
+    public void setContainerIndex(int idx)
+    {
+        this.containerIndex = idx;
+    }
+
+    public int getNumContainers()
+    {
+        return containers.size();
     }
 
     public boolean hasBeenExecuted()

@@ -32,6 +32,7 @@ public class ItemRemoteAccessor extends ItemBase
     {
         super(Names.REMOTE_ACCESS);
         setHasSubtypes(true);
+        setMaxStackSize(1);
     }
 
     @Override
