@@ -388,6 +388,7 @@ public class Names
 
 
     public static final String QUANTUM_PAIRING = GUI_PREFIX + "quantum.pair";
+    public static final String QUANTUM_UNPAIRED = GUI_PREFIX + "quantum.unpaired";
     public static final String QUANTUM_RANGE = GUI_PREFIX + "quantum.range";
     public static final String QUANTUM_INTERDIMENSIONAL = GUI_PREFIX + "quantum.interdimensional";
 

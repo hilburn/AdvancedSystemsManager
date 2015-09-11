@@ -1,5 +1,6 @@
 package advancedsystemsmanager.items.blocks;
 
+import advancedsystemsmanager.client.gui.TextColour;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
@@ -32,7 +33,13 @@ public class ItemQuantum extends ItemBlock
         }
         NBTTagCompound tag = item.getTagCompound();
 
-        list.add(LocalizationHelper.translateFormatted(Names.QUANTUM_PAIRING, tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY)));
+        if (tag.hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
+        {
+            list.add(LocalizationHelper.translateFormatted(Names.QUANTUM_PAIRING, tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY)));
+        } else
+        {
+            list.add(TextColour.RED.toString() + LocalizationHelper.translate(Names.QUANTUM_UNPAIRED));
+        }
         int range = tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE);
         if (range < 9)
         {
@@ -47,15 +54,15 @@ public class ItemQuantum extends ItemBlock
     public void onCreated(ItemStack stack, World world, EntityPlayer player)
     {
         super.onCreated(stack, world, player);
-        if (!world.isRemote)
+        if (!world.isRemote && stack.hasTagCompound() && stack.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
         {
-            stack.getTagCompound().setInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY, TileEntityQuantumCable.getNextQuantumKey());
+            TileEntityQuantumCable.getNextQuantumKey();
         }
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs tabs, List list)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        //TODO: work out how to pair these bastards safely in creative menu
+        return !(!stack.hasTagCompound() || !stack.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY)) && super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
 }

@@ -3,10 +3,7 @@ package advancedsystemsmanager.registry;
 import advancedsystemsmanager.blocks.*;
 import advancedsystemsmanager.client.render.RenderCamouflage;
 import advancedsystemsmanager.items.blocks.*;
-import advancedsystemsmanager.recipes.ClusterRecipe;
-import advancedsystemsmanager.recipes.ClusterUncraftingRecipe;
-import advancedsystemsmanager.recipes.ClusterUpgradeRecipe;
-import advancedsystemsmanager.recipes.QuantumCraftingRecipe;
+import advancedsystemsmanager.recipes.*;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
@@ -195,5 +192,6 @@ public class BlockRegistry
         GameRegistry.addRecipe(new ClusterRecipe());
         GameRegistry.addRecipe(new ClusterUncraftingRecipe());
         GameRegistry.addRecipe(new QuantumCraftingRecipe());
+        GameRegistry.addRecipe(new QuantumPairingRecipe());
     }
 }

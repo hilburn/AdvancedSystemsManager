@@ -519,6 +519,7 @@ asm.gui.AspectOutputLong=Aspect Output
 asm.gui.TypeAspectMenu=Containers
 asm.gui.AspectsMenu=Aspects
 
-asm.gui.quantum.pair=Quantum Entanglement Reference: %d
+asm.gui.quantum.pair=Quantum Entanglement Key: %d
+asm.gui.quantum.unpaired=Cable has not been paired
 asm.gui.quantum.range=Tunnelling Range: %d
 asm.gui.quantum.interdimensional=Interdimensional Tunnelling

@@ -5,8 +5,10 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import advancedsystemsmanager.util.SystemCoord;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -88,4 +90,17 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
         return new TileEntityQuantumCable();
     }
 
+    @Override
+    @SuppressWarnings(value = "unchecked")
+    public void getSubBlocks(Item item, CreativeTabs tab, List blocks)
+    {
+        for (int i : new int[]{1, 8, 9})
+        {
+            ItemStack stack = new ItemStack(this);
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, i);
+            stack.setTagCompound(tagCompound);
+            blocks.add(stack);
+        }
+    }
 }
