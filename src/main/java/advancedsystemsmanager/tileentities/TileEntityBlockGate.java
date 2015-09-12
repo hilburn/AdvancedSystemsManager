@@ -201,8 +201,12 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
         if (itemstack != null && itemstack.getItem() != null && itemstack.stackSize > 0)
         {
             ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[placeDirection].getOpposite();
-
+            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[placeDirection];
+            if (side == direction)
+            {
+                side = ForgeDirection.UNKNOWN;
+            }
+            direction = direction.getOpposite();
 
             float hitX = 0.5F + direction.offsetX * 0.5F;
             float hitY = 0.5F + direction.offsetY * 0.5F;
@@ -229,6 +233,10 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
                 ItemStack result = itemstack.useItemRightClick(worldObj, player);
                 if (ItemStack.areItemStacksEqual(result, itemstack))
                 {
+                    if (side == ForgeDirection.UNKNOWN)
+                    {
+                        side = direction.getOpposite();
+                    }
                     int x = xCoord + side.offsetX - direction.offsetX;
                     int y = yCoord + side.offsetY - direction.offsetY;
                     int z = zCoord + side.offsetZ - direction.offsetZ;
@@ -272,7 +280,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
                 ItemStack itemStack = inventory.get(i);
                 ItemStack itemStackCopy = inventoryCache.get(i);
 
-                if (itemStackCopy != null && (itemStack == null || Item.getIdFromItem(itemStack.getItem()) != Item.getIdFromItem(itemStackCopy.getItem()) || itemStack.getItemDamage() != itemStackCopy.getItemDamage() || !ItemStack.areItemStackTagsEqual(itemStack, itemStackCopy) || itemStack.stackSize < itemStackCopy.stackSize))
+                if (!ItemStack.areItemStacksEqual(itemStack, itemStackCopy) || itemStack.stackSize < itemStackCopy.stackSize)
                 {
                     match = false;
                     break;
@@ -423,7 +431,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     @Override
     public int getInventoryStackLimit()
     {
-        return 1;
+        return 64;
     }
 
     @Override
