@@ -1,25 +1,44 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.helpers.SavableData;
+import advancedsystemsmanager.network.ASMPacket;
+import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Reference;
+import advancedsystemsmanager.registry.BlockRegistry;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
+import net.minecraftforge.common.DimensionManager;
 
-public class TileEntityQuantumCable extends TileEntity
+public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
 {
     public static final String NBT_QUANTUM_KEY = "quantumKey";
     public static final String NBT_QUANTUM_RANGE = "quantumRange";
     private static final QuantumSave NEXT_QUANTUM_KEY;
-    private static TIntObjectHashMap<Pair> quantumRegistry = new TIntObjectHashMap<Pair>();
+    private static TIntObjectHashMap<TileEntityQuantumCable> quantumRegistry = new TIntObjectHashMap<TileEntityQuantumCable>();
     private int quantumKey;
     private int quantumRange;
+    private TileEntityQuantumCable pair;
+    private byte sendUpdate;
 
     static
     {
         AdvancedSystemsManager.worldSave.save(NEXT_QUANTUM_KEY = new QuantumSave());
+    }
+
+    @Override
+    public void updateEntity()
+    {
+        if (!worldObj.isRemote && sendUpdate > 0)
+        {
+            sendUpdate = 0;
+            PacketHandler.sendBlockPacket(this, null, sendUpdate);
+        }
     }
 
     public static int getNextQuantumKey()
@@ -54,14 +73,20 @@ public class TileEntityQuantumCable extends TileEntity
 
     public void readContentFromNBT(NBTTagCompound tagCompound)
     {
-        setQuantumKey(tagCompound.getInteger(NBT_QUANTUM_KEY));
         quantumRange = tagCompound.getInteger(NBT_QUANTUM_RANGE);
+        setQuantumKey(tagCompound.getInteger(NBT_QUANTUM_KEY));
+        sendUpdate |= 1;
     }
 
     private boolean isInRange(TileEntityQuantumCable paired)
     {
         return (isInterDimensional() && paired.hasWorldObj() && paired.getWorldObj().provider.dimensionId != getWorldObj().provider.dimensionId) ||
-                (getRange(quantumRange) * getRange(quantumRange) <= getDistanceFrom(paired.xCoord + 0.5d, paired.yCoord + 0.5d, paired.zCoord + 0.5d));
+                (getRange(quantumRange) * getRange(quantumRange) >= getDistanceFrom(paired.xCoord + 0.5d, paired.yCoord + 0.5d, paired.zCoord + 0.5d));
+    }
+
+    public int getQuantumRange()
+    {
+        return getRange(quantumRange);
     }
 
     public static int getRange(int quantumRange)
@@ -76,35 +101,58 @@ public class TileEntityQuantumCable extends TileEntity
 
     public static TileEntityQuantumCable getPairedCable(TileEntityQuantumCable cable)
     {
-        Pair pair = quantumRegistry.get(cable.getQuantumKey());
-        if (pair != null)
+        TileEntityQuantumCable paired = cable.pair;
+        if (paired != null && !paired.isInvalid() && paired.hasWorldObj() && paired.getWorldObj().blockExists(paired.xCoord, paired.yCoord, paired.zCoord) && paired.isInRange(cable))
         {
-            TileEntityQuantumCable paired = pair.getPairedCable(cable);
-            if (paired != null && !paired.isInvalid() && paired.hasWorldObj() && paired.getWorldObj().blockExists(paired.xCoord, paired.yCoord, paired.zCoord) && paired.isInRange(cable))
-            {
-                return paired;
-            }
+            return paired;
         }
         return null;
+    }
+
+    public void pairWith(TileEntityQuantumCable pair)
+    {
+        if (pair != this && this.pair != pair)
+        {
+            this.pair = pair;
+            pair.pair = this;
+            if (!worldObj.isRemote)
+            {
+                sendUpdate |= 2;
+                pair.sendUpdate |= 2;
+            }
+        }
     }
 
     public static boolean addCable(TileEntityQuantumCable cable)
     {
         if (quantumRegistry.containsKey(cable.getQuantumKey()))
         {
-            return quantumRegistry.get(cable.getQuantumKey()).addCable(cable);
+            quantumRegistry.get(cable.getQuantumKey()).pairWith(cable);
         } else
         {
-            Pair pair = new Pair(cable);
-            quantumRegistry.put(pair.hashCode(), pair);
-            return true;
+            quantumRegistry.put(cable.getQuantumKey(), cable);
         }
+        return true;
     }
 
     public void setQuantumKey(int key)
     {
         quantumKey = key;
         addCable(this);
+    }
+
+    public void unloadPairing()
+    {
+        if (!worldObj.isRemote)
+        {
+            quantumRegistry.remove(getQuantumKey());
+            if (pair != null && !pair.isInvalid())
+            {
+                pair.pair = null;
+                addCable(pair);
+                pair.sendUpdate |= 2;
+            }
+        }
     }
 
     @Override
@@ -118,43 +166,90 @@ public class TileEntityQuantumCable extends TileEntity
         return false;
     }
 
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        PacketHandler.sendBlockPacket(this, null, 3);
+        return null;
+    }
+
     public int getQuantumKey()
     {
         return quantumKey;
     }
 
-    private static class Pair
+    private static final char[] SPIN = "UDSCTB".toCharArray();
+
+    public String getSpinString()
     {
-        private final TileEntityQuantumCable[] cables = new TileEntityQuantumCable[2];
-        private int key;
+        return getSpinString(quantumKey);
+    }
 
-        private Pair(TileEntityQuantumCable cable)
+    public static String getSpinString(int key)
+    {
+        String result = "";
+        while (key != 0)
         {
-            this(cable.getQuantumKey());
-            addCable(cable);
+            result = SPIN[key % SPIN.length] + result;
+            key /= SPIN.length;
         }
+        return result;
+    }
 
-        public Pair(int key)
-        {
-            this.key = key;
-        }
+    public static void clearRegistry()
+    {
+        quantumRegistry.clear();
+    }
 
-        public boolean addCable(TileEntityQuantumCable cable)
+    @Override
+    public void writeData(ASMPacket packet, int id)
+    {
+//        if ((id & 1) == 1)
         {
-            cables[cable.equals(cables[0]) ? 0 : 1] = cable;
-            return true;
+            packet.writeByte(quantumRange);
+            packet.writeVarIntToBuffer(quantumKey);
+//        }
+//        if ((id & 2) == 2)
+//        {
+            if (pair != null && pair.worldObj != null)
+            {
+                packet.writeBoolean(true);
+                packet.writeShort(pair.worldObj.provider.dimensionId);
+                packet.writeInt(pair.xCoord);
+                packet.writeByte(pair.yCoord);
+                packet.writeInt(pair.zCoord);
+            } else
+            {
+                packet.writeBoolean(false);
+            }
         }
+    }
 
-        public TileEntityQuantumCable getPairedCable(TileEntityQuantumCable cable)
+    @Override
+    public void readData(ASMPacket packet, int id)
+    {
+//        if ((id & 1) == 1)
         {
-            return cables[0].equals(cable) ? cables[1] : cables[1].equals(cable) ? cables[0] : null;
+            quantumRange = packet.readByte();
+            quantumKey = packet.readVarIntFromBuffer();
+//        }
+//        if ((id & 2) == 2)
+//        {
+            if (packet.readBoolean())
+            {
+                World world = DimensionManager.getWorld(packet.readShort());
+                TileEntity te = world.getTileEntity(packet.readInt(), packet.readUnsignedByte(), packet.readInt());
+                if (te instanceof TileEntityQuantumCable)
+                {
+                    pair = (TileEntityQuantumCable)te;
+                    ((TileEntityQuantumCable) te).pair = this;
+                }
+            } else
+            {
+                pair = null;
+            }
         }
-
-        @Override
-        public int hashCode()
-        {
-            return key;
-        }
+        BlockRegistry.cable.updateInventories(worldObj, xCoord, yCoord, zCoord);
     }
 
     public static class QuantumSave extends SavableData

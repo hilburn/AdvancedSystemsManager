@@ -13,6 +13,7 @@ import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.registry.ThemeHandler;
+import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.ModMetadata;
@@ -139,5 +140,11 @@ public class AdvancedSystemsManager
         event.registerServerCommand(ParentCommand.instance);
         File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");
         if (!file.exists()) file.mkdir();
+    }
+
+    @Mod.EventHandler
+    public void serverStop(FMLServerStoppingEvent event)
+    {
+        TileEntityQuantumCable.clearRegistry();
     }
 }

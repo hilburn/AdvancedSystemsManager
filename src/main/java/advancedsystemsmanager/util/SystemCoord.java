@@ -322,4 +322,9 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     {
         return types;
     }
+
+    public World getWorld()
+    {
+        return world;
+    }
 }

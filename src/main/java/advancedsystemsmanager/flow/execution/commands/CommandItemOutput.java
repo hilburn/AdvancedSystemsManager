@@ -104,7 +104,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                         for (int side : validSides)
                         {
                             int start = target.advancedDirections[side] ? target.getStart(side) : 0;
-                            int end = target.advancedDirections[side] ? target.getEnd(side) : inventory.getSizeInventory();
+                            int end = target.advancedDirections[side] ? target.getEnd(side) : inventory.getSizeInventory() - 1;
 
                             if (inventory instanceof ISidedInventory)
                             {
@@ -112,7 +112,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                                     slots.add(slot);
                             } else
                             {
-                                for (int slot = start; slot < end; slot++) slots.add(slot);
+                                for (int slot = start; slot <= end; slot++) slots.add(slot);
                             }
                         }
                         cachedSlots.put(inventory, slots);

@@ -23,6 +23,7 @@ import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
+import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyReceiver;
 import com.google.common.collect.HashMultimap;
@@ -369,12 +370,23 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                 {
                     visited.add(target);
 
+                    TileEntity te = target.getWorldTE();
+
                     if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.cable.isCable(target.getBlock(), target.getMetadata()))
                     {
                         queue.add(target);
+                        if (te instanceof TileEntityQuantumCable)
+                        {
+                            TileEntityQuantumCable pair = TileEntityQuantumCable.getPairedCable((TileEntityQuantumCable) te);
+                            if (pair != null)
+                            {
+                                SystemCoord paired = new SystemCoord(pair.xCoord, pair.yCoord, pair.zCoord, pair.getWorldObj(), target.getDepth() + 1, pair);
+                                queue.add(paired);
+                                visited.add(paired);
+                            }
+                        }
                     }
 
-                    TileEntity te = target.getWorldTE();
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
@@ -392,7 +404,6 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     }
                 }
             }
-
         }
 
         if (!firstInventoryUpdate)

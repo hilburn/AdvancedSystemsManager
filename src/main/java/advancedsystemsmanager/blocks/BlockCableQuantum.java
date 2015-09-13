@@ -5,6 +5,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import advancedsystemsmanager.util.SystemCoord;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,34 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
     }
 
     @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    {
+        super.onNeighborBlockChange(world, x, y, z, block);
+
+        BlockRegistry.cable.updateInventories(world, x, y, z);
+    }
+
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z)
+    {
+        super.onBlockAdded(world, x, y, z);
+
+        BlockRegistry.cable.updateInventories(world, x, y, z);
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+    {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (!world.isRemote && te instanceof TileEntityQuantumCable)
+        {
+            ((TileEntityQuantumCable) te).unloadPairing();
+        }
+        super.breakBlock(world, x, y, z, block, meta);
+        BlockRegistry.cable.updateInventories(world, x, y, z);
+    }
+
+    @Override
     public boolean isCable(int meta)
     {
         return true;
@@ -35,9 +64,10 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
     {
         super.onBlockPlacedBy(world, x, y, z, player, stack);
         TileEntity te = world.getTileEntity(x, y, z);
-        if (te != null && te instanceof TileEntityQuantumCable && stack.hasTagCompound())
+        if (!world.isRemote && te != null && te instanceof TileEntityQuantumCable && stack.hasTagCompound())
         {
-            ((TileEntityQuantumCable) te).setQuantumKey(stack.getTagCompound().getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY));
+            ((TileEntityQuantumCable) te).readContentFromNBT(stack.getTagCompound());
+            BlockRegistry.cable.updateInventories(world, x, y, z);
         }
     }
 
@@ -78,8 +108,11 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
             if (paired != null)
             {
                 SystemCoord pairedCoord = new SystemCoord(paired.xCoord, paired.yCoord, paired.zCoord, paired.getWorldObj(), coordinate.getDepth() + 1);
-                cables.add(pairedCoord);
-                visited.add(pairedCoord);
+                if (!visited.contains(pairedCoord))
+                {
+                    cables.add(pairedCoord);
+                    visited.add(pairedCoord);
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.compatibility.waila;
 
 import advancedsystemsmanager.blocks.BlockCableOutput;
+import advancedsystemsmanager.blocks.BlockCableQuantum;
 import advancedsystemsmanager.blocks.BlockCamouflageBase;
 import advancedsystemsmanager.compatibility.CompatBase;
 import advancedsystemsmanager.reference.Mods;
@@ -39,6 +40,7 @@ public class WailaCompat extends CompatBase
 
         registrar.registerBodyProvider(new ClusterDataProvider(), TileEntityCluster.class);
         registrar.registerBodyProvider(new RedstoneOutputDataProvider(), BlockCableOutput.class);
+        registrar.registerBodyProvider(new QuantumDataProvider(), BlockCableQuantum.class);
 
         registrar.registerStackProvider(new CamouflageDataProvider(), BlockCamouflageBase.class);
     }

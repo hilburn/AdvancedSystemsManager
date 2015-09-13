@@ -9,10 +9,7 @@ import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ConnectionSet;
 import advancedsystemsmanager.util.SystemCoord;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CommandVariable extends CommandBase
 {
@@ -33,15 +30,27 @@ public class CommandVariable extends CommandBase
     @Override
     public void execute(FlowComponent command, int connectionId, Executor executor)
     {
-        MenuVariable menuVariable = (MenuVariable)command.menus.get(0);
-        MenuVariableContainers menuVariableContainers = (MenuVariableContainers)command.menus.get(2);
+        MenuVariable menuVariable = (MenuVariable)command.getMenu(0);
+        MenuVariableContainers menuVariableContainers = (MenuVariableContainers)command.getMenu(2);
         Variable variable = command.getManager().getVariable(menuVariable.getSelectedVariable());
 
         if (variable.isValid())
         {
             if (menuVariable.isDeclaration())
             {
-                variable.setContainers(new ArrayList<Long>(menuVariableContainers.getSelectedInventories()));
+                variable.setContainers(new ArrayList<Long>());
+                for (Iterator<Long> itr =  menuVariableContainers.getSelectedInventories().iterator(); itr.hasNext();)
+                {
+                    long coord = itr.next();
+                    SystemCoord systemCoord = command.getManager().getInventory(coord);
+                    if (systemCoord != null && systemCoord.isOfAnyType(menuVariableContainers.getValidTypes()))
+                    {
+                        variable.add(coord);
+                    } else
+                    {
+                        itr.remove();
+                    }
+                }
             } else
             {
                 MenuVariable.VariableMode mode = menuVariable.getVariableMode();

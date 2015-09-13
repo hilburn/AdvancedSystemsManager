@@ -45,7 +45,7 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
                 if (target.activatedDirections[i])
                 {
                     int start = target.advancedDirections[i] ? target.getStart(i) : 0;
-                    int end = target.advancedDirections[i] ? target.getEnd(i) : maxSize;
+                    int end = target.advancedDirections[i] ? target.getEnd(i) : maxSize - 1;
 
                     int[] slots;
                     if (inventory instanceof ISidedInventory)
@@ -53,7 +53,7 @@ public class CommandItemCondition extends CommandCondition<ItemStack, MenuTarget
                         slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
                     } else
                     {
-                        slots = new int[end - start];
+                        slots = new int[end - start + 1];
                         for (int j = 0; j < slots.length; ) slots[j + start] = j++;
                     }
                     scanSlots(inventory, checkedSlots, slots, settings, start, end, found);

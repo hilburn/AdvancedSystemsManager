@@ -67,18 +67,16 @@ public class CommandItemInput extends CommandInput<ItemStack>
                     if (target.activatedDirections[i])
                     {
                         int start = target.advancedDirections[i] ? target.getStart(i) : 0;
-                        int end = target.advancedDirections[i] ? target.getEnd(i) : maxSize;
+                        int end = target.advancedDirections[i] ? target.getEnd(i) : maxSize - 1;
 
-                        int[] slots;
                         if (inventory instanceof ISidedInventory)
                         {
-                            slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(i);
+                            scanSlots(id, (ISidedInventory)inventory, checkedSlots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements, i);
                         } else
                         {
-                            slots = new int[end - start];
-                            for (int j = 0; j < slots.length; ) slots[j + start] = j++;
+                            scanRange(id, inventory, checkedSlots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements);
                         }
-                        scanSlots(id, inventory, checkedSlots, slots, validSettings, settings.isFirstRadioButtonSelected(), start, end, subElements, i);
+
                     }
                 }
             }
@@ -86,15 +84,31 @@ public class CommandItemInput extends CommandInput<ItemStack>
         return subElements;
     }
 
-    private void scanSlots(int id, IInventory inventory, List<Integer> checked, int[] toScan, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements, int side)
+    private void scanSlots(int id, ISidedInventory inventory, List<Integer> checked, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements, int side)
     {
-        for (int slot : toScan)
+        for (int slot : inventory.getAccessibleSlotsFromSide(side))
         {
             if (slot < start || checked.contains(slot)) continue;
             if (slot > end) return;
             ItemStack stack = inventory.getStackInSlot(slot);
-            if (stack == null) continue;
-            if (!(inventory instanceof ISidedInventory) || ((ISidedInventory)inventory).canExtractItem(slot, stack, side))
+            if (stack != null && inventory.canExtractItem(slot, stack, side))
+            {
+                Setting<ItemStack> setting = isValid(settings, stack);
+                if (isValidSetting(whitelist, setting))
+                    subElements.add(new ItemBufferElement(id, inventory, slot, setting, whitelist));
+                checked.add(slot);
+            }
+        }
+    }
+
+    private void scanRange(int id, IInventory inventory, List<Integer> checked, List<Setting<ItemStack>> settings, boolean whitelist, int start, int end, List<IBufferElement<ItemStack>> subElements)
+    {
+        for (int slot = start; slot <= end; slot++)
+        {
+            if (slot < start || checked.contains(slot)) continue;
+            if (slot > end) return;
+            ItemStack stack = inventory.getStackInSlot(slot);
+            if (stack != null)
             {
                 Setting<ItemStack> setting = isValid(settings, stack);
                 if (isValidSetting(whitelist, setting))

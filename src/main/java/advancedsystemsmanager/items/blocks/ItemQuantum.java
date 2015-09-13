@@ -35,7 +35,7 @@ public class ItemQuantum extends ItemBlock
 
         if (tag.hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
         {
-            list.add(LocalizationHelper.translateFormatted(Names.QUANTUM_PAIRING, tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY)));
+            list.add(LocalizationHelper.translateFormatted(Names.QUANTUM_PAIRING, TileEntityQuantumCable.getSpinString(tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY))));
         } else
         {
             list.add(TextColour.RED.toString() + LocalizationHelper.translate(Names.QUANTUM_UNPAIRED));
