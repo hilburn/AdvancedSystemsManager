@@ -1,12 +1,15 @@
 package advancedsystemsmanager.flow.elements;
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.TextColour;
 import advancedsystemsmanager.flow.menus.MenuListOrder;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ColourUtils;
+import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -15,9 +18,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Variable implements Comparable<Variable>, IContainerSelection
 {
@@ -283,5 +284,29 @@ public class Variable implements Comparable<Variable>, IContainerSelection
         if (hsv[2] < o.hsv[2])
             return 1;
         return 0;
+    }
+
+    public Collection<SystemCoord> getContainers(TileEntityManager manager, Set<ISystemType> types)
+    {
+        List<SystemCoord> result = new ArrayList<SystemCoord>();
+        for (long selected : containers)
+        {
+            if (selected >= 0)
+            {
+                SystemCoord coord = manager.getInventory(selected);
+                if (coord != null && coord.isValid() && coord.isOfAnyType(types))
+                {
+                    result.add(coord);
+                }
+            } else
+            {
+                Variable variable = manager.getVariable((int) selected);
+                if (variable != null)
+                {
+                    result.addAll(variable.getContainers(manager, types));
+                }
+            }
+        }
+        return result;
     }
 }

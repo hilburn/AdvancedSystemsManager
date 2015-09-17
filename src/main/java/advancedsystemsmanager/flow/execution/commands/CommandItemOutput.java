@@ -55,10 +55,9 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
             if (target.activatedDirections[i]) validSides.add(i);
         List<SystemCoord> blocks = getContainers(component.manager, (MenuContainer)component.menus.get(0));
         CommandRegistry.CONDITION.searchForStuff(blocks, validSettings, target, null);
-        for (Iterator<SystemCoord> blockItr = blocks.iterator(); blockItr.hasNext(); )
+        for (SystemCoord block : blocks)
         {
-            SystemCoord block = blockItr.next();
-            IInventory inventory = block.getTileEntity() instanceof IInternalInventory ? Null.NULL_INVENTORY : (IInventory)block.getTileEntity();
+            IInventory inventory = block.getTileEntity() instanceof IInternalInventory ? Null.NULL_INVENTORY : (IInventory) block.getTileEntity();
             Iterator<Map.Entry<Key<ItemStack>, IBufferElement<ItemStack>>> iterator = buffer.getOrderedIterator();
             while (iterator.hasNext())
             {
@@ -70,7 +69,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                 ItemStack itemStack = itemBufferElement.getContent();
                 if (block.getTileEntity() instanceof IInternalInventory)
                 {
-                    IInternalInventory internal = (IInternalInventory)block.getTileEntity();
+                    IInternalInventory internal = (IInternalInventory) block.getTileEntity();
                     int moveCount = Math.min(internal.getAmountToInsert(itemStack), itemStack.stackSize);
                     if (moveCount > 0)
                     {
@@ -108,7 +107,7 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
 
                             if (inventory instanceof ISidedInventory)
                             {
-                                for (int slot : ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side))
+                                for (int slot : ((ISidedInventory) inventory).getAccessibleSlotsFromSide(side))
                                     slots.add(slot);
                             } else
                             {
@@ -116,13 +115,14 @@ public class CommandItemOutput extends CommandOutput<ItemStack>
                             }
                         }
                         cachedSlots.put(inventory, slots);
+                    } else
+                    {
+                        slots = cachedSlots.get(inventory);
                     }
-                    slots = cachedSlots.get(inventory);
                     if (slots.isEmpty())
                     {
                         cachedSlots.remove(inventory);
-                        blockItr.remove();
-                        continue;
+                        break;
                     }
 
                     for (int slot : slots)

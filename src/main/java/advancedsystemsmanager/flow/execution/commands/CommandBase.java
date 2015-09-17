@@ -91,7 +91,7 @@ public abstract class CommandBase<Type> implements ICommand
                 Variable variable = manager.getVariable((int)selected);
                 if (variable != null)
                 {
-                    result.addAll(getContainers(manager, variable.getContainers(), types));
+                    result.addAll(variable.getContainers(manager, types));
                 } else
                 {
 //                    itr.remove();
