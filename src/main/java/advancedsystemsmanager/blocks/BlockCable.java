@@ -63,7 +63,7 @@ public class BlockCable extends BlockBase implements ICable
             {
                 SystemCoord target = new SystemCoord(element, direction);
 
-                if (!visited.contains(target))
+                if (target.isValid() && !visited.contains(target))
                 {
                     visited.add(target);
                     //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){

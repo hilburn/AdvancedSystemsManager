@@ -42,18 +42,6 @@ public class BlockCableQuantum extends BlockTileBase implements ICable
     }
 
     @Override
-    public void breakBlock(World world, int x, int y, int z, Block block, int meta)
-    {
-        TileEntity te = world.getTileEntity(x, y, z);
-        if (!world.isRemote && te instanceof TileEntityQuantumCable)
-        {
-            ((TileEntityQuantumCable) te).unloadPairing();
-        }
-        super.breakBlock(world, x, y, z, block, meta);
-        BlockRegistry.cable.updateInventories(world, x, y, z);
-    }
-
-    @Override
     public boolean isCable(int meta)
     {
         return true;

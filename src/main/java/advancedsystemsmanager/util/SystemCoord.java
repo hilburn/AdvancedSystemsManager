@@ -6,7 +6,6 @@ import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.client.gui.GuiManager;
-import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
@@ -64,7 +63,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     {
         this.key = ((long)dim & 0xFF) << 48 | ((long)x & 0xFFFFF) << 28 | (z & 0xFFFFF) << 8 | (y & 0xFF);
         if (tileEntity instanceof IClusterTile)
-            key |= ((long)ClusterRegistry.get((IClusterTile)tileEntity).getId() & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
+            key |= ((long)ClusterRegistry.getID((IClusterTile)tileEntity) & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
     }
 
     public SystemCoord(int x, int y, int z, World world)
@@ -210,7 +209,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public int getDistance(TileEntityManager manager)
     {
-        return (int)Math.round(Math.sqrt(manager.getDistanceFrom(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5)));
+        return (int)Math.round(Math.sqrt(manager.getDistanceFrom(x + 0.5d, y + 0.5d, z + 0.5d)));
     }
 
     @SideOnly(Side.CLIENT)
@@ -304,7 +303,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public TileEntity getTileEntity()
     {
-        return tileEntity;
+        return world.getTileEntity(x, y, z);
     }
 
     public int getComparatorOutput(int side)

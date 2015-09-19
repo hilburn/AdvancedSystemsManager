@@ -117,13 +117,15 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
             pair.pair = this;
             if (!worldObj.isRemote)
             {
+                BlockRegistry.cable.updateInventories(worldObj, xCoord, yCoord, zCoord);
+                quantumRegistry.remove(getQuantumKey());
                 sendUpdate |= 2;
                 pair.sendUpdate |= 2;
             }
         }
     }
 
-    public static boolean addCable(TileEntityQuantumCable cable)
+    public static void addCable(TileEntityQuantumCable cable)
     {
         if (quantumRegistry.containsKey(cable.getQuantumKey()))
         {
@@ -132,7 +134,6 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
         {
             quantumRegistry.put(cable.getQuantumKey(), cable);
         }
-        return true;
     }
 
     public void setQuantumKey(int key)
@@ -141,17 +142,41 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
         addCable(this);
     }
 
+    @Override
+    public void validate()
+    {
+        super.validate();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        unloadPairing();
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
+        unloadPairing();
+    }
+
     public void unloadPairing()
     {
         if (!worldObj.isRemote)
         {
-            quantumRegistry.remove(getQuantumKey());
             if (pair != null && !pair.isInvalid())
             {
                 pair.pair = null;
                 addCable(pair);
                 pair.sendUpdate |= 2;
+                BlockRegistry.cable.updateInventories(pair.worldObj, pair.xCoord, pair.yCoord, pair.zCoord);
+            }else
+            {
+                quantumRegistry.remove(getQuantumKey());
             }
+
         }
     }
 
@@ -249,7 +274,6 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
                 pair = null;
             }
         }
-        BlockRegistry.cable.updateInventories(worldObj, xCoord, yCoord, zCoord);
     }
 
     public static class QuantumSave extends SavableData

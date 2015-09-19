@@ -48,4 +48,10 @@ public class ClusterRegistry
     {
         return registry.get(id);
     }
+
+    public static int getID(IClusterTile tileEntity)
+    {
+        IClusterElement element = get(tileEntity);
+        return element == null? -1 : element.getId();
+    }
 }
