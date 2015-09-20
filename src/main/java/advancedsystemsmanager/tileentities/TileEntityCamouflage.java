@@ -237,16 +237,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    public int getId(int side)
-    {
-        return ids[side];
-    }
-
-    public int getMeta(int side)
-    {
-        return metas[side];
-    }
-
     @Override
     public void writeData(ASMPacket dw, int id)
     {
@@ -404,12 +394,12 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             side += ForgeDirection.VALID_DIRECTIONS.length;
         }
 
-        Block block = Block.getBlockById(ids[side]);
+        Block block = getSideBlock(side);
         if (block != null)
         {
             try
             {
-                IIcon icon = block.getIcon(side, metas[side]);
+                IIcon icon = block.getIcon(side, getSideMetadata(side));
                 if (icon != null)
                 {
                     return icon;
@@ -419,6 +409,16 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             }
         }
         return null;
+    }
+
+    public Block getSideBlock(int side)
+    {
+        return Block.getBlockById(ids[side]);
+    }
+
+    public int getSideMetadata(int side)
+    {
+        return metas[side];
     }
 
     public enum CamouflageType

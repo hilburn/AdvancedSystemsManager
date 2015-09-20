@@ -21,6 +21,7 @@ public class Mods
     public static final String BUILDCRAFT_SILICON = "BuildCraft|Factory";
     public static final String BUILDCRAFT_TRANSPORT = "BuildCraft|Transport";
     public static final String CHICKENCHUNKS = "ChickenChunks";
+    public static final String CHISEL = "chisel";
     public static final String CHROMATICRAFT = "ChromatiCraft";
     public static final String COMPUTERCRAFT = "ComputerCraft";
     public static final String COMPUTERCRAFT_TURTLE = "CCTurtle";

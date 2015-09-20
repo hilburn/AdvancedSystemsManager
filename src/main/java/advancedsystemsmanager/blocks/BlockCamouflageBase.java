@@ -1,9 +1,13 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.api.tileentities.IClusterTile;
+import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
+import com.cricketcraft.chisel.api.IFacade;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -12,7 +16,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEntityCamouflage>
+@Optional.Interface(iface = "com.cricketcraft.chisel.api.IFacade", modid = Mods.CHISEL)
+public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEntityCamouflage> implements IFacade
 {
     public static int RENDER_ID;
 
@@ -170,5 +175,35 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     public boolean isInstance(IClusterTile tile)
     {
         return tile instanceof TileEntityCamouflage;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.CHISEL)
+    public Block getFacade(IBlockAccess world, int x, int y, int z, int side)
+    {
+        if (side != -1)
+        {
+            TileEntityCamouflage camo = getTileEntity(world, x, y, z);
+            if (camo != null)
+            {
+                return camo.getSideBlock(side);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    @Optional.Method(modid = Mods.CHISEL)
+    public int getFacadeMetadata(IBlockAccess world, int x, int y, int z, int side)
+    {
+        if (side != -1)
+        {
+            TileEntityCamouflage camo = getTileEntity(world, x, y, z);
+            if (camo != null)
+            {
+                return camo.getSideMetadata(side);
+            }
+        }
+        return world.getBlockMetadata(x, y, z);
     }
 }

@@ -10,6 +10,7 @@ import mcp.mobius.waila.api.IWailaDataProvider;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -28,16 +29,11 @@ public class CamouflageDataProvider implements IWailaDataProvider
             TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null)
             {
-                int id = camouflage.getId(accessor.getPosition().sideHit);
-                int meta = camouflage.getMeta(accessor.getPosition().sideHit);
-
-                if (id != 0)
+                Block block = camouflage.getSideBlock(accessor.getPosition().sideHit);
+                int meta = camouflage.getSideMetadata(accessor.getPosition().sideHit);
+                if (block != null)
                 {
-                    Block block = Block.getBlockById(id);
-                    if (block != null)
-                    {
-                        return new ItemStack(block, 1, block.damageDropped(meta));
-                    }
+                    return new ItemStack(block, 1, block.damageDropped(meta));
                 }
             }
         }
