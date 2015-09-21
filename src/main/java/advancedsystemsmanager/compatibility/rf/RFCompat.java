@@ -62,7 +62,7 @@ public class RFCompat extends CompatBase
             @Override
             public boolean isInstance(TileEntityManager manager, TileEntity tileEntity)
             {
-                return tileEntity instanceof IEnergyProvider;
+                return tileEntity instanceof IEnergyProvider || tileEntity instanceof IEnergyReceiver;
             }
 
             @Override

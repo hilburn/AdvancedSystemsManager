@@ -353,7 +353,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         List<SystemCoord> visited = new ArrayList<SystemCoord>();
         network.clear();
         Queue<SystemCoord> queue = new PriorityQueue<SystemCoord>();
-        SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj, 0, this);
+        SystemCoord start = new SystemCoord(xCoord, yCoord, zCoord, worldObj, 0);
         queue.add(start);
         visited.add(start);
         addInventory(start);
@@ -380,7 +380,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                             TileEntityQuantumCable pair = TileEntityQuantumCable.getPairedCable((TileEntityQuantumCable) te);
                             if (pair != null)
                             {
-                                SystemCoord paired = new SystemCoord(pair.xCoord, pair.yCoord, pair.zCoord, pair.getWorldObj(), target.getDepth() + 1, pair);
+                                SystemCoord paired = new SystemCoord(pair.xCoord, pair.yCoord, pair.zCoord, pair.getWorldObj(), target.getDepth() + 1);
                                 queue.add(paired);
                                 visited.add(paired);
                             }
@@ -390,16 +390,15 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
-                        for (IClusterTile tileEntityClusterElement : ((TileEntityCluster)te).getTiles())
+                        for (TileEntityCluster.ClusterPair clusterPair : ((TileEntityCluster)te).getElementPairs())
                         {
-                            ((TileEntityCluster)te).setWorld(tileEntityClusterElement);
+                            ((TileEntityCluster)te).setWorld(clusterPair.tile);
                             SystemCoord coord = target.copy();
-                            coord.setTileEntity((TileEntity)tileEntityClusterElement);
+                            coord.setClusterType(clusterPair.element);
                             addInventory(coord);
                         }
                     } else
                     {
-                        target.setTileEntity(te);
                         addInventory(target);
                     }
                 }
@@ -410,7 +409,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         {
             for (SystemCoord oldCoordinate : oldCoordinates)
             {
-                if (oldCoordinate.getTileEntity() instanceof ISystemListener)
+                if (oldCoordinate.isValid() && oldCoordinate.getTileEntity() instanceof ISystemListener)
                 {
                     if (!network.containsKey(oldCoordinate.getId()))
                     {
@@ -473,13 +472,13 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     private void addInventory(SystemCoord target)
     {
         boolean isValidConnection = false;
-
+        TileEntity te = target.getTileEntity();
         target.resetTypes();
         for (ISystemType connectionBlockType : SystemTypeRegistry.getTypes())
         {
-            if (connectionBlockType.isInstance(this, target.getTileEntity()))
+            if (connectionBlockType.isInstance(this, te))
             {
-                if (target.getTileEntity() instanceof ISystemTypeFilter && !((ISystemTypeFilter)target.getTileEntity()).isOfType(connectionBlockType))
+                if (te instanceof ISystemTypeFilter && !((ISystemTypeFilter)te).isOfType(connectionBlockType))
                     continue;
                 isValidConnection = true;
                 target.addType(connectionBlockType);

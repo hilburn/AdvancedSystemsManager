@@ -42,7 +42,11 @@ public class WailaCompat extends CompatBase
         registrar.registerBodyProvider(new RedstoneOutputDataProvider(), BlockCableOutput.class);
         registrar.registerBodyProvider(new QuantumDataProvider(), BlockCableQuantum.class);
 
-        registrar.registerStackProvider(new CamouflageDataProvider(), BlockCamouflageBase.class);
+        CamouflageDataProvider provider = new CamouflageDataProvider();
+        registrar.registerStackProvider(provider, BlockCamouflageBase.class);
+        registrar.registerHeadProvider(provider, BlockCamouflageBase.class);
+        registrar.registerBodyProvider(provider, BlockCamouflageBase.class);
+        registrar.registerTailProvider(provider, BlockCamouflageBase.class);
     }
 
     @Override

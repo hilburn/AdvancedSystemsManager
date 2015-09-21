@@ -2,6 +2,7 @@ package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
+import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
@@ -34,7 +35,8 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     private int x, y, z, depth, dim;
     private long key;
     private Set<ISystemType> types;
-    private TileEntity tileEntity;
+//    private TileEntity tileEntity;
+    private IClusterElement elementType;
     private World world;
 
     public SystemCoord(SystemCoord coord, ForgeDirection dir)
@@ -44,17 +46,11 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public SystemCoord(int x, int y, int z, World world, int depth)
     {
-        this(x, y, z, world, depth, null);
-    }
-
-    public SystemCoord(int x, int y, int z, World world, int depth, TileEntity tileEntity)
-    {
         this.x = x;
         this.y = y;
         this.z = z;
         this.dim = world.provider.dimensionId;
         this.depth = depth;
-        this.tileEntity = tileEntity;
         this.world = world;
         setKey();
     }
@@ -62,8 +58,12 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     private void setKey()
     {
         this.key = ((long)dim & 0xFF) << 48 | ((long)x & 0xFFFFF) << 28 | (z & 0xFFFFF) << 8 | (y & 0xFF);
-        if (tileEntity instanceof IClusterTile)
-            key |= ((long)ClusterRegistry.getID((IClusterTile)tileEntity) & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
+        if (elementType != null)
+        {
+            key |= ((long)elementType.getId() & 0x7F) << 56;
+        }
+//        if (tileEntity instanceof IClusterTile)
+//            key |= ((long)ClusterRegistry.getID((IClusterTile)tileEntity) & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
     }
 
     public SystemCoord(int x, int y, int z, World world)
@@ -140,12 +140,13 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     @Override
     public void draw(GuiManager gui, int x, int y)
     {
-        gui.drawBlock(tileEntity, x, y);
+        gui.drawBlock(getTileEntity(), x, y);
     }
 
     @Override
     public String getDescription(GuiManager gui)
     {
+        TileEntity tileEntity = getTileEntity();
         String str = fixToolTip(gui.getBlockName(tileEntity), tileEntity);
 
         str += getVariableTag(gui);
@@ -177,7 +178,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     @Override
     public String getName(GuiManager gui)
     {
-        return gui.getBlockName(tileEntity);
+        return gui.getBlockName(getTileEntity());
     }
 
     @Override
@@ -220,11 +221,12 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public SystemCoord copy()
     {
-        return new SystemCoord(x, y, z, world, depth, tileEntity);
+        return new SystemCoord(x, y, z, world, depth);
     }
 
     public boolean containerAdvancedSearch(String search)
     {
+        TileEntity tileEntity = getTileEntity();
         String toSearch = getLabel(tileEntity);
         Pattern pattern = Pattern.compile(Pattern.quote(search), Pattern.CASE_INSENSITIVE);
         return (toSearch != null && pattern.matcher(toSearch).find()) || pattern.matcher(getContentString(tileEntity)).find();
@@ -303,7 +305,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
 
     public TileEntity getTileEntity()
     {
-        return world.getTileEntity(x, y, z);
+        return elementType != null? elementType.getTileEntity(world, x, y, z) : world.getTileEntity(x, y, z);
     }
 
     public int getComparatorOutput(int side)
@@ -311,9 +313,9 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         return world.blockExists(x, y, z)? world.getBlock(x, y, z).getComparatorInputOverride(world, x, y, z, side) : 0;
     }
 
-    public void setTileEntity(TileEntity tileEntity)
+    public void setClusterType(IClusterElement elementType)
     {
-        this.tileEntity = tileEntity;
+        this.elementType = elementType;
         setKey();
     }
 

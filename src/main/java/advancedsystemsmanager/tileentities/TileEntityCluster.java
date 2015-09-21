@@ -30,6 +30,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -64,6 +65,11 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         List<IClusterTile> result = new ArrayList<IClusterTile>();
         for (ClusterPair pair : pairs) result.add(pair.tile);
         return result;
+    }
+
+    public List<ClusterPair> getElementPairs()
+    {
+        return pairs;
     }
 
     public void loadElements(ItemStack itemStack)
@@ -393,21 +399,25 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
     @Override
     public void writeData(ASMPacket dw, int id)
     {
-        if (id == 0)
+        if (!worldObj.isRemote)
         {
-            if (camouflageObject != null)
+            if (id == 0)
             {
-                camouflageObject.writeData(dw, id);
-            }
-        } else
-        {
-            if (!worldObj.isRemote)
+                if (camouflageObject != null)
+                {
+                    camouflageObject.writeData(dw, id);
+                }
+            } else
             {
                 dw.writeByte(pairs.size());
                 for (ClusterPair pair : pairs)
                 {
                     dw.writeByte(pair.getId());
                     dw.writeByte(pair.getMeta());
+                }
+                if (camouflageObject != null)
+                {
+                    camouflageObject.writeData(dw, 0);
                 }
             }
         }
@@ -431,6 +441,10 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
                 for (int i = 0; i < length; i++)
                 {
                     addElement(packet.readByte(), packet.readByte());
+                }
+                if (camouflageObject != null)
+                {
+                    camouflageObject.readData(packet, 0);
                 }
             } else
             {
@@ -459,6 +473,12 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         return bytes;
     }
 
+    @Override
+    public Packet getDescriptionPacket()
+    {
+        return camouflageObject != null? camouflageObject.getDescriptionPacket() : super.getDescriptionPacket();
+    }
+
     public byte[] getDamages()
     {
         byte[] bytes = new byte[pairs.size()];
@@ -483,10 +503,15 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         return interfaceObject != null && interfaceObject.writeData(packet);
     }
 
-    private class ClusterPair
+    public boolean isHidden(int sideHit)
     {
-        IClusterElement element;
-        IClusterTile tile;
+        return camouflageObject != null && camouflageObject.hasSideBlock(sideHit);
+    }
+
+    public class ClusterPair
+    {
+        public IClusterElement element;
+        public IClusterTile tile;
 
         private ClusterPair(IClusterElement element, IClusterTile tile)
         {

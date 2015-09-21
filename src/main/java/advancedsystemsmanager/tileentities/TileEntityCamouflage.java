@@ -231,7 +231,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     private void validateSide(int i)
     {
-        if (ids[i] < 0 || ids[i] >= Block.blockRegistry.getKeys().size())
+        if (ids[i] < 0)
         {
             ids[i] = 0;
         }
@@ -419,6 +419,11 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     public int getSideMetadata(int side)
     {
         return metas[side];
+    }
+
+    public boolean hasSideBlock(int side)
+    {
+        return ids[side] != 0;
     }
 
     public enum CamouflageType

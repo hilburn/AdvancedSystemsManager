@@ -1,12 +1,12 @@
 package advancedsystemsmanager.compatibility.waila;
 
-
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cofh.api.energy.IEnergyProvider;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +27,7 @@ public class ClusterDataProvider implements IWailaDataProvider
     @Override
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor iWailaDataAccessor, IWailaConfigHandler iWailaConfigHandler)
     {
-        return null;
+        return list;
     }
 
     @Override
@@ -36,11 +36,14 @@ public class ClusterDataProvider implements IWailaDataProvider
         TileEntity te = iWailaDataAccessor.getTileEntity();
         if (((IEnergyProvider)te).getMaxEnergyStored(ForgeDirection.UNKNOWN) == -1)
             ((ITaggedList)list).removeEntries("RFEnergyStorage");
-        TileEntityCluster cluster = (TileEntityCluster)te;
+        TileEntityCluster cluster = (TileEntityCluster) te;
 
-        for (ItemStack stack : cluster.getStacks())
+        if (!cluster.isHidden(iWailaDataAccessor.getPosition().sideHit) || GuiScreen.isShiftKeyDown())
         {
-            list.add(stack.getDisplayName());
+            for (ItemStack stack : cluster.getStacks())
+            {
+                list.add(stack.getDisplayName());
+            }
         }
         return list;
     }

@@ -64,6 +64,7 @@ public abstract class BlockClusterElementBase<T extends TileEntity & IClusterTil
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public T getTileEntity(IBlockAccess world, int x, int y, int z)
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);

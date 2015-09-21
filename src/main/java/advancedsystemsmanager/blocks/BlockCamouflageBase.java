@@ -128,6 +128,21 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         }
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+    {
+//        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+//        if (camouflage != null)
+//        {
+//            if (camouflage.hasSideBlock(side))
+//            {
+//                return camouflage.getSideBlock(side).shouldSideBeRendered(world, x, y, z, side);
+//            }
+//        }
+        return super.shouldSideBeRendered(world, x, y, z, side);
+    }
+
     @Override
     public void setBlockBoundsForItemRender()
     {

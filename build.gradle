@@ -35,13 +35,13 @@ repositories {
         name "Waila Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
-    ivy {
-        name 'FMP'
-        artifactPattern "http://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
-    }
     maven { // OpenComputers
         name 'opencomputers'
         url "http://maven.cil.li"
+    }
+    maven { //chisel
+        name "Chisel Repo"
+        url "http://maven.tterrag.com"
     }
 
 }
@@ -52,7 +52,8 @@ dependencies {
     compile group: 'codechicken', name: 'CodeChickenLib', version: "${version_minecraft}-${version_cclib}", ext: 'jar', classifier: "dev"
     compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${opencomputers_version}-dev:dev"
     compile "mcp.mobius.waila:Waila:${waila_version}_${version_minecraft}:dev"
-    compile "codechicken:ForgeMultipart:${version_minecraft}-${fmp_version}:dev"
+    compile "team.chisel:Chisel:${version_chisel}:deobf"
+    compile "team.chisel.ctmlib:CTMLib:MC${version_minecraft}-${version_ctmlib}:deobf"
 
 	compile fileTree(dir: 'lib', include: '*.jar')
 }

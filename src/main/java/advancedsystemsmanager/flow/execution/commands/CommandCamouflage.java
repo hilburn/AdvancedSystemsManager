@@ -43,7 +43,7 @@ public class CommandCamouflage extends CommandBase
             MenuCamouflageItems items = (MenuCamouflageItems)command.getMenus().get(4);
             if (items.isFirstRadioButtonSelected() || items.getSettings().get(0).isValid())
             {
-                ItemStack itemStack = items.isFirstRadioButtonSelected() ? null : ((ItemSetting)items.getSettings().get(0)).getItem();
+                ItemStack itemStack = items.isFirstRadioButtonSelected() ? null : (items.getSettings().get(0)).getContent();
 
                 for (SystemCoord systemCoord : camouflageBlocks)
                 {

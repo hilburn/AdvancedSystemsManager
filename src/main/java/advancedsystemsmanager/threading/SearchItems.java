@@ -39,6 +39,8 @@ public class SearchItems implements Runnable
 
     public static void setItems()
     {
+        searchBlocks.clear();
+        searchEntries.clear();
         new Thread(new CacheItems()).start();
     }
 
