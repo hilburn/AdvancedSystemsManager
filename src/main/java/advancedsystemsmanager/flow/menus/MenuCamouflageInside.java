@@ -85,7 +85,7 @@ public class MenuCamouflageInside extends MenuCamouflageAdvanced
     {
         ONLY_OUTSIDE(Names.CAMOUFLAGE_ONLY_OUTSIDE),
         ONLY_INSIDE(Names.CAMOUFLAGE_ONLY_INSIDE),
-        OPPOSITE(Names.CAMOUFLAGE_OPPOSITE_INSIDE),
+//        OPPOSITE(Names.CAMOUFLAGE_OPPOSITE_INSIDE),
         SAME(Names.CAMOUFLAGE_SAME_INSIDE),
         NOTHING(Names.CAMOUFLAGE_NO_UPDATE);
 

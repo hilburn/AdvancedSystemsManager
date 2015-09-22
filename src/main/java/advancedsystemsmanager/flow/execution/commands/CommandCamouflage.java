@@ -27,7 +27,7 @@ public class CommandCamouflage extends CommandBase
         menus.add(new MenuContainer(component, SystemTypeRegistry.CAMOUFLAGE));
         menus.add(new MenuCamouflageShape(component));
         menus.add(new MenuCamouflageInside(component));
-        menus.add(new MenuCamouflageSides(component));
+//        menus.add(new MenuCamouflageSides(component));
         menus.add(new MenuCamouflageItems(component));
     }
 
@@ -39,8 +39,7 @@ public class CommandCamouflage extends CommandBase
         {
             MenuCamouflageShape shape = (MenuCamouflageShape)command.getMenus().get(1);
             MenuCamouflageInside inside = (MenuCamouflageInside)command.getMenus().get(2);
-            MenuCamouflageSides sides = (MenuCamouflageSides)command.getMenus().get(3);
-            MenuCamouflageItems items = (MenuCamouflageItems)command.getMenus().get(4);
+            MenuCamouflageItems items = (MenuCamouflageItems)command.getMenus().get(3);
             if (items.isFirstRadioButtonSelected() || items.getSettings().get(0).isValid())
             {
                 ItemStack itemStack = items.isFirstRadioButtonSelected() ? null : (items.getSettings().get(0)).getContent();
@@ -49,13 +48,13 @@ public class CommandCamouflage extends CommandBase
                 {
                     TileEntityCamouflage camouflage = (TileEntityCamouflage)systemCoord.getTileEntity();
                     camouflage.setBounds(shape);
-                    for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; ++i)
-                    {
-                        if (sides.isSideRequired(i))
-                        {
-                            camouflage.setItem(itemStack, i, inside.getCurrentType());
-                        }
-                    }
+//                    for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; ++i)
+//                    {
+//                        if (sides.isSideRequired(i))
+//                        {
+                            camouflage.setItem(itemStack, inside.getCurrentType());
+//                        }
+//                    }
                 }
             }
         }

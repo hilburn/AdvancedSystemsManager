@@ -35,7 +35,7 @@ public class CamouflageBlockAccess implements IBlockAccess
     @Override
     public TileEntity getTileEntity(int x, int y, int z)
     {
-        return null;
+        return wrapped.getTileEntity(x, y, z);
     }
 
     @Override

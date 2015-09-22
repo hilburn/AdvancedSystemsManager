@@ -38,7 +38,7 @@ public class ClusterDataProvider implements IWailaDataProvider
             ((ITaggedList)list).removeEntries("RFEnergyStorage");
         TileEntityCluster cluster = (TileEntityCluster) te;
 
-        if (!cluster.isHidden(iWailaDataAccessor.getPosition().sideHit) || GuiScreen.isShiftKeyDown())
+        if (!cluster.isHidden(0) || GuiScreen.isShiftKeyDown())
         {
             for (ItemStack stack : cluster.getStacks())
             {

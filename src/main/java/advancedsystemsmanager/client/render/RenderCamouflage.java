@@ -18,8 +18,6 @@ import org.lwjgl.opengl.GL11;
 public class RenderCamouflage implements ISimpleBlockRenderingHandler
 {
     private int id;
-    private static double THICKNESS = 0.0015d;
-    private static final RenderCamouflageBlocks CAMO_RENDER = new RenderCamouflageBlocks();
 
     public RenderCamouflage()
     {
@@ -82,66 +80,35 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
                 double minZ = block.getBlockBoundsMinZ();
 
                 IBlockAccess renderWorld = renderer.blockAccess;
-//                renderer.renderAllFaces=true;
-                for (int i = 0; i< 6; i++)
+//                for (int i = 0; i< 6; i++)
+                int i = 0;
                 {
-//                    ForgeDirection dir = ForgeDirection.getOrientation(i);
-//                    if (block.shouldSideBeRendered(renderWorld, x, y, z, i))
-//                    {
-                        if (camouflage.hasSideBlock(i))
-                        {
-                            setBlockBounds(CAMO_RENDER, minX, minY, minZ, maxX, maxY, maxZ, i);
-                            CAMO_RENDER.copyFrom(renderer);
-                            CAMO_RENDER.setBlockAccess(new CamouflageBlockAccess(i, camouflage, renderWorld));
-                            CAMO_RENDER.renderBlockByRenderType(camouflage.getSideBlock(i), x, y, z);
-                        } else
-                        {
-                            setBlockBounds(renderer, minX, minY, minZ, maxX, maxY, maxZ, i);
-                            renderer.renderStandardBlock(block, x, y, z);
-                        }
-//                    }
+                    setBlockBounds(renderer, minX, minY, minZ, maxX, maxY, maxZ, i);
+                    if (camouflage.hasSideBlock(i))
+                    {
+                        renderer.blockAccess = new CamouflageBlockAccess(i, camouflage, renderWorld);
+                        renderer.renderBlockByRenderType(camouflage.getSideBlock(i), x, y, z);
+                    } else
+                    {
+                        renderer.renderStandardBlock(block, x, y, z);
+                    }
                 }
-//                renderer.renderAllFaces = false;
-                renderer.unlockBlockBounds();
 
-//                if (camouflage.getCamouflageType().useDoubleRendering())
-//                {
-//                    BlockCamouflageBase camoBlock = (BlockCamouflageBase) block;
-//
-//                    float maxX = (float) block.getBlockBoundsMaxX();
-//                    float maxY = (float) block.getBlockBoundsMaxY();
-//                    float maxZ = (float) block.getBlockBoundsMaxZ();
-//                    float minX = (float) block.getBlockBoundsMinX();
-//                    float minY = (float) block.getBlockBoundsMinY();
-//                    float minZ = (float) block.getBlockBoundsMinZ();
-//
-//                    float f = 0.0015F;
-//                    float f2 = 0.002F;
-//                    block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceYNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 1, true));
-//
-//                    block.setBlockBounds(maxX + f2, maxY - f, maxZ + f2, minX - f2, minY + f, minZ - f2);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceYPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 0, true));
-//
-//                    block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceZNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 3, true));
-//
-//                    block.setBlockBounds(maxX + f2, maxY + f2, maxZ - f, minX - f2, minY - f2, minZ + f);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceZPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 2, true));
-//
-//                    block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceXNeg(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 5, true));
-//
-//                    block.setBlockBounds(maxX - f, maxY + f2, maxZ + f2, minX + f, minY - f2, minZ - f2);
-//                    renderer.setRenderBoundsFromBlock(block);
-//                    renderer.renderFaceXPos(block, x, y, z, camouflage.getIconWithDefault(world, x, y, z, camoBlock, 4, true));
-//
-//                }
+
+                if (camouflage.getCamouflageType().useDoubleRendering())
+                {
+                    setBlockBounds(renderer, minX + 0.0015D, minY + 0.0015D, minZ + 0.0015D, maxX - 0.0015D, maxY - 0.0015D, maxZ - 0.0015D, i);
+                    if (camouflage.hasSideBlock(1))
+                    {
+                        if (renderer.blockAccess == renderWorld)
+                        {
+                            renderer.blockAccess = new CamouflageBlockAccess(1, camouflage, renderWorld);
+                        }
+                        renderer.renderBlockByRenderType(camouflage.getSideBlock(1), x, y, z);
+                    }
+                }
+                renderer.unlockBlockBounds();
+                renderer.blockAccess = renderWorld;
             } else
             {
                 block.setBlockBoundsBasedOnState(world, x, y, z);
@@ -156,27 +123,7 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
 
     private static void setBlockBounds(RenderBlocks renderer, double minX, double minY, double minZ, double maxX, double maxY, double maxZ, int side)
     {
-        switch (side)
-        {
-            case 0:
-                renderer.overrideBlockBounds(minX, minY, minZ, maxX, minY+THICKNESS, maxZ);
-                break;
-            case 1:
-                renderer.overrideBlockBounds(minX, maxY-THICKNESS, minZ, maxX, maxY, maxZ);
-                break;
-            case 2:
-                renderer.overrideBlockBounds(minX, minY, minZ, maxX, maxY, minZ + THICKNESS);
-                break;
-            case 3:
-                renderer.overrideBlockBounds(minX, minY, maxZ - THICKNESS, maxX, maxY, maxZ);
-                break;
-            case 4:
-                renderer.overrideBlockBounds(minX, minY, minZ, minX + THICKNESS, maxY, maxZ);
-                break;
-            case 5:
-                renderer.overrideBlockBounds(maxX - THICKNESS, minY, minZ, maxX, maxY, maxZ);
-                break;
-        }
+        renderer.overrideBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Override

@@ -68,7 +68,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         TileEntityCamouflage te = getTileEntity(world, x, y, z);
         if (te != null)
         {
-            IIcon icon = te.getIconWithDefault(world, x, y, z, this, side, false);
+            IIcon icon = te.getIconWithDefault(world, x, y, z, this, side);
 
             if (icon != null)
             {
@@ -199,9 +199,9 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         if (side != -1)
         {
             TileEntityCamouflage camo = getTileEntity(world, x, y, z);
-            if (camo != null)
+            if (camo != null && camo.hasSideBlock(0))
             {
-                return camo.getSideBlock(side);
+                return camo.getSideBlock(0);
             }
         }
         return this;
@@ -214,9 +214,9 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         if (side != -1)
         {
             TileEntityCamouflage camo = getTileEntity(world, x, y, z);
-            if (camo != null)
+            if (camo != null && camo.hasSideBlock(0))
             {
-                return camo.getSideMetadata(side);
+                return camo.getSideMetadata(0);
             }
         }
         return world.getBlockMetadata(x, y, z);
