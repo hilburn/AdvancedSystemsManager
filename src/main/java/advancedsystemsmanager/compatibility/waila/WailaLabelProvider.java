@@ -1,6 +1,5 @@
 package advancedsystemsmanager.compatibility.waila;
 
-import advancedsystemsmanager.naming.BlockCoord;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;

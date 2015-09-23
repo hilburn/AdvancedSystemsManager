@@ -80,7 +80,6 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
                 double minX = block.getBlockBoundsMinX();
                 double minY = block.getBlockBoundsMinY();
                 double minZ = block.getBlockBoundsMinZ();
-//                renderer.renderStandardBlock(block, x, y, z);
 
                 IBlockAccess renderWorld = renderer.blockAccess;
 //                renderer.renderAllFaces=true;

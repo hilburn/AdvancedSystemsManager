@@ -111,13 +111,13 @@ public class ItemRemoteAccessor extends ItemBase
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
-        if (player.isSneaking())
+        if (!world.isRemote && player.isSneaking())
         {
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof TileEntityManager)
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();
-                tagCompound.setByte(WORLD, (byte)world.provider.dimensionId);
+                tagCompound.setByte(WORLD, (byte) world.provider.dimensionId);
                 tagCompound.setInteger(X, te.xCoord);
                 tagCompound.setInteger(Y, te.yCoord);
                 tagCompound.setInteger(Z, te.zCoord);
@@ -126,7 +126,7 @@ public class ItemRemoteAccessor extends ItemBase
             {
                 stack.setTagCompound(null);
             }
-            return !world.isRemote;
+            return true;
         }
         return false;
     }

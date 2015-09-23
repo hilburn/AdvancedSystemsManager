@@ -12,19 +12,43 @@ import mcp.mobius.waila.api.impl.ModuleRegistrar;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CamouflageDataProvider implements IWailaDataProvider
 {
+    private List<IWailaDataProvider> cachedHeadProviders;
+    private List<IWailaDataProvider> cachedBodyProviders;
+    private List<IWailaDataProvider> cachedTailProviders;
+
+    public void setCachedProviders()
+    {
+        cachedHeadProviders = new ArrayList<IWailaDataProvider>();
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(BlockRegistry.cableCamouflage).values()){
+            cachedHeadProviders.addAll(providersList);
+        }
+        cachedBodyProviders = new ArrayList<IWailaDataProvider>();
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(BlockRegistry.cableCamouflage).values()){
+            cachedBodyProviders.addAll(providersList);
+        }
+        cachedTailProviders = new ArrayList<IWailaDataProvider>();
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(BlockRegistry.cableCamouflage).values()){
+            cachedTailProviders.addAll(providersList);
+        }
+    }
+
     @Override
     public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
+        if (cachedBodyProviders == null)
+        {
+            setCachedProviders();
+        }
         TileEntity te = accessor.getTileEntity();
         if (te != null && !isShiftDown())
         {
@@ -51,6 +75,26 @@ public class CamouflageDataProvider implements IWailaDataProvider
     @Override
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
+        TileEntity te = accessor.getTileEntity();
+        if (accessor instanceof DataAccessorCommon && te != null && !isShiftDown())
+        {
+            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            if (camouflage != null && camouflage.hasSideBlock(accessor.getPosition().sideHit))
+            {
+                ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(accessor.getPosition().sideHit);
+                ((DataAccessorCommon) accessor).metadata = camouflage.getSideMetadata(accessor.getPosition().sideHit);
+                for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(accessor.getBlock()).values())
+                {
+                    for(IWailaDataProvider provider : providersList)
+                    {
+                        if (!cachedHeadProviders.contains(provider))
+                        {
+                            provider.getWailaBody(itemStack, list, accessor, iWailaConfigHandler);
+                        }
+                    }
+                }
+            }
+        }
         return list;
     }
 
@@ -65,10 +109,14 @@ public class CamouflageDataProvider implements IWailaDataProvider
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(accessor.getPosition().sideHit);
                 ((DataAccessorCommon) accessor).metadata = camouflage.getSideMetadata(accessor.getPosition().sideHit);
-                for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(accessor.getBlock()).values()){
+                for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(accessor.getBlock()).values())
+                {
                     for(IWailaDataProvider provider : providersList)
                     {
-                        provider.getWailaBody(itemStack, list, accessor, iWailaConfigHandler);
+                        if (!cachedBodyProviders.contains(provider))
+                        {
+                            provider.getWailaBody(itemStack, list, accessor, iWailaConfigHandler);
+                        }
                     }
                 }
             }
@@ -87,10 +135,14 @@ public class CamouflageDataProvider implements IWailaDataProvider
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(accessor.getPosition().sideHit);
                 ((DataAccessorCommon) accessor).metadata = camouflage.getSideMetadata(accessor.getPosition().sideHit);
-                for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(accessor.getBlock()).values()){
+                for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(accessor.getBlock()).values())
+                {
                     for(IWailaDataProvider provider : providersList)
                     {
-                        provider.getWailaTail(itemStack, list, accessor, iWailaConfigHandler);
+                        if (!cachedTailProviders.contains(provider))
+                        {
+                            provider.getWailaTail(itemStack, list, accessor, iWailaConfigHandler);
+                        }
                     }
                 }
             }
