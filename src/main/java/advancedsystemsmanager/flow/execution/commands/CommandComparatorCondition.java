@@ -33,12 +33,12 @@ public class CommandComparatorCondition extends CommandBase
     public List<Connection> getActiveChildren(FlowComponent command, int connectionId)
     {
         List<Connection> connections = new ArrayList<Connection>();
-        int connection = isTriggerPowered(command, true) ? 1 : 2;
+        int connection = isTriggerPowered(command) ? 1 : 2;
         if (command.getConnection(connection) != null) connections.add(command.getConnection(connection));
         return connections;
     }
 
-    private boolean isTriggerPowered(FlowComponent command, boolean high)
+    private boolean isTriggerPowered(FlowComponent command)
     {
         List<SystemCoord> blocks = getContainers(command.getManager(), (MenuContainer)command.getMenus().get(0));
         MenuContainer menuContainer = (MenuContainer)command.getMenus().get(0);
@@ -53,7 +53,7 @@ public class CommandComparatorCondition extends CommandBase
                 }
             }
 
-            return TileEntityManager.redstoneCondition.isTriggerPowered(command, currentPower, high);
+            return TileEntityManager.redstoneCondition.isTriggerPowered(command, currentPower, true);
         } else
         {
             boolean requiresAll = (menuContainer.getOption() == 1);
@@ -65,7 +65,7 @@ public class CommandComparatorCondition extends CommandBase
                     currentPower[i] = Math.min(15, currentPower[i] + block.getComparatorOutput(i));
                 }
 
-                if (TileEntityManager.redstoneCondition.isTriggerPowered(command, currentPower, high))
+                if (TileEntityManager.redstoneCondition.isTriggerPowered(command, currentPower, true))
                 {
                     if (!requiresAll)
                     {

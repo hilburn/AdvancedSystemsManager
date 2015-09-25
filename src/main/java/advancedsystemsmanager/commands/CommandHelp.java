@@ -48,10 +48,10 @@ public class CommandHelp implements ISubCommand
 
                 for (int i = 0; i < commands.size() - 1; i++)
                 {
-                    output.append("/asm " + YELLOW + commands.get(i) + WHITE + ", ");
+                    output.append("/asm " + YELLOW).append(commands.get(i)).append(WHITE).append(", ");
                 }
                 output.delete(output.length() - 2, output.length());
-                output.append(" and /asm " + YELLOW + commands.get(commands.size() - 1) + WHITE + ".");
+                output.append(" and /asm " + YELLOW).append(commands.get(commands.size() - 1)).append(WHITE).append(".");
                 sender.addChatMessage(new ChatComponentText(output.toString()));
                 break;
             case 2:

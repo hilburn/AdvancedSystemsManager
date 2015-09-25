@@ -250,7 +250,7 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
     {
         //TileEntityClusterElement element = addElement(registry);
         ClusterPair pair = addElement(element, (byte)damage);
-        if (element == null) return false;
+        if (pair == null || element == null) return false;
         if (pair.tile.getRegistrations().contains(ClusterMethodRegistration.ON_BLOCK_PLACED_BY))
         {
             element.getBlock().onBlockPlacedBy(worldObj, xCoord, yCoord, zCoord, player, element.getItemStack(damage));
@@ -350,7 +350,8 @@ public class TileEntityCluster extends TileEntity implements ITileInterfaceProvi
         {
             NBTTagCompound sub = subList.getCompoundTagAt(i);
             ClusterPair pair = addElement(sub.getByte(NBT_SUB_BLOCK_ID), sub.getByte(NBT_SUB_BLOCK_META));
-            pair.tile.readContentFromNBT(sub);
+            if (pair != null)
+                pair.tile.readContentFromNBT(sub);
         }
     }
 

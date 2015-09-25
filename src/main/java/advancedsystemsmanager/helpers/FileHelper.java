@@ -54,7 +54,7 @@ public class FileHelper
 
         if (dataFile.isFile())
         {
-            InputStream stream = null;
+            InputStream stream;
             try
             {
                 stream = new FileInputStream(dataFile);

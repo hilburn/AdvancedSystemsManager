@@ -11,7 +11,6 @@ import advancedsystemsmanager.flow.execution.commands.CommandInput;
 import advancedsystemsmanager.flow.menus.*;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraft.tileentity.TileEntity;
 import thaumcraft.api.aspects.Aspect;

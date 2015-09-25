@@ -26,7 +26,7 @@ public class ASMPacket extends PacketBuffer
 
     public ASMPacket()
     {
-        super(Unpooled.buffer(10));
+        this(10);
     }
 
     public ASMPacket(int size)

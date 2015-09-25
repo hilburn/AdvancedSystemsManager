@@ -151,15 +151,15 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
     @Override
     public void invalidate()
     {
-        super.invalidate();
         unloadPairing();
+        super.invalidate();
     }
 
     @Override
     public void onChunkUnload()
     {
-        super.onChunkUnload();
         unloadPairing();
+        super.onChunkUnload();
     }
 
     public void unloadPairing()

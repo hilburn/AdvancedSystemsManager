@@ -57,7 +57,7 @@ public class VersionHelper
         try
         {
             if (Integer.valueOf(string) >= val) return true;
-        } catch (Exception e)
+        } catch (Exception ignored)
         {
         }
         return false;

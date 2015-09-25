@@ -53,7 +53,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
             setCachedProviders();
         }
         TileEntity te = accessor.getTileEntity();
-        if (te != null && !isShiftDown())
+        if (te != null && isShiftNotDown())
         {
             TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
@@ -70,16 +70,16 @@ public class CamouflageDataProvider implements IWailaDataProvider
     }
 
     @SideOnly(Side.CLIENT)
-    private boolean isShiftDown()
+    private boolean isShiftNotDown()
     {
-        return GuiScreen.isShiftKeyDown();
+        return !GuiScreen.isShiftKeyDown();
     }
 
     @Override
     public List<String> getWailaHead(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
         TileEntity te = accessor.getTileEntity();
-        if (accessor instanceof DataAccessorCommon && te != null && !isShiftDown())
+        if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
             TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
@@ -105,7 +105,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
     public List<String> getWailaBody(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
         TileEntity te = accessor.getTileEntity();
-        if (accessor instanceof DataAccessorCommon && te != null && !isShiftDown())
+        if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
             TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
@@ -131,7 +131,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
     public List<String> getWailaTail(ItemStack itemStack, List<String> list, IWailaDataAccessor accessor, IWailaConfigHandler iWailaConfigHandler)
     {
         TileEntity te = accessor.getTileEntity();
-        if (accessor instanceof DataAccessorCommon && te != null && !isShiftDown())
+        if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
             TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))

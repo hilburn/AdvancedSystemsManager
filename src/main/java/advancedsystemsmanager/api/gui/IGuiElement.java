@@ -3,7 +3,6 @@ package advancedsystemsmanager.api.gui;
 import advancedsystemsmanager.client.gui.GuiManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiScreen;
 
 public interface IGuiElement
 {

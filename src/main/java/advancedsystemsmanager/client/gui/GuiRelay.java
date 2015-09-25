@@ -473,7 +473,7 @@ public class GuiRelay extends GuiBase
             int start = getStartId();
             for (int i = start; i <= getEndId(); i++)
             {
-                UserPermission permission = relay.getPermissions().get(i);
+//                UserPermission permission = relay.getPermissions().get(i);
 
                 int x = LIST_POS_X;
                 int y = LIST_POS_Y + (i - start) * LIST_MENU_HEIGHT;

@@ -3,14 +3,12 @@ package advancedsystemsmanager.util;
 import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.api.tileentities.IClusterElement;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Null;
-import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,6 +23,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -126,7 +125,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     }
 
     @Override
-    public int compareTo(SystemCoord o)
+    public int compareTo(@Nonnull SystemCoord o)
     {
         return depth == o.depth ? x == o.x && y == o.y && z == o.z ? Integer.compare(dim, o.dim) : Long.compare(key, o.key) : depth < o.depth ? -1 : 1;
     }

@@ -121,14 +121,6 @@ public class ThemeHandler
         return result;
     }
 
-    public JsonObject toJson(Theme theme)
-    {
-        String test = getGson().toJson(theme);
-        Theme back = getGson().fromJson(test, Theme.class);
-
-        return null;
-    }
-
     public static Gson getGson()
     {
         GsonBuilder builder = new GsonBuilder();
