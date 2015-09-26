@@ -3,9 +3,11 @@ package advancedsystemsmanager.tileentities;
 import advancedsystemsmanager.api.tileentities.IRedstoneReceiver;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
+import advancedsystemsmanager.api.tiletypes.IBUDListener;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode
+public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode, IBUDListener
 {
     private static final String NBT_SIDES = "Sides";
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();
@@ -38,19 +40,22 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     public void triggerRedstone()
     {
         isPowered = new int[isPowered.length];
+        boolean change = false;
         for (int i = 0; i < isPowered.length; i++)
         {
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[i];
             isPowered[i] = worldObj.getIndirectPowerLevelTo(direction.offsetX + this.xCoord, direction.offsetY + this.yCoord, direction.offsetZ + this.zCoord, direction.ordinal());
+            if (isPowered[i] == oldPowered[i]) change = true;
         }
 
-        for (int i = managerList.size() - 1; i >= 0; i--)
+        if (change)
         {
-            managerList.get(i).triggerRedstone(this);
+            for (int i = managerList.size() - 1; i >= 0; i--)
+            {
+                managerList.get(i).triggerRedstone(this);
+            }
+            oldPowered = isPowered;
         }
-
-
-        oldPowered = isPowered;
     }
 
     @Override
@@ -60,14 +65,15 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    public void writeContentToNBT(NBTTagCompound tag)
     {
+        super.writeContentToNBT(tag);
         byte[] sides = new byte[isPowered.length];
         for (int i = 0; i < sides.length; i++)
         {
             sides[i] = (byte)isPowered[i];
         }
-        nbtTagCompound.setByteArray(NBT_SIDES, sides);
+        tag.setByteArray(NBT_SIDES, sides);
     }
 
     @Override
@@ -84,12 +90,6 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED, ClusterMethodRegistration.ON_BLOCK_ADDED);
-    }
-
-    @Override
     public int[] getData()
     {
         return isPowered;
@@ -99,5 +99,11 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     public int[] getOldData()
     {
         return oldPowered;
+    }
+
+    @Override
+    public void onNeighborBlockChange()
+    {
+        triggerRedstone();
     }
 }

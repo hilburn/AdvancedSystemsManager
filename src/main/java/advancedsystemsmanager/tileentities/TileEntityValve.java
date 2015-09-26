@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.entity.item.EntityItem;
@@ -7,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -15,9 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class TileEntityValve extends TileEntityClusterElement implements IInventory
+public class TileEntityValve extends TileEntityElementRotation implements IInventory
 {
-
     private static final int DISTANCE = 3;
     private List<EntityItem> items;
 
@@ -83,7 +84,7 @@ public class TileEntityValve extends TileEntityClusterElement implements IInvent
         {
             if (itemstack != null)
             {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.cableValve.getSideMeta(getMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+                ForgeDirection direction = getFacing();
 
                 double posX = xCoord + 0.5 + direction.offsetX * 0.75;
                 double posY = yCoord + 0.5 + direction.offsetY * 0.75;
@@ -128,7 +129,7 @@ public class TileEntityValve extends TileEntityClusterElement implements IInvent
     @Override
     public String getInventoryName()
     {
-        return BlockRegistry.cableValve.getLocalizedName();
+        return StatCollector.translateToLocal((subtype == 1 ? TileFactories.VALVE_ADVANCED : TileFactories.VALVE).getUnlocalizedName());
     }
 
     @Override
@@ -197,18 +198,12 @@ public class TileEntityValve extends TileEntityClusterElement implements IInvent
 
     private boolean canPickUp(EntityItem item)
     {
-        return !item.isDead && (item.delayBeforeCanPickup == 0 || BlockRegistry.cableValve.isAdvanced(getMetadata()));
+        return !item.isDead && (item.delayBeforeCanPickup == 0 || subtype == 1);
     }
 
     @Override
     public void updateEntity()
     {
         items = null;
-    }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
     }
 }

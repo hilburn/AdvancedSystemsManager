@@ -219,7 +219,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     {
         if (worldObj.getBlock(x, y, z) != BlockRegistry.cable && (x != xCoord || y != yCoord || z != zCoord))
         {
-            worldObj.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.cableOutput);
+            worldObj.notifyBlockOfNeighborChange(x, y, z, getBlockType());
 
             if (spread)
             {
@@ -287,12 +287,6 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
                 timers.add(new PulseTimer(pulseTag.getByte(NBT_STRENGTH), pulseTag.getBoolean(NBT_STRONG), pulseTag.getShort(NBT_TICK)));
             }
         }
-    }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CAN_CONNECT_REDSTONE, ClusterMethodRegistration.SHOULD_CHECK_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_WEAK_POWER, ClusterMethodRegistration.IS_PROVIDING_STRONG_POWER);
     }
 
     @Override

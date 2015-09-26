@@ -76,7 +76,8 @@ public class QuantumCraftingRecipe implements IRecipe
         {
             return null;
         }
-        ItemStack result = new ItemStack(BlockRegistry.cableQuantum, 2);
+//        ItemStack result = new ItemStack(BlockRegistry.cableQuantum, 2);
+        ItemStack result = new ItemStack(BlockRegistry.cable, 2);
         NBTTagCompound tagCompound = new NBTTagCompound();
         tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, quantumRange);
         result.setTagCompound(tagCompound);
@@ -92,6 +93,6 @@ public class QuantumCraftingRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return new ItemStack(BlockRegistry.cableQuantum);
+        return new ItemStack(BlockRegistry.cable);
     }
 }

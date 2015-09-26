@@ -5,10 +5,12 @@ import advancedsystemsmanager.api.tileentities.IRedstoneNode;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.commands.CommandBase;
+import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSides;
 import advancedsystemsmanager.flow.menus.MenuRedstoneSidesTrigger;
 import advancedsystemsmanager.registry.ConnectionOption;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemCoord;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -30,6 +32,11 @@ public abstract class TriggerHelper
         this.containerId = containerId;
         this.sidesId = sidesId;
         this.blockType = blockType;
+    }
+
+    protected List<SystemCoord> getContainers(TileEntityManager manager, MenuContainer menu)
+    {
+        return CommandBase.getContainers(manager, menu);
     }
 
     public abstract void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid);
@@ -92,7 +99,7 @@ public abstract class TriggerHelper
 
     public boolean isSpecialPulseReceived(FlowComponent component, boolean high)
     {
-        List<SlotInventoryHolder> containers = CommandExecutor.getContainers(component.getManager(), component.getMenus().get(containerId), blockType);
+        List<SystemCoord> containers = getContainers(component.getManager(), (MenuContainer)component.getMenus().get(containerId));
 
         if (containers != null)
         {
@@ -101,10 +108,9 @@ public abstract class TriggerHelper
             boolean requiresAll = componentMenuContainer.getOption() == 0;
             boolean foundPulse = false;
 
-            for (SlotInventoryHolder container : containers)
+            for (SystemCoord container : containers)
             {
-                ITriggerNode input = container.getTrigger();
-
+                ITriggerNode input = (ITriggerNode)container.getTileEntity();
 
                 boolean flag;
 

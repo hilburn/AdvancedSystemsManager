@@ -1,5 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
+import advancedsystemsmanager.api.tiletypes.IBUDListener;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;
@@ -12,7 +13,7 @@ import net.minecraftforge.fluids.*;
 
 import java.util.EnumSet;
 
-public class TileEntityFluidGate extends TileEntityClusterElement implements IFluidHandler
+public class TileEntityFluidGate extends TileEntityElementRotation implements IFluidHandler, IBUDListener
 {
     protected FluidStack tank;
     protected FluidStack cachedStack;
@@ -78,7 +79,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        ForgeDirection direction = getDirection();
+        ForgeDirection direction = getFacing();
         boolean validFluid = fluid != null && fluid.canBePlacedInWorld() && fluid.getBlock() != null && fluid.getBlock().canPlaceBlockAt(worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
         return !isBlocked() && validFluid && (tank == null || tank.getFluid() == fluid);
     }
@@ -106,7 +107,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
 
     private FluidStack drainBlock(boolean doDrain)
     {
-        ForgeDirection direction = getDirection();
+        ForgeDirection direction = getFacing();
         Block block = worldObj.getBlock(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
         return drainBlock(block, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, doDrain);
     }
@@ -165,15 +166,10 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
         if (tank != null && tank.amount == FluidContainerRegistry.BUCKET_VOLUME)
         {
             Fluid fluid = tank.getFluid();
-            ForgeDirection direction = getDirection();
+            ForgeDirection direction = getFacing();
             if (fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, false) == FluidContainerRegistry.BUCKET_VOLUME)
                 fillBlock(fluid, worldObj, xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ, true);
         }
-    }
-
-    public ForgeDirection getDirection()
-    {
-        return ForgeDirection.getOrientation(getMetadata());
     }
 
     public int fillBlock(Fluid fluid, World world, int x, int y, int z, boolean doFill)
@@ -188,7 +184,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
                 if (doFill)
                 {
                     world.setBlock(x, y, z, block);
-                    world.notifyBlockOfNeighborChange(x, y, z, BlockRegistry.cableFluidGate);
+                    world.notifyBlockOfNeighborChange(x, y, z, getBlockType());
                     tank = null;
                 }
                 return FluidContainerRegistry.BUCKET_VOLUME;
@@ -210,12 +206,7 @@ public class TileEntityFluidGate extends TileEntityClusterElement implements IFl
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
-    }
-
-    public void onNeighbourBlockChange()
+    public void onNeighborBlockChange()
     {
         drainBlock(false);
         if (!isBlocked()) tryPlaceFluid();

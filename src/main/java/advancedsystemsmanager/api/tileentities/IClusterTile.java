@@ -18,7 +18,7 @@ public interface IClusterTile
 
     ItemStack getItemStackFromBlock();
 
-    void writeContentToNBT(NBTTagCompound tagCompound);
+    NBTTagCompound writeContentToNBT(NBTTagCompound tagCompound);
 
     void readContentFromNBT(NBTTagCompound tagCompound);
 

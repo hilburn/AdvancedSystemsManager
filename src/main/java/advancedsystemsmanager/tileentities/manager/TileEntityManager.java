@@ -1,9 +1,12 @@
 package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.api.ITileFactory;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.*;
+import advancedsystemsmanager.api.tiletypes.IBUDListener;
+import advancedsystemsmanager.api.tiletypes.ITileElement;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -23,6 +26,7 @@ import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
+import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import advancedsystemsmanager.util.SystemCoord;
 import cofh.api.energy.IEnergyReceiver;
@@ -39,6 +43,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.*;
@@ -46,7 +51,7 @@ import java.util.*;
 import static advancedsystemsmanager.api.execution.ICommand.CommandType;
 
 @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY)
-public class TileEntityManager extends TileEntity implements ITileInterfaceProvider, ITriggerNode, ISystemTypeFilter, IEnergyReceiver
+public class TileEntityManager extends TileEntityElementBase implements ITileInterfaceProvider, ITriggerNode, ISystemTypeFilter, IEnergyReceiver, IBUDListener
 {
     public static final TriggerHelperRedstone redstoneTrigger = new TriggerHelperRedstone(3, 4);
     public static final TriggerHelperRedstone redstoneCondition = new TriggerHelperRedstone(1, 2);
@@ -95,6 +100,12 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         network = new TLongObjectHashMap<SystemCoord>();
         variables = Variable.getDefaultVariables();
         this.triggerOffset = (((173 + xCoord) << 8 + yCoord) << 8 + zCoord) % 20;
+    }
+
+    @Override
+    public IIcon getIcon(int side)
+    {
+        return getTileFactory().getIcon(side);
     }
 
     public void removeFlowComponent(int idToRemove, boolean connected)
@@ -390,11 +401,11 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
                     if (te == null) continue;
                     if (te instanceof TileEntityCluster)
                     {
-                        for (TileEntityCluster.ClusterPair clusterPair : ((TileEntityCluster)te).getElementPairs())
+                        for (Map.Entry<ITileFactory, ITileElement> entry : ((TileEntityCluster) te).getPairs())
                         {
-                            ((TileEntityCluster)te).setWorld(clusterPair.tile);
+                            ((TileEntityCluster)te).setWorld(entry.getValue());
                             SystemCoord coord = target.copy();
-                            coord.setClusterType(clusterPair.element);
+                            coord.setClusterType(entry.getKey());
                             addInventory(coord);
                         }
                     } else
@@ -544,11 +555,10 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(nbtTagCompound);
-        readContentFromNBT(nbtTagCompound, false);
-        byte[] sides = nbtTagCompound.getByteArray(NBT_SIDES);
+        super.readFromNBT(tag);
+        byte[] sides = tag.getByteArray(NBT_SIDES);
         int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];
         for (int i = 0; i < sides.length; i++)
         {
@@ -559,16 +569,15 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound)
+    public void writeToNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(nbtTagCompound);
-        writeContentToNBT(nbtTagCompound, false);
+        super.writeToNBT(tag);
         byte[] sides = new byte[isPowered.length];
         for (int i = 0; i < sides.length; i++)
         {
             sides[i] = (byte)isPowered[i];
         }
-        nbtTagCompound.setByteArray(NBT_SIDES, sides);
+        tag.setByteArray(NBT_SIDES, sides);
     }
 
     @Override
@@ -630,18 +639,19 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
         quickTriggers.add(component);
     }
 
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    @Override
+    public void writeContentToNBT(NBTTagCompound tag)
     {
-        nbtTagCompound.setByte(NBT_TIMER, (byte)(timer % 20));
-        nbtTagCompound.setInteger(NBT_MAX_ID, maxID);
+        tag.setByte(NBT_TIMER, (byte) (timer % 20));
+        tag.setInteger(NBT_MAX_ID, maxID);
         NBTTagList components = new NBTTagList();
         for (FlowComponent item : getFlowItems())
         {
             NBTTagCompound component = new NBTTagCompound();
-            item.writeToNBT(component, pickup);
+            item.writeToNBT(component, false);
             components.appendTag(component);
         }
-        nbtTagCompound.setTag(NBT_COMPONENTS, components);
+        tag.setTag(NBT_COMPONENTS, components);
         NBTTagList variablesTag = new NBTTagList();
         for (Variable variable : variables.valueCollection())
         {
@@ -649,18 +659,19 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             variable.writeToNBT(variableTag);
             variablesTag.appendTag(variableTag);
         }
-        nbtTagCompound.setTag(NBT_VARIABLES, variablesTag);
+        tag.setTag(NBT_VARIABLES, variablesTag);
     }
 
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound, boolean pickup)
+    @Override
+    public void readContentFromNBT(NBTTagCompound tag)
     {
-        timer = nbtTagCompound.getByte(NBT_TIMER);
-        maxID = nbtTagCompound.getInteger(NBT_MAX_ID);
-        NBTTagList components = nbtTagCompound.getTagList(NBT_COMPONENTS, 10);
+        timer = tag.getByte(NBT_TIMER);
+        maxID = tag.getInteger(NBT_MAX_ID);
+        NBTTagList components = tag.getTagList(NBT_COMPONENTS, 10);
         for (int i = 0; i < components.tagCount(); i++)
         {
             NBTTagCompound component = components.getCompoundTagAt(i);
-            FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, pickup);
+            FlowComponent flowComponent = FlowComponent.readFromNBT(this, component, false);
             if (flowComponent != null)
                 addNewComponent(flowComponent);
         }
@@ -670,7 +681,7 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
             item.linkAfterLoad();
         }
 
-        NBTTagList variablesTag = nbtTagCompound.getTagList(NBT_VARIABLES, 10);
+        NBTTagList variablesTag = tag.getTagList(NBT_VARIABLES, 10);
         for (int i = 0; i < variablesTag.tagCount(); i++)
         {
             NBTTagCompound variableTag = variablesTag.getCompoundTagAt(i);
@@ -827,5 +838,31 @@ public class TileEntityManager extends TileEntity implements ITileInterfaceProvi
     public boolean isOfType(ISystemType type)
     {
         return type != RFCompat.RF_RECEIVER || requiresPower();
+    }
+
+    @Override
+    public void validate()
+    {
+        super.validate();
+        onNeighborBlockChange();
+    }
+
+    @Override
+    public void onNeighborBlockChange()
+    {
+        triggerRedstone();
+        updateInventories();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        super.onChunkUnload();
     }
 }

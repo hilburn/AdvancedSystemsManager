@@ -27,7 +27,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public static final ItemStack DUMMY_ITEM = new ItemStack(Item.getItemById(1), 0, 0);
     public static final double SPEED_MULTIPLIER = 0.05000000074505806D;
     public static final Random rand = new Random();
-    public CommandExecutor executor;
+//    public CommandExecutor executor;
     public MenuCrafting craftingMenu;
     public MenuContainerScrap scrapMenu;
     public IRecipe recipe;
@@ -38,9 +38,9 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public List<ItemStack> containerItems;
     public List<IInventory> inventories = new ArrayList<IInventory>();
 
-    public CraftingBufferFluidElement(CommandExecutor executor, MenuCrafting craftingMenu, MenuContainerScrap scrapMenu)
+    public CraftingBufferFluidElement(MenuCrafting craftingMenu, MenuContainerScrap scrapMenu)
     {
-        this.executor = executor;
+//        this.executor = executor;
         this.craftingMenu = craftingMenu;
         this.scrapMenu = scrapMenu;
         this.recipe = craftingMenu.getDummy().getRecipe();
@@ -110,7 +110,7 @@ public class CraftingBufferFluidElement implements IItemBufferElement, IItemBuff
     public void disposeOfExtraItem(ItemStack itemStack)
     {
         TileEntityManager manager = this.craftingMenu.getParent().getManager();
-        List<SlotInventoryHolder> inventories = CommandExecutor.getContainers(manager, this.scrapMenu, SystemTypeRegistry.INVENTORY);
+        List<SlotInventoryHolder> inventories = null;//CommandExecutor.getContainers(manager, this.scrapMenu, SystemTypeRegistry.INVENTORY);
 
         for (SlotInventoryHolder inventoryHolder : inventories)
         {

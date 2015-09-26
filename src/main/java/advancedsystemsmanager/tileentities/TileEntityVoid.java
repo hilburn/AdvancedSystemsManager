@@ -1,12 +1,11 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
+import advancedsystemsmanager.api.tiletypes.IActivateListener;
 import advancedsystemsmanager.containers.ContainerVoid;
 import advancedsystemsmanager.client.gui.GuiVoid;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Mods;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.Optional;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,14 +22,11 @@ import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.aspects.IAspectContainer;
 
-import java.util.EnumSet;
-
 @Optional.InterfaceList({
         @Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = Mods.COFH_ENERGY),
         @Optional.Interface(iface = "thaumcraft.api.aspects.IAspectContainer", modid = Mods.THAUMCRAFT)})
-public class TileEntityVoid extends TileEntityClusterElement implements IInventory, IFluidHandler, ITileInterfaceProvider, IClusterTile, IEnergyReceiver, IAspectContainer
+public class TileEntityVoid extends TileEntityElementBase implements IInventory, IFluidHandler, ITileInterfaceProvider, IEnergyReceiver, IAspectContainer, IActivateListener
 {
-
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
     {
@@ -135,12 +131,6 @@ public class TileEntityVoid extends TileEntityClusterElement implements IInvento
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return true;
-    }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
     }
 
     @Override

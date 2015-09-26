@@ -105,12 +105,6 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.noneOf(ClusterMethodRegistration.class);
-    }
-
-    @Override
     public IGridNode getGridNode(ForgeDirection forgeDirection)
     {
         return getNode();
@@ -284,7 +278,8 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
         @Override
         public ItemStack getMachineRepresentation()
         {
-            return new ItemStack(BlockRegistry.cableAENode);
+            //TODO fix
+            return new ItemStack(BlockRegistry.cable);
         }
     }
 

@@ -1,12 +1,15 @@
 package advancedsystemsmanager.flow.execution;
 
+import advancedsystemsmanager.api.ISystemType;
 import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.execution.commands.CommandBase;
+import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.flow.menus.MenuUpdateBlock;
 import advancedsystemsmanager.registry.ConnectionOption;
 import advancedsystemsmanager.registry.SystemTypeRegistry;
 import advancedsystemsmanager.tileentities.TileEntityBUD;
+import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.SystemCoord;
 
 import java.util.EnumSet;
@@ -24,13 +27,13 @@ public class TriggerHelperBUD extends TriggerHelper
     @Override
     public void onTrigger(FlowComponent item, EnumSet<ConnectionOption> valid)
     {
-        List<SlotInventoryHolder> buds = CommandExecutor.getContainers(item.getManager(), item.getMenus().get(containerId), blockType);
+        List<SystemCoord> buds = getContainers(item.getManager(), (MenuContainer)item.getMenus().get(containerId));
 
         if (buds != null)
         {
-            for (SlotInventoryHolder bud : buds)
+            for (SystemCoord bud : buds)
             {
-                bud.getBUD().updateData();
+                ((TileEntityBUD)bud.getTileEntity()).updateData();
             }
 
             if (isSpecialPulseReceived(item, true))
@@ -52,9 +55,9 @@ public class TriggerHelperBUD extends TriggerHelper
             }
 
 
-            for (SlotInventoryHolder bud : buds)
+            for (SystemCoord bud : buds)
             {
-                bud.getBUD().makeOld();
+                ((TileEntityBUD)bud.getTileEntity()).makeOld();
             }
         }
 

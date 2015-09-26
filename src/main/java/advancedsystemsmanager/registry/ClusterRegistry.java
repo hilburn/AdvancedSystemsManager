@@ -1,57 +1,35 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.tileentities.IClusterElement;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
-import gnu.trove.map.hash.TByteObjectHashMap;
+import advancedsystemsmanager.api.ITileFactory;
 import net.minecraft.item.ItemStack;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ClusterRegistry
 {
-    private static final TByteObjectHashMap<IClusterElement> registry = new TByteObjectHashMap<IClusterElement>();
+    private static final Map<String, ITileFactory> registry = new TreeMap<String, ITileFactory>();
 
-    public static void register(int id, IClusterElement element)
+    public static void register(ITileFactory tileFactory)
     {
-        byte b = (byte)(id & 0xFF);
-        if (registry.containsKey(b))
-            throw new IllegalArgumentException("ID: " + id + " is already registered by " + getItemStack(id).getDisplayName());
-        registry.put(b, element);
+        if (registry.containsKey(tileFactory.getUnlocalizedName()))
+            throw new IllegalArgumentException("ID: " + tileFactory.getUnlocalizedName() + " is already registered by " + getItemStack(tileFactory.getUnlocalizedName()).getDisplayName());
+        registry.put(tileFactory.getUnlocalizedName(), tileFactory);
     }
 
-    public static ItemStack getItemStack(int id)
+    public static ItemStack getItemStack(String id)
     {
-        return getItemStack((byte)(id & 0xFF), id >> 8);
+        return registry.containsKey(id) ? registry.get(id).getItemStack() : null;
     }
 
-    public static ItemStack getItemStack(byte id, int meta)
-    {
-        return registry.containsKey(id) ? registry.get(id).getItemStack(meta) : null;
-    }
-
-    public static IClusterElement get(IClusterTile clusterTile)
-    {
-        for (IClusterElement element : registry.valueCollection())
-            if (element.isInstance(clusterTile)) return element;
-        return null;
-    }
-
-    public static IClusterElement get(ItemStack stack)
-    {
-        for (IClusterElement element : registry.valueCollection())
-        {
-            ItemStack elementStack = element.getItemStack(stack.getItemDamage());
-            if (elementStack.isItemEqual(stack)) return element;
-        }
-        return null;
-    }
-
-    public static IClusterElement get(byte id)
+    public static ITileFactory get(String id)
     {
         return registry.get(id);
     }
 
-    public static int getID(IClusterTile tileEntity)
+    public static Collection<ITileFactory> getFactories()
     {
-        IClusterElement element = get(tileEntity);
-        return element == null? -1 : element.getId();
+        return registry.values();
     }
 }

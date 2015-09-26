@@ -1,6 +1,8 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
+import advancedsystemsmanager.api.tiletypes.IActivateListener;
+import advancedsystemsmanager.api.tiletypes.IPlaceListener;
 import advancedsystemsmanager.containers.ContainerRelay;
 import advancedsystemsmanager.client.gui.GuiRelay;
 import advancedsystemsmanager.network.ASMPacket;
@@ -41,7 +43,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class TileEntityRelay extends TileEntityClusterElement implements IInventory, ISidedInventory, IFluidHandler, ITileInterfaceProvider
+public class TileEntityRelay extends TileEntityElementRotation implements IInventory, ISidedInventory, IFluidHandler, ITileInterfaceProvider, IActivateListener
 {
 
     private static final int MAX_CHAIN_LENGTH = 512;
@@ -212,7 +214,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             }
         }
 
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[BlockRegistry.cableRelay.getSideMeta(getMetadata()) % ForgeDirection.VALID_DIRECTIONS.length];
+        ForgeDirection direction = getFacing();
 
         int x = xCoord + direction.offsetX;
         int y = yCoord + direction.offsetY;
@@ -306,7 +308,7 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
 
     private boolean isAdvanced()
     {
-        return BlockRegistry.cableRelay.isAdvanced(getMetadata());
+        return subtype != 0;
     }
 
     private boolean isPlayerActive(EntityPlayer player)
@@ -913,11 +915,4 @@ public class TileEntityRelay extends TileEntityClusterElement implements IInvent
             }
         }
     }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
-    }
-
 }

@@ -112,12 +112,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.CONNECT_ENERGY, ClusterMethodRegistration.EXTRACT_ENERGY, ClusterMethodRegistration.RECEIVE_ENERGY, ClusterMethodRegistration.STORED_ENERGY);
-    }
-
-    @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
         if (isOutput(from.ordinal()))

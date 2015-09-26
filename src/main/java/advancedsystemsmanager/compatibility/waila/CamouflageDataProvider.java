@@ -1,5 +1,6 @@
 package advancedsystemsmanager.compatibility.waila;
 
+import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import cpw.mods.fml.relauncher.Side;
@@ -55,7 +56,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 Block block = camouflage.getSideBlock(0);
@@ -81,7 +82,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);
@@ -107,7 +108,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);
@@ -133,7 +134,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);

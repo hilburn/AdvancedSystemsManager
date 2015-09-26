@@ -1,13 +1,12 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.blocks.BlockCamouflageBase;
+import advancedsystemsmanager.blocks.BlockCamouflaged;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -20,8 +19,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
-
-import java.util.EnumSet;
 
 
 public class TileEntityCamouflage extends TileEntityClusterElement implements IPacketBlock
@@ -38,6 +35,13 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     private Block[] ids = new Block[2];
     private int[] metas = new int[2];
     private boolean isServerDirty;
+    private CamouflageType type;
+
+    @Override
+    public void setSubtype(int subtype)
+    {
+        this.type = CamouflageType.getByID(subtype);
+    }
 
     public boolean isNormalBlock()
     {
@@ -62,7 +66,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public CamouflageType getCamouflageType()
     {
-        return CamouflageType.getByID(getMetadata());
+        return type;
     }
 
     @SideOnly(Side.CLIENT)
@@ -109,7 +113,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         return false;
     }
 
-    public void setBlockBounds(BlockCamouflageBase blockCamouflageBase)
+    public void setBlockBounds(BlockCamouflaged blockCamouflageBase)
     {
         blockCamouflageBase.setBlockBounds(bounds[0] / 32F, bounds[2] / 32F, bounds[4] / 32F, bounds[1] / 32F, bounds[3] / 32F, bounds[5] / 32F);
     }
@@ -345,18 +349,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         }
     }
 
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconWithDefault(IBlockAccess world, int x, int y, int z, BlockCamouflageBase block, int side)
-    {
-        return block.getDefaultIcon(side, world.getBlockMetadata(x, y, z), getMetadata()); //here we actually want to fetch the meta data of the block, rather then getting the tile entity version
-    }
-
     public Block getSideBlock(int side)
     {
         return ids[side];
@@ -374,19 +366,15 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public enum CamouflageType
     {
-        NORMAL("", false, false),
-        INSIDE("_inside", true, false),
-        SHAPE("_shape", true, true);
+        NORMAL(false, false),
+        INSIDE(true, false),
+        SHAPE(true, true);
 
-        private String unlocalized;
-        private String icon;
         private boolean useDouble;
         private boolean useShape;
 
-        CamouflageType(String tag, boolean useDouble, boolean useShape)
+        CamouflageType(boolean useDouble, boolean useShape)
         {
-            this.unlocalized = tag;
-            this.icon = Names.CABLE_CAMO + tag;
             this.useDouble = useDouble;
             this.useShape = useShape;
         }
@@ -394,16 +382,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         public static CamouflageType getByID(int id)
         {
             return values()[id % values().length];
-        }
-
-        public String getUnlocalized()
-        {
-            return unlocalized;
-        }
-
-        public String getIcon()
-        {
-            return icon;
         }
 
         public boolean useDoubleRendering()

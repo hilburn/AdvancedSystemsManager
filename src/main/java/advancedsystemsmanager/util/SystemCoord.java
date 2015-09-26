@@ -1,8 +1,8 @@
 package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.ISystemType;
+import advancedsystemsmanager.api.ITileFactory;
 import advancedsystemsmanager.api.gui.IContainerSelection;
-import advancedsystemsmanager.api.tileentities.IClusterElement;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;
 import advancedsystemsmanager.client.gui.GuiManager;
@@ -35,7 +35,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
     private long key;
     private Set<ISystemType> types;
 //    private TileEntity tileEntity;
-    private IClusterElement elementType;
+    private ITileFactory elementType;
     private World world;
 
     public SystemCoord(SystemCoord coord, ForgeDirection dir)
@@ -59,7 +59,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         this.key = ((long)dim & 0xFF) << 48 | ((long)x & 0xFFFFF) << 28 | (z & 0xFFFFF) << 8 | (y & 0xFF);
         if (elementType != null)
         {
-            key |= ((long)elementType.getId() & 0x7F) << 56;
+            key |= ((long)elementType.getUnlocalizedName().hashCode() & 0x7FFF) << 32;
         }
 //        if (tileEntity instanceof IClusterTile)
 //            key |= ((long)ClusterRegistry.getID((IClusterTile)tileEntity) & 0x7F) << 56; //This means that the SystemCoord key will always be positive.
@@ -312,7 +312,7 @@ public class SystemCoord implements Comparable<SystemCoord>, IContainerSelection
         return world.blockExists(x, y, z)? world.getBlock(x, y, z).getComparatorInputOverride(world, x, y, z, side) : 0;
     }
 
-    public void setClusterType(IClusterElement elementType)
+    public void setClusterType(ITileFactory elementType)
     {
         this.elementType = elementType;
         setKey();

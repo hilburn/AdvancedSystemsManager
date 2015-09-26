@@ -1,12 +1,12 @@
 package advancedsystemsmanager.compatibility.waila;
 
-import advancedsystemsmanager.blocks.BlockCableOutput;
-import advancedsystemsmanager.blocks.BlockCableQuantum;
-import advancedsystemsmanager.blocks.BlockCamouflageBase;
+import advancedsystemsmanager.blocks.BlockCamouflaged;
 import advancedsystemsmanager.compatibility.CompatBase;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityClusterElement;
+import advancedsystemsmanager.tileentities.TileEntityEmitter;
+import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -39,14 +39,14 @@ public class WailaCompat extends CompatBase
         }
 
         registrar.registerBodyProvider(new ClusterDataProvider(), TileEntityCluster.class);
-        registrar.registerBodyProvider(new RedstoneOutputDataProvider(), BlockCableOutput.class);
-        registrar.registerBodyProvider(new QuantumDataProvider(), BlockCableQuantum.class);
+        registrar.registerBodyProvider(new RedstoneOutputDataProvider(), TileEntityEmitter.class);
+        registrar.registerBodyProvider(new QuantumDataProvider(), TileEntityQuantumCable.class);
 
         CamouflageDataProvider provider = new CamouflageDataProvider();
-        registrar.registerStackProvider(provider, BlockCamouflageBase.class);
-        registrar.registerHeadProvider(provider, BlockCamouflageBase.class);
-        registrar.registerBodyProvider(provider, BlockCamouflageBase.class);
-        registrar.registerTailProvider(provider, BlockCamouflageBase.class);
+        registrar.registerStackProvider(provider, BlockCamouflaged.class);
+        registrar.registerHeadProvider(provider, BlockCamouflaged.class);
+        registrar.registerBodyProvider(provider, BlockCamouflaged.class);
+        registrar.registerTailProvider(provider, BlockCamouflaged.class);
 
     }
 

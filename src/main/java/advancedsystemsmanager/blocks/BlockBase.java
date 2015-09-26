@@ -45,7 +45,7 @@ public class BlockBase extends Block implements IDismantleable
     @Override
     public Block setBlockTextureName(String name)
     {
-        return super.setBlockTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace(Names.PREFIX, ""));
+        return super.setBlockTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace(Names.OLD_PREFIX, ""));
     }
 
     @SideOnly(Side.CLIENT)
@@ -76,8 +76,6 @@ public class BlockBase extends Block implements IDismantleable
         this(Material.iron, soundTypeMetal, name, hardness, extraIcons);
     }
 
-    @Override
-    @Optional.Method(modid = Mods.COFHCORE)
     public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock)
     {
         ArrayList<ItemStack> list = getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
@@ -88,8 +86,6 @@ public class BlockBase extends Block implements IDismantleable
         return list;
     }
 
-    @Override
-    @Optional.Method(modid = Mods.COFHCORE)
     public boolean canDismantle(EntityPlayer entityPlayer, World world, int x, int y, int z)
     {
         return entityPlayer.isSneaking();

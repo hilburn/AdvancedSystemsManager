@@ -2,11 +2,13 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
+import advancedsystemsmanager.api.tiletypes.IBUDListener;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 
-public class TileEntityBUD extends TileEntityClusterElement implements ISystemListener, ITriggerNode
+public class TileEntityBUD extends TileEntityClusterElement implements ISystemListener, ITriggerNode, IBUDListener
 {
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_DATA = "Data";
@@ -36,6 +38,8 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     {
         managerList.remove(owner);
     }
+
+
 
     public void onTrigger()
     {
@@ -113,8 +117,8 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
+    public void onNeighborBlockChange()
     {
-        return EnumSet.of(ClusterMethodRegistration.ON_NEIGHBOR_BLOCK_CHANGED);
+        updateData();
     }
 }

@@ -1,5 +1,7 @@
 package advancedsystemsmanager.proxy;
 
+import advancedsystemsmanager.client.render.RenderCamouflage;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.threading.ThreadSafeHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -31,6 +33,8 @@ public class ClientProxy extends CommonProxy
     @Override
     public void initRenderers()
     {
+        ISimpleBlockRenderingHandler renderingHandler  = new RenderCamouflage();
+        RenderingRegistry.registerBlockHandler(BlockRegistry.cableCamouflage.getRenderType(), renderingHandler);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.api.tileentities.IClusterTile;
+import advancedsystemsmanager.api.tileentities.ICable;
 import advancedsystemsmanager.reference.Mods;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
+import advancedsystemsmanager.util.SystemCoord;
 import com.cricketcraft.chisel.api.IFacade;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
@@ -10,25 +12,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.List;
+import java.util.Queue;
+
 @Optional.Interface(iface = "com.cricketcraft.chisel.api.IFacade", modid = Mods.CHISEL)
-public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEntityCamouflage> implements IFacade
+public class BlockCamouflaged extends BlockTileElement implements IFacade, ICable
 {
     public static int RENDER_ID;
 
-    public BlockCamouflageBase(String name)
+    public BlockCamouflaged(String name)
     {
         super(name);
-    }
-
-    public BlockCamouflageBase(String name, int extraIcons)
-    {
-        super(name, extraIcons);
     }
 
     @Override
@@ -40,7 +39,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     @Override
     public boolean getBlocksMovement(IBlockAccess world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+        TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
         return camouflage == null || camouflage.isNormalBlock();
     }
 
@@ -53,29 +52,12 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     @Override
     public float getBlockHardness(World world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+        TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape() && !camouflage.isUseCollision())
         {
             return 600000;
         }
         return super.getBlockHardness(world, x, y, z);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public final IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
-    {
-        TileEntityCamouflage te = getTileEntity(world, x, y, z);
-        if (te != null)
-        {
-            IIcon icon = te.getIconWithDefault(world, x, y, z, this, side);
-
-            if (icon != null)
-            {
-                return icon;
-            }
-        }
-        return getDefaultIcon(side, world.getBlockMetadata(x, y, z), 0);
     }
 
     @Override
@@ -118,7 +100,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
     {
-        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+        TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
         {
             camouflage.setBlockBounds(this);
@@ -126,21 +108,6 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         {
             setBlockBoundsForItemRender();
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
-    {
-//        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
-//        if (camouflage != null)
-//        {
-//            if (camouflage.hasSideBlock(side))
-//            {
-//                return camouflage.getSideBlock(side).shouldSideBeRendered(world, x, y, z, side);
-//            }
-//        }
-        return super.shouldSideBeRendered(world, x, y, z, side);
     }
 
     @Override
@@ -153,7 +120,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     @Override
     public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer)
     {
-        TileEntityCamouflage camouflage = getTileEntity(worldObj, target.blockX, target.blockY, target.blockZ);
+        TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(worldObj, target.blockX, target.blockY, target.blockZ);
         if (camouflage != null)
         {
             if (camouflage.addBlockEffect(this, target.sideHit, effectRenderer))
@@ -168,7 +135,7 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     {
         setBlockBoundsBasedOnState(world, x, y, z);
 
-        TileEntityCamouflage camouflage = getTileEntity(world, x, y, z);
+        TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
         if (camouflage != null && camouflage.getCamouflageType().useSpecialShape())
         {
             if (!camouflage.isUseCollision())
@@ -183,22 +150,13 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
-    public abstract IIcon getDefaultIcon(int side, int blockMeta, int camoMeta);
-
-    @Override
-    public boolean isInstance(IClusterTile tile)
-    {
-        return tile instanceof TileEntityCamouflage;
-    }
-
     @Override
     @Optional.Method(modid = Mods.CHISEL)
     public Block getFacade(IBlockAccess world, int x, int y, int z, int side)
     {
         if (side != -1)
         {
-            TileEntityCamouflage camo = getTileEntity(world, x, y, z);
+            TileEntityCamouflage camo = TileFactories.CAMO.getTileEntity(world, x, y, z);
             if (camo != null && camo.hasSideBlock(0))
             {
                 return camo.getSideBlock(0);
@@ -213,12 +171,24 @@ public abstract class BlockCamouflageBase extends BlockClusterElementBase<TileEn
     {
         if (side != -1)
         {
-            TileEntityCamouflage camo = getTileEntity(world, x, y, z);
+            TileEntityCamouflage camo = TileFactories.CAMO.getTileEntity(world, x, y, z);
             if (camo != null && camo.hasSideBlock(0))
             {
                 return camo.getSideMetadata(0);
             }
         }
         return world.getBlockMetadata(x, y, z);
+    }
+
+    @Override
+    public boolean isCable(int meta)
+    {
+        return meta == TileFactories.CLUSTER_ADVANCED.getMetadata();
+    }
+
+    @Override
+    public void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables)
+    {
+        BlockRegistry.cable.getConnectedCables(world, coordinate, visited, cables);
     }
 }

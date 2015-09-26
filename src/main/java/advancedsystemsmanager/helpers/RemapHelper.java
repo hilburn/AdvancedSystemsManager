@@ -52,28 +52,28 @@ public class RemapHelper
 
     static
     {
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + MANAGER_NAME_TAG, MANAGER_TILE_ENTITY_TAG, BlockRegistry.blockManager, TileEntityManager.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_NAME_TAG, BlockRegistry.cable));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_RELAY_NAME_TAG, CABLE_RELAY_TILE_ENTITY_TAG, BlockRegistry.cableRelay, TileEntityRelay.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_OUTPUT_NAME_TAG, CABLE_OUTPUT_TILE_ENTITY_TAG, BlockRegistry.cableOutput, TileEntityEmitter.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_INPUT_NAME_TAG, CABLE_INPUT_TILE_ENTITY_TAG, BlockRegistry.cableInput, TileEntityReceiver.class));
-//        registerMapping(CABLE_CREATIVE_NAME_TAG, BlockRegistry.cableCreative);
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_INTAKE_NAME_TAG, CABLE_INTAKE_TILE_ENTITY_TAG, BlockRegistry.cableValve, TileEntityValve.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_BUD_NAME_TAG, CABLE_BUD_TILE_ENTITY_TAG, BlockRegistry.cableBUD, TileEntityBUD.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_BREAKER_NAME_TAG, CABLE_BREAKER_TILE_ENTITY_TAG, BlockRegistry.cableBlockGate, TileEntityBlockGate.class));
-//        registerMapping(CABLE_CLUSTER_NAME_TAG, BlockRegistry.cableCluster);
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_CAMOUFLAGE_NAME_TAG, CABLE_CAMOUFLAGE_TILE_ENTITY_TAG, BlockRegistry.cableCamouflage, TileEntityCamouflage.class));
-        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_SIGN_NAME_TAG, CABLE_SIGN_TILE_ENTITY_TAG, BlockRegistry.cableSign, TileEntitySignUpdater.class));
-        if (BlockRegistry.cableRFNode != null)
-        {
-            registerMapping(new Remap(Mods.STEVESADDONS + ':' + CABLE_RF, CABLE_RF, BlockRegistry.cableRFNode, TileEntityRFNode.class));
-        }
-        if (BlockRegistry.cableAENode != null)
-        {
-            registerMapping(new Remap(Mods.STEVESADDONS + ':' + CABLE_AE, CABLE_AE, BlockRegistry.cableAENode, TileEntityAENode.class));
-        }
-        registerMapping(new Remap(Mods.STEVESADDONS + ':' + DRIVE, ItemRegistry.duplicator));
-        registerMapping(new Remap(Mods.STEVESADDONS + ':' + LABELER, ItemRegistry.labeler));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + MANAGER_NAME_TAG, MANAGER_TILE_ENTITY_TAG, BlockRegistry.blockManager, TileEntityManager.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_NAME_TAG, BlockRegistry.cable));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_RELAY_NAME_TAG, CABLE_RELAY_TILE_ENTITY_TAG, BlockRegistry.cableRelay, TileEntityRelay.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_OUTPUT_NAME_TAG, CABLE_OUTPUT_TILE_ENTITY_TAG, BlockRegistry.cableOutput, TileEntityEmitter.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_INPUT_NAME_TAG, CABLE_INPUT_TILE_ENTITY_TAG, BlockRegistry.cableInput, TileEntityReceiver.class));
+////        registerMapping(CABLE_CREATIVE_NAME_TAG, BlockRegistry.cableCreative);
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_INTAKE_NAME_TAG, CABLE_INTAKE_TILE_ENTITY_TAG, BlockRegistry.cableValve, TileEntityValve.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_BUD_NAME_TAG, CABLE_BUD_TILE_ENTITY_TAG, BlockRegistry.cableBUD, TileEntityBUD.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_BREAKER_NAME_TAG, CABLE_BREAKER_TILE_ENTITY_TAG, BlockRegistry.cableBlockGate, TileEntityBlockGate.class));
+////        registerMapping(CABLE_CLUSTER_NAME_TAG, BlockRegistry.cableCluster);
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_CAMOUFLAGE_NAME_TAG, CABLE_CAMOUFLAGE_TILE_ENTITY_TAG, BlockRegistry.cableCamouflage, TileEntityCamouflage.class));
+//        registerMapping(new Remap(Mods.STEVESFACTORYMANAGER + ':' + CABLE_SIGN_NAME_TAG, CABLE_SIGN_TILE_ENTITY_TAG, BlockRegistry.cableSign, TileEntitySignUpdater.class));
+//        if (BlockRegistry.cableRFNode != null)
+//        {
+//            registerMapping(new Remap(Mods.STEVESADDONS + ':' + CABLE_RF, CABLE_RF, BlockRegistry.cableRFNode, TileEntityRFNode.class));
+//        }
+//        if (BlockRegistry.cableAENode != null)
+//        {
+//            registerMapping(new Remap(Mods.STEVESADDONS + ':' + CABLE_AE, CABLE_AE, BlockRegistry.cableAENode, TileEntityAENode.class));
+//        }
+//        registerMapping(new Remap(Mods.STEVESADDONS + ':' + DRIVE, ItemRegistry.duplicator));
+//        registerMapping(new Remap(Mods.STEVESADDONS + ':' + LABELER, ItemRegistry.labeler));
     }
 
     public static void registerMapping(Remap thing)

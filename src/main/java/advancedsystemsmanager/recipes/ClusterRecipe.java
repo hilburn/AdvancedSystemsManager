@@ -1,10 +1,6 @@
 package advancedsystemsmanager.recipes;
 
 
-import advancedsystemsmanager.api.items.IClusterItem;
-import advancedsystemsmanager.api.tileentities.IClusterElement;
-import advancedsystemsmanager.items.blocks.ItemCluster;
-import advancedsystemsmanager.registry.BlockRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -37,7 +33,7 @@ public class ClusterRecipe implements IRecipe
         {
             ItemStack item = inventorycrafting.getStackInSlot(i);
 
-            if (item != null && Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableCluster)
+//            if (item != null && Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableCluster)
             {
                 if (cluster != null)
                 {
@@ -51,35 +47,35 @@ public class ClusterRecipe implements IRecipe
 
         if (cluster != null)
         {
-            boolean foundClusterComponent = false;
-            if (!cluster.hasTagCompound()) cluster.setTagCompound(new NBTTagCompound());
-            List<IClusterElement> existing = ItemCluster.getTypes(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
-            List<ItemStack> stacks = ItemCluster.getItemStacks(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
-
-            for (int i = 0; i < inventorycrafting.getSizeInventory(); i++)
-            {
-                ItemStack item = inventorycrafting.getStackInSlot(i);
-
-                if (item != null && item.getItem() instanceof IClusterItem)
-                {
-                    IClusterElement element = ((IClusterItem)item.getItem()).getClusterElement(item);
-                    if (element != null)
-                    {
-                        if (existing.contains(element)) return false;
-                        existing.add(element);
-                        stacks.add(item);
-                        foundClusterComponent = true;
-                    }
-                }
-            }
-
-            if (!foundClusterComponent)
-            {
-                return false; //nothing added
-            }
-
-            output = new ItemStack(BlockRegistry.cableCluster, 1, cluster.getItemDamage());
-            ItemCluster.setClusterTag(output, stacks);
+//            boolean foundClusterComponent = false;
+//            if (!cluster.hasTagCompound()) cluster.setTagCompound(new NBTTagCompound());
+//            List<IClusterElement> existing = ItemCluster.getTypes(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
+//            List<ItemStack> stacks = ItemCluster.getItemStacks(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
+//
+//            for (int i = 0; i < inventorycrafting.getSizeInventory(); i++)
+//            {
+//                ItemStack item = inventorycrafting.getStackInSlot(i);
+//
+//                if (item != null && item.getItem() instanceof IClusterItem)
+//                {
+//                    IClusterElement element = ((IClusterItem)item.getItem()).getClusterElement(item);
+//                    if (element != null)
+//                    {
+//                        if (existing.contains(element)) return false;
+//                        existing.add(element);
+//                        stacks.add(item);
+//                        foundClusterComponent = true;
+//                    }
+//                }
+//            }
+//
+//            if (!foundClusterComponent)
+//            {
+//                return false; //nothing added
+//            }
+//
+////            output = new ItemStack(BlockRegistry.cableCluster, 1, cluster.getItemDamage());
+//            ItemCluster.setClusterTag(output, stacks);
             return true;
         }
 

@@ -58,12 +58,6 @@ public class TileEntityCreative extends TileEntityClusterElement implements IInt
     }
 
     @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.noneOf(ClusterMethodRegistration.class);
-    }
-
-    @Override
     public int getAmountToInsert(ItemStack stack)
     {
         return 0;

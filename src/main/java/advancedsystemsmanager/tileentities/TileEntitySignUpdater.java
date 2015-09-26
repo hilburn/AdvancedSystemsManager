@@ -9,22 +9,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.EnumSet;
 
 
-public class TileEntitySignUpdater extends TileEntityClusterElement
+public class TileEntitySignUpdater extends TileEntityElementRotation
 {
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY);
-    }
-
     public void updateSign(MenuSignText menu)
     {
-        ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+        ForgeDirection direction = getFacing();
         TileEntity te = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
         if (te != null && te instanceof TileEntitySign)
         {
             TileEntitySign sign = (TileEntitySign)te;
-            //if (sign.func_142009_b() == null) {
             sign.func_145912_a(null);
             boolean updated = false;
             for (int i = 0; i < 4; i++)
@@ -45,8 +38,6 @@ public class TileEntitySignUpdater extends TileEntityClusterElement
                 sign.markDirty();
                 worldObj.markBlockForUpdate(sign.xCoord, sign.yCoord, sign.zCoord);
             }
-
-            //}
         }
     }
 }

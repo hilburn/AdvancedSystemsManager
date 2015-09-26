@@ -1,10 +1,12 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
+import advancedsystemsmanager.api.tiletypes.IActivateListener;
+import advancedsystemsmanager.blocks.TileFactories;
+import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
@@ -15,32 +17,54 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityBlockGate extends TileEntityClusterElement implements IInventory, IPacketBlock
+public class TileEntityBlockGate extends TileEntityElementRotation implements IInventory, IPacketBlock, IActivateListener
 {
 
     protected static final int[] ROTATION_SIDE_MAPPING = {0, 0, 0, 2, 3, 1};
     protected static final String NBT_DIRECTION = "Direction";
     private static final String FAKE_PLAYER_NAME = "[ASM_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
-    protected boolean missingPlaceDirection;
     protected boolean blocked;
     protected int placeDirection;
     private List<ItemStack> inventory;
     private List<ItemStack> inventoryCache;
     private boolean broken;
 
-    public int getPlaceDirection()
+    @Override
+    public IIcon getIcon(int side)
     {
-        return placeDirection;
+        if (getFacing() != null)
+        {
+            if (side == placeDirection && side == getFacing().ordinal())
+            {
+                return getTileFactory().getIcons()[0];
+            } else if (side == placeDirection)
+            {
+                return getTileFactory().getIcons()[2];
+            } else if (side == getFacing().ordinal())
+            {
+                return getTileFactory().getIcons()[3];
+            }
+        }
+        return getTileFactory().getIcons()[1];
+    }
+
+    @Override
+    public boolean onBlockActivated(EntityPlayer player, int side, float xSide, float ySide, float zSide)
+    {
+        int direction = player.isSneaking() ? BlockHelper.getReverseDirection(side) : side;
+        setPlaceDirection(direction);
+        return true;
     }
 
     public void setPlaceDirection(int placeDirection)
@@ -51,7 +75,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
 
             if (!isPartOfCluster() && worldObj != null && !worldObj.isRemote)
             {
-                PacketHandler.sendBlockPacket(this, null, 0);
+                sendBlockPacket(null, 0);
             }
         }
     }
@@ -59,59 +83,37 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     @Override
     public void writeData(ASMPacket packet, int id)
     {
+        super.writeData(packet, id);
         packet.writeByte(placeDirection);
     }
 
     @Override
     public void readData(ASMPacket packet, int id)
     {
+        super.readData(packet, id);
         placeDirection = packet.readByte();
-        markBlockForUpdate();
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeContentToNBT(NBTTagCompound tag)
     {
-        tagCompound.setByte(NBT_DIRECTION, (byte)placeDirection);
+        super.writeContentToNBT(tag);
+        tag.setByte(NBT_DIRECTION, (byte) placeDirection);
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readContentFromNBT(NBTTagCompound tag)
     {
-        if (tagCompound.hasKey(NBT_DIRECTION))
-        {
-            setPlaceDirection(tagCompound.getByte(NBT_DIRECTION));
-        } else
-        {
-            if (worldObj != null)
-            {
-                setPlaceDirection(getMetadata());
-            } else
-            {
-                missingPlaceDirection = true;
-            }
-        }
-    }
-
-    @Override
-    public EnumSet<ClusterMethodRegistration> getRegistrations()
-    {
-        return EnumSet.of(ClusterMethodRegistration.ON_BLOCK_PLACED_BY, ClusterMethodRegistration.ON_BLOCK_ACTIVATED);
+        setPlaceDirection(tag.getByte(NBT_DIRECTION));
     }
 
     @Override
     public void updateEntity()
     {
         super.updateEntity();
-        if (missingPlaceDirection)
-        {
-            setPlaceDirection(getMetadata());
-            missingPlaceDirection = false;
-        }
         if (inventory != null)
         {
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
-
+            ForgeDirection direction = getFacing();
 
             for (ItemStack itemStack : getInventoryForDrop())
             {
@@ -199,7 +201,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
 
         if (itemstack != null && itemstack.getItem() != null && itemstack.stackSize > 0)
         {
-            ForgeDirection side = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+            ForgeDirection side = getFacing();
             ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[placeDirection];
             if (side == direction)
             {
@@ -288,7 +290,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
 
             if (!match)
             {
-                ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+                ForgeDirection direction = getFacing();
 
                 int x = xCoord + direction.offsetX;
                 int y = yCoord + direction.offsetY;
@@ -332,7 +334,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     {
         if (inventory == null)
         {
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[getMetadata() % ForgeDirection.VALID_DIRECTIONS.length];
+            ForgeDirection direction = getFacing();
 
             int x = xCoord + direction.offsetX;
             int y = yCoord + direction.offsetY;
@@ -418,7 +420,7 @@ public class TileEntityBlockGate extends TileEntityClusterElement implements IIn
     @Override
     public String getInventoryName()
     {
-        return BlockRegistry.cableBlockGate.getLocalizedName();
+        return StatCollector.translateToLocal(TileFactories.BLOCK_GATE.getUnlocalizedName());
     }
 
     @Override

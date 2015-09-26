@@ -1,7 +1,7 @@
 package advancedsystemsmanager.client.render;
 
-import advancedsystemsmanager.blocks.BlockCamouflageBase;
-import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.blocks.BlockCamouflaged;
+import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -22,7 +21,7 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
     public RenderCamouflage()
     {
         id = RenderingRegistry.getNextAvailableRenderId();
-        BlockCamouflageBase.RENDER_ID = id;
+        BlockCamouflaged.RENDER_ID = id;
     }
 
     @Override
@@ -66,9 +65,9 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
     {
         Tessellator.instance.setColorOpaque_F(1F, 1F, 1F);
 
-        if (block instanceof BlockCamouflageBase)
+        if (block instanceof BlockCamouflaged)
         {
-            TileEntityCamouflage camouflage = BlockRegistry.cableCamouflage.getTileEntity(world, x, y, z);
+            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
             if (camouflage != null)
             {
                 block.setBlockBoundsBasedOnState(world, x, y, z);

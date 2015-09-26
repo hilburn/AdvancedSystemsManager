@@ -2,30 +2,30 @@
 #				BLOCKS
 # ======================================
 
-tile.system_manager.name=Advanced Systems Manager
-tile.system_manager_unlimited.name=Unlimited Systems Manager
-tile.system_cable.name=System Cable
-tile.system_cable_relay.name=Inventory Relay
-tile.system_cable_relay_advanced.name=Advanced Inventory Relay
-tile.system_cable_output.name=Redstone Emitter
-tile.system_cable_input.name=Redstone Receiver
-tile.system_cable_creative.name=Creative Supplier
-tile.system_cable_valve.name=Item Valve
-tile.system_cable_valve_advanced.name=Rapid Item Valve
-tile.system_cable_bud.name=Block Detector
-tile.system_cable_block_gate.name=Block Gate
-tile.system_cable_fluid_gate.name=Fluid Gate
-tile.system_cable_void.name=Void Container
-tile.system_cable_cluster.name=Cable Cluster
-tile.system_cable_cluster_advanced.name=Advanced Cable Cluster
-tile.system_cable_camo.name=Cable Camouflage
-tile.system_cable_camo_inside.name=Double Sided Cable Camouflage
-tile.system_cable_camo_shape.name=Transforming Cable Camouflage
-tile.system_cable_sign.name=Sign Updater
-tile.system_cable_rf.name=RF Node
-tile.system_cable_ae.name=Energistics Connector
-tile.system_cable_tc.name=Thaumic Connector
-tile.system_cable_quantum.name=Quantum Cable
+asm_manager.name=Advanced Systems Manager
+asm_manager_unlimited.name=Unlimited Systems Manager
+asm_cable.name=System Cable
+asm_cable_relay.name=Inventory Relay
+asm_cable_relay_advanced.name=Advanced Inventory Relay
+asm_cable_output.name=Redstone Emitter
+asm_cable_input.name=Redstone Receiver
+asm_cable_creative.name=Creative Supplier
+asm_cable_valve.name=Item Valve
+asm_cable_valve_advanced.name=Rapid Item Valve
+asm_cable_bud.name=Block Detector
+asm_cable_block_gate.name=Block Gate
+asm_cable_fluid_gate.name=Fluid Gate
+asm_cable_void.name=Void Container
+asm_cable_cluster.name=Cable Cluster
+asm_cable_cluster_advanced.name=Advanced Cable Cluster
+asm_cable_camo.name=Cable Camouflage
+asm_cable_camo_inside.name=Double Sided Cable Camouflage
+asm_cable_camo_shape.name=Transforming Cable Camouflage
+asm_cable_sign.name=Sign Updater
+asm_cable_rf.name=RF Node
+asm_cable_ae.name=Energistics Connector
+asm_cable_tc.name=Thaumic Connector
+asm_cable_quantum.name=Quantum Cable
 
 # ======================================
 #				ITEMS

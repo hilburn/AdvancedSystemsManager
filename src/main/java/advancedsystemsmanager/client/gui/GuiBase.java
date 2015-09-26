@@ -2,6 +2,7 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.client.gui.fonts.FontRenderer;
 import advancedsystemsmanager.containers.ContainerBase;
+import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
@@ -561,11 +562,6 @@ public abstract class GuiBase extends GuiContainer implements INEIGuiHandler
     {
         if (te != null)
         {
-            if (te instanceof TileEntityClusterElement)
-            {
-                return ((TileEntityClusterElement)te).getItemStackFromBlock();
-            }
-
             World world = te.getWorldObj();
             Block block = te.getBlockType();
             if (world != null && block != null)

@@ -19,7 +19,7 @@ public class BlockCable extends BlockBase implements ICable
 {
     public BlockCable()
     {
-        super(Names.CABLE, 0.4F);
+        super(Names.OLD_CABLE, 0.4F);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BlockCable extends BlockBase implements ICable
                     //if (element.getDepth() < TileEntityManager.MAX_CABLE_LENGTH){
                     Block block = target.getBlock();
                     int meta = target.getMetadata();
-                    if (block == BlockRegistry.blockManager)
+                    if (block == BlockRegistry.cable)
                     {
                         TileEntity tileEntity = target.getWorldTE();
                         if (tileEntity != null && tileEntity instanceof TileEntityManager)

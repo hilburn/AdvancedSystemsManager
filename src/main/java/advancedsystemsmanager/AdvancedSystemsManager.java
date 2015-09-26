@@ -1,5 +1,6 @@
 package advancedsystemsmanager;
 
+import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.helpers.*;
@@ -71,7 +72,7 @@ public class AdvancedSystemsManager
             @Override
             public ItemStack getIconItemStack()
             {
-                return new ItemStack(BlockRegistry.blockManager);
+                return TileFactories.MANAGER.getItemStack();
             }
 
             @Override
@@ -84,6 +85,11 @@ public class AdvancedSystemsManager
         registerer = new Registerer(log, PROXY, configHandler);
         registerer.scan(BlockRegistry.class, event.getSide());
         registerer.scan(ItemRegistry.class, event.getSide());
+
+        if (TileFactories.INSTANCE != null)
+        {
+            BlockRegistry.registerBlocks();
+        }
 
         MessageHandler.init();
 

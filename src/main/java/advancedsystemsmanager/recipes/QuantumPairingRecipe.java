@@ -23,7 +23,8 @@ public class QuantumPairingRecipe implements IRecipe
 
             if (item != null)
             {
-                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableQuantum)
+//                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableQuantum)
+                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cable)
                 {
                     if (item.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
                     {
@@ -77,6 +78,7 @@ public class QuantumPairingRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return new ItemStack(BlockRegistry.cableQuantum);
+//        return new ItemStack(BlockRegistry.cableQuantum);
+        return new ItemStack(BlockRegistry.cable);
     }
 }
