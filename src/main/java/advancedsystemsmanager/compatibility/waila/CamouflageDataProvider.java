@@ -30,17 +30,17 @@ public class CamouflageDataProvider implements IWailaDataProvider
     public void setCachedProviders()
     {
         cachedHeadProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(BlockRegistry.cableElement.get(0)).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(BlockRegistry.cableElements[0]).values())
         {
             cachedHeadProviders.addAll(providersList);
         }
         cachedBodyProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(BlockRegistry.cableElement.get(0)).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(BlockRegistry.cableElements[0]).values())
         {
             cachedBodyProviders.addAll(providersList);
         }
         cachedTailProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(BlockRegistry.cableElement.get(0)).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(BlockRegistry.cableElements[0]).values())
         {
             cachedTailProviders.addAll(providersList);
         }

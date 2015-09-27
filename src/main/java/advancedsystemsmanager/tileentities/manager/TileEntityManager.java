@@ -274,41 +274,44 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
         switch (packet.readByte())
         {
             case PacketHandler.SYNC_ALL:
-                updateInventories();
-                int flowControlCount = packet.readVarIntFromBuffer();
-                components.clear();
-                getZLevelRenderingList().clear();
-                for (int i = 0; i < flowControlCount; i++)
+                if (worldObj.isRemote)
                 {
-                    NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
-                    FlowComponent component = FlowComponent.readFromNBT(this, tagCompound, false);
-                    if (component != null)
-                        addNewComponent(component);
-                }
-                variables.clear();
-                int variableCount = packet.readVarIntFromBuffer();
-                for (int i = 0; i < variableCount; i++)
-                {
-                    int colour = packet.readUnsignedMedium();
-                    String name = packet.readStringFromBuffer();
-                    addVariable(new Variable(colour, name));
-                }
-                for (FlowComponent item : getFlowItems())
-                {
-                    item.linkAfterLoad();
-                }
-
-                if (Settings.isAutoCloseGroup())
-                {
-                    selectedGroup = null;
-                } else
-                {
-                    while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+                    updateInventories();
+                    int flowControlCount = packet.readVarIntFromBuffer();
+                    components.clear();
+                    getZLevelRenderingList().clear();
+                    for (int i = 0; i < flowControlCount; i++)
                     {
-                        selectedGroup = selectedGroup.getParent();
+                        NBTTagCompound tagCompound = packet.readNBTTagCompoundFromBuffer();
+                        FlowComponent component = FlowComponent.readFromNBT(this, tagCompound, false);
+                        if (component != null)
+                            addNewComponent(component);
                     }
+                    variables.clear();
+                    int variableCount = packet.readVarIntFromBuffer();
+                    for (int i = 0; i < variableCount; i++)
+                    {
+                        int colour = packet.readUnsignedMedium();
+                        String name = packet.readStringFromBuffer();
+                        addVariable(new Variable(colour, name));
+                    }
+                    for (FlowComponent item : getFlowItems())
+                    {
+                        item.linkAfterLoad();
+                    }
+
+                    if (Settings.isAutoCloseGroup())
+                    {
+                        selectedGroup = null;
+                    } else
+                    {
+                        while (selectedGroup != null && !findNewSelectedComponent(selectedGroup.getId()))
+                        {
+                            selectedGroup = selectedGroup.getParent();
+                        }
+                    }
+                    variableUpdate = true;
                 }
-                variableUpdate = true;
                 break;
             case PacketHandler.SETTING_MESSAGE:
                 if (!worldObj.isRemote)
@@ -553,6 +556,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     public void readFromTileNBT(NBTTagCompound tag)
     {
         super.readFromTileNBT(tag);
+        timer = tag.getByte(NBT_TIMER);
         byte[] sides = tag.getByteArray(NBT_SIDES);
         int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];
         for (int i = 0; i < sides.length; i++)
@@ -567,6 +571,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     public void writeToTileNBT(NBTTagCompound tag)
     {
         super.writeToTileNBT(tag);
+        tag.setByte(NBT_TIMER, (byte) (timer % 20));
         byte[] sides = new byte[isPowered.length];
         for (int i = 0; i < sides.length; i++)
         {
@@ -637,7 +642,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     @Override
     public void writeItemNBT(NBTTagCompound tag)
     {
-        tag.setByte(NBT_TIMER, (byte) (timer % 20));
+        super.writeItemNBT(tag);
         tag.setInteger(NBT_MAX_ID, maxID);
         NBTTagList components = new NBTTagList();
         for (FlowComponent item : getFlowItems())
@@ -660,7 +665,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     @Override
     public void readItemNBT(NBTTagCompound tag)
     {
-        timer = tag.getByte(NBT_TIMER);
+        super.readItemNBT(tag);
         maxID = tag.getInteger(NBT_MAX_ID);
         NBTTagList components = tag.getTagList(NBT_COMPONENTS, 10);
         for (int i = 0; i < components.tagCount(); i++)

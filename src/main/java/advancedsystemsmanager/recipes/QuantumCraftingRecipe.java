@@ -1,9 +1,7 @@
 package advancedsystemsmanager.recipes;
 
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
-import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -79,8 +77,8 @@ public class QuantumCraftingRecipe implements IRecipe
         {
             return null;
         }
-//        ItemStack result = new ItemStack(BlockRegistry.cableQuantum, 2);
-        ItemStack result = new ItemStack(Items.ender_pearl, 2);
+        ItemStack result = ClusterRegistry.QUANTUM.getItemStack();
+        result.stackSize = 2;
         NBTTagCompound tagCompound = new NBTTagCompound();
         tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, quantumRange);
         result.setTagCompound(tagCompound);
@@ -96,6 +94,6 @@ public class QuantumCraftingRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return ClusterRegistry.CABLE.getItemStack();
+        return ClusterRegistry.QUANTUM.getItemStack();
     }
 }

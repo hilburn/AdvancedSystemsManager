@@ -20,7 +20,7 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
 {
     public static final int CLIENT_SYNC = 1;
     public static final int TILE_DATA = 2;
-    protected static final String NBT_SUBTYPE = "s";
+    public static final String NBT_SUBTYPE = "s";
     protected int subtype;
     protected boolean isPartOfCluster;
     private int message;

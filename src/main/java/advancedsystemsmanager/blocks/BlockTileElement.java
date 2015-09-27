@@ -10,6 +10,7 @@ import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import advancedsystemsmanager.util.SystemCoord;
+import cofh.api.block.IDismantleable;
 import com.cricketcraft.chisel.api.IFacade;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
@@ -34,32 +35,42 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
-@Optional.Interface(iface = "com.cricketcraft.chisel.api.IFacade", modid = Mods.CHISEL)
-public class BlockTileElement extends Block implements IFacade, ICable
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "com.cricketcraft.chisel.api.IFacade", modid = Mods.CHISEL),
+        @Optional.Interface(iface = "cofh.api.block.IDismantleable", modid = Mods.COFHCORE)})
+public class BlockTileElement extends Block implements IFacade, ICable, IDismantleable
 {
     public static int RENDER_ID;
-    private ITileFactory[] factories = new TileFactory[16];
+    private ITileFactory[] factories;
+    private int id;
 
-    public BlockTileElement(String name)
+    public BlockTileElement(int id)
     {
         super(Material.iron);
+        this.id = id;
         setCreativeTab(AdvancedSystemsManager.creativeTab);
         setStepSound(soundTypeMetal);
-        setBlockName(name);
+        setBlockName("element" + id);
         setHardness(1.2f);
+        clearFactories();
     }
 
-    public void setFactories(Iterator<ITileFactory> iterator)
+    public void clearFactories()
     {
-        for (int i = 0; iterator.hasNext() & i < factories.length;)
+        factories = new ITileFactory[16];
+    }
+
+    public void setFactories(Collection<ITileFactory> factories)
+    {
+        for (ITileFactory factory : factories)
         {
-            ITileFactory element = iterator.next();
-            if (element.getBlock() == null)
+            int factoryId = ClusterRegistry.getId(factory);
+            if (factoryId >= id * 16 && factoryId < (id + 1) * 16)
             {
-                factories[i] = element;
-                element.setBlock(this);
-                element.setMetadata(i);
-                i++;
+                factoryId &= 0xF;
+                this.factories[factoryId] = factory;
+                factory.setBlock(this);
+                factory.setMetadata(factoryId);
             }
         }
     }
@@ -68,10 +79,7 @@ public class BlockTileElement extends Block implements IFacade, ICable
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register)
     {
-        for (ITileFactory element : factories)
-        {
-            if (element != null) element.registerIcons(register);
-        }
+        if (this == BlockRegistry.cableElements[0]) ClusterRegistry.registerIcons(register);
     }
 
     @Override
@@ -402,5 +410,20 @@ public class BlockTileElement extends Block implements IFacade, ICable
     public void getConnectedCables(World world, SystemCoord coordinate, List<SystemCoord> visited, Queue<SystemCoord> cables)
     {
         BlockHelper.getAdjacentCables(coordinate, visited, cables);
+    }
+
+    public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnBlock)
+    {
+        ArrayList<ItemStack> list = getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+        world.setBlockToAir(x, y, z);
+        if (!returnBlock)
+            for (ItemStack item : list)
+                dropBlockAsItem(world, x, y, z, item);
+        return list;
+    }
+
+    public boolean canDismantle(EntityPlayer entityPlayer, World world, int x, int y, int z)
+    {
+        return entityPlayer.isSneaking();
     }
 }

@@ -1,6 +1,7 @@
 package advancedsystemsmanager.commands;
 
 import advancedsystemsmanager.helpers.LocalizationHelper;
+import advancedsystemsmanager.reference.Files;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -25,7 +26,7 @@ public class CommandLoad extends CommandDuplicator
         try
         {
             String name = arguments.length == 2 ? arguments[1] : sender.getCommandSenderName();
-            File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers" + File.separator + name + ".nbt");
+            File file = new File(Files.MANAGER_SAVE_DIR, name + ".nbt");
             if (!file.exists())
             {
                 throw new CommandException("Couldn't access file: " + name + ".nbt");

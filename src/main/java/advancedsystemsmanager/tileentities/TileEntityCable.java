@@ -17,11 +17,4 @@ public class TileEntityCable extends TileEntityElementBase implements IBUDListen
     {
         BlockHelper.updateInventories(new SystemCoord(xCoord, yCoord, zCoord, worldObj));
     }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
-        onNeighborBlockChange();
-    }
 }

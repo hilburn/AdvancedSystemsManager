@@ -3,14 +3,19 @@ package advancedsystemsmanager.registry;
 import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.blocks.TileFactory;
+import advancedsystemsmanager.client.gui.TextColour;
 import advancedsystemsmanager.helpers.LocalizationHelper;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -89,7 +94,7 @@ public class ClusterRegistry
             return element.getSubtype() == 1;
         }
     });
-    public static TileFactory CREATIVE = registerClusterElement(TileEntityCreative.class, new String[]{CABLE_CREATIVE});
+//    public static TileFactory CREATIVE = registerClusterElement(TileEntityCreative.class, new String[]{CABLE_CREATIVE});
     public static TileFactory EMITTER = registerClusterElement(TileEntityEmitter.class, new String[]{CABLE_OUTPUT}, WEAK_SUFFIX, IDLE_SUFFIX);
     public static TileFactory FLUID_GATE = registerDirectionElement(TileEntityFluidGate.class, new String[]{CABLE_FLUID_GATE}, SIDE_SUFFIX);
     public static TileFactory RECEIVER = registerClusterElement(TileEntityReceiver.class, new String[]{CABLE_INPUT});
@@ -97,6 +102,63 @@ public class ClusterRegistry
     public static TileFactory SIGN = registerDirectionElement(TileEntitySignUpdater.class, new String[]{CABLE_SIGN}, SIDE_SUFFIX);
     public static TileFactory VALVE = registerDirectionElement(TileEntityValve.class, new String[]{CABLE_VALVE, CABLE_VALVE + ADVANCED_SUFFIX}, SIDE_SUFFIX);
     public static TileFactory VOID = registerInterfaceElement(TileEntityVoid.class, new String[]{CABLE_VOID});
+    public static TileFactory QUANTUM = registerFactory(new TileFactory(TileEntityQuantumCable.class, new String[]{CABLE_QUANTUM})
+    {
+        @Override
+        public void onCreated(ItemStack stack, World world, EntityPlayer player)
+        {
+            if (!world.isRemote && stack.hasTagCompound() && stack.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
+            {
+                TileEntityQuantumCable.getNextQuantumKey();
+            }
+        }
+
+        @Override
+        public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list)
+        {
+            for (int i : new int[]{1, 8, 9})
+            {
+                ItemStack stack = getItemStack();
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, i);
+                stack.setTagCompound(tagCompound);
+                list.add(stack);
+            }
+        }
+
+        @Override
+        @SideOnly(Side.CLIENT)
+        public void addInformation(ItemStack stack, EntityPlayer player, List<String> information, boolean advanced)
+        {
+            if (!stack.hasTagCompound())
+            {
+                stack.setTagCompound(new NBTTagCompound());
+            }
+            NBTTagCompound tag = stack.getTagCompound();
+
+            if (tag.hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
+            {
+                information.add(LocalizationHelper.translateFormatted(Names.QUANTUM_PAIRING, TileEntityQuantumCable.getSpinString(tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_KEY))));
+            } else
+            {
+                information.add(TextColour.RED.toString() + LocalizationHelper.translate(Names.QUANTUM_UNPAIRED));
+            }
+            int range = tag.getInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE);
+            if (range < 9)
+            {
+                information.add(LocalizationHelper.translateFormatted(Names.QUANTUM_RANGE, TileEntityQuantumCable.getRange(range)));
+            } else
+            {
+                information.add(LocalizationHelper.translate(Names.QUANTUM_INTERDIMENSIONAL));
+            }
+        }
+
+        @Override
+        public boolean canPlaceBlock(World world, int x, int y, int z, ItemStack stack)
+        {
+            return stack.hasTagCompound() && stack.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY);
+        }
+    });
 
     private static TileFactory registerClusterElement(Class<? extends TileEntityElementBase> clazz, String[] subtypes, String... iconNames)
     {
@@ -130,8 +192,24 @@ public class ClusterRegistry
         return registry.get(id);
     }
 
+    public static int getId(ITileFactory factory)
+    {
+        return FactoryMappingRegistry.INSTANCE.getId(factory.getKey());
+    }
+
+    public static Collection<String> getKeys()
+    {
+        return registry.keySet();
+    }
+
     public static Collection<ITileFactory> getFactories()
     {
         return registry.values();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerIcons(IIconRegister register)
+    {
+        for (ITileFactory factory : getFactories()) factory.registerIcons(register);
     }
 }

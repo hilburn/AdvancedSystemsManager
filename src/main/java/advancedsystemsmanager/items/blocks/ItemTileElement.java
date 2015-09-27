@@ -5,6 +5,7 @@ import advancedsystemsmanager.api.items.IElementItem;
 import advancedsystemsmanager.api.items.ITooltipFactory;
 import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.blocks.BlockTileElement;
+import advancedsystemsmanager.blocks.TileFactory;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -68,6 +69,17 @@ public class ItemTileElement extends ItemBlock implements IElementItem
             }
         }
         return true;
+    }
+
+    @Override
+    public void onCreated(ItemStack stack, World world, EntityPlayer player)
+    {
+        super.onCreated(stack, world, player);
+        ITileFactory factory = getTileFactory(stack);
+        if (factory instanceof TileFactory)
+        {
+            ((TileFactory) factory).onCreated(stack, world, player);
+        }
     }
 
     @Override

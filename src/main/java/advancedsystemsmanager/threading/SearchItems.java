@@ -41,7 +41,9 @@ public class SearchItems implements Runnable
     {
         searchBlocks.clear();
         searchEntries.clear();
-        new Thread(new CacheItems()).start();
+        Thread search = new Thread(new CacheItems());
+        search.setName("ASM-item_cache");
+        search.start();
     }
 
     @Override

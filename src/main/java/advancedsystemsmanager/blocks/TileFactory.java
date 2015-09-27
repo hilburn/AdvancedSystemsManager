@@ -7,6 +7,7 @@ import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityElementBase;
+import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,11 +17,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Collection;
 import java.util.List;
 
 public class TileFactory implements ITileFactory
@@ -72,7 +75,7 @@ public class TileFactory implements ITileFactory
     }
 
     @Override
-    public boolean canBeAddedToCluster(List<ITileElement> clusterElements)
+    public boolean canBeAddedToCluster(Collection<ITileFactory> existing)
     {
         return false;
     }
@@ -159,10 +162,25 @@ public class TileFactory implements ITileFactory
         return true;
     }
 
+    public void onCreated(ItemStack stack, World world, EntityPlayer player)
+    {
+
+    }
+
     @Override
     public boolean isCable(ITileElement element)
     {
         return false;
+    }
+
+    @Override
+    public void saveToClusterTag(ItemStack stack, NBTTagCompound tag)
+    {
+        NBTTagCompound subtype = stack.getTagCompound();
+        if (subtype == null)
+            subtype = new NBTTagCompound();
+        subtype.setByte(TileEntityElementBase.NBT_SUBTYPE, (byte) (stack.getItemDamage() / 16));
+        tag.setTag(getKey(), subtype);
     }
 
     @Override
@@ -223,11 +241,11 @@ public class TileFactory implements ITileFactory
         }
 
         @Override
-        public boolean canBeAddedToCluster(List<ITileElement> clusterElements)
+        public boolean canBeAddedToCluster(Collection<ITileFactory> existing)
         {
-            for (ITileElement tile : clusterElements)
+            for (ITileFactory factory : existing)
             {
-                if (isInstance(tile)) return false;
+                if (factory == this) return false;
             }
             return true;
         }
@@ -241,11 +259,11 @@ public class TileFactory implements ITileFactory
         }
 
         @Override
-        public boolean canBeAddedToCluster(List<ITileElement> clusterElements)
+        public boolean canBeAddedToCluster(Collection<ITileFactory> existing)
         {
-            for (ITileElement tile : clusterElements)
+            for (ITileFactory factory : existing)
             {
-                if (isInstance(tile) || tile instanceof ITileInterfaceProvider) return false;
+                if (factory instanceof Interface) return false;
             }
             return true;
         }

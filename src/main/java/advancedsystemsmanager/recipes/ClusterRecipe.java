@@ -1,14 +1,17 @@
 package advancedsystemsmanager.recipes;
 
-
-import net.minecraft.block.Block;
+import advancedsystemsmanager.api.items.IElementItem;
+import advancedsystemsmanager.api.tileentities.ITileElement;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
+import advancedsystemsmanager.registry.ClusterRegistry;
+import advancedsystemsmanager.tileentities.TileEntityCluster;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.RecipeSorter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;
@@ -27,55 +30,54 @@ public class ClusterRecipe implements IRecipe
     {
         output = null;
 
-
-        ItemStack cluster = null;
+        ItemStack clusterStack = ClusterRegistry.CLUSTER.getItemStack();
+        ItemStack advcluster = ClusterRegistry.CLUSTER.getItemStack(1);
+        List<ItemStack> stacksToAdd = new ArrayList<ItemStack>();
         for (int i = 0; i < inventorycrafting.getSizeInventory(); i++)
         {
             ItemStack item = inventorycrafting.getStackInSlot(i);
 
-//            if (item != null && Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableCluster)
+            if (item != null)
             {
-                if (cluster != null)
+                if (item.isItemEqual(clusterStack) || item.isItemEqual(advcluster))
                 {
-                    return false; //multiple clusters
+                    if (output != null)
+                    {
+                        return false; //multiple clusters
+                    } else
+                    {
+                        output = item;
+                    }
+                } else if (item.getItem() instanceof IElementItem)
+                {
+                    stacksToAdd.add(item);
                 } else
                 {
-                    cluster = item;
+                    return false;
                 }
             }
         }
 
-        if (cluster != null)
+        if (output != null && !stacksToAdd.isEmpty())
         {
-//            boolean foundClusterComponent = false;
-//            if (!cluster.hasTagCompound()) cluster.setTagCompound(new NBTTagCompound());
-//            List<IClusterElement> existing = ItemCluster.getTypes(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
-//            List<ItemStack> stacks = ItemCluster.getItemStacks(cluster.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE));
-//
-//            for (int i = 0; i < inventorycrafting.getSizeInventory(); i++)
-//            {
-//                ItemStack item = inventorycrafting.getStackInSlot(i);
-//
-//                if (item != null && item.getItem() instanceof IClusterItem)
-//                {
-//                    IClusterElement element = ((IClusterItem)item.getItem()).getClusterElement(item);
-//                    if (element != null)
-//                    {
-//                        if (existing.contains(element)) return false;
-//                        existing.add(element);
-//                        stacks.add(item);
-//                        foundClusterComponent = true;
-//                    }
-//                }
-//            }
-//
-//            if (!foundClusterComponent)
-//            {
-//                return false; //nothing added
-//            }
-//
-////            output = new ItemStack(BlockRegistry.cableCluster, 1, cluster.getItemDamage());
-//            ItemCluster.setClusterTag(output, stacks);
+            List<ItemStack> existing = TileEntityCluster.getSubblocks(output);
+            List<ITileFactory> existingFactories = new ArrayList<ITileFactory>();
+            for (ItemStack element : existing)
+            {
+                ITileFactory factory = ((IElementItem) element.getItem()).getTileFactory(element);
+                if (factory != null) existingFactories.add(factory);
+            }
+            for (ItemStack stack : stacksToAdd)
+            {
+                ITileFactory factory = ((IElementItem) stack.getItem()).getTileFactory(stack);
+                if (factory == null || !factory.canBeAddedToCluster(existingFactories))
+                {
+                    return false;
+                }
+                existingFactories.add(factory);
+                existing.add(stack);
+            }
+            TileEntityCluster.saveSubBlocks(output, existingFactories, existing);
             return true;
         }
 

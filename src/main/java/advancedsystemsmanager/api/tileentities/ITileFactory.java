@@ -1,6 +1,5 @@
 package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.api.tileentities.ITileElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -9,11 +8,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ITileFactory
@@ -32,7 +33,7 @@ public interface ITileFactory
 
     boolean hasTileEntity();
 
-    boolean canBeAddedToCluster(List<ITileElement> clusterElements);
+    boolean canBeAddedToCluster(Collection<ITileFactory> existingFactories);
 
     TileEntity createTileEntity(World world, int metadata);
 
@@ -60,4 +61,6 @@ public interface ITileFactory
 
     @SideOnly(Side.CLIENT)
     void addInformation(ItemStack stack, EntityPlayer player, List<String> information, boolean advanced);
+
+    void saveToClusterTag(ItemStack stack, NBTTagCompound tag);
 }

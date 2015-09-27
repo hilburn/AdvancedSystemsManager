@@ -1,13 +1,11 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.helpers.SavableData;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.util.SystemCoord;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
 
-public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
+public class TileEntityQuantumCable extends TileEntityElementBase
 {
     public static final String NBT_QUANTUM_KEY = "quantumKey";
     public static final String NBT_QUANTUM_RANGE = "quantumRange";
@@ -26,21 +24,10 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
     private int quantumKey;
     private int quantumRange;
     private TileEntityQuantumCable pair;
-    private byte sendUpdate;
 
     static
     {
         AdvancedSystemsManager.worldSave.save(NEXT_QUANTUM_KEY = new QuantumSave());
-    }
-
-    @Override
-    public void updateEntity()
-    {
-        if (!worldObj.isRemote && sendUpdate > 0)
-        {
-            sendUpdate = 0;
-            PacketHandler.sendBlockPacket(this, null, sendUpdate);
-        }
     }
 
     public static int getNextQuantumKey()
@@ -54,31 +41,22 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag)
+    public void writeItemNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(tag);
-        readContentFromNBT(tag);
+        super.writeItemNBT(tag);
+        tag.setInteger(NBT_QUANTUM_KEY, quantumKey);
+        tag.setInteger(NBT_QUANTUM_RANGE, quantumRange);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag)
+    public void readItemNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(tag);
-        writeContentToNBT(tag);
+        super.readItemNBT(tag);
+        quantumRange = tag.getInteger(NBT_QUANTUM_RANGE);
+        setQuantumKey(tag.getInteger(NBT_QUANTUM_KEY));
+        setMessageType(1);
     }
 
-    public void writeContentToNBT(NBTTagCompound tagCompound)
-    {
-        tagCompound.setInteger(NBT_QUANTUM_KEY, quantumKey);
-        tagCompound.setInteger(NBT_QUANTUM_RANGE, quantumRange);
-    }
-
-    public void readContentFromNBT(NBTTagCompound tagCompound)
-    {
-        quantumRange = tagCompound.getInteger(NBT_QUANTUM_RANGE);
-        setQuantumKey(tagCompound.getInteger(NBT_QUANTUM_KEY));
-        sendUpdate |= 1;
-    }
 
     private boolean isInRange(TileEntityQuantumCable paired)
     {
@@ -121,8 +99,8 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
             {
                 BlockHelper.updateInventories(new SystemCoord(xCoord, yCoord, zCoord, worldObj));
                 quantumRegistry.remove(getQuantumKey());
-                sendUpdate |= 2;
-                pair.sendUpdate |= 2;
+                setMessageType(2);
+                pair.setMessageType(2);
             }
         }
     }
@@ -172,7 +150,7 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
             {
                 pair.pair = null;
                 addCable(pair);
-                pair.sendUpdate |= 2;
+                pair.setMessageType(2);
                 BlockHelper.updateInventories(new SystemCoord(pair.xCoord, pair.yCoord, pair.zCoord, pair.worldObj));
             }else
             {
@@ -191,13 +169,6 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
             return other.xCoord == xCoord && other.yCoord == yCoord && other.zCoord == zCoord && other.quantumKey == quantumKey;
         }
         return false;
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        PacketHandler.sendBlockPacket(this, null, 3);
-        return null;
     }
 
     public int getQuantumKey()
@@ -229,52 +200,43 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
     }
 
     @Override
-    public void writeData(ASMPacket packet, int id)
+    public void readClientSyncData(ASMPacket packet)
     {
-//        if ((id & 1) == 1)
+        super.readClientSyncData(packet);
+        quantumRange = packet.readByte();
+        quantumKey = packet.readVarIntFromBuffer();
+
+        if (packet.readBoolean())
         {
-            packet.writeByte(quantumRange);
-            packet.writeVarIntToBuffer(quantumKey);
-//        }
-//        if ((id & 2) == 2)
-//        {
-            if (pair != null && pair.worldObj != null)
+            World world = DimensionManager.getWorld(packet.readShort());
+            TileEntity te = world.getTileEntity(packet.readInt(), packet.readUnsignedByte(), packet.readInt());
+            if (te instanceof TileEntityQuantumCable)
             {
-                packet.writeBoolean(true);
-                packet.writeShort(pair.worldObj.provider.dimensionId);
-                packet.writeInt(pair.xCoord);
-                packet.writeByte(pair.yCoord);
-                packet.writeInt(pair.zCoord);
-            } else
-            {
-                packet.writeBoolean(false);
+                pair = (TileEntityQuantumCable)te;
+                ((TileEntityQuantumCable) te).pair = this;
             }
+        } else
+        {
+            pair = null;
         }
     }
 
     @Override
-    public void readData(ASMPacket packet, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
-//        if ((id & 1) == 1)
+        super.writeClientSyncData(packet);
+        packet.writeByte(quantumRange);
+        packet.writeVarIntToBuffer(quantumKey);
+        if (pair != null && pair.worldObj != null)
         {
-            quantumRange = packet.readByte();
-            quantumKey = packet.readVarIntFromBuffer();
-//        }
-//        if ((id & 2) == 2)
-//        {
-            if (packet.readBoolean())
-            {
-                World world = DimensionManager.getWorld(packet.readShort());
-                TileEntity te = world.getTileEntity(packet.readInt(), packet.readUnsignedByte(), packet.readInt());
-                if (te instanceof TileEntityQuantumCable)
-                {
-                    pair = (TileEntityQuantumCable)te;
-                    ((TileEntityQuantumCable) te).pair = this;
-                }
-            } else
-            {
-                pair = null;
-            }
+            packet.writeBoolean(true);
+            packet.writeShort(pair.worldObj.provider.dimensionId);
+            packet.writeInt(pair.xCoord);
+            packet.writeByte(pair.yCoord);
+            packet.writeInt(pair.zCoord);
+        } else
+        {
+            packet.writeBoolean(false);
         }
     }
 

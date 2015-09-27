@@ -4,7 +4,7 @@ import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.execution.Key;
 import advancedsystemsmanager.flow.execution.buffers.elements.BufferElementBase;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.tileentities.TileEntityAENode;
+import advancedsystemsmanager.compatibility.appliedenergistics.TileEntityAENode;
 import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.item.ItemStack;
 

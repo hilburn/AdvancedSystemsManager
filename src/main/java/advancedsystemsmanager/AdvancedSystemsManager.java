@@ -8,12 +8,10 @@ import advancedsystemsmanager.naming.EventHandler;
 import advancedsystemsmanager.network.MessageHandler;
 import advancedsystemsmanager.network.PacketEventHandler;
 import advancedsystemsmanager.proxy.CommonProxy;
+import advancedsystemsmanager.reference.Files;
 import advancedsystemsmanager.reference.Metadata;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.registry.ClusterRegistry;
-import advancedsystemsmanager.registry.ItemRegistry;
-import advancedsystemsmanager.registry.ThemeHandler;
+import advancedsystemsmanager.registry.*;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -55,7 +53,7 @@ public class AdvancedSystemsManager
     public static ThemeHandler themeHandler;
     public static WorldSaveHelper worldSave;
 
-    private static File configDir;
+
 
     public static boolean DEV_ENVIRONMENT = FMLForgePlugin.RUNTIME_DEOBF;
 
@@ -63,9 +61,9 @@ public class AdvancedSystemsManager
     public void preInit(FMLPreInitializationEvent event)
     {
         metadata = Metadata.init(metadata);
-        configDir = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
-        if (!configDir.exists()) configDir.mkdir();
-        configHandler = new ConfigHandler(new File(configDir.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
+        Files.CONFIG_DIR = new File(event.getModConfigurationDirectory() + File.separator + Reference.ID);
+        if (!Files.CONFIG_DIR.exists()) Files.CONFIG_DIR.mkdir();
+        configHandler = new ConfigHandler(new File(Files.CONFIG_DIR.getAbsolutePath() + File.separator + event.getSuggestedConfigurationFile().getName()));
         configHandler.init();
         creativeTab = new CreativeTabs(Reference.ID)
         {
@@ -135,13 +133,23 @@ public class AdvancedSystemsManager
         RemapHelper.handleRemap(event);
     }
 
+    @Mod.EventHandler
+    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    {
+        create(Files.WORLD_SAVE_DIR = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "asm_data"));
+        create(Files.MANAGER_SAVE_DIR = new File(Files.WORLD_SAVE_DIR, "managers"));
+        FactoryMappingRegistry.load();
+    }
 
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event)
     {
         ModItemHelper.init();
         event.registerServerCommand(ParentCommand.instance);
-        File file = new File(DimensionManager.getCurrentSaveRootDirectory().getPath() + File.separator + "managers");
+    }
+
+    private void create(File file)
+    {
         if (!file.exists()) file.mkdir();
     }
 

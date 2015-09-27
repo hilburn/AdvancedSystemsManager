@@ -1,17 +1,14 @@
-package advancedsystemsmanager.tileentities;
+package advancedsystemsmanager.compatibility.rf;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
+import advancedsystemsmanager.tileentities.TileEntityCluster;
+import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.EnumSet;
 
 public class TileEntityRFNode extends TileEntityElementBase implements IEnergyProvider, IEnergyReceiver, IPacketBlock
 {

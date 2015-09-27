@@ -25,6 +25,7 @@ import java.util.List;
 public class ItemRemoteAccessor extends ItemBase
 {
     public static final String WORLD = "world";
+    public static final String DIMENSION = "dim";
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
@@ -84,7 +85,7 @@ public class ItemRemoteAccessor extends ItemBase
             int z = stack.getTagCompound().getInteger(Z);
             list.add(StatCollector.translateToLocal(Names.LINKED_LOCATION));
             list.add(StatCollector.translateToLocalFormatted(Names.LOCATION, x, y, z));
-            list.add(DimensionManager.getProvider(dim).getDimensionName());
+            list.add(stack.getTagCompound().getString(DIMENSION));
         }
     }
 
@@ -119,6 +120,7 @@ public class ItemRemoteAccessor extends ItemBase
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 tagCompound.setByte(WORLD, (byte) world.provider.dimensionId);
+                tagCompound.setString(DIMENSION, world.provider.getDimensionName());
                 tagCompound.setInteger(X, te.xCoord);
                 tagCompound.setInteger(Y, te.yCoord);
                 tagCompound.setInteger(Z, te.zCoord);

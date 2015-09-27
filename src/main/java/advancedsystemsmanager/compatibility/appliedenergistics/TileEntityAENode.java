@@ -1,10 +1,9 @@
-package advancedsystemsmanager.tileentities;
+package advancedsystemsmanager.compatibility.appliedenergistics;
 
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.api.tileentities.IInternalTank;
 import advancedsystemsmanager.compatibility.appliedenergistics.buffer.AEFluidBufferElement;
-import advancedsystemsmanager.compatibility.appliedenergistics.AEHelper;
 import advancedsystemsmanager.compatibility.appliedenergistics.buffer.AEItemBufferElement;
 import advancedsystemsmanager.flow.execution.ConditionSettingChecker;
 import advancedsystemsmanager.flow.menus.MenuItem;
@@ -13,10 +12,9 @@ import advancedsystemsmanager.flow.menus.MenuStuff;
 import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Mods;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.registry.CommandRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
+import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import appeng.api.AEApi;
 import appeng.api.networking.*;
 import appeng.api.networking.security.IActionHost;
@@ -279,8 +277,7 @@ public class TileEntityAENode extends TileEntityElementBase implements IGridHost
         @Override
         public ItemStack getMachineRepresentation()
         {
-            //TODO fix
-            return ClusterRegistry.CABLE.getItemStack();
+            return AECompat.AE.getItemStack();
         }
     }
 

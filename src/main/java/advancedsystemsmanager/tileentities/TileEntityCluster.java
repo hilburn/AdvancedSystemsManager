@@ -90,6 +90,15 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
         }
     }
 
+    public static void saveSubBlocks(ItemStack cluster, List<ITileFactory> factories, List<ItemStack> stacks)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        for (int i = 0; i < factories.size(); i++)
+        {
+            factories.get(i).saveToClusterTag(stacks.get(i), tagCompound);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public void loadElements(NBTTagCompound tag)
     {
@@ -115,7 +124,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
     private ITileElement addElement(ITileFactory factory, NBTTagCompound value)
     {
-        if (!factory.canBeAddedToCluster(getTiles()))
+        if (!factory.canBeAddedToCluster(pairs.keySet()))
         {
             return null;
         }
@@ -147,6 +156,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     public void onBlockPlacedBy(EntityLivingBase entity, ItemStack itemStack)
     {
         super.onBlockPlacedBy(entity, itemStack);
+
         for (ITileElement element : elements)
         {
             if (element instanceof IPlaceListener)

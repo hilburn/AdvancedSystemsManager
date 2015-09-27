@@ -3,7 +3,7 @@ package advancedsystemsmanager.compatibility.appliedenergistics.buffer;
 import advancedsystemsmanager.api.execution.IBufferElement;
 import advancedsystemsmanager.flow.execution.buffers.elements.BufferElementBase;
 import advancedsystemsmanager.flow.setting.Setting;
-import advancedsystemsmanager.tileentities.TileEntityAENode;
+import advancedsystemsmanager.compatibility.appliedenergistics.TileEntityAENode;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

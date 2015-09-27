@@ -15,7 +15,8 @@ public class BlockRegistry
 //    @Register(tileEntity = TileEntityManager.class, itemBlock = ItemManager.class, name = Names.MANAGER)
 //    public static BlockManager blockManager;
 //
-    public static final List<BlockTileElement> cableElement = new ArrayList<BlockTileElement>();
+    public static int BLOCKS_TO_REGISTER = 4;
+    public static BlockTileElement[] cableElements;
 
 //    @Register(tileEntity = TileEntityQuantumCable.class, itemBlock = ItemQuantum.class, name = Names.OLD_CABLE_QUANTUM)
 //    public static BlockCableQuantum cableQuantum;
@@ -29,23 +30,10 @@ public class BlockRegistry
 
     public static void registerBlocks()
     {
-        Comparator<ITileFactory> alphabetical = new Comparator<ITileFactory>()
+        cableElements = new BlockTileElement[BLOCKS_TO_REGISTER];
+        for (int i = 0; i < BLOCKS_TO_REGISTER; i++)
         {
-            @Override
-            public int compare(ITileFactory o1, ITileFactory o2)
-            {
-                return String.CASE_INSENSITIVE_ORDER.compare(o1.getKey(), o2.getKey());
-            }
-        };
-        List<ITileFactory> factories = new ArrayList<ITileFactory>(ClusterRegistry.getFactories());
-        Collections.sort(factories, alphabetical);
-        int i = 0;
-        for (Iterator<ITileFactory> itr = factories.iterator(); itr.hasNext(); i++)
-        {
-            BlockTileElement element = new BlockTileElement("element" + i);
-            GameRegistry.registerBlock(element, ItemTileElement.class, "element" + i);
-            cableElement.add(element);
-            element.setFactories(itr);
+            GameRegistry.registerBlock(cableElements[i] = new BlockTileElement(i), ItemTileElement.class, "element" + i);
         }
     }
 
@@ -177,5 +165,14 @@ public class BlockRegistry
 //        GameRegistry.addRecipe(new ClusterUncraftingRecipe());
 //        GameRegistry.addRecipe(new QuantumCraftingRecipe());
 //        GameRegistry.addRecipe(new QuantumPairingRecipe());
+    }
+
+    public static void registerTiles()
+    {
+        for (BlockTileElement block : cableElements)
+        {
+            block.clearFactories();
+            block.setFactories(ClusterRegistry.getFactories());
+        }
     }
 }

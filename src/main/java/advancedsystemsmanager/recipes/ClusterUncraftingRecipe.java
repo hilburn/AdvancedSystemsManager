@@ -1,5 +1,8 @@
 package advancedsystemsmanager.recipes;
 
+import advancedsystemsmanager.helpers.PlayerHelper;
+import advancedsystemsmanager.registry.ClusterRegistry;
+import advancedsystemsmanager.tileentities.TileEntityCluster;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -12,8 +15,6 @@ import net.minecraftforge.oredict.RecipeSorter;
 
 public class ClusterUncraftingRecipe implements IRecipe
 {
-//    private static ItemStack cluster = new ItemStack(BlockRegistry.cableCluster);
-//    private static ItemStack advcluster = new ItemStack(BlockRegistry.cableCluster, 1, 8);
 
     public ClusterUncraftingRecipe()
     {
@@ -33,38 +34,44 @@ public class ClusterUncraftingRecipe implements IRecipe
 
     public boolean matches(IInventory crafting)
     {
-        return false;
-//        boolean hasCluster = false;
-//        for (int i = 0; i < crafting.getSizeInventory(); i++)
-//        {
-//            ItemStack stack = crafting.getStackInSlot(i);
-//            if (stack == null) continue;
-////            if (!hasCluster && (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)))
-//            {
-//                hasCluster = true;
-//                continue;
-//            }
-////            return false;
-//        }
-//        return hasCluster;
+        ItemStack cluster = ClusterRegistry.CLUSTER.getItemStack();
+        ItemStack advcluster = ClusterRegistry.CLUSTER.getItemStack(1);
+        boolean hasCluster = false;
+        for (int i = 0; i < crafting.getSizeInventory(); i++)
+        {
+            ItemStack stack = crafting.getStackInSlot(i);
+            if (stack != null)
+            {
+                if (!hasCluster && (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)))
+                {
+                    hasCluster = true;
+                    continue;
+                }
+                return false;
+            }
+        }
+        return hasCluster;
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting crafting)
     {
-//        ItemStack result = cluster.copy();
-//        result.setItemDamage(getCluster(crafting).getItemDamage());
-//        return result;
-        return null;
+        ItemStack result = ClusterRegistry.CLUSTER.getItemStack();
+        result.setItemDamage(getCluster(crafting).getItemDamage());
+        return result;
     }
 
     public ItemStack getCluster(IInventory crafting)
     {
+        ItemStack cluster = ClusterRegistry.CLUSTER.getItemStack();
+        ItemStack advcluster = ClusterRegistry.CLUSTER.getItemStack(1);
         for (int i = 0; i < crafting.getSizeInventory(); i++)
         {
             ItemStack stack = crafting.getStackInSlot(i);
-            if (stack == null) continue;
-//            if (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)) return stack;
+            if (stack != null)
+            {
+                if (stack.isItemEqual(cluster) || stack.isItemEqual(advcluster)) return stack;
+            }
         }
         return null;
     }
@@ -93,12 +100,12 @@ public class ClusterUncraftingRecipe implements IRecipe
                 {
                     int stackSize = e.crafting.stackSize;
                     stackSize = stackSize == 0 ? 1 : stackSize;
-//                    for (ItemStack component : ItemCluster.getItemStacks(stack.getTagCompound().getCompoundTag(ItemCluster.NBT_CABLE)))
-//                    {
-//                        component.stackSize = stackSize;
-//                        if (!e.player.inventory.addItemStackToInventory(component))
-//                            e.player.dropPlayerItemWithRandomChoice(component, false);
-//                    }
+                    for (ItemStack component : TileEntityCluster.getSubblocks(stack))
+                    {
+                        component.stackSize = stackSize;
+                        if (!e.player.inventory.addItemStackToInventory(component))
+                            e.player.dropPlayerItemWithRandomChoice(component, false);
+                    }
                 }
             }
         }

@@ -4,6 +4,8 @@ import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.containers.ContainerBase;
 import advancedsystemsmanager.naming.NameRegistry;
+import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.FactoryMappingRegistry;
 import advancedsystemsmanager.threading.SearchItems;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -75,8 +77,9 @@ public class PacketEventHandler
                     NameRegistry.updateClient(packet);
                 }
                 break;
-            case PacketHandler.GENERATE_SEARCH:
+            case PacketHandler.ON_JOIN:
                 SearchItems.setItems();
+                FactoryMappingRegistry.INSTANCE.readData(packet);
                 break;
         }
     }

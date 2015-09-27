@@ -1,7 +1,5 @@
 package advancedsystemsmanager.nei;
 
-import advancedsystemsmanager.items.blocks.ItemQuantum;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import codechicken.nei.recipe.ShapelessRecipeHandler;
@@ -30,7 +28,7 @@ public class NEIQuantumRecipes extends ShapelessRecipeHandler
     public void loadCraftingRecipes(ItemStack result)
     {
         super.loadCraftingRecipes(result);
-        if (result.getItem() instanceof ItemQuantum)
+        if (ClusterRegistry.QUANTUM.getItemStack().isItemEqual(result))
         {
             if (!result.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
             {

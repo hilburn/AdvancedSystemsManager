@@ -7,6 +7,7 @@ import advancedsystemsmanager.flow.FlowComponent;
 import advancedsystemsmanager.flow.menus.Menu;
 import advancedsystemsmanager.containers.ContainerBase;
 import advancedsystemsmanager.containers.ContainerManager;
+import advancedsystemsmanager.registry.FactoryMappingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -30,7 +31,7 @@ public class PacketHandler
     public static final int BLOCK = 1;
     public static final int COMMAND = 2;
     public static final int NAME = 3;
-    public static final int GENERATE_SEARCH = 4;
+    public static final int ON_JOIN = 4;
 
     public static void sendAllData(Container container, ICrafting crafting, ITileInterfaceProvider te)
     {
@@ -177,7 +178,8 @@ public class PacketHandler
     public static void sendLogonMessage(EntityPlayerMP player)
     {
         ASMPacket packet = new ASMPacket();
-        packet.writeByte(GENERATE_SEARCH);
+        packet.writeByte(ON_JOIN);
+        FactoryMappingRegistry.INSTANCE.writeData(packet);
         packet.sendPlayerPacket(player);
     }
 }
