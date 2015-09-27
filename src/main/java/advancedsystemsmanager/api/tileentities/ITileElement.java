@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api.tiletypes;
+package advancedsystemsmanager.api.tileentities;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,9 +13,11 @@ public interface ITileElement
 
     void setPartOfCluster(boolean partOfCluster);
 
-    void writeContentToNBT(NBTTagCompound tag);
+    void writeToItemNBT(NBTTagCompound tag);
 
-    void readContentFromNBT(NBTTagCompound tag);
+    void readFromItemNBT(NBTTagCompound tag);
+
+    void onAddedToCluster(ICluster cluster);
 
     @SideOnly(Side.CLIENT)
     IIcon getIcon(int side);

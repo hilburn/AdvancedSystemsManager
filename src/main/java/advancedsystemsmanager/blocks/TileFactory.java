@@ -1,9 +1,8 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.api.ITileFactory;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
@@ -43,7 +42,10 @@ public class TileFactory implements ITileFactory
         {
             this.iconNames[i] = iconNames[0] + iconNames[i];
         }
-        GameRegistry.registerTileEntity(tileClass, iconNames[0]);
+        if (subType == 0)
+        {
+            GameRegistry.registerTileEntity(tileClass, iconNames[0]);
+        }
     }
 
     @Override
@@ -160,7 +162,7 @@ public class TileFactory implements ITileFactory
 
     @SideOnly(Side.CLIENT)
     @Override
-    public IIcon getIcon(int side)
+    public IIcon getIcon(int side, int subtype)
     {
         return icons[0];
     }
@@ -224,9 +226,9 @@ public class TileFactory implements ITileFactory
 
         @Override
         @SideOnly(Side.CLIENT)
-        public IIcon getIcon(int side)
+        public IIcon getIcon(int side, int subtype)
         {
-            return side == 3 ? super.icons[0] : super.icons[1];
+            return super.icons[side == 3 ? 0 : 1];
         }
     }
 }

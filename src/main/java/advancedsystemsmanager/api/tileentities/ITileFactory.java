@@ -1,7 +1,6 @@
-package advancedsystemsmanager.api;
+package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.api.tileentities.IClusterTile;
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -47,7 +46,7 @@ public interface ITileFactory
     void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list);
 
     @SideOnly(Side.CLIENT)
-    IIcon getIcon(int side);
+    IIcon getIcon(int side, int subtype);
 
     @SideOnly(Side.CLIENT)
     IIcon[] getIcons();

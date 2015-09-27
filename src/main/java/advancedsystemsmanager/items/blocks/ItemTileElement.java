@@ -1,11 +1,10 @@
 package advancedsystemsmanager.items.blocks;
 
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.items.IElementItem;
 import advancedsystemsmanager.api.items.ITooltipFactory;
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.blocks.BlockTileElement;
-import advancedsystemsmanager.blocks.TileFactory;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -48,6 +47,12 @@ public class ItemTileElement extends ItemBlock implements IElementItem
     }
 
     @Override
+    public int getMetadata(int damage)
+    {
+        return damage;
+    }
+
+    @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
@@ -58,7 +63,7 @@ public class ItemTileElement extends ItemBlock implements IElementItem
             TileEntity te = world.getTileEntity(x, y, z);
             if (te instanceof ITileElement)
             {
-                ((ITileElement)te).readContentFromNBT(stack.getTagCompound());
+                ((ITileElement)te).readFromItemNBT(stack.getTagCompound());
             }
         }
         return true;

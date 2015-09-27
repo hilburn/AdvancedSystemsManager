@@ -1,9 +1,8 @@
 package advancedsystemsmanager.blocks;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.api.ITileFactory;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
-import advancedsystemsmanager.api.tiletypes.*;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
+import advancedsystemsmanager.api.tileentities.*;
 import advancedsystemsmanager.items.blocks.ItemTileElement;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -69,10 +68,10 @@ public class BlockTileElement extends Block
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        ITileFactory element = factories[world.getBlockMetadata(x, y, z)];
-        if (element != null)
+        ITileFactory factory = factories[world.getBlockMetadata(x, y, z)];
+        if (factory != null)
         {
-            return ((ITileElement)element.getTileEntity(world, x, y, z)).getIcon(side);
+            return ((ITileElement)factory.getTileEntity(world, x, y, z)).getIcon(side);
         }
         return super.getIcon(world, x, y, z, side);
     }
@@ -81,7 +80,7 @@ public class BlockTileElement extends Block
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
-        return factories[meta] != null ? factories[meta].getIcon(side) : null;
+        return factories[meta] != null ? factories[meta % 16].getIcon(side, meta / 16) : null;
     }
 
     @Override
@@ -205,7 +204,9 @@ public class BlockTileElement extends Block
         TileEntity te = world.getTileEntity(x, y, z);
         if (te instanceof ITileElement)
         {
-            return ((IClusterTile)te).writeContentToNBT(new NBTTagCompound());
+            NBTTagCompound tag = new NBTTagCompound();
+            ((ITileElement)te).writeToItemNBT(tag);
+            return tag;
         }
         return null;
     }

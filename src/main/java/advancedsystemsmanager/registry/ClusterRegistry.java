@@ -1,6 +1,6 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import net.minecraft.item.ItemStack;
 
 import java.util.Collection;

@@ -1,29 +1,36 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ICluster;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.blocks.BlockTileElement;
-import advancedsystemsmanager.blocks.TileFactory;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 
 public abstract class TileEntityElementBase extends TileEntity implements ITileElement, IPacketBlock
 {
-    protected enum PacketType
-    {
-        SUBTYPE, ROTATION, CAMOUFLAGE, TILE_DATA
-    }
+    public static final int CLIENT_SYNC = 1;
+    public static final int TILE_DATA = 2;
     private static final String NBT_SUBTYPE = "s";
     protected int subtype;
     protected boolean isPartOfCluster;
+    private int message;
+
+    @Override
+    public void updateEntity()
+    {
+        super.updateEntity();
+        sendPacketToClient();
+    }
 
     @Override
     public IIcon getIcon(int side)
@@ -44,38 +51,52 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     }
 
     @Override
+    public void onAddedToCluster(ICluster cluster)
+    {
+    }
+
+    @Override
     public void setSubtype(int subtype)
     {
         this.subtype = subtype;
+        setMessageType(CLIENT_SYNC);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag)
+    public final void readFromNBT(NBTTagCompound tag)
     {
         super.readFromNBT(tag);
-        readContentFromNBT(tag);
+        readFromTileNBT(tag);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag)
+    public final void writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        writeContentToNBT(tag);
+        writeToTileNBT(tag);
     }
 
-    @Override
-    public void readContentFromNBT(NBTTagCompound tag)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        this.subtype = tag.getByte(NBT_SUBTYPE);
+        setSubtype(tag.getByte(NBT_SUBTYPE));
     }
 
-    @Override
-    public void writeContentToNBT(NBTTagCompound tag)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
         if (subtype != 0)
         {
             tag.setByte(NBT_SUBTYPE, (byte) subtype);
         }
+    }
+
+    @Override
+    public void readFromItemNBT(NBTTagCompound tag)
+    {
+    }
+
+    @Override
+    public void writeToItemNBT(NBTTagCompound tag)
+    {
     }
 
     public boolean onBlockActivated(EntityPlayer player, int side, float xSide, float ySide, float zSide)
@@ -88,22 +109,69 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     }
 
     @Override
-    public void readData(ASMPacket packet, int id)
+    public Packet getDescriptionPacket()
     {
-
+        sendPacketToClient(CLIENT_SYNC);
+        return null;
     }
 
     @Override
-    public void writeData(ASMPacket packet, int id)
+    public final void readData(ASMPacket packet, int id)
     {
-
+        if ((id & CLIENT_SYNC) > 0)
+            readClientSyncData(packet);
+        if ((id & TILE_DATA) > 0)
+            readTileData(packet);
     }
 
-    public void sendBlockPacket(EntityPlayer player, int id)
+    @Override
+    public final void writeData(ASMPacket packet, int id)
     {
-        if (!this.isPartOfCluster && !worldObj.isRemote)
+        if ((id & CLIENT_SYNC) > 0)
+            writeClientSyncData(packet);
+        if ((id & TILE_DATA) > 0)
+            writeTileData(packet);
+    }
+
+    public void writeClientSyncData(ASMPacket packet)
+    {
+        packet.writeByte(subtype);
+    }
+
+
+    public void writeTileData(ASMPacket packet)
+    {
+    }
+
+    public void readClientSyncData(ASMPacket packet)
+    {
+        setSubtype(packet.readByte());
+        markForRenderUpdate();
+    }
+
+    public void readTileData(ASMPacket packet)
+    {
+    }
+
+    public void setMessageType(int type)
+    {
+        message |= type;
+    }
+
+    public void sendPacketToClient()
+    {
+        sendPacketToClient(message);
+        message = 0;
+    }
+
+    public void sendPacketToClient(int message)
+    {
+        if (message > 0 && !worldObj.isRemote)
         {
-            PacketHandler.sendBlockPacket(this, player, id);
+            if ((message < TILE_DATA && !this.isPartOfCluster))
+            {
+                PacketHandler.sendBlockPacket(this, null, message);
+            }
         }
     }
 

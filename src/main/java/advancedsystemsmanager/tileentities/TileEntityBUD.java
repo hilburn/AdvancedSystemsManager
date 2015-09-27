@@ -2,17 +2,14 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
-import advancedsystemsmanager.api.tiletypes.IBUDListener;
+import advancedsystemsmanager.api.tileentities.IBUDListener;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 
@@ -89,7 +86,7 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    public void writeToTileNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = new NBTTagList();
         for (int aData : data)
@@ -104,7 +101,7 @@ public class TileEntityBUD extends TileEntityClusterElement implements ISystemLi
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromTileNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
         for (int i = 0; i < sidesTag.tagCount(); i++)

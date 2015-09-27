@@ -61,12 +61,12 @@ public class ItemDuplicator extends ItemBase implements ILeftClickItem
             {
                 if (stack.hasTagCompound())
                 {
-                    ((TileEntityManager)te).readContentFromNBT(stack.getTagCompound());
+                    ((TileEntityManager)te).readFromTileNBT(stack.getTagCompound());
                     stack.setTagCompound(null);
                 } else
                 {
                     NBTTagCompound tagCompound = new NBTTagCompound();
-                    ((TileEntityManager)te).writeContentToNBT(tagCompound);
+                    ((TileEntityManager)te).writeToTileNBT(tagCompound);
                     tagCompound.setBoolean(CONTENTS, true);
                     tagCompound.setInteger(X, x);
                     tagCompound.setInteger(Y, y);

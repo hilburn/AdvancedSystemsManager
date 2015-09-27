@@ -1,12 +1,12 @@
 package advancedsystemsmanager.tileentities.manager;
 
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.gui.IManagerButton;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.tileentities.*;
-import advancedsystemsmanager.api.tiletypes.IBUDListener;
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import advancedsystemsmanager.api.tileentities.IBUDListener;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.flow.Connection;
 import advancedsystemsmanager.flow.FlowComponent;
@@ -555,9 +555,9 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(tag);
+        super.readFromTileNBT(tag);
         byte[] sides = tag.getByteArray(NBT_SIDES);
         int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];
         for (int i = 0; i < sides.length; i++)
@@ -569,9 +569,9 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(tag);
+        super.writeToTileNBT(tag);
         byte[] sides = new byte[isPowered.length];
         for (int i = 0; i < sides.length; i++)
         {
@@ -640,7 +640,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tag)
+    public void writeToItemNBT(NBTTagCompound tag)
     {
         tag.setByte(NBT_TIMER, (byte) (timer % 20));
         tag.setInteger(NBT_MAX_ID, maxID);
@@ -663,7 +663,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tag)
+    public void readFromItemNBT(NBTTagCompound tag)
     {
         timer = tag.getByte(NBT_TIMER);
         maxID = tag.getInteger(NBT_MAX_ID);

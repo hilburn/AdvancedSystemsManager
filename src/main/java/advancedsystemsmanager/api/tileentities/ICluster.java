@@ -1,10 +1,12 @@
 package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.api.tiletypes.ITileElement;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
 public interface ICluster
 {
     List<ITileElement> getTiles();
+
+    ForgeDirection getFacing();
 }

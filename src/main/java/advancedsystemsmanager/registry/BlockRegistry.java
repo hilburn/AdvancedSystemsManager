@@ -1,22 +1,10 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.blocks.*;
-import advancedsystemsmanager.client.render.RenderCamouflage;
 import advancedsystemsmanager.items.blocks.*;
-import advancedsystemsmanager.recipes.*;
-import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.tileentities.*;
-import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-import thevault.registry.ConfigKey;
 import thevault.registry.Register;
 
 import java.util.*;

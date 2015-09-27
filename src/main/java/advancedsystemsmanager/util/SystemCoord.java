@@ -1,7 +1,7 @@
 package advancedsystemsmanager.util;
 
 import advancedsystemsmanager.api.ISystemType;
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.gui.IContainerSelection;
 import advancedsystemsmanager.flow.elements.Variable;
 import advancedsystemsmanager.flow.menus.MenuContainer;

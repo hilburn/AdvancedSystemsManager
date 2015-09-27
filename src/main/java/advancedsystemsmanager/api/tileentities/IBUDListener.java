@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api.tiletypes;
+package advancedsystemsmanager.api.tileentities;
 
 public interface IBUDListener
 {

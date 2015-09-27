@@ -1,7 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.tiletypes.IActivateListener;
+import advancedsystemsmanager.api.tileentities.IActivateListener;
 import advancedsystemsmanager.containers.ContainerVoid;
 import advancedsystemsmanager.client.gui.GuiVoid;
 import advancedsystemsmanager.network.ASMPacket;

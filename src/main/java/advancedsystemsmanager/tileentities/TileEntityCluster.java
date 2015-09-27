@@ -1,9 +1,7 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.ITileFactory;
-import advancedsystemsmanager.api.tileentities.ICluster;
-import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.tiletypes.*;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
+import advancedsystemsmanager.api.tileentities.*;
 import advancedsystemsmanager.helpers.PlayerHelper;
 import advancedsystemsmanager.items.blocks.ItemTileElement;
 import advancedsystemsmanager.network.ASMPacket;
@@ -62,33 +60,33 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
         if (compound != null)
         {
-            loadElements(compound);
+            loadElements(compound, true);
         }
     }
 
-    public void loadElements(NBTTagCompound tag)
+    public void loadElements(NBTTagCompound tag, boolean fromItem)
     {
         for (Object obj : tag.tagMap.entrySet())
         {
             Map.Entry<String, NBTBase> entry = (Map.Entry<String, NBTBase>)obj;
             if (entry.getValue() instanceof NBTTagCompound)
             {
-                addElement(entry.getKey(), (NBTTagCompound)entry.getValue());
+                addElement(entry.getKey(), (NBTTagCompound)entry.getValue(), fromItem);
             }
         }
     }
 
-    private ITileElement addElement(String key, NBTTagCompound value)
+    private ITileElement addElement(String key, NBTTagCompound value, boolean fromItem)
     {
         ITileFactory factory = ClusterRegistry.get(key);
         if (factory != null)
         {
-            return addElement(factory, value);
+            return addElement(factory, value, fromItem);
         }
         return null;
     }
 
-    private ITileElement addElement(ITileFactory factory, NBTTagCompound value)
+    private ITileElement addElement(ITileFactory factory, NBTTagCompound value, boolean fromItem)
     {
         if (!factory.canBeAddedToCluster(getTiles()))
         {
@@ -98,7 +96,13 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
         if (tile instanceof ITileElement)
         {
             ITileElement element = (ITileElement) tile;
-            element.readContentFromNBT(value);
+            if (fromItem)
+            {
+                element.readFromItemNBT(value);
+            } else
+            {
+                tile.readFromNBT(value);
+            }
             pairs.put(factory, element);
             elements.add(element);
             if (tile instanceof ITileInterfaceProvider)
@@ -285,7 +289,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
     public boolean addElement(EntityPlayer player, ITileFactory factory, ItemStack stack)
     {
-        ITileElement element = addElement(factory, stack.getTagCompound());
+        ITileElement element = addElement(factory, stack.getTagCompound(), true);
         if (element == null) return false;
         if (element instanceof IPlaceListener)
         {
@@ -295,6 +299,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
         {
             ((TileEntity) element).validate();
         }
+        element.onAddedToCluster(this);
         return true;
     }
 
@@ -385,20 +390,20 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tag)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        super.readContentFromNBT(tag);
-        loadElements(tag);
+        super.readFromTileNBT(tag);
+        loadElements(tag, false);
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tag)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
-        super.writeContentToNBT(tag);
+        super.writeToTileNBT(tag);
         for (Map.Entry<ITileFactory, ITileElement> entry : pairs.entrySet())
         {
             NBTTagCompound elementData = new NBTTagCompound();
-            entry.getValue().writeContentToNBT(elementData);
+            ((TileEntity)entry.getValue()).writeToNBT(elementData);
             tag.setTag(entry.getKey().getUnlocalizedName(), elementData);
         }
     }
@@ -423,64 +428,65 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     @SideOnly(Side.CLIENT)
     private void requestData()
     {
-        PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 1);
+        PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, TILE_DATA);
     }
 
     @Override
-    public void writeData(ASMPacket dw, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
-        if (!worldObj.isRemote)
+        super.writeClientSyncData(packet);
+        if (camouflageObject != null)
         {
-            if (id == 0)
-            {
-                if (camouflageObject != null)
-                {
-                    camouflageObject.writeData(dw, id);
-                }
-            } else
-            {
-                dw.writeByte(pairs.size());
-                for (ITileFactory factory : pairs.keySet())
-                {
-                    dw.writeStringToBuffer(factory.getUnlocalizedName());
-                }
-                if (camouflageObject != null)
-                {
-                    camouflageObject.writeData(dw, 0);
-                }
-            }
+            camouflageObject.writeData(packet, CLIENT_SYNC);
         }
     }
 
     @Override
-    public void readData(ASMPacket packet, int id)
+    public void writeTileData(ASMPacket packet)
     {
-        if (id == 0)
+        super.writeTileData(packet);
+        packet.writeByte(pairs.size());
+        for (ITileFactory factory : pairs.keySet())
         {
+            packet.writeStringToBuffer(factory.getUnlocalizedName());
+        }
+        if (camouflageObject != null)
+        {
+            camouflageObject.writeData(packet, CLIENT_SYNC);
+        }
+    }
+
+    @Override
+    public void readClientSyncData(ASMPacket packet)
+    {
+        super.readClientSyncData(packet);
+        if (camouflageObject != null)
+        {
+            camouflageObject.readData(packet, CLIENT_SYNC);
+        }
+    }
+
+    @Override
+    public void readTileData(ASMPacket packet)
+    {
+        super.readTileData(packet);
+        if (worldObj.isRemote)
+        {
+            clearElements();
+            int length = packet.readByte();
+            for (int i = 0; i < length; i++)
+            {
+                addElement(packet.readStringFromBuffer(), null, false);
+            }
             if (camouflageObject != null)
             {
-                camouflageObject.readData(packet, id);
+                camouflageObject.readData(packet, CLIENT_SYNC);
             }
         } else
         {
-            if (worldObj.isRemote)
-            {
-                clearElements();
-                int length = packet.readByte();
-                for (int i = 0; i < length; i++)
-                {
-                    addElement(packet.readStringFromBuffer(), null);
-                }
-                if (camouflageObject != null)
-                {
-                    camouflageObject.readData(packet, 0);
-                }
-            } else
-            {
-                ASMPacket response = PacketHandler.constructBlockPacket(this, this, 1);
-                response.setPlayers(packet.getPlayers());
-                response.sendResponse();
-            }
+            ASMPacket response = PacketHandler.constructBlockPacket(this, this, TILE_DATA);
+            response.setPlayers(packet.getPlayers());
+            response.sendResponse();
         }
     }
 

@@ -1,14 +1,11 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
-import advancedsystemsmanager.api.tiletypes.IActivateListener;
-import advancedsystemsmanager.api.tiletypes.IPlaceListener;
+import advancedsystemsmanager.api.tileentities.IActivateListener;
 import advancedsystemsmanager.containers.ContainerRelay;
 import advancedsystemsmanager.client.gui.GuiRelay;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.UserPermission;
 import advancedsystemsmanager.util.wrappers.InventoryWrapper;
 import advancedsystemsmanager.util.wrappers.InventoryWrapperHorse;
@@ -38,7 +35,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -860,13 +856,13 @@ public class TileEntityRelay extends TileEntityElementRotation implements IInven
     public boolean writeData(ASMPacket packet)
     {
         NBTTagCompound tagCompound = new NBTTagCompound();
-        writeContentToNBT(tagCompound);
+        writeToTileNBT(tagCompound);
         ByteBufUtils.writeTag(packet, tagCompound);
         return true;
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    public void writeToTileNBT(NBTTagCompound nbtTagCompound)
     {
         if (isAdvanced())
         {
@@ -893,7 +889,7 @@ public class TileEntityRelay extends TileEntityElementRotation implements IInven
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromTileNBT(NBTTagCompound nbtTagCompound)
     {
         if (nbtTagCompound.hasKey(NBT_OWNER))
         {

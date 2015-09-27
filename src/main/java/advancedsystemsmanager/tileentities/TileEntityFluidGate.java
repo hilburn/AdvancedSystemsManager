@@ -1,8 +1,6 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.api.tiletypes.IBUDListener;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
+import advancedsystemsmanager.api.tileentities.IBUDListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDynamicLiquid;
 import net.minecraft.block.BlockStaticLiquid;
@@ -10,8 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
-
-import java.util.EnumSet;
 
 public class TileEntityFluidGate extends TileEntityElementRotation implements IFluidHandler, IBUDListener
 {
@@ -194,13 +190,13 @@ public class TileEntityFluidGate extends TileEntityElementRotation implements IF
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeToTileNBT(NBTTagCompound tagCompound)
     {
         if (tank != null) tank.writeToNBT(tagCompound);
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readFromTileNBT(NBTTagCompound tagCompound)
     {
         tank = FluidStack.loadFluidStackFromNBT(tagCompound);
     }

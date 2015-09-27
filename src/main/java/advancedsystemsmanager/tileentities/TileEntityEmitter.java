@@ -156,9 +156,9 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             }
         }
 
-        if (updateClient && !isPartOfCluster())
+        if (updateClient)
         {
-            PacketHandler.sendBlockPacket(this, null, 0);
+            sendPacketToClient(CLIENT_SYNC);
         }
     }
 
@@ -234,7 +234,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound nbtTagCompound)
+    public void writeToTileNBT(NBTTagCompound nbtTagCompound)
     {
         NBTTagList sidesTag = new NBTTagList();
         for (int i = 0; i < strengths.length; i++)
@@ -265,7 +265,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromTileNBT(NBTTagCompound nbtTagCompound)
     {
 
         NBTTagList sidesTag = nbtTagCompound.getTagList(NBT_SIDES, 10);
@@ -290,45 +290,31 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
     }
 
     @Override
-    public void writeData(ASMPacket dw, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
+        super.writeClientSyncData(packet);
         for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
         {
-            boolean isOn = updatedStrength[i] > 0;
-            dw.writeBoolean(isOn);
-            if (isOn)
-            {
-                dw.writeByte(updatedStrength[i] | (updatedStrong[i] ? 1 << 5 : 0));
-            }
+            packet.writeByte(updatedStrength[i] | (updatedStrong[i] ? 1 << 5 : 0));
         }
     }
 
     @Override
-    public void readData(ASMPacket dr, int id)
+    public void readClientSyncData(ASMPacket packet)
     {
+        super.readClientSyncData(packet);
         for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++)
         {
-            boolean isOn = dr.readBoolean();
-            if (isOn)
-            {
-                byte val = dr.readByte();
-                strengths[i] = val & 0xF;
-                strong[i] = (val >> 5) > 0;
-            } else
-            {
-                strengths[i] = 0;
-            }
+            byte val = packet.readByte();
+            strengths[i] = val & 0xF;
+            strong[i] = (val >> 5) > 0;
         }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
     @Override
     public void updateEntity()
     {
-        if (worldObj.isRemote)
-        {
-            keepClientDataUpdated();
-        } else
+        if (!worldObj.isRemote)
         {
             updatePulses();
 
@@ -376,29 +362,9 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
             }
         }
 
-        if (updateClient && !isPartOfCluster())
+        if (updateClient)
         {
-            PacketHandler.sendBlockPacket(this, null, 0);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void keepClientDataUpdated()
-    {
-        if (isPartOfCluster())
-        {
-            return;
-        }
-
-        double distance = Minecraft.getMinecraft().thePlayer.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-
-        if (distance > Math.pow(PacketHandler.BLOCK_UPDATE_RANGE, 2))
-        {
-            hasUpdatedData = false;
-        } else if (!hasUpdatedData && distance < Math.pow(PacketHandler.BLOCK_UPDATE_RANGE - UPDATE_BUFFER_DISTANCE, 2))
-        {
-            hasUpdatedData = true;
-            PacketHandler.sendBlockPacket(this, Minecraft.getMinecraft().thePlayer, 0);
+            sendPacketToClient(CLIENT_SYNC);
         }
     }
 

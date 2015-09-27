@@ -1,14 +1,14 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.api.tiletypes.IActivateListener;
+import advancedsystemsmanager.api.tileentities.IActivateListener;
 import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.registry.BlockRegistry;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,6 +34,7 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
     protected static final String NBT_DIRECTION = "Direction";
     private static final String FAKE_PLAYER_NAME = "[ASM_PLAYER]";
     private static final UUID FAKE_PLAYER_ID = null;
+    private static final GameProfile FAKE_PLAYER_PROFILE = new GameProfile(FAKE_PLAYER_ID, FAKE_PLAYER_NAME);
     protected boolean blocked;
     protected int placeDirection;
     private List<ItemStack> inventory;
@@ -50,10 +51,10 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
                 return getTileFactory().getIcons()[0];
             } else if (side == placeDirection)
             {
-                return getTileFactory().getIcons()[2];
+                return getTileFactory().getIcons()[3];
             } else if (side == getFacing().ordinal())
             {
-                return getTileFactory().getIcons()[3];
+                return getTileFactory().getIcons()[2];
             }
         }
         return getTileFactory().getIcons()[1];
@@ -64,7 +65,15 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
     {
         int direction = player.isSneaking() ? BlockHelper.getReverseDirection(side) : side;
         setPlaceDirection(direction);
+        sendPacketToClient();
         return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(EntityLivingBase entity, ItemStack item)
+    {
+        super.onBlockPlacedBy(entity, item);
+        setPlaceDirection(getFacing().ordinal());
     }
 
     public void setPlaceDirection(int placeDirection)
@@ -72,38 +81,35 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
         if (this.placeDirection != placeDirection)
         {
             this.placeDirection = placeDirection;
-
-            if (!isPartOfCluster() && worldObj != null && !worldObj.isRemote)
-            {
-                sendBlockPacket(null, 0);
-            }
+            setMessageType(CLIENT_SYNC);
         }
     }
 
     @Override
-    public void writeData(ASMPacket packet, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
-        super.writeData(packet, id);
+        super.writeClientSyncData(packet);
         packet.writeByte(placeDirection);
     }
 
     @Override
-    public void readData(ASMPacket packet, int id)
+    public void readClientSyncData(ASMPacket packet)
     {
-        super.readData(packet, id);
+        super.readClientSyncData(packet);
         placeDirection = packet.readByte();
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tag)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
-        super.writeContentToNBT(tag);
+        super.writeToTileNBT(tag);
         tag.setByte(NBT_DIRECTION, (byte) placeDirection);
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tag)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
+        super.readFromTileNBT(tag);
         setPlaceDirection(tag.getByte(NBT_DIRECTION));
     }
 
@@ -201,26 +207,25 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
 
         if (itemstack != null && itemstack.getItem() != null && itemstack.stackSize > 0)
         {
-            ForgeDirection side = getFacing();
-            ForgeDirection direction = ForgeDirection.VALID_DIRECTIONS[placeDirection];
-            if (side == direction)
+            ForgeDirection facing = getFacing();
+            ForgeDirection side = ForgeDirection.getOrientation(placeDirection);
+            float hitX = 0.5F + side.offsetX * 0.5F;
+            float hitY = 0.5F + side.offsetY * 0.5F;
+            float hitZ = 0.5F + side.offsetZ * 0.5F;
+            if (facing == side)
             {
-                side = ForgeDirection.UNKNOWN;
+                facing = ForgeDirection.UNKNOWN;
             }
-            direction = direction.getOpposite();
+            side = side.getOpposite();
 
-            float hitX = 0.5F + direction.offsetX * 0.5F;
-            float hitY = 0.5F + direction.offsetY * 0.5F;
-            float hitZ = 0.5F + direction.offsetZ * 0.5F;
+            EntityPlayerMP player = FakePlayerFactory.get((WorldServer)worldObj, FAKE_PLAYER_PROFILE);
+            int rotationSide = ROTATION_SIDE_MAPPING[side.ordinal()];
 
-            EntityPlayerMP player = FakePlayerFactory.get((WorldServer)worldObj, new GameProfile(FAKE_PLAYER_ID, FAKE_PLAYER_NAME));
-            int rotationSide = ROTATION_SIDE_MAPPING[direction.ordinal()];
-
-            player.prevRotationPitch = player.rotationYaw = rotationSide * 90;
-            player.prevRotationYaw = player.rotationPitch = direction == ForgeDirection.UP ? 90 : direction == ForgeDirection.DOWN ? -90 : 0;
-            player.prevPosX = player.posX = xCoord + side.offsetX + 0.5 + direction.offsetX * 0.4;
-            player.prevPosY = player.posY = yCoord + side.offsetY + 0.5 + direction.offsetY * 0.4;
-            player.prevPosZ = player.posZ = zCoord + side.offsetZ + 0.5 + direction.offsetZ * 0.4;
+            player.prevRotationYaw = player.rotationYaw = rotationSide * 90;
+            player.prevRotationPitch = player.rotationPitch = side == ForgeDirection.UP ? 90 : side == ForgeDirection.DOWN ? -90 : 0;
+            player.prevPosX = player.posX = xCoord + facing.offsetX + 0.5D;
+            player.prevPosY = player.posY = yCoord + facing.offsetY + 0.5D;
+            player.prevPosZ = player.posZ = zCoord + facing.offsetZ + 0.5D;
             player.eyeHeight = 0;
             player.yOffset = 1.82F;
             player.theItemInWorldManager.setBlockReachDistance(1);
@@ -234,15 +239,12 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
                 ItemStack result = itemstack.useItemRightClick(worldObj, player);
                 if (ItemStack.areItemStacksEqual(result, itemstack))
                 {
-                    if (side == ForgeDirection.UNKNOWN)
-                    {
-                        side = direction.getOpposite();
-                    }
-                    int x = xCoord + side.offsetX - direction.offsetX;
-                    int y = yCoord + side.offsetY - direction.offsetY;
-                    int z = zCoord + side.offsetZ - direction.offsetZ;
 
-                    player.theItemInWorldManager.activateBlockOrUseItem(player, worldObj, itemstack, x, y, z, direction.ordinal(), hitX, hitY, hitZ);
+                    int x = xCoord + facing.offsetX - side.offsetX;
+                    int y = yCoord + facing.offsetY - side.offsetY;
+                    int z = zCoord + facing.offsetZ - side.offsetZ;
+
+                    player.theItemInWorldManager.activateBlockOrUseItem(player, worldObj, itemstack, x, y, z, side.ordinal(), hitX, hitY, hitZ);
 
                 } else
                 {
@@ -298,7 +300,6 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
 
                 Block block = worldObj.getBlock(x, y, z);
 
-
                 if (canBreakBlock(block, x, y, z))
                 {
                     broken = true;
@@ -315,7 +316,7 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
     @Override
     public Packet getDescriptionPacket()
     {
-        PacketHandler.sendBlockPacket(this, null, 0);
+        PacketHandler.sendBlockPacket(this, null, CLIENT_SYNC);
         return null;
     }
 

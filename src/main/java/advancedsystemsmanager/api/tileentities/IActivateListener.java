@@ -1,4 +1,4 @@
-package advancedsystemsmanager.api.tiletypes;
+package advancedsystemsmanager.api.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

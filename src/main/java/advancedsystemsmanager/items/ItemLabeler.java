@@ -3,16 +3,14 @@ package advancedsystemsmanager.items;
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.items.IItemInterfaceProvider;
 import advancedsystemsmanager.api.items.ILeftClickItem;
-import advancedsystemsmanager.api.tileentities.IClusterTile;
 import advancedsystemsmanager.api.tileentities.IInternalInventory;
 import advancedsystemsmanager.api.tileentities.IInternalTank;
+import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.client.gui.GuiLabeler;
 import advancedsystemsmanager.naming.NameRegistry;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
@@ -78,7 +76,7 @@ public class ItemLabeler extends ItemBase implements IItemInterfaceProvider, ILe
     public static boolean isValidTile(World world, int x, int y, int z)
     {
         TileEntity te = world.getTileEntity(x, y, z);
-        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof IClusterTile || te instanceof IInternalInventory || te instanceof IInternalTank || isValidClass(te);
+        return te instanceof IInventory || te instanceof IFluidHandler || te instanceof ITileElement || te instanceof IInternalInventory || te instanceof IInternalTank || isValidClass(te);
     }
 
     public static void registerClass(Class clazz)

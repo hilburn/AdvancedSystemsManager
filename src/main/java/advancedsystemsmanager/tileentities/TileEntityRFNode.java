@@ -49,21 +49,6 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         }
     }
 
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        sendUpdatePacket();
-        return null;
-    }
-
-    private void sendUpdatePacket()
-    {
-        if (!isPartOfCluster())
-        {
-            PacketHandler.sendBlockPacket(this, null, 0);
-        }
-    }
-
     private TileEntity getTileEntity(ForgeDirection dir)
     {
         return worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
@@ -98,14 +83,14 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeToTileNBT(NBTTagCompound tagCompound)
     {
         tagCompound.setInteger(STORED, stored);
         tagCompound.setShort(SIDES_TAG, sides);
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readFromTileNBT(NBTTagCompound tagCompound)
     {
         stored = tagCompound.getInteger(STORED);
         sides = tagCompound.getShort(SIDES_TAG);
@@ -152,15 +137,16 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
     }
 
     @Override
-    public void writeData(ASMPacket packet, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
+        super.writeClientSyncData(packet);
         packet.writeShort(sides);
     }
 
     @Override
-    public void readData(ASMPacket packet, int id)
+    public void readClientSyncData(ASMPacket packet)
     {
+        super.readClientSyncData(packet);
         sides = packet.readShort();
-        markBlockForRenderUpdate();
     }
 }

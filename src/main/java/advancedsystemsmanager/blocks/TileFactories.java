@@ -1,8 +1,7 @@
 package advancedsystemsmanager.blocks;
 
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.reference.Names;
-import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.*;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
@@ -24,7 +23,7 @@ public class TileFactories
             return side == 0 ? super.icons[2] : side == 1 ? super.icons[1] : super.icons[0];
         }
     });
-    public static ITileFactory BLOCK_GATE = registerClusterElement(TileEntityBlockGate.class, CABLE_BLOCK_GATE, SIDE_SUFFIX, FACE_SUFFIX, DIRECTION_SUFFIX);
+    public static ITileFactory BLOCK_GATE = registerDirectionElement(TileEntityBlockGate.class, CABLE_BLOCK_GATE, SIDE_SUFFIX, FACE_SUFFIX, DIRECTION_SUFFIX);
     public static ITileFactory BUD = registerClusterElement(TileEntityBUD.class, CABLE_BUD);
     public static ITileFactory CAMO = registerClusterElement(TileEntityCamouflage.class, 0, CABLE_CAMO);
     public static ITileFactory CAMO_DOUBLE = registerClusterElement(TileEntityCamouflage.class, 1, CABLE_CAMO_INSIDE);
@@ -33,7 +32,7 @@ public class TileFactories
     public static ITileFactory CLUSTER_ADVANCED = registerNonCluser(TileEntityCluster.class, 1, CABLE_CLUSTER + ADVANCED_SUFFIX, SIDE_SUFFIX);
     public static ITileFactory CREATIVE = registerClusterElement(TileEntityCreative.class, CABLE_CREATIVE);
     public static ITileFactory EMITTER = registerClusterElement(TileEntityEmitter.class, CABLE_OUTPUT, WEAK_SUFFIX, IDLE_SUFFIX);
-    public static ITileFactory FLUID_GATE = registerClusterElement(TileEntityFluidGate.class, CABLE_FLUID_GATE);
+    public static ITileFactory FLUID_GATE = registerDirectionElement(TileEntityFluidGate.class, CABLE_FLUID_GATE, SIDE_SUFFIX);
     public static ITileFactory RECEIVER = registerClusterElement(TileEntityReceiver.class, CABLE_INPUT);
     public static ITileFactory RELAY = registerInterfaceElement(TileEntityRelay.class, CABLE_RELAY, SIDE_SUFFIX);
     public static ITileFactory RELAY_ADVANCED = registerInterfaceElement(TileEntityRelay.class, 1, CABLE_RELAY + ADVANCED_SUFFIX, SIDE_SUFFIX);

@@ -1,6 +1,5 @@
 package advancedsystemsmanager.api.tileentities;
 
-import advancedsystemsmanager.api.tiletypes.IActivateListener;
 import advancedsystemsmanager.network.ASMPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

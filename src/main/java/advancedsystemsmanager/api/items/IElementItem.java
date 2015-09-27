@@ -1,6 +1,6 @@
 package advancedsystemsmanager.api.items;
 
-import advancedsystemsmanager.api.ITileFactory;
+import advancedsystemsmanager.api.tileentities.ITileFactory;
 import net.minecraft.item.ItemStack;
 
 public interface IElementItem

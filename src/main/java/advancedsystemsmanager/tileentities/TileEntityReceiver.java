@@ -3,15 +3,12 @@ package advancedsystemsmanager.tileentities;
 import advancedsystemsmanager.api.tileentities.IRedstoneReceiver;
 import advancedsystemsmanager.api.tileentities.ISystemListener;
 import advancedsystemsmanager.api.tileentities.ITriggerNode;
-import advancedsystemsmanager.api.tiletypes.IBUDListener;
+import advancedsystemsmanager.api.tileentities.IBUDListener;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 
@@ -65,9 +62,9 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
-    public void writeContentToNBT(NBTTagCompound tag)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
-        super.writeContentToNBT(tag);
+        super.writeToTileNBT(tag);
         byte[] sides = new byte[isPowered.length];
         for (int i = 0; i < sides.length; i++)
         {
@@ -77,7 +74,7 @@ public class TileEntityReceiver extends TileEntityClusterElement implements IRed
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound nbtTagCompound)
+    public void readFromTileNBT(NBTTagCompound nbtTagCompound)
     {
         byte[] sides = nbtTagCompound.getByteArray(NBT_SIDES);
         int[] powered = new int[ForgeDirection.VALID_DIRECTIONS.length];

@@ -34,14 +34,6 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     private byte[] bounds = {0, 32, 0, 32, 0, 32};
     private Block[] ids = new Block[2];
     private int[] metas = new int[2];
-    private boolean isServerDirty;
-    private CamouflageType type;
-
-    @Override
-    public void setSubtype(int subtype)
-    {
-        this.type = CamouflageType.getByID(subtype);
-    }
 
     public boolean isNormalBlock()
     {
@@ -66,7 +58,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
     public CamouflageType getCamouflageType()
     {
-        return type;
+        return CamouflageType.getByID(subtype);
     }
 
     @SideOnly(Side.CLIENT)
@@ -135,13 +127,13 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             if (menu.isUseCollision() != useCollision)
             {
                 useCollision = menu.isUseCollision();
-                isServerDirty = true;
+                setMessageType(CLIENT_SYNC);
             }
 
             if (menu.isFullCollision() != fullCollision)
             {
                 fullCollision = menu.isFullCollision();
-                isServerDirty = true;
+                setMessageType(CLIENT_SYNC);
             }
 
             for (int i = 0; i < bounds.length; i++)
@@ -149,7 +141,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
                 if (bounds[i] != menu.getBounds(i))
                 {
                     bounds[i] = (byte)menu.getBounds(i);
-                    isServerDirty = true;
+                    setMessageType(CLIENT_SYNC);
                 }
             }
 
@@ -208,7 +200,7 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
         if (ids[side] != oldBlock || metas[side] != oldMeta)
         {
-            isServerDirty = true;
+            setMessageType(CLIENT_SYNC);
         }
     }
 
@@ -221,30 +213,31 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void writeData(ASMPacket dw, int id)
+    public void writeClientSyncData(ASMPacket packet)
     {
+        super.writeClientSyncData(packet);
         for (int i = 0; i < getSideCount(); i++)
         {
             if (ids[i] == null)
             {
-                dw.writeBoolean(false);
+                packet.writeBoolean(false);
             } else
             {
-                dw.writeBoolean(true);
-                dw.writeShort(Block.getIdFromBlock(ids[i]));
-                dw.writeByte(metas[i]);
+                packet.writeBoolean(true);
+                packet.writeShort(Block.getIdFromBlock(ids[i]));
+                packet.writeByte(metas[i]);
             }
         }
         if (getCamouflageType().useSpecialShape())
         {
-            dw.writeBoolean(useCollision);
+            packet.writeBoolean(useCollision);
             if (useCollision)
             {
-                dw.writeBoolean(fullCollision);
+                packet.writeBoolean(fullCollision);
             }
             for (int bound : bounds)
             {
-                dw.writeByte(bound);
+                packet.writeByte(bound);
             }
         }
     }
@@ -255,55 +248,35 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void readData(ASMPacket dr, int id)
+    public void readClientSyncData(ASMPacket packet)
     {
+        super.readClientSyncData(packet);
         for (int i = 0; i < getSideCount(); i++)
         {
-            if (!dr.readBoolean())
+            if (!packet.readBoolean())
             {
                 ids[i] = null;
                 metas[i] = 0;
             } else
             {
-                ids[i] = Block.getBlockById(dr.readShort());
-                metas[i] = dr.readByte();
+                ids[i] = Block.getBlockById(packet.readShort());
+                metas[i] = packet.readByte();
             }
         }
         if (getCamouflageType().useSpecialShape())
         {
-            useCollision = dr.readBoolean();
-            fullCollision = useCollision && dr.readBoolean();
+            useCollision = packet.readBoolean();
+            fullCollision = useCollision && packet.readBoolean();
 
             for (int i = 0; i < bounds.length; i++)
             {
-                bounds[i] = dr.readByte();
-            }
-        }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
-
-    @Override
-    public void updateEntity()
-    {
-        if (!worldObj.isRemote)
-        {
-            if (isServerDirty)
-            {
-                isServerDirty = false;
-                PacketHandler.sendBlockPacket(this, null, 0);
+                bounds[i] = packet.readByte();
             }
         }
     }
 
     @Override
-    public Packet getDescriptionPacket()
-    {
-        PacketHandler.sendBlockPacket(this, null, 0);
-        return null;
-    }
-
-    @Override
-    public void writeContentToNBT(NBTTagCompound tagCompound)
+    public void writeToTileNBT(NBTTagCompound tagCompound)
     {
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < getSideCount(); i++)
@@ -324,12 +297,10 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
             tagCompound.setByteArray(NBT_BOUNDS, bounds);
         }
-
-
     }
 
     @Override
-    public void readContentFromNBT(NBTTagCompound tagCompound)
+    public void readFromTileNBT(NBTTagCompound tagCompound)
     {
         NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
         for (int i = 0; i < Math.min(list.tagCount(),2); i++)
