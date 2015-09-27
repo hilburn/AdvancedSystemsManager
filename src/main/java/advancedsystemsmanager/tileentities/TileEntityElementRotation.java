@@ -18,7 +18,7 @@ public class TileEntityElementRotation extends TileEntityElementBase implements 
     @Override
     public IIcon getIcon(int side)
     {
-        return facing == null ? super.getIcon(side) : side == facing.ordinal() ? super.getIcon(side) : getTileFactory().getIcons()[1];
+        return getTileFactory().getIcons(subtype)[facing == null || side == facing.ordinal() ? 0 : 1];
     }
 
     @Override

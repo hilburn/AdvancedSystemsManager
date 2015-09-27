@@ -25,27 +25,25 @@ import java.util.List;
 public class TileFactory implements ITileFactory
 {
     private Block block;
-    private String[] iconNames;
+    private String[][] iconNames;
     private Class<? extends TileEntityElementBase> tileClass;
-    private int subType;
     @SideOnly(Side.CLIENT)
-    protected IIcon[] icons;
+    protected IIcon[][] icons;
     private int metadata;
 
-    public TileFactory(Class<? extends TileEntityElementBase> tileClass, int subType, String... iconNames)
+    public TileFactory(Class<? extends TileEntityElementBase> tileClass, String[] subtypes, String... iconNames)
     {
         this.tileClass = tileClass;
-        this.subType = subType;
-        this.iconNames = new String[iconNames.length];
-        this.iconNames[0] = iconNames[0];
-        for (int i = 1; i < iconNames.length; i++)
+        this.iconNames = new String[subtypes.length][iconNames.length + 1];
+        for (int i = 0; i < subtypes.length; i++)
         {
-            this.iconNames[i] = iconNames[0] + iconNames[i];
+            this.iconNames[i][0] = subtypes[i];
+            for (int j = 1; j <= iconNames.length; j++)
+            {
+                this.iconNames[i][j] = this.iconNames[i][0] + iconNames[j-1];
+            }
         }
-        if (subType == 0)
-        {
-            GameRegistry.registerTileEntity(tileClass, iconNames[0]);
-        }
+        GameRegistry.registerTileEntity(tileClass, subtypes[0]);
     }
 
     @Override
@@ -79,13 +77,24 @@ public class TileFactory implements ITileFactory
     }
 
     @Override
-    public String getUnlocalizedName()
+    public String getUnlocalizedName(int subtype)
     {
-        return iconNames[0];
+        return iconNames[subtype][0];
     }
 
     @Override
+    public String getKey()
+    {
+        return iconNames[0][0];
+    }
+
     public ItemStack getItemStack()
+    {
+        return getItemStack(0);
+    }
+
+    @Override
+    public ItemStack getItemStack(int subtype)
     {
         return new ItemStack(getBlock(), 1, getMetadata());
     }
@@ -103,9 +112,7 @@ public class TileFactory implements ITileFactory
         {
             try
             {
-                TileEntityElementBase tile = tileClass.newInstance();
-                tile.setSubtype(subType);
-                return tile;
+                return tileClass.newInstance();
             } catch (Exception ignored)
             {
             }
@@ -149,9 +156,10 @@ public class TileFactory implements ITileFactory
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register)
     {
-        icons = new IIcon[iconNames.length];
+        icons = new IIcon[iconNames.length][iconNames[0].length];
         for (int i = 0; i < icons.length; i++)
-            icons[i] = register.registerIcon(getTextureName(iconNames[i]));
+            for (int j = 0; j < icons[0].length; j++)
+                icons[i][j] = register.registerIcon(getTextureName(iconNames[i][j]));
     }
 
     @SideOnly(Side.CLIENT)
@@ -164,26 +172,27 @@ public class TileFactory implements ITileFactory
     @Override
     public IIcon getIcon(int side, int subtype)
     {
-        return icons[0];
+        return icons[subtype][0];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list)
     {
-        list.add(new ItemStack(item, 1, metadata));
+        for (int i = 0; i < iconNames.length; i++)
+            list.add(new ItemStack(item, 1, metadata + i * 16));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon[] getIcons()
+    public IIcon[] getIcons(int subtype)
     {
-        return icons;
+        return icons[subtype];
     }
 
     public static class Cluster extends TileFactory
     {
-        public Cluster(Class<? extends TileEntityElementBase> tileClass, int subType, String... iconNames)
+        public Cluster(Class<? extends TileEntityElementBase> tileClass, String[] subType, String... iconNames)
         {
             super(tileClass, subType, iconNames);
         }
@@ -201,7 +210,7 @@ public class TileFactory implements ITileFactory
 
     public static class Interface extends TileFactory
     {
-        public Interface(Class<? extends TileEntityElementBase> tileClass, int subType, String... iconNames)
+        public Interface(Class<? extends TileEntityElementBase> tileClass, String[] subType, String... iconNames)
         {
             super(tileClass, subType, iconNames);
         }
@@ -219,7 +228,7 @@ public class TileFactory implements ITileFactory
 
     public static class Directional extends Cluster
     {
-        public Directional(Class<? extends TileEntityElementBase> tileClass, int subType, String... iconNames)
+        public Directional(Class<? extends TileEntityElementBase> tileClass, String[] subType, String... iconNames)
         {
             super(tileClass, subType, iconNames);
         }
@@ -228,7 +237,7 @@ public class TileFactory implements ITileFactory
         @SideOnly(Side.CLIENT)
         public IIcon getIcon(int side, int subtype)
         {
-            return super.icons[side == 3 ? 0 : 1];
+            return super.icons[subtype][side == 3 ? 0 : 1];
         }
     }
 }

@@ -65,13 +65,13 @@ public class BlockRegistry
     public static void registerBlocks()
     {
         GameRegistry.registerBlock(cableCamouflage = new BlockCamouflaged("test"), ItemTileElement.class, "test");
-        cableCamouflage.setFactories(Arrays.asList(TileFactories.CLUSTER, TileFactories.CLUSTER_ADVANCED, TileFactories.CAMO, TileFactories.CAMO_DOUBLE, TileFactories.CAMO_TRANSFORM).iterator());
+        cableCamouflage.setFactories(Arrays.asList(new ITileFactory[]{TileFactories.CLUSTER, TileFactories.CAMO}).iterator());
         Comparator<ITileFactory> alphabetical = new Comparator<ITileFactory>()
         {
             @Override
             public int compare(ITileFactory o1, ITileFactory o2)
             {
-                return String.CASE_INSENSITIVE_ORDER.compare(o1.getUnlocalizedName(), o2.getUnlocalizedName());
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.getKey(), o2.getKey());
             }
         };
         List<ITileFactory> factories = new ArrayList<ITileFactory>(ClusterRegistry.getFactories());

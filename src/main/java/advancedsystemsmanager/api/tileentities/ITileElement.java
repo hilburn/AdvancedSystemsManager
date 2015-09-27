@@ -21,4 +21,6 @@ public interface ITileElement
 
     @SideOnly(Side.CLIENT)
     IIcon getIcon(int side);
+
+    int getSubtype();
 }

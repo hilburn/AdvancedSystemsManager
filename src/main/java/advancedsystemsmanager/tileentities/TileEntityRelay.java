@@ -862,49 +862,51 @@ public class TileEntityRelay extends TileEntityElementRotation implements IInven
     }
 
     @Override
-    public void writeToTileNBT(NBTTagCompound nbtTagCompound)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
+        super.writeToTileNBT(tag);
         if (isAdvanced())
         {
             if (owner != null)
             {
-                nbtTagCompound.setString(NBT_OWNER, owner.getName());
-                nbtTagCompound.setString(NBT_UUID, owner.getId().toString());
+                tag.setString(NBT_OWNER, owner.getName());
+                tag.setString(NBT_UUID, owner.getId().toString());
             }
-            nbtTagCompound.setBoolean(NBT_CREATIVE, creativeMode);
-            nbtTagCompound.setBoolean(NBT_LIST, doesListRequireOp);
+            tag.setBoolean(NBT_CREATIVE, creativeMode);
+            tag.setBoolean(NBT_LIST, doesListRequireOp);
 
             NBTTagList permissionTags = new NBTTagList();
             for (UserPermission permission : permissions)
             {
                 NBTTagCompound permissionTag = new NBTTagCompound();
-                nbtTagCompound.setString(NBT_NAME, permission.getUser().getName());
-                nbtTagCompound.setString(NBT_UUID, permission.getUser().getId().toString());
+                tag.setString(NBT_NAME, permission.getUser().getName());
+                tag.setString(NBT_UUID, permission.getUser().getId().toString());
                 permissionTag.setBoolean(NBT_ACTIVE, permission.isActive());
                 permissionTag.setBoolean(NBT_EDITOR, permission.isOp());
                 permissionTags.appendTag(permissionTag);
             }
-            nbtTagCompound.setTag(NBT_PERMISSIONS, permissionTags);
+            tag.setTag(NBT_PERMISSIONS, permissionTags);
         }
     }
 
     @Override
-    public void readFromTileNBT(NBTTagCompound nbtTagCompound)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        if (nbtTagCompound.hasKey(NBT_OWNER))
+        super.readFromTileNBT(tag);
+        if (tag.hasKey(NBT_OWNER))
         {
-            String name = nbtTagCompound.getString(NBT_OWNER);
-            UUID id = UUID.fromString(nbtTagCompound.getString(NBT_UUID));
+            String name = tag.getString(NBT_OWNER);
+            UUID id = UUID.fromString(tag.getString(NBT_UUID));
             owner = new GameProfile(id, name);
-            creativeMode = nbtTagCompound.getBoolean(NBT_CREATIVE);
-            doesListRequireOp = nbtTagCompound.getBoolean(NBT_LIST);
+            creativeMode = tag.getBoolean(NBT_CREATIVE);
+            doesListRequireOp = tag.getBoolean(NBT_LIST);
             permissions.clear();
 
-            NBTTagList permissionTags = nbtTagCompound.getTagList(NBT_PERMISSIONS, 10);
+            NBTTagList permissionTags = tag.getTagList(NBT_PERMISSIONS, 10);
             for (int i = 0; i < permissionTags.tagCount(); i++)
             {
                 NBTTagCompound permissionTag = permissionTags.getCompoundTagAt(i);
-                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME), UUID.fromString(nbtTagCompound.getString(NBT_UUID)));
+                UserPermission permission = new UserPermission(permissionTag.getString(NBT_NAME), UUID.fromString(tag.getString(NBT_UUID)));
                 permission.setActive(permissionTag.getBoolean(NBT_ACTIVE));
                 permission.setOp(permissionTag.getBoolean(NBT_EDITOR));
                 permissions.add(permission);

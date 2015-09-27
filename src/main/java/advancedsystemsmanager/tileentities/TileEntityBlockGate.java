@@ -48,16 +48,16 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
         {
             if (side == placeDirection && side == getFacing().ordinal())
             {
-                return getTileFactory().getIcons()[0];
+                return getTileFactory().getIcons(subtype)[0];
             } else if (side == placeDirection)
             {
-                return getTileFactory().getIcons()[3];
+                return getTileFactory().getIcons(subtype)[3];
             } else if (side == getFacing().ordinal())
             {
-                return getTileFactory().getIcons()[2];
+                return getTileFactory().getIcons(subtype)[2];
             }
         }
-        return getTileFactory().getIcons()[1];
+        return getTileFactory().getIcons(subtype)[1];
     }
 
     @Override
@@ -421,7 +421,7 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
     @Override
     public String getInventoryName()
     {
-        return StatCollector.translateToLocal(TileFactories.BLOCK_GATE.getUnlocalizedName());
+        return StatCollector.translateToLocal(TileFactories.BLOCK_GATE.getUnlocalizedName(subtype));
     }
 
     @Override

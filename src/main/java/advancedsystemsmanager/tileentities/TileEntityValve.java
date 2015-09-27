@@ -129,7 +129,7 @@ public class TileEntityValve extends TileEntityElementRotation implements IInven
     @Override
     public String getInventoryName()
     {
-        return StatCollector.translateToLocal((subtype == 1 ? TileFactories.VALVE_ADVANCED : TileFactories.VALVE).getUnlocalizedName());
+        return TileFactories.VALVE.getUnlocalizedName(subtype);
     }
 
     @Override

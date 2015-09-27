@@ -13,14 +13,14 @@ public class ClusterRegistry
 
     public static void register(ITileFactory tileFactory)
     {
-        if (registry.containsKey(tileFactory.getUnlocalizedName()))
-            throw new IllegalArgumentException("ID: " + tileFactory.getUnlocalizedName() + " is already registered by " + getItemStack(tileFactory.getUnlocalizedName()).getDisplayName());
-        registry.put(tileFactory.getUnlocalizedName(), tileFactory);
+        if (registry.containsKey(tileFactory.getKey()))
+            throw new IllegalArgumentException("ID: " + tileFactory.getKey() + " is already registered by " + registry.get(tileFactory.getKey()).getClass());
+        registry.put(tileFactory.getKey(), tileFactory);
     }
 
     public static ItemStack getItemStack(String id)
     {
-        return registry.containsKey(id) ? registry.get(id).getItemStack() : null;
+        return registry.containsKey(id) ? registry.get(id).getItemStack(0) : null;
     }
 
     public static ITileFactory get(String id)

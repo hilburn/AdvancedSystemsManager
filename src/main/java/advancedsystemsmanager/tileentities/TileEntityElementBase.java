@@ -35,7 +35,7 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     @Override
     public IIcon getIcon(int side)
     {
-        return getTileFactory().getIcons()[0];
+        return getTileFactory().getIcon(side, subtype);
     }
 
     @Override
@@ -53,6 +53,12 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     @Override
     public void onAddedToCluster(ICluster cluster)
     {
+    }
+
+    @Override
+    public int getSubtype()
+    {
+        return subtype;
     }
 
     @Override

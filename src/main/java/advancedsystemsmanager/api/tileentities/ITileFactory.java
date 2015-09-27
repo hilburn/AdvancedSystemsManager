@@ -25,9 +25,9 @@ public interface ITileFactory
 
     int getMetadata();
 
-    String getUnlocalizedName();
+    String getUnlocalizedName(int subtype);
 
-    ItemStack getItemStack();
+    ItemStack getItemStack(int subtype);
 
     boolean hasTileEntity();
 
@@ -49,5 +49,7 @@ public interface ITileFactory
     IIcon getIcon(int side, int subtype);
 
     @SideOnly(Side.CLIENT)
-    IIcon[] getIcons();
+    IIcon[] getIcons(int subtype);
+
+    String getKey();
 }

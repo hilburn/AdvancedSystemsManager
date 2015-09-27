@@ -105,7 +105,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     @Override
     public IIcon getIcon(int side)
     {
-        return getTileFactory().getIcon(side);
+        return getTileFactory().getIcon(side, 0);
     }
 
     public void removeFlowComponent(int idToRemove, boolean connected)
@@ -232,6 +232,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
         if (firstCommandExecution)
         {
             updateInventories();
+            updateRedstone();
             updateVariables();
 
             firstCommandExecution = false;
@@ -765,7 +766,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
         return variables.get(selectedVariable);
     }
 
-    public void triggerRedstone()
+    public void updateRedstone()
     {
         isPowered = new int[isPowered.length];
         for (int i = 0; i < isPowered.length; i++)
@@ -844,13 +845,14 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     public void validate()
     {
         super.validate();
-        onNeighborBlockChange();
+        firstInventoryUpdate = true;
+        firstCommandExecution = true;
     }
 
     @Override
     public void onNeighborBlockChange()
     {
-        triggerRedstone();
+        updateRedstone();
         updateInventories();
     }
 

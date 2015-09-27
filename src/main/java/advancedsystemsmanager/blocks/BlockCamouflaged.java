@@ -183,7 +183,7 @@ public class BlockCamouflaged extends BlockTileElement implements IFacade, ICabl
     @Override
     public boolean isCable(int meta)
     {
-        return meta == TileFactories.CLUSTER_ADVANCED.getMetadata();
+        return false;//meta == TileFactories.CLUSTER_ADVANCED.getMetadata();
     }
 
     @Override

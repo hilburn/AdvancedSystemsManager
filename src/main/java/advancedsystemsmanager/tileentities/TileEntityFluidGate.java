@@ -190,15 +190,17 @@ public class TileEntityFluidGate extends TileEntityElementRotation implements IF
     }
 
     @Override
-    public void writeToTileNBT(NBTTagCompound tagCompound)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
-        if (tank != null) tank.writeToNBT(tagCompound);
+        super.writeToTileNBT(tag);
+        if (tank != null) tank.writeToNBT(tag);
     }
 
     @Override
-    public void readFromTileNBT(NBTTagCompound tagCompound)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        tank = FluidStack.loadFluidStackFromNBT(tagCompound);
+        super.readFromTileNBT(tag);
+        tank = FluidStack.loadFluidStackFromNBT(tag);
     }
 
     @Override

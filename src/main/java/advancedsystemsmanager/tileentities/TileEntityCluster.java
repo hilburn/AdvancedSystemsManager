@@ -404,7 +404,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
         {
             NBTTagCompound elementData = new NBTTagCompound();
             ((TileEntity)entry.getValue()).writeToNBT(elementData);
-            tag.setTag(entry.getKey().getUnlocalizedName(), elementData);
+            tag.setTag(entry.getKey().getKey(), elementData);
         }
     }
 
@@ -446,9 +446,10 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     {
         super.writeTileData(packet);
         packet.writeByte(pairs.size());
-        for (ITileFactory factory : pairs.keySet())
+        for (Map.Entry<ITileFactory, ITileElement> entry : pairs.entrySet())
         {
-            packet.writeStringToBuffer(factory.getUnlocalizedName());
+            packet.writeStringToBuffer(entry.getKey().getKey());
+            packet.writeByte(entry.getValue().getSubtype());
         }
         if (camouflageObject != null)
         {
@@ -476,7 +477,11 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
             int length = packet.readByte();
             for (int i = 0; i < length; i++)
             {
-                addElement(packet.readStringFromBuffer(), null, false);
+                ITileElement element = addElement(packet.readStringFromBuffer(), null, false);
+                if (element != null)
+                {
+                    element.setSubtype(packet.readByte());
+                }
             }
             if (camouflageObject != null)
             {
@@ -507,8 +512,8 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     public List<ItemStack> getStacks()
     {
         List<ItemStack> stacks = new ArrayList<ItemStack>();
-        for (ITileFactory factory : pairs.keySet())
-            stacks.add(factory.getItemStack());
+        for (Map.Entry<ITileFactory, ITileElement> entry : pairs.entrySet())
+            stacks.add(entry.getKey().getItemStack(entry.getValue().getSubtype()));
         return stacks;
     }
 

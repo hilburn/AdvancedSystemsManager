@@ -68,7 +68,7 @@ public class BlockTileElement extends Block
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
     {
-        ITileFactory factory = factories[world.getBlockMetadata(x, y, z)];
+        ITileFactory factory = getTileFactory(world.getBlockMetadata(x, y, z));
         if (factory != null)
         {
             return ((ITileElement)factory.getTileEntity(world, x, y, z)).getIcon(side);
@@ -80,7 +80,8 @@ public class BlockTileElement extends Block
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
-        return factories[meta] != null ? factories[meta % 16].getIcon(side, meta / 16) : null;
+        ITileFactory factory = getTileFactory(meta);
+        return factory != null ? factory.getIcon(side, meta / 16) : null;
     }
 
     @Override
@@ -94,15 +95,17 @@ public class BlockTileElement extends Block
     }
 
     @Override
-    public boolean hasTileEntity(int metadata)
+    public boolean hasTileEntity(int meta)
     {
-        return factories[metadata] != null && factories[metadata].hasTileEntity();
+        ITileFactory factory = getTileFactory(meta);
+        return factory != null && factory.hasTileEntity();
     }
 
     @Override
-    public TileEntity createTileEntity(World world, int metadata)
+    public TileEntity createTileEntity(World world, int meta)
     {
-        return factories[metadata] != null ? factories[metadata].createTileEntity(world, metadata) : null;
+        ITileFactory factory = getTileFactory(meta);
+        return factory != null ? factory.createTileEntity(world, meta) : null;
     }
 
     @Override
@@ -217,11 +220,11 @@ public class BlockTileElement extends Block
         {
             return null;
         }
-        return factories[stack.getItemDamage() % 16];
+        return getTileFactory(stack.getItemDamage());
     }
 
     public ITileFactory getTileFactory(int blockMetadata)
     {
-        return factories[blockMetadata % 16];
+        return factories[blockMetadata & 0xF];
     }
 }

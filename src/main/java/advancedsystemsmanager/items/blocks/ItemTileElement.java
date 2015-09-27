@@ -32,7 +32,7 @@ public class ItemTileElement extends ItemBlock implements IElementItem
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return getTileFactory(stack).getUnlocalizedName();
+        return getTileFactory(stack).getUnlocalizedName(stack.getItemDamage() / 16);
     }
 
     @Override
@@ -58,12 +58,14 @@ public class ItemTileElement extends ItemBlock implements IElementItem
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
         {
             return false;
-        } else if (stack.hasTagCompound())
+        }
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof ITileElement)
         {
-            TileEntity te = world.getTileEntity(x, y, z);
-            if (te instanceof ITileElement)
+            ((ITileElement) te).setSubtype(stack.getItemDamage() / 16);
+            if (stack.hasTagCompound())
             {
-                ((ITileElement)te).readFromItemNBT(stack.getTagCompound());
+                ((ITileElement) te).readFromItemNBT(stack.getTagCompound());
             }
         }
         return true;
