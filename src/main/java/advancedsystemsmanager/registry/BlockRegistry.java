@@ -1,32 +1,22 @@
 package advancedsystemsmanager.registry;
 
-import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.blocks.*;
+import advancedsystemsmanager.compatibility.appliedenergistics.AECompat;
+import advancedsystemsmanager.compatibility.rf.RFCompat;
 import advancedsystemsmanager.items.blocks.*;
-import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.recipes.*;
 import cpw.mods.fml.common.registry.GameRegistry;
-import thevault.registry.Register;
-
-import java.util.*;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class BlockRegistry
 {
-//    //    Manager
-//    @Register(tileEntity = TileEntityManager.class, itemBlock = ItemManager.class, name = Names.MANAGER)
-//    public static BlockManager blockManager;
-//
     public static int BLOCKS_TO_REGISTER = 4;
     public static BlockTileElement[] cableElements;
-
-//    @Register(tileEntity = TileEntityQuantumCable.class, itemBlock = ItemQuantum.class, name = Names.OLD_CABLE_QUANTUM)
-//    public static BlockCableQuantum cableQuantum;
-//
-//    //    Mod Cluster Elements
-//    @ConfigKey(Names.OLD_CABLE_AE)
-//    @Register(tileEntity = TileEntityAENode.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_AE, dependency = Mods.APPLIEDENERGISTICS2)
-//    public static BlockCableAE cableAENode;
-//    @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_RF, dependency = Mods.COFH_ENERGY)
-//    public static BlockCableRF cableRFNode;
 
     public static void registerBlocks()
     {
@@ -40,131 +30,134 @@ public class BlockRegistry
 
     public static void registerRecipes()
     {
-//        GameRegistry.addRecipe(new ItemStack(blockManager),
-//                "III",
-//                "IRI",
-//                "SPS",
-//                'R', Blocks.redstone_block,
-//                'P', Blocks.piston,
-//                'I', Items.iron_ingot,
-//                'S', Blocks.stone
-//        );
-//
-//        GameRegistry.addRecipe(new ItemStack(cable, 8),
-//                "GPG",
-//                "IRI",
-//                "GPG",
-//                'R', Items.redstone,
-//                'G', Blocks.glass,
-//                'I', Items.iron_ingot,
-//                'P', Blocks.light_weighted_pressure_plate
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableRelay, 1),
-//                cable,
-//                Blocks.hopper
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableOutput, 1),
-//                cable,
-//                Items.redstone,
-//                Items.redstone,
-//                Items.redstone
-//        );
-//
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableInput, 1),
-//                cable,
-//                Items.redstone
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableRelay, 1, 8),
-//                new ItemStack(cableRelay, 1, 0),
-//                new ItemStack(Items.dye, 1, 4)
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableValve, 1, 0),
-//                cable,
-//                Blocks.hopper,
-//                Blocks.hopper,
-//                Blocks.dropper
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableBUD, 1),
-//                cable,
-//                Items.quartz,
-//                Items.quartz,
-//                Items.quartz
-//        );
-//
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableBlockGate, 1),
-//                cable,
-//                Items.iron_pickaxe,
-//                Blocks.dispenser
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableFluidGate, 1),
-//                cable,
-//                Items.bucket,
-//                Blocks.dispenser
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableValve, 1, 8),
-//                new ItemStack(cableValve, 1, 0),
-//                Items.gold_ingot
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableCluster, 1),
-//                cable,
-//                Items.ender_pearl,
-//                Items.slime_ball,
-//                Items.ender_pearl
-//        );
-//
-//        GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(cableCamouflage, 1, 0), cable, "wool", "wool", "wool"));
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 1),
-//                new ItemStack(cableCamouflage, 1, 0),
-//                new ItemStack(cableCamouflage, 1, 0),
-//                Blocks.iron_bars,
-//                Blocks.iron_bars
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableCamouflage, 1, 2),
-//                new ItemStack(cableCamouflage, 1, 1),
-//                Blocks.sticky_piston
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableSign, 1),
-//                cable,
-//                new ItemStack(Items.dye, 0),
-//                Items.feather
-//        );
-//
-//        GameRegistry.addShapelessRecipe(new ItemStack(cableVoid), cable, Items.magma_cream, Items.blaze_rod);
-//
-//        if (cableRFNode != null)
-//        {
-//            GameRegistry.addRecipe(new ItemStack(cableRFNode), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', new ItemStack(cable));
-//        }
-//        if (cableAENode != null)
-//        {
-//            ItemStack aeInterface = new ItemStack(GameRegistry.findBlock("appliedenergistics2", "tile.BlockInterface"));
-//            Item quartz = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
-//            ItemStack cable = new ItemStack(BlockRegistry.cable);
-//            ItemStack fluix = new ItemStack(quartz, 1, 12);
-//            ItemStack certus = new ItemStack(quartz, 1, 10);
-//            Block fluidBlock = GameRegistry.findBlock("extracells", "ecbaseblock");
-//            GameRegistry.addRecipe(new ItemStack(cableAENode), "FRQ", "ACB", "QRF", 'R', Blocks.redstone_block, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null ? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
-//            GameRegistry.addRecipe(new ItemStack(cableAENode), "QRF", "ACB", "FRQ", 'R', Blocks.redstone_block, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null ? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
-//        }
-//
-//        GameRegistry.addRecipe(new ClusterUpgradeRecipe());
-//        GameRegistry.addRecipe(new ClusterRecipe());
-//        GameRegistry.addRecipe(new ClusterUncraftingRecipe());
-//        GameRegistry.addRecipe(new QuantumCraftingRecipe());
-//        GameRegistry.addRecipe(new QuantumPairingRecipe());
+        GameRegistry.addRecipe(ClusterRegistry.MANAGER.getItemStack(),
+                "III",
+                "IRI",
+                "SPS",
+                'R', Blocks.redstone_block,
+                'P', Blocks.piston,
+                'I', Items.iron_ingot,
+                'S', Blocks.stone
+        );
+
+        ItemStack cable = ClusterRegistry.CABLE.getItemStack();
+        cable.stackSize = 8;
+
+        GameRegistry.addRecipe(cable,
+                "GPG",
+                "IRI",
+                "GPG",
+                'R', Items.redstone,
+                'G', Blocks.glass,
+                'I', Items.iron_ingot,
+                'P', Blocks.light_weighted_pressure_plate
+        );
+
+        cable = ClusterRegistry.CABLE.getItemStack();
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.RELAY.getItemStack(),
+                cable,
+                Blocks.hopper
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.EMITTER.getItemStack(),
+                cable,
+                Items.redstone,
+                Items.redstone,
+                Items.redstone
+        );
+
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.RECEIVER.getItemStack(),
+                cable,
+                Items.redstone
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.RELAY.getItemStack(1),
+                ClusterRegistry.RELAY.getItemStack(),
+                new ItemStack(Items.dye, 1, 4)
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.VALVE.getItemStack(),
+                cable,
+                Blocks.hopper,
+                Blocks.hopper,
+                Blocks.dropper
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.BUD.getItemStack(),
+                cable,
+                Items.quartz,
+                Items.quartz,
+                Items.quartz
+        );
+
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.BLOCK_GATE.getItemStack(),
+                cable,
+                Items.iron_pickaxe,
+                Blocks.dispenser
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.FLUID_GATE.getItemStack(),
+                cable,
+                Items.bucket,
+                Blocks.dispenser
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.VALVE.getItemStack(1),
+                ClusterRegistry.RECEIVER.getItemStack(),
+                Items.gold_ingot
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.CLUSTER.getItemStack(),
+                cable,
+                Items.ender_pearl,
+                Items.slime_ball,
+                Items.ender_pearl
+        );
+
+        GameRegistry.addRecipe(new ShapelessOreRecipe(ClusterRegistry.CAMO.getItemStack(), cable, "wool", "wool", "wool"));
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.CAMO.getItemStack(1),
+                ClusterRegistry.CAMO.getItemStack(),
+                ClusterRegistry.CAMO.getItemStack(),
+                Blocks.iron_bars,
+                Blocks.iron_bars
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.CAMO.getItemStack(2),
+                ClusterRegistry.CAMO.getItemStack(1),
+                Blocks.sticky_piston
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.SIGN.getItemStack(),
+                cable,
+                new ItemStack(Items.dye, 0),
+                Items.feather
+        );
+
+        GameRegistry.addShapelessRecipe(ClusterRegistry.VOID.getItemStack(), cable, Items.magma_cream, Items.blaze_rod);
+
+        if (RFCompat.RF != null)
+        {
+            GameRegistry.addRecipe(RFCompat.RF.getItemStack(), "RRR", "RCR", "RRR", 'R', Items.redstone, 'C', cable);
+        }
+        if (AECompat.AE != null)
+        {
+            ItemStack aeInterface = new ItemStack(GameRegistry.findBlock("appliedenergistics2", "tile.BlockInterface"));
+            Item quartz = GameRegistry.findItem("appliedenergistics2", "item.ItemMultiMaterial");
+            ItemStack fluix = new ItemStack(quartz, 1, 12);
+            ItemStack certus = new ItemStack(quartz, 1, 10);
+            Block fluidBlock = GameRegistry.findBlock("extracells", "ecbaseblock");
+            GameRegistry.addRecipe(AECompat.AE.getItemStack(), "FRQ", "ACB", "QRF", 'R', Blocks.redstone_block, 'C', cable, 'A', aeInterface, 'B', fluidBlock == null ? aeInterface : new ItemStack(fluidBlock), 'F', fluix, 'Q', certus);
+        }
+
+        GameRegistry.addRecipe(new ClusterUpgradeRecipe());
+        GameRegistry.addRecipe(new ClusterRecipe());
+        GameRegistry.addRecipe(new ClusterUncraftingRecipe());
+        GameRegistry.addRecipe(new QuantumCraftingRecipe());
+        GameRegistry.addRecipe(new QuantumPairingRecipe());
     }
 
     public static void registerTiles()
@@ -174,5 +167,7 @@ public class BlockRegistry
             block.clearFactories();
             block.setFactories(ClusterRegistry.getFactories());
         }
+        registerRecipes();
+        ItemRegistry.registerRecipes();
     }
 }

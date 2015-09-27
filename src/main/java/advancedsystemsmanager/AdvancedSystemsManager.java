@@ -104,8 +104,6 @@ public class AdvancedSystemsManager
         packetHandler.register(new PacketEventHandler());
         NetworkRegistry.INSTANCE.registerGuiHandler(AdvancedSystemsManager.INSTANCE, guiHandler);
         OreDictionaryHelper.registerUsefulThings();
-        ItemRegistry.registerRecipes();
-        BlockRegistry.registerRecipes();
         EventHandler handler = new EventHandler();
         FMLCommonHandler.instance().bus().register(handler);
         MinecraftForge.EVENT_BUS.register(handler);
