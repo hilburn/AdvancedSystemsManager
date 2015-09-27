@@ -2,6 +2,7 @@ package advancedsystemsmanager.nei;
 
 import advancedsystemsmanager.items.blocks.ItemQuantum;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import codechicken.nei.recipe.ShapelessRecipeHandler;
 import net.minecraft.init.Items;
@@ -18,7 +19,7 @@ public class NEIQuantumRecipes extends ShapelessRecipeHandler
 
     static
     {
-        INTERDIMENSIONAL[0] = new ItemStack(BlockRegistry.cable);
+        INTERDIMENSIONAL[0] = ClusterRegistry.CABLE.getItemStack();
         for (int i = 1; i < 9; i++)
         {
             INTERDIMENSIONAL[i] = new ItemStack(Items.ender_eye);
@@ -78,7 +79,7 @@ public class NEIQuantumRecipes extends ShapelessRecipeHandler
         private void cycleIngredients()
         {
             List<ItemStack> ingredients = new ArrayList<ItemStack>();
-            ingredients.add(new ItemStack(BlockRegistry.cable));
+            ingredients.add(ClusterRegistry.CABLE.getItemStack());
             for (int i = 0; i < output.getTagCompound().getInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE); i++)
             {
                 if (rand.nextBoolean())

@@ -1,6 +1,5 @@
 package advancedsystemsmanager;
 
-import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.commands.ParentCommand;
 import advancedsystemsmanager.compatibility.ModCompat;
 import advancedsystemsmanager.helpers.*;
@@ -12,6 +11,7 @@ import advancedsystemsmanager.proxy.CommonProxy;
 import advancedsystemsmanager.reference.Metadata;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.registry.ThemeHandler;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
@@ -72,7 +72,7 @@ public class AdvancedSystemsManager
             @Override
             public ItemStack getIconItemStack()
             {
-                return TileFactories.MANAGER.getItemStack();
+                return ClusterRegistry.MANAGER.getItemStack();
             }
 
             @Override
@@ -86,10 +86,7 @@ public class AdvancedSystemsManager
         registerer.scan(BlockRegistry.class, event.getSide());
         registerer.scan(ItemRegistry.class, event.getSide());
 
-        if (TileFactories.INSTANCE != null)
-        {
-            BlockRegistry.registerBlocks();
-        }
+        BlockRegistry.registerBlocks();
 
         MessageHandler.init();
 

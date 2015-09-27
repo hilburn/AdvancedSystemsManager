@@ -34,7 +34,7 @@ public class ClientProxy extends CommonProxy
     public void initRenderers()
     {
         ISimpleBlockRenderingHandler renderingHandler  = new RenderCamouflage();
-        RenderingRegistry.registerBlockHandler(BlockRegistry.cableCamouflage.getRenderType(), renderingHandler);
+        RenderingRegistry.registerBlockHandler(renderingHandler.getRenderId(), renderingHandler);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TileEntityReceiver extends TileEntityClusterElement implements IRedstoneReceiver, ISystemListener, ITriggerNode, IBUDListener
+public class TileEntityReceiver extends TileEntityElementBase implements IRedstoneReceiver, ISystemListener, ITriggerNode, IBUDListener
 {
     private static final String NBT_SIDES = "Sides";
     private List<TileEntityManager> managerList = new ArrayList<TileEntityManager>();

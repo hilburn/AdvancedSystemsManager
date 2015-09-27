@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.EnumSet;
 
-public class TileEntityRFNode extends TileEntityClusterElement implements IEnergyProvider, IEnergyReceiver, IPacketBlock
+public class TileEntityRFNode extends TileEntityElementBase implements IEnergyProvider, IEnergyReceiver, IPacketBlock
 {
     private static final int SIDES = 6;
     public static int MAX_BUFFER = 96000;
@@ -62,7 +62,7 @@ public class TileEntityRFNode extends TileEntityClusterElement implements IEnerg
         cur %= 4;
         sides &= ~(3 << side);
         sides |= cur << side;
-        markBlockForRenderUpdate();
+        markForRenderUpdate();
     }
 
     public int getIconIndex(int side)

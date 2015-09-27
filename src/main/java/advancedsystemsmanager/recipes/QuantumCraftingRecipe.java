@@ -1,6 +1,7 @@
 package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -18,13 +19,14 @@ public class QuantumCraftingRecipe implements IRecipe
         int enderPearl = 0;
         int enderEye = 0;
         boolean hasCable = false;
+        ItemStack cable = ClusterRegistry.CABLE.getItemStack();
         for (int i = 0; i < inventoryCrafting.getSizeInventory(); i++)
         {
             ItemStack item = inventoryCrafting.getStackInSlot(i);
 
             if (item != null)
             {
-                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cable)
+                if (item.isItemEqual(cable))
                 {
                     if (hasCable) return false;
                     else hasCable = true;
@@ -49,13 +51,14 @@ public class QuantumCraftingRecipe implements IRecipe
         int enderPearl = 0;
         int enderEye = 0;
         boolean hasCable = false;
+        ItemStack cable = ClusterRegistry.CABLE.getItemStack();
         for (int i = 0; i < inventoryCrafting.getSizeInventory(); i++)
         {
             ItemStack item = inventoryCrafting.getStackInSlot(i);
 
             if (item != null)
             {
-                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cable)
+                if (item.isItemEqual(cable))
                 {
                     if (hasCable) return null;
                     else hasCable = true;
@@ -77,7 +80,7 @@ public class QuantumCraftingRecipe implements IRecipe
             return null;
         }
 //        ItemStack result = new ItemStack(BlockRegistry.cableQuantum, 2);
-        ItemStack result = new ItemStack(BlockRegistry.cable, 2);
+        ItemStack result = new ItemStack(Items.ender_pearl, 2);
         NBTTagCompound tagCompound = new NBTTagCompound();
         tagCompound.setInteger(TileEntityQuantumCable.NBT_QUANTUM_RANGE, quantumRange);
         result.setTagCompound(tagCompound);
@@ -93,6 +96,6 @@ public class QuantumCraftingRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return new ItemStack(BlockRegistry.cable);
+        return ClusterRegistry.CABLE.getItemStack();
     }
 }

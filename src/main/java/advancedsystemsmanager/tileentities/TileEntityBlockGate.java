@@ -2,10 +2,10 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
 import advancedsystemsmanager.api.tileentities.IActivateListener;
-import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -421,7 +421,7 @@ public class TileEntityBlockGate extends TileEntityElementRotation implements II
     @Override
     public String getInventoryName()
     {
-        return StatCollector.translateToLocal(TileFactories.BLOCK_GATE.getUnlocalizedName(subtype));
+        return StatCollector.translateToLocal(ClusterRegistry.BLOCK_GATE.getUnlocalizedName(subtype));
     }
 
     @Override

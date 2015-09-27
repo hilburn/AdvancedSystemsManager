@@ -1,6 +1,7 @@
 package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
@@ -24,7 +25,7 @@ public class QuantumPairingRecipe implements IRecipe
             if (item != null)
             {
 //                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cableQuantum)
-                if (Block.getBlockFromItem(item.getItem()) == BlockRegistry.cable)
+                if (Block.getBlockFromItem(item.getItem()) == ClusterRegistry.CABLE.getBlock())
                 {
                     if (item.getTagCompound().hasKey(TileEntityQuantumCable.NBT_QUANTUM_KEY))
                     {
@@ -79,6 +80,6 @@ public class QuantumPairingRecipe implements IRecipe
     public ItemStack getRecipeOutput()
     {
 //        return new ItemStack(BlockRegistry.cableQuantum);
-        return new ItemStack(BlockRegistry.cable);
+        return ClusterRegistry.CABLE.getItemStack();
     }
 }

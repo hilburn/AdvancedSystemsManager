@@ -1,7 +1,7 @@
 package advancedsystemsmanager.compatibility.waila;
 
-import advancedsystemsmanager.blocks.TileFactories;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -30,17 +30,17 @@ public class CamouflageDataProvider implements IWailaDataProvider
     public void setCachedProviders()
     {
         cachedHeadProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(BlockRegistry.cableCamouflage).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getHeadProviders(BlockRegistry.cableElement.get(0)).values())
         {
             cachedHeadProviders.addAll(providersList);
         }
         cachedBodyProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(BlockRegistry.cableCamouflage).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getBodyProviders(BlockRegistry.cableElement.get(0)).values())
         {
             cachedBodyProviders.addAll(providersList);
         }
         cachedTailProviders = new ArrayList<IWailaDataProvider>();
-        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(BlockRegistry.cableCamouflage).values())
+        for (List<IWailaDataProvider> providersList : ModuleRegistrar.instance().getTailProviders(BlockRegistry.cableElement.get(0)).values())
         {
             cachedTailProviders.addAll(providersList);
         }
@@ -56,7 +56,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = ClusterRegistry.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 Block block = camouflage.getSideBlock(0);
@@ -82,7 +82,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = ClusterRegistry.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);
@@ -108,7 +108,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = ClusterRegistry.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);
@@ -134,7 +134,7 @@ public class CamouflageDataProvider implements IWailaDataProvider
         TileEntity te = accessor.getTileEntity();
         if (accessor instanceof DataAccessorCommon && te != null && isShiftNotDown())
         {
-            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+            TileEntityCamouflage camouflage = ClusterRegistry.CAMO.getTileEntity(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
             if (camouflage != null && camouflage.hasSideBlock(0))
             {
                 ((DataAccessorCommon) accessor).block = camouflage.getSideBlock(0);

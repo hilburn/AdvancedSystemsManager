@@ -20,6 +20,7 @@ import advancedsystemsmanager.containers.ContainerManager;
 import advancedsystemsmanager.client.gui.GuiManager;
 import advancedsystemsmanager.client.gui.IInterfaceRenderer;
 import advancedsystemsmanager.client.gui.ManagerButtonList;
+import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Mods;
@@ -377,7 +378,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
 
                     TileEntity te = target.getWorldTE();
 
-                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockRegistry.cable.isCable(target.getBlock(), target.getMetadata()))
+                    if ((Settings.isLimitless(this) || element.getDepth() < MAX_CABLE_LENGTH) && BlockHelper.isCable(target.getBlock(), target.getWorld(), target.getX(), target.getY(), target.getZ()))
                     {
                         queue.add(target);
                         if (te instanceof TileEntityQuantumCable)

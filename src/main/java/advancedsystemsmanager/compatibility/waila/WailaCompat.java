@@ -1,10 +1,10 @@
 package advancedsystemsmanager.compatibility.waila;
 
-import advancedsystemsmanager.blocks.BlockCamouflaged;
+import advancedsystemsmanager.api.tileentities.ITileElement;
+import advancedsystemsmanager.blocks.BlockTileElement;
 import advancedsystemsmanager.compatibility.CompatBase;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.tileentities.TileEntityCluster;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import advancedsystemsmanager.tileentities.TileEntityEmitter;
 import advancedsystemsmanager.tileentities.TileEntityQuantumCable;
 import cpw.mods.fml.common.Optional;
@@ -31,7 +31,7 @@ public class WailaCompat extends CompatBase
         WailaCompat.registrar = registrar;
         registrar.registerHeadProvider(labelProvider, IInventory.class);
         registrar.registerHeadProvider(labelProvider, IFluidHandler.class);
-        registrar.registerHeadProvider(labelProvider, TileEntityClusterElement.class);
+        registrar.registerHeadProvider(labelProvider, ITileElement.class);
         registrar.registerHeadProvider(labelProvider, TileEntityCluster.class);
         for (Class clazz : labelClasses)
         {
@@ -43,10 +43,10 @@ public class WailaCompat extends CompatBase
         registrar.registerBodyProvider(new QuantumDataProvider(), TileEntityQuantumCable.class);
 
         CamouflageDataProvider provider = new CamouflageDataProvider();
-        registrar.registerStackProvider(provider, BlockCamouflaged.class);
-        registrar.registerHeadProvider(provider, BlockCamouflaged.class);
-        registrar.registerBodyProvider(provider, BlockCamouflaged.class);
-        registrar.registerTailProvider(provider, BlockCamouflaged.class);
+        registrar.registerStackProvider(provider, BlockTileElement.class);
+        registrar.registerHeadProvider(provider, BlockTileElement.class);
+        registrar.registerBodyProvider(provider, BlockTileElement.class);
+        registrar.registerTailProvider(provider, BlockTileElement.class);
 
     }
 

@@ -1,11 +1,11 @@
 package advancedsystemsmanager.blocks;
 
+import advancedsystemsmanager.api.tileentities.ICluster;
 import advancedsystemsmanager.api.tileentities.ITileFactory;
 import advancedsystemsmanager.api.tileentities.ITileInterfaceProvider;
 import advancedsystemsmanager.api.tileentities.ITileElement;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
-import advancedsystemsmanager.tileentities.TileEntityCluster;
 import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -129,9 +129,9 @@ public class TileFactory implements ITileFactory
         if (isInstance(tileEntity))
         {
             return (T) tileEntity;
-        } else if (tileEntity instanceof TileEntityCluster)
+        } else if (tileEntity instanceof ICluster)
         {
-            for (ITileElement tile : ((TileEntityCluster) tileEntity).getTiles())
+            for (ITileElement tile : ((ICluster) tileEntity).getTiles())
             {
                 if (isInstance(tile))
                 {
@@ -151,6 +151,18 @@ public class TileFactory implements ITileFactory
     public boolean isInstance(ITileElement tileEntity)
     {
         return tileClass.isInstance(tileEntity);
+    }
+
+    @Override
+    public boolean canPlaceBlock(World world, int x, int y, int z, ItemStack stack)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isCable(ITileElement element)
+    {
+        return false;
     }
 
     @Override
@@ -185,12 +197,6 @@ public class TileFactory implements ITileFactory
     }
 
     @Override
-    public boolean canPlaceBlock(World world, int x, int y, int z, ItemStack stack)
-    {
-        return true;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public IIcon[] getIcons(int subtype)
     {
@@ -202,6 +208,11 @@ public class TileFactory implements ITileFactory
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> information, boolean advanced)
     {
 
+    }
+
+    public boolean isBlock(Block block, int meta)
+    {
+        return block == getBlock() && meta == getMetadata();
     }
 
     public static class Cluster extends TileFactory

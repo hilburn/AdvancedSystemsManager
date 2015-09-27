@@ -14,6 +14,7 @@ import advancedsystemsmanager.flow.setting.ItemSetting;
 import advancedsystemsmanager.flow.setting.Setting;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import appeng.api.AEApi;
@@ -36,7 +37,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 import java.util.*;
 
 @Optional.Interface(iface = "advancedsystemsmanager.api.tileentities.IHiddenTank", modid = Mods.EXTRACELLS)
-public class TileEntityAENode extends TileEntityClusterElement implements IGridHost, IActionHost, IInternalInventory, IInternalTank
+public class TileEntityAENode extends TileEntityElementBase implements IGridHost, IActionHost, IInternalInventory, IInternalTank
 {
     public AEHelper helper;
     private GridBlock gridBlock;
@@ -279,7 +280,7 @@ public class TileEntityAENode extends TileEntityClusterElement implements IGridH
         public ItemStack getMachineRepresentation()
         {
             //TODO fix
-            return new ItemStack(BlockRegistry.cable);
+            return ClusterRegistry.CABLE.getItemStack();
         }
     }
 

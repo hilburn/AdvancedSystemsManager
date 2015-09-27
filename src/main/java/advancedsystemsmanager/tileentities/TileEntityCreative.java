@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TileEntityCreative extends TileEntityClusterElement implements IInternalInventory, IFluidHandler
+public class TileEntityCreative extends TileEntityElementBase implements IInternalInventory, IFluidHandler
 {
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)

@@ -2,12 +2,10 @@ package advancedsystemsmanager.client.gui;
 
 import advancedsystemsmanager.client.gui.fonts.FontRenderer;
 import advancedsystemsmanager.containers.ContainerBase;
-import advancedsystemsmanager.tileentities.TileEntityElementBase;
 import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.reference.Textures;
-import advancedsystemsmanager.tileentities.TileEntityClusterElement;
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;

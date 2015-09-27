@@ -8,6 +8,7 @@ import advancedsystemsmanager.flow.menus.MenuRedstoneSidesEmitter;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.util.ClusterMethodRegistration;
 import advancedsystemsmanager.util.SystemCoord;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +23,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileEntityEmitter extends TileEntityClusterElement implements IPacketBlock, IRedstoneEmitter
+public class TileEntityEmitter extends TileEntityElementBase implements IPacketBlock, IRedstoneEmitter
 {
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_STRENGTH = "Strength";
@@ -217,7 +218,7 @@ public class TileEntityEmitter extends TileEntityClusterElement implements IPack
 
     private void notifyUpdate(int x, int y, int z, boolean spread)
     {
-        if (worldObj.getBlock(x, y, z) != BlockRegistry.cable && (x != xCoord || y != yCoord || z != zCoord))
+        if (ClusterRegistry.CABLE.isBlock(worldObj.getBlock(x, y, z), worldObj.getBlockMetadata(x, y, z)) && (x != xCoord || y != yCoord || z != zCoord))
         {
             worldObj.notifyBlockOfNeighborChange(x, y, z, getBlockType());
 

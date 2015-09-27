@@ -1,6 +1,7 @@
 package advancedsystemsmanager.recipes;
 
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -19,14 +20,14 @@ public class ClusterUpgradeRecipe extends ShapelessRecipes
 
     static
     {
-        RESULT = new ItemStack(BlockRegistry.cable, 1, 8);
+        RESULT = ClusterRegistry.CLUSTER.getItemStack(1);
 //        RESULT = new ItemStack(BlockRegistry.cableCluster, 1, 8);
         RECIPE = new ArrayList<ItemStack>();
 //        RECIPE.add(new ItemStack(BlockRegistry.cableCluster, 1, 0));
-        RECIPE.add(new ItemStack(BlockRegistry.cable, 1, 0));
+        RECIPE.add(ClusterRegistry.CLUSTER.getItemStack());
         for (int i = 0; i < 8; i++)
         {
-            RECIPE.add(new ItemStack(BlockRegistry.cable));
+            RECIPE.add(ClusterRegistry.CAMO.getItemStack());
         }
     }
 

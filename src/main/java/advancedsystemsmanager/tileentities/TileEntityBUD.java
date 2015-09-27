@@ -12,8 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class TileEntityBUD extends TileEntityClusterElement implements ISystemListener, ITriggerNode, IBUDListener
+public class TileEntityBUD extends TileEntityElementBase implements ISystemListener, ITriggerNode, IBUDListener
 {
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_DATA = "Data";

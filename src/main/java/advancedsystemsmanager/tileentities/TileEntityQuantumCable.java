@@ -2,11 +2,13 @@ package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.network.IPacketBlock;
+import advancedsystemsmanager.helpers.BlockHelper;
 import advancedsystemsmanager.helpers.SavableData;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Reference;
 import advancedsystemsmanager.registry.BlockRegistry;
+import advancedsystemsmanager.util.SystemCoord;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -117,7 +119,7 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
             pair.pair = this;
             if (!worldObj.isRemote)
             {
-                BlockRegistry.cable.updateInventories(worldObj, xCoord, yCoord, zCoord);
+                BlockHelper.updateInventories(new SystemCoord(xCoord, yCoord, zCoord, worldObj));
                 quantumRegistry.remove(getQuantumKey());
                 sendUpdate |= 2;
                 pair.sendUpdate |= 2;
@@ -171,7 +173,7 @@ public class TileEntityQuantumCable extends TileEntity implements IPacketBlock
                 pair.pair = null;
                 addCable(pair);
                 pair.sendUpdate |= 2;
-                BlockRegistry.cable.updateInventories(pair.worldObj, pair.xCoord, pair.yCoord, pair.zCoord);
+                BlockHelper.updateInventories(new SystemCoord(pair.xCoord, pair.yCoord, pair.zCoord, pair.worldObj));
             }else
             {
                 quantumRegistry.remove(getQuantumKey());

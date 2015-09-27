@@ -1,12 +1,10 @@
 package advancedsystemsmanager.tileentities;
 
 import advancedsystemsmanager.api.network.IPacketBlock;
-import advancedsystemsmanager.blocks.BlockCamouflaged;
+import advancedsystemsmanager.blocks.BlockTileElement;
 import advancedsystemsmanager.flow.menus.MenuCamouflageInside;
 import advancedsystemsmanager.flow.menus.MenuCamouflageShape;
 import advancedsystemsmanager.network.ASMPacket;
-import advancedsystemsmanager.network.PacketHandler;
-import advancedsystemsmanager.reference.Names;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -16,12 +14,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.Packet;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
 
-
-public class TileEntityCamouflage extends TileEntityClusterElement implements IPacketBlock
+public class TileEntityCamouflage extends TileEntityElementBase implements IPacketBlock
 {
     private static final String NBT_SIDES = "Sides";
     private static final String NBT_ID = "Id";
@@ -105,9 +99,9 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
         return false;
     }
 
-    public void setBlockBounds(BlockCamouflaged blockCamouflageBase)
+    public void setBlockBounds(BlockTileElement block)
     {
-        blockCamouflageBase.setBlockBounds(bounds[0] / 32F, bounds[2] / 32F, bounds[4] / 32F, bounds[1] / 32F, bounds[3] / 32F, bounds[5] / 32F);
+        block.setBlockBounds(bounds[0] / 32F, bounds[2] / 32F, bounds[4] / 32F, bounds[1] / 32F, bounds[3] / 32F, bounds[5] / 32F);
     }
 
     public boolean isUseCollision()

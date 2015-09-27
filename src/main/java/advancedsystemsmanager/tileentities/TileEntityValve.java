@@ -1,18 +1,14 @@
 package advancedsystemsmanager.tileentities;
 
-import advancedsystemsmanager.blocks.TileFactories;
-import advancedsystemsmanager.registry.BlockRegistry;
-import advancedsystemsmanager.util.ClusterMethodRegistration;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -129,7 +125,7 @@ public class TileEntityValve extends TileEntityElementRotation implements IInven
     @Override
     public String getInventoryName()
     {
-        return TileFactories.VALVE.getUnlocalizedName(subtype);
+        return ClusterRegistry.VALVE.getUnlocalizedName(subtype);
     }
 
     @Override

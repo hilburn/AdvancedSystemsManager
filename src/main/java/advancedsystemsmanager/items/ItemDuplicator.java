@@ -2,6 +2,7 @@ package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.api.items.ILeftClickItem;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -56,7 +57,7 @@ public class ItemDuplicator extends ItemBase implements ILeftClickItem
     {
         if (!world.isRemote && player.isSneaking())
         {
-            TileEntity te = world.getTileEntity(x, y, z);
+            TileEntity te = ClusterRegistry.MANAGER.getTileEntity(world, x, y, z);
             if (te instanceof TileEntityManager)
             {
                 if (stack.hasTagCompound())

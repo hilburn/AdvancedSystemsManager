@@ -2,6 +2,7 @@ package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
 import cpw.mods.fml.common.network.internal.FMLNetworkHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -53,7 +54,7 @@ public class ItemRemoteAccessor extends ItemBase
             int z = stack.getTagCompound().getInteger(Z);
             if (managerWorld.blockExists(x, y, z))
             {
-                if (managerWorld.getTileEntity(x, y, z) instanceof TileEntityManager)
+                if (ClusterRegistry.MANAGER.getTileEntity(managerWorld, x, y, z) instanceof TileEntityManager)
                     FMLNetworkHandler.openGui(player, AdvancedSystemsManager.INSTANCE, 1, world, x, y, z);
             }
         }
@@ -113,7 +114,7 @@ public class ItemRemoteAccessor extends ItemBase
     {
         if (!world.isRemote && player.isSneaking())
         {
-            TileEntity te = world.getTileEntity(x, y, z);
+            TileEntity te = ClusterRegistry.MANAGER.getTileEntity(world, x, y, z);
             if (te instanceof TileEntityManager)
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();

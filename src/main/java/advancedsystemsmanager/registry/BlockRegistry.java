@@ -15,40 +15,8 @@ public class BlockRegistry
 //    @Register(tileEntity = TileEntityManager.class, itemBlock = ItemManager.class, name = Names.MANAGER)
 //    public static BlockManager blockManager;
 //
-
-    @Register(name = Names.OLD_CABLE)
-    public static BlockCable cable;
-
-    public static BlockCamouflaged cableCamouflage;
-
     public static final List<BlockTileElement> cableElement = new ArrayList<BlockTileElement>();
 
-//
-//    //    Cluster Elements
-//    @Register(tileEntity = TileEntityCluster.class, itemBlock = ItemCluster.class, name = Names.OLD_CABLE_CLUSTER)
-//    public static BlockCableCluster cableCluster;
-//    @Register(tileEntity = TileEntityRelay.class, itemBlock = ItemAdvanced.class, name = Names.OLD_CABLE_RELAY)
-//    public static BlockCableRelay cableRelay;
-//    @Register(tileEntity = TileEntityEmitter.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_OUTPUT)
-//    public static BlockCableOutput cableOutput;
-//    @Register(tileEntity = TileEntityReceiver.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_INPUT)
-//    public static BlockCableInput cableInput;
-////    @Register(tileEntity = TileEntityCreative.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_CREATIVE)
-////    public static BlockCableCreative cableCreative;
-//    @Register(tileEntity = TileEntityValve.class, itemBlock = ItemAdvanced.class, name = Names.OLD_CABLE_VALVE)
-//    public static BlockCableValve cableValve;
-//    @Register(tileEntity = TileEntityBUD.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_BUD)
-//    public static BlockCableBUD cableBUD;
-//    @Register(tileEntity = TileEntityBlockGate.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_BLOCK_GATE)
-//    public static BlockCableBlockGate cableBlockGate;
-//    @Register(tileEntity = TileEntityFluidGate.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_FLUID_GATE)
-//    public static BlockCableFluidGate cableFluidGate;
-//    @Register(tileEntity = TileEntityCamouflage.class, itemBlock = ItemCamouflage.class, name = Names.OLD_CABLE_CAMO, SBRH = RenderCamouflage.class)
-//    public static BlockCableCamouflages cableCamouflage;
-//    @Register(tileEntity = TileEntitySignUpdater.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_SIGN)
-//    public static BlockCableSign cableSign;
-//    @Register(tileEntity = TileEntityVoid.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_VOID)
-//    public static BlockCableVoid cableVoid;
 //    @Register(tileEntity = TileEntityQuantumCable.class, itemBlock = ItemQuantum.class, name = Names.OLD_CABLE_QUANTUM)
 //    public static BlockCableQuantum cableQuantum;
 //
@@ -58,14 +26,9 @@ public class BlockRegistry
 //    public static BlockCableAE cableAENode;
 //    @Register(tileEntity = TileEntityRFNode.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_RF, dependency = Mods.COFH_ENERGY)
 //    public static BlockCableRF cableRFNode;
-//    @ConfigKey(Names.OLD_CABLE_TC)
-//    @Register(tileEntity = TileEntityTCNode.class, itemBlock = ItemClusterElement.class, name = Names.OLD_CABLE_TC, dependency = Mods.THAUMCRAFT)
-//    public static BlockCableTC cableTCNode; // TODO add recipe and find uss
 
     public static void registerBlocks()
     {
-        GameRegistry.registerBlock(cableCamouflage = new BlockCamouflaged("test"), ItemTileElement.class, "test");
-        cableCamouflage.setFactories(Arrays.asList(new ITileFactory[]{TileFactories.CLUSTER, TileFactories.CAMO}).iterator());
         Comparator<ITileFactory> alphabetical = new Comparator<ITileFactory>()
         {
             @Override

@@ -1,7 +1,7 @@
 package advancedsystemsmanager.client.render;
 
-import advancedsystemsmanager.blocks.BlockCamouflaged;
-import advancedsystemsmanager.blocks.TileFactories;
+import advancedsystemsmanager.blocks.BlockTileElement;
+import advancedsystemsmanager.registry.ClusterRegistry;
 import advancedsystemsmanager.tileentities.TileEntityCamouflage;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -21,7 +21,7 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
     public RenderCamouflage()
     {
         id = RenderingRegistry.getNextAvailableRenderId();
-        BlockCamouflaged.RENDER_ID = id;
+        BlockTileElement.RENDER_ID = id;
     }
 
     @Override
@@ -65,9 +65,9 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
     {
         Tessellator.instance.setColorOpaque_F(1F, 1F, 1F);
 
-        if (block instanceof BlockCamouflaged)
+        if (block instanceof BlockTileElement)
         {
-            TileEntityCamouflage camouflage = TileFactories.CAMO.getTileEntity(world, x, y, z);
+            TileEntityCamouflage camouflage = ClusterRegistry.CAMO.getTileEntity(world, x, y, z);
             if (camouflage != null)
             {
                 block.setBlockBoundsBasedOnState(world, x, y, z);
@@ -110,7 +110,7 @@ public class RenderCamouflage implements ISimpleBlockRenderingHandler
                 renderer.blockAccess = renderWorld;
             } else
             {
-                block.setBlockBoundsBasedOnState(world, x, y, z);
+                block.setBlockBoundsForItemRender();
                 renderer.setRenderBoundsFromBlock(block);
                 renderer.renderStandardBlock(block, x, y, z);
             }
