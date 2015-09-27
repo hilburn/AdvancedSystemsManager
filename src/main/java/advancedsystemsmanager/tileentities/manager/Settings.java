@@ -135,15 +135,7 @@ public final class Settings
             packet.sendServerPacket();
         } else
         {
-            int meta = manager.getWorldObj().getBlockMetadata(manager.xCoord, manager.yCoord, manager.zCoord);
-            if (limitless)
-            {
-                meta |= 1;
-            } else
-            {
-                meta &= ~1;
-            }
-            manager.getWorldObj().setBlockMetadataWithNotify(manager.xCoord, manager.yCoord, manager.zCoord, meta, 3);
+            manager.setSubtype(limitless ? 1 : 0);
         }
     }
 }

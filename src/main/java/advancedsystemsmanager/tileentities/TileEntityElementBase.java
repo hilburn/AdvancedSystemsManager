@@ -20,7 +20,7 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
 {
     public static final int CLIENT_SYNC = 1;
     public static final int TILE_DATA = 2;
-    private static final String NBT_SUBTYPE = "s";
+    protected static final String NBT_SUBTYPE = "s";
     protected int subtype;
     protected boolean isPartOfCluster;
     private int message;
@@ -64,22 +64,33 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     @Override
     public void setSubtype(int subtype)
     {
-        this.subtype = subtype;
-        setMessageType(CLIENT_SYNC);
+        if (subtype != this.subtype)
+        {
+            this.subtype = subtype;
+            setMessageType(CLIENT_SYNC);
+        }
     }
 
     @Override
     public final void readFromNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(tag);
-        readFromTileNBT(tag);
+        if (tag != null)
+        {
+            super.readFromNBT(tag);
+            readFromTileNBT(tag);
+            readItemNBT(tag);
+        }
     }
 
     @Override
     public final void writeToNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(tag);
-        writeToTileNBT(tag);
+        if (tag != null)
+        {
+            super.writeToNBT(tag);
+            writeToTileNBT(tag);
+            writeItemNBT(tag);
+        }
     }
 
     public void readFromTileNBT(NBTTagCompound tag)
@@ -96,12 +107,12 @@ public abstract class TileEntityElementBase extends TileEntity implements ITileE
     }
 
     @Override
-    public void readFromItemNBT(NBTTagCompound tag)
+    public void readItemNBT(NBTTagCompound tag)
     {
     }
 
     @Override
-    public void writeToItemNBT(NBTTagCompound tag)
+    public void writeItemNBT(NBTTagCompound tag)
     {
     }
 

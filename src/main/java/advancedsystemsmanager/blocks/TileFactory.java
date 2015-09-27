@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -38,9 +39,9 @@ public class TileFactory implements ITileFactory
         for (int i = 0; i < subtypes.length; i++)
         {
             this.iconNames[i][0] = subtypes[i];
-            for (int j = 1; j <= iconNames.length; j++)
+            for (int j = 0; j < iconNames.length; j++)
             {
-                this.iconNames[i][j] = this.iconNames[i][0] + iconNames[j-1];
+                this.iconNames[i][j+1] = this.iconNames[i][0] + iconNames[j];
             }
         }
         GameRegistry.registerTileEntity(tileClass, subtypes[0]);
@@ -96,7 +97,7 @@ public class TileFactory implements ITileFactory
     @Override
     public ItemStack getItemStack(int subtype)
     {
-        return new ItemStack(getBlock(), 1, getMetadata());
+        return new ItemStack(getBlock(), 1, getMetadata() + subtype * 16);
     }
 
     @Override
@@ -180,7 +181,13 @@ public class TileFactory implements ITileFactory
     public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list)
     {
         for (int i = 0; i < iconNames.length; i++)
-            list.add(new ItemStack(item, 1, metadata + i * 16));
+            list.add(getItemStack(i));
+    }
+
+    @Override
+    public boolean canPlaceBlock(World world, int x, int y, int z, ItemStack stack)
+    {
+        return true;
     }
 
     @Override
@@ -188,6 +195,13 @@ public class TileFactory implements ITileFactory
     public IIcon[] getIcons(int subtype)
     {
         return icons[subtype];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> information, boolean advanced)
+    {
+
     }
 
     public static class Cluster extends TileFactory

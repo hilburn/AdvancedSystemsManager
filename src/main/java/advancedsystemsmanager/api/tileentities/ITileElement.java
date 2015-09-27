@@ -13,9 +13,9 @@ public interface ITileElement
 
     void setPartOfCluster(boolean partOfCluster);
 
-    void writeToItemNBT(NBTTagCompound tag);
+    void writeItemNBT(NBTTagCompound tag);
 
-    void readFromItemNBT(NBTTagCompound tag);
+    void readItemNBT(NBTTagCompound tag);
 
     void onAddedToCluster(ICluster cluster);
 

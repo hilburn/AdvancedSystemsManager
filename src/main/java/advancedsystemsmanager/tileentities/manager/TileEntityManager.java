@@ -317,13 +317,6 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
                     {
                         Settings.setLimitless(this, val);
                     }
-                    /*System.out.println("ACTION");
-                    for (FlowComponent item : items) {
-                        item.adjustEverythingToGridRaw();
-                    }
-                    for (FlowComponent item : items) {
-                        item.adjustEverythingToGridFine();
-                    } */
                 }
                 break;
             case PacketHandler.SYNC_COMPONENT:
@@ -641,7 +634,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void writeToItemNBT(NBTTagCompound tag)
+    public void writeItemNBT(NBTTagCompound tag)
     {
         tag.setByte(NBT_TIMER, (byte) (timer % 20));
         tag.setInteger(NBT_MAX_ID, maxID);
@@ -664,7 +657,7 @@ public class TileEntityManager extends TileEntityElementBase implements ITileInt
     }
 
     @Override
-    public void readFromItemNBT(NBTTagCompound tag)
+    public void readItemNBT(NBTTagCompound tag)
     {
         timer = tag.getByte(NBT_TIMER);
         maxID = tag.getInteger(NBT_MAX_ID);

@@ -276,8 +276,9 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
     }
 
     @Override
-    public void writeToTileNBT(NBTTagCompound tagCompound)
+    public void writeToTileNBT(NBTTagCompound tag)
     {
+        super.writeToTileNBT(tag);
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < getSideCount(); i++)
         {
@@ -288,21 +289,22 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
 
             list.appendTag(element);
         }
-        tagCompound.setTag(NBT_SIDES, list);
+        tag.setTag(NBT_SIDES, list);
 
         if (getCamouflageType().useSpecialShape())
         {
-            tagCompound.setBoolean(NBT_COLLISION, useCollision);
-            tagCompound.setBoolean(NBT_FULL, fullCollision);
+            tag.setBoolean(NBT_COLLISION, useCollision);
+            tag.setBoolean(NBT_FULL, fullCollision);
 
-            tagCompound.setByteArray(NBT_BOUNDS, bounds);
+            tag.setByteArray(NBT_BOUNDS, bounds);
         }
     }
 
     @Override
-    public void readFromTileNBT(NBTTagCompound tagCompound)
+    public void readFromTileNBT(NBTTagCompound tag)
     {
-        NBTTagList list = tagCompound.getTagList(NBT_SIDES, 10);
+        super.readFromTileNBT(tag);
+        NBTTagList list = tag.getTagList(NBT_SIDES, 10);
         for (int i = 0; i < Math.min(list.tagCount(),2); i++)
         {
             NBTTagCompound element = list.getCompoundTagAt(i);
@@ -311,12 +313,12 @@ public class TileEntityCamouflage extends TileEntityClusterElement implements IP
             metas[i] = element.getByte(NBT_META);
         }
 
-        if (tagCompound.hasKey(NBT_COLLISION))
+        if (tag.hasKey(NBT_COLLISION))
         {
-            useCollision = tagCompound.getBoolean(NBT_COLLISION);
-            fullCollision = tagCompound.getBoolean(NBT_FULL);
+            useCollision = tag.getBoolean(NBT_COLLISION);
+            fullCollision = tag.getBoolean(NBT_FULL);
 
-            bounds = tagCompound.getByteArray(NBT_BOUNDS);
+            bounds = tag.getByteArray(NBT_BOUNDS);
         }
     }
 

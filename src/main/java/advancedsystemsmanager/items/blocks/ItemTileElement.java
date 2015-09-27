@@ -19,7 +19,6 @@ import java.util.Map;
 public class ItemTileElement extends ItemBlock implements IElementItem
 {
     private BlockTileElement block;
-    public static Map<ITileFactory, ITooltipFactory> tooltipFactoryMap = new HashMap<ITileFactory, ITooltipFactory>();
 
     public ItemTileElement(Block block)
     {
@@ -39,11 +38,7 @@ public class ItemTileElement extends ItemBlock implements IElementItem
     @SuppressWarnings(value = "unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List information, boolean advanced)
     {
-        ITileFactory factory = getTileFactory(stack);
-        if (tooltipFactoryMap.containsKey(factory))
-        {
-            tooltipFactoryMap.get(factory).addInformation(stack, player, (List<String>) information, advanced);
-        }
+        getTileFactory(stack).addInformation(stack, player, (List<String>)information, advanced);
     }
 
     @Override
@@ -55,6 +50,10 @@ public class ItemTileElement extends ItemBlock implements IElementItem
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
     {
+        if (!getTileFactory(stack).canPlaceBlock(world, x, y, z, stack))
+        {
+            return false;
+        }
         if (!super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
         {
             return false;
@@ -65,7 +64,7 @@ public class ItemTileElement extends ItemBlock implements IElementItem
             ((ITileElement) te).setSubtype(stack.getItemDamage() / 16);
             if (stack.hasTagCompound())
             {
-                ((ITileElement) te).readFromItemNBT(stack.getTagCompound());
+                ((ITileElement) te).readItemNBT(stack.getTagCompound());
             }
         }
         return true;

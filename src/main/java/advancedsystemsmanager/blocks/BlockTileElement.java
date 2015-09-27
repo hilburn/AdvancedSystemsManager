@@ -191,9 +191,7 @@ public class BlockTileElement extends Block
     @Override
     public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
     {
-        ItemStack result = new ItemStack(this, 1, damageDropped(world.getBlockMetadata(x, y, z)));
-        result.setTagCompound(getTagCompound(world, x, y, z));
-        return result;
+        return getStackData(world, x, y, z);
     }
 
     @Override
@@ -202,16 +200,20 @@ public class BlockTileElement extends Block
         return new ArrayList<ItemStack>(Collections.singletonList(getPickBlock(null, world, x, y, z, null)));
     }
 
-    public static NBTTagCompound getTagCompound(World world, int x, int y, int z)
+    public ItemStack getStackData(World world, int x, int y, int z)
     {
+        int damage = world.getBlockMetadata(x, y, z);
         TileEntity te = world.getTileEntity(x, y, z);
+        NBTTagCompound tag = null;
         if (te instanceof ITileElement)
         {
-            NBTTagCompound tag = new NBTTagCompound();
-            ((ITileElement)te).writeToItemNBT(tag);
-            return tag;
+            damage += 16 * ((ITileElement) te).getSubtype();
+            tag = new NBTTagCompound();
+            ((ITileElement)te).writeItemNBT(tag);
         }
-        return null;
+        ItemStack result = new ItemStack(this, 1, damageDropped(damage));
+        result.setTagCompound(tag);
+        return result;
     }
 
     public ITileFactory getTileFactory(ItemStack stack)

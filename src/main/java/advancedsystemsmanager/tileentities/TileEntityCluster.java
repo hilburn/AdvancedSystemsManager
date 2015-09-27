@@ -36,13 +36,39 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 {
 
     private static final String NBT_SUB_BLOCKS = "SubBlocks";
-    private static final String NBT_SUB_BLOCK_ID = "SubId";
-    private static final String NBT_SUB_BLOCK_META = "SubMeta";
     private boolean requestedInfo;
     private Map<ITileFactory, ITileElement> pairs = new HashMap<ITileFactory, ITileElement>();
     private List<ITileElement> elements = new ArrayList<ITileElement>();
     private ITileInterfaceProvider interfaceObject;
     private TileEntityCamouflage camouflageObject;
+
+    public static boolean hasSubBlocks(ItemStack stack)
+    {
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey(NBT_SUB_BLOCKS) && !stack.getTagCompound().getCompoundTag(NBT_SUB_BLOCKS).tagMap.isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<ItemStack> getSubblocks(ItemStack stack)
+    {
+        List<ItemStack> result = new ArrayList<ItemStack>();
+        if (hasSubBlocks(stack))
+        {
+            NBTTagCompound tag = stack.getTagCompound().getCompoundTag(NBT_SUB_BLOCKS);
+            for (Object obj : tag.tagMap.entrySet())
+            {
+                Map.Entry<String, NBTBase> entry = (Map.Entry<String, NBTBase>)obj;
+                if (entry.getValue() instanceof NBTTagCompound)
+                {
+                    ITileFactory factory = ClusterRegistry.get(entry.getKey());
+                    if (factory != null)
+                    {
+                        result.add(factory.getItemStack(((NBTTagCompound) entry.getValue()).getByte(NBT_SUBTYPE)));
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
     public Set<Map.Entry<ITileFactory, ITileElement>> getPairs()
     {
@@ -60,33 +86,34 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
         if (compound != null)
         {
-            loadElements(compound, true);
+            loadElements(compound);
         }
     }
 
-    public void loadElements(NBTTagCompound tag, boolean fromItem)
+    @SuppressWarnings("unchecked")
+    public void loadElements(NBTTagCompound tag)
     {
         for (Object obj : tag.tagMap.entrySet())
         {
             Map.Entry<String, NBTBase> entry = (Map.Entry<String, NBTBase>)obj;
             if (entry.getValue() instanceof NBTTagCompound)
             {
-                addElement(entry.getKey(), (NBTTagCompound)entry.getValue(), fromItem);
+                addElement(entry.getKey(), (NBTTagCompound)entry.getValue());
             }
         }
     }
 
-    private ITileElement addElement(String key, NBTTagCompound value, boolean fromItem)
+    private ITileElement addElement(String key, NBTTagCompound value)
     {
         ITileFactory factory = ClusterRegistry.get(key);
         if (factory != null)
         {
-            return addElement(factory, value, fromItem);
+            return addElement(factory, value);
         }
         return null;
     }
 
-    private ITileElement addElement(ITileFactory factory, NBTTagCompound value, boolean fromItem)
+    private ITileElement addElement(ITileFactory factory, NBTTagCompound value)
     {
         if (!factory.canBeAddedToCluster(getTiles()))
         {
@@ -96,13 +123,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
         if (tile instanceof ITileElement)
         {
             ITileElement element = (ITileElement) tile;
-            if (fromItem)
-            {
-                element.readFromItemNBT(value);
-            } else
-            {
-                tile.readFromNBT(value);
-            }
+            tile.readFromNBT(value);
             pairs.put(factory, element);
             elements.add(element);
             if (tile instanceof ITileInterfaceProvider)
@@ -137,7 +158,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
     public void setWorld(ITileElement tile)
     {
-        setWorldObject((TileEntity)tile);
+        setWorldObject((TileEntity) tile);
     }
 
     public void setWorldObject(TileEntity te)
@@ -289,7 +310,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
 
     public boolean addElement(EntityPlayer player, ITileFactory factory, ItemStack stack)
     {
-        ITileElement element = addElement(factory, stack.getTagCompound(), true);
+        ITileElement element = addElement(factory, stack.getTagCompound());
         if (element == null) return false;
         if (element instanceof IPlaceListener)
         {
@@ -390,22 +411,24 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
     }
 
     @Override
-    public void readFromTileNBT(NBTTagCompound tag)
+    public void readItemNBT(NBTTagCompound tag)
     {
-        super.readFromTileNBT(tag);
-        loadElements(tag, false);
+        super.readItemNBT(tag);
+        loadElements(tag.getCompoundTag(NBT_SUB_BLOCKS));
     }
 
     @Override
-    public void writeToTileNBT(NBTTagCompound tag)
+    public void writeItemNBT(NBTTagCompound tag)
     {
-        super.writeToTileNBT(tag);
+        super.writeItemNBT(tag);
+        NBTTagCompound subBlocks = new NBTTagCompound();
         for (Map.Entry<ITileFactory, ITileElement> entry : pairs.entrySet())
         {
             NBTTagCompound elementData = new NBTTagCompound();
             ((TileEntity)entry.getValue()).writeToNBT(elementData);
-            tag.setTag(entry.getKey().getKey(), elementData);
+            subBlocks.setTag(entry.getKey().getKey(), elementData);
         }
+        tag.setTag(NBT_SUB_BLOCKS, subBlocks);
     }
 
     @Override
@@ -477,7 +500,7 @@ public class TileEntityCluster extends TileEntityElementRotation implements ITil
             int length = packet.readByte();
             for (int i = 0; i < length; i++)
             {
-                ITileElement element = addElement(packet.readStringFromBuffer(), null, false);
+                ITileElement element = addElement(packet.readStringFromBuffer(), null);
                 if (element != null)
                 {
                     element.setSubtype(packet.readByte());
