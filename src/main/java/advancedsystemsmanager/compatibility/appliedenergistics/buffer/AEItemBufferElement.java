@@ -48,7 +48,8 @@ public class AEItemBufferElement extends BufferElementBase<ItemStack>
     @Override
     public int reduceBufferAmount(int amount)
     {
-        return (int)node.helper.extract(stack.copy().setStackSize(amount)).getStackSize();
+        IAEItemStack extracted = node.helper.extract(stack.copy().setStackSize(amount));
+        return extracted == null ? 0 : (int)extracted.getStackSize();
     }
 
     @Override
