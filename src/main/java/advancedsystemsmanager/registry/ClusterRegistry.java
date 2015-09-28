@@ -38,14 +38,26 @@ public class ClusterRegistry
         {
             return true;
         }
+
+        @Override
+        public float getBlockHardness()
+        {
+            return 0.4f;
+        }
     });
     public static TileFactory MANAGER = registerFactory(new TileFactory(TileEntityManager.class, new String[]{Names.MANAGER}, TOP_SUFFIX, BOTTOM_SUFFIX)
     {
         @Override
+        public float getBlockHardness()
+        {
+            return 2f;
+        }
+
+        @Override
         @SideOnly(Side.CLIENT)
         public IIcon getIcon(int side, int subtype)
         {
-            return super.icons[subtype][side == 0 ? 2 : side == 1 ? 1 : 0];
+            return super.icons[0][side == 0 ? 2 : side == 1 ? 1 : 0];
         }
 
         @Override

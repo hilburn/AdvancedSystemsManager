@@ -108,7 +108,7 @@ public class AdvancedSystemsManager
         FMLCommonHandler.instance().bus().register(handler);
         MinecraftForge.EVENT_BUS.register(handler);
         PROXY.initHandlers();
-
+        RemapHelper.registerMappings();
         ModCompat.init();
     }
 

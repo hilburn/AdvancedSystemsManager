@@ -31,10 +31,10 @@ asm_cable_quantum.name=Quantum Cable
 #				ITEMS
 # ======================================
 
-item.system_duplicator.name=System Duplicator
-item.system_labeler.name=Machine Labeler
-item.system_remote_access.name=Remote Interface
-item.system_remote_access_advanced.name=Advanced Remote Interface
+item.asm_duplicator.name=System Duplicator
+item.asm_labeler.name=Machine Labeler
+item.asm_remote_access.name=Remote Interface
+item.asm_remote_access_advanced.name=Advanced Remote Interface
 
 # ======================================
 #			COMPONENT TYPES

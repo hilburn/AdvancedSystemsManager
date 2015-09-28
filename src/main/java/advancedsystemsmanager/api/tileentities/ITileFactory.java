@@ -27,6 +27,8 @@ public interface ITileFactory
 
     int getMetadata();
 
+    float getBlockHardness();
+
     String getUnlocalizedName(int subtype);
 
     ItemStack getItemStack(int subtype);

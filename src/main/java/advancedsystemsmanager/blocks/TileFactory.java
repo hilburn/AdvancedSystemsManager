@@ -75,6 +75,12 @@ public class TileFactory implements ITileFactory
     }
 
     @Override
+    public float getBlockHardness()
+    {
+        return 1.2f;
+    }
+
+    @Override
     public boolean canBeAddedToCluster(Collection<ITileFactory> existing)
     {
         return false;

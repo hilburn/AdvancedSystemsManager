@@ -1,6 +1,7 @@
 package advancedsystemsmanager.items;
 
 import advancedsystemsmanager.AdvancedSystemsManager;
+import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.reference.Reference;
 import net.minecraft.item.Item;
 
@@ -14,7 +15,7 @@ public class ItemBase extends Item
     {
         this.setCreativeTab(AdvancedSystemsManager.creativeTab);
         this.setUnlocalizedName(name);
-        this.setTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace("system_", ""));
+        this.setTextureName(Reference.RESOURCE_LOCATION + ":" + name.replace(Names.PREFIX, ""));
         this.setMaxStackSize(1);
     }
 }

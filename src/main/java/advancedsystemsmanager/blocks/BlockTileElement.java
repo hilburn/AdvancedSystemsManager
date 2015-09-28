@@ -400,6 +400,13 @@ public class BlockTileElement extends Block implements IFacade, ICable, IDismant
     }
 
     @Override
+    public float getPlayerRelativeBlockHardness(EntityPlayer player, World world, int x, int y, int z)
+    {
+        ITileFactory factory = getTileFactory(world.getBlockMetadata(x, y, z));
+        return factory == null ? super.getPlayerRelativeBlockHardness(player, world, x, y, z) : factory.getBlockHardness();
+    }
+
+    @Override
     public boolean isCable(World world, int x, int y, int z)
     {
         ITileFactory factory = getTileFactory(world.getBlockMetadata(x, y, z));

@@ -18,7 +18,7 @@ public class Names
 
     public static final String MANAGER = PREFIX + "manager";
 
-    public static final String CABLE = PREFIX + "cable";
+    private static final String CABLE = PREFIX + "cable";
     public static final String CABLE_BLOCK = CABLE;
     public static final String CABLE_RELAY = CABLE + "_relay";
     public static final String CABLE_OUTPUT = CABLE + "_output";
@@ -41,35 +41,12 @@ public class Names
     public static final String CABLE_TC = CABLE + "_tc";
 
     //##############################################
-    //               DEPRECATED
-    //##############################################
-    public static final String OLD_PREFIX = "system_";
-    public static final String OLD_CABLE = OLD_PREFIX + "cable";
-    public static final String OLD_CABLE_RELAY = OLD_CABLE + "_relay";
-    public static final String OLD_CABLE_OUTPUT = OLD_CABLE + "_output";
-    public static final String OLD_CABLE_INPUT = OLD_CABLE + "_input";
-    public static final String OLD_CABLE_CREATIVE = OLD_CABLE + "_creative";
-    public static final String OLD_CABLE_VALVE = OLD_CABLE + "_valve";
-    public static final String OLD_CABLE_VOID = OLD_CABLE + "_void";
-    public static final String OLD_CABLE_BUD = OLD_CABLE + "_bud";
-    public static final String OLD_CABLE_BLOCK_GATE = OLD_CABLE + "_block_gate";
-    public static final String OLD_CABLE_FLUID_GATE = OLD_CABLE + "_fluid_gate";
-    public static final String OLD_CABLE_CLUSTER = OLD_CABLE + "_cluster";
-    public static final String OLD_CABLE_CAMO = OLD_CABLE + "_camo";
-    public static final String OLD_CABLE_SIGN = OLD_CABLE + "_sign";
-    public static final String OLD_CABLE_QUANTUM = OLD_CABLE + "_quantum";
-
-    public static final String OLD_CABLE_RF = OLD_CABLE + "_rf";
-    public static final String OLD_CABLE_AE = OLD_CABLE + "_ae";
-    public static final String OLD_CABLE_TC = OLD_CABLE + "_tc";
-
-    //##############################################
     //               Items
     //##############################################
 
-    public static final String DUPLICATOR = OLD_PREFIX + "duplicator";
-    public static final String LABELER = OLD_PREFIX + "labeler";
-    public static final String REMOTE_ACCESS = OLD_PREFIX + "remote_access";
+    public static final String DUPLICATOR = PREFIX + "duplicator";
+    public static final String LABELER = PREFIX + "labeler";
+    public static final String REMOTE_ACCESS = PREFIX + "remote_access";
 
     //##############################################
     //               Items

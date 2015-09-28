@@ -69,7 +69,7 @@ public class ConfigHandler implements IConfigLock
     public void loadPowerValues()
     {
         config.load();
-        config.setCategoryComment(CATEGORY_POWER, "Control the power settings of the manager, if enabled");
+        config.setCategoryComment(CATEGORY_POWER, "Control the power settings of the manager, if enabled ##CURRENTLY NOT IMPLEMENTED##");
         TileEntityManager.energyCostActive = config.get(CATEGORY_POWER, "enable_energy_costs", false).getBoolean();
         for (ICommand command : CommandRegistry.getCommands())
         {

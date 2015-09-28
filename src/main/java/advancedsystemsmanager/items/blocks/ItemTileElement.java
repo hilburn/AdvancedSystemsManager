@@ -32,14 +32,17 @@ public class ItemTileElement extends ItemBlock implements IElementItem
     @Override
     public String getUnlocalizedName(ItemStack stack)
     {
-        return getTileFactory(stack).getUnlocalizedName(stack.getItemDamage() / 16);
+        ITileFactory factory = getTileFactory(stack);
+        return factory == null ? null : factory.getUnlocalizedName(stack.getItemDamage() / 16);
     }
 
     @Override
     @SuppressWarnings(value = "unchecked")
     public void addInformation(ItemStack stack, EntityPlayer player, List information, boolean advanced)
     {
-        getTileFactory(stack).addInformation(stack, player, (List<String>)information, advanced);
+        ITileFactory factory = getTileFactory(stack);
+        if (factory != null)
+            factory.addInformation(stack, player, (List<String>)information, advanced);
     }
 
     @Override
