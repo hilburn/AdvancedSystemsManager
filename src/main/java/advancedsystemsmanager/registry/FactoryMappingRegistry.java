@@ -1,7 +1,9 @@
 package advancedsystemsmanager.registry;
 
+import advancedsystemsmanager.AdvancedSystemsManager;
 import advancedsystemsmanager.api.network.IPacketReader;
 import advancedsystemsmanager.api.network.IPacketWriter;
+import advancedsystemsmanager.nei.NEIConfig;
 import advancedsystemsmanager.network.ASMPacket;
 import advancedsystemsmanager.reference.Files;
 import com.google.common.collect.BiMap;
@@ -56,9 +58,11 @@ public class FactoryMappingRegistry implements IPacketReader, IPacketWriter
                                                 .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE_WITH_SPACES).create();
     private BiMap<String, Integer> factoryMapping = HashBiMap.create();
     private List<String> toBeAssigned = new ArrayList<String>();
+    private int maxID;
 
     public FactoryMappingRegistry()
     {
+        maxID = BlockRegistry.BLOCKS_TO_REGISTER * 16 - 1;
         toBeAssigned.addAll(ClusterRegistry.getKeys());
         register(ClusterRegistry.CABLE.getKey(), 0);
         register(ClusterRegistry.MANAGER.getKey(), 1);
@@ -66,7 +70,11 @@ public class FactoryMappingRegistry implements IPacketReader, IPacketWriter
 
     private void register(String name, int val)
     {
-        if (!factoryMapping.containsKey(name) && !factoryMapping.containsValue(val))
+        if (val < 0)
+        {
+            val += maxID;
+        }
+        if (!factoryMapping.containsKey(name) && !factoryMapping.containsValue(val) && (val < 2 || AdvancedSystemsManager.configHandler.shouldRegister(name, true)))
         {
             toBeAssigned.remove(name);
             factoryMapping.put(name, val);
@@ -92,6 +100,10 @@ public class FactoryMappingRegistry implements IPacketReader, IPacketWriter
         if (!INSTANCE.toBeAssigned.isEmpty())
         {
             INSTANCE.assignNewEntries();
+            if (!INSTANCE.toBeAssigned.isEmpty())
+            {
+                throw new IndexOutOfBoundsException("Too many tiles registered for the number of assigned blocks, increase registered_blocks in the config or disable some tiles");
+            }
             save();
         }
         BlockRegistry.registerTiles();
@@ -139,13 +151,13 @@ public class FactoryMappingRegistry implements IPacketReader, IPacketWriter
             register(packet.readStringFromBuffer(), packet.readUnsignedByte());
         }
         BlockRegistry.registerTiles();
+        NEIConfig.hideBlocks();
         return false;
     }
 
     @Override
     public boolean writeData(ASMPacket packet)
     {
-        BlockRegistry.registerTiles();
         packet.writeByte(factoryMapping.size());
         for (Map.Entry<String, Integer> entry : factoryMapping.entrySet())
         {

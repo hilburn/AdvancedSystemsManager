@@ -7,6 +7,7 @@ import advancedsystemsmanager.network.PacketHandler;
 import advancedsystemsmanager.reference.Names;
 import advancedsystemsmanager.registry.ItemRegistry;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ import net.minecraftforge.event.world.BlockEvent;
 
 public class EventHandler
 {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerLogIn(PlayerEvent.PlayerLoggedInEvent event)
     {
         if (event.player instanceof EntityPlayerMP)

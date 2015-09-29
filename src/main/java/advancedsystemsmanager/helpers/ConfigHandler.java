@@ -2,12 +2,11 @@ package advancedsystemsmanager.helpers;
 
 import advancedsystemsmanager.api.execution.ICommand;
 import advancedsystemsmanager.commands.CommandPastebin;
-import advancedsystemsmanager.reference.Mods;
 import advancedsystemsmanager.reference.Names;
+import advancedsystemsmanager.registry.BlockRegistry;
 import advancedsystemsmanager.registry.CommandRegistry;
 import advancedsystemsmanager.tileentities.manager.Settings;
 import advancedsystemsmanager.tileentities.manager.TileEntityManager;
-import cpw.mods.fml.common.Loader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import thevault.registry.IConfigLock;
@@ -27,7 +26,6 @@ public class ConfigHandler implements IConfigLock
     public static final String CATEGORY_POWER = "power_settings";
     public static String theme;
     public static boolean wailaIntegration = true;
-    public static boolean aeIntegration = Loader.isModLoaded(Mods.APPLIEDENERGISTICS2);
     public static Map<String, Boolean> managerSettings = new LinkedHashMap<String, Boolean>(Settings.settingsRegistry);
     private Configuration config;
     private File file;
@@ -55,7 +53,8 @@ public class ConfigHandler implements IConfigLock
 
         theme = config.get(CATEGORY_SETTINGS, "theme", "default").getString();
 
-        config.addCustomCategoryComment(CATEGORY_ENABLE, "Set true to enable, false to disable");
+        config.addCustomCategoryComment(CATEGORY_ENABLE, "Set false to disable tiles from being registered");
+        BlockRegistry.BLOCKS_TO_REGISTER = config.getInt("register_blocks", CATEGORY_ENABLE, BlockRegistry.BLOCKS_TO_REGISTER, 1, 8, "Change the number of blocks registered for assigning tiles to.");
         config.setCategoryRequiresWorldRestart(CATEGORY_ENABLE, true);
 
         save();

@@ -15,7 +15,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class BlockRegistry
 {
-    public static int BLOCKS_TO_REGISTER = 4;
+    public static int BLOCKS_TO_REGISTER = 2;
     public static BlockTileElement[] cableElements;
 
     public static void registerBlocks()
